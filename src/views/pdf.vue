@@ -1,0 +1,243 @@
+<template>
+    <div class="buttons">
+      <button @click="close">Close</button>
+      <button @click="downloadPDF">Download as PDF</button>
+    </div>
+  <div class="a4-container" id="pdf-content">
+    <div ref="content" class="a4-content">
+      <!-- Your content goes here -->
+      <img src="@/components/assets/hnf.jpg" alt="A4-sized photo" class="a4-photo">
+      <p class="a4-to" style="text-align: center;">TRAVEL ORDER</p>
+      <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span style="text-decoration: underline; text-align: center;">hakdog-{{ yearToday }}</span></p>
+      <div class="outer-container">
+        <div class="inner-container">
+          <div class="label-value-row">
+            <p class="label">Name:</p>
+            <p class="value" style="font-weight: bold;">{{ name }}</p>
+          </div>
+          <div class="label-value-row">
+            <p class="label">Position:</p>
+            <p class="value">{{ position }}</p>
+          </div>
+          <div class="label-value-row">
+            <p class="label">Departure:</p>
+            <p class="value">{{ departure }}</p>
+          </div>
+          <div class="label-value-row">
+            <p class="label">Destination:</p>
+            <p class="value">{{ destination }}</p>
+          </div>
+        </div>
+        <div class="inner-container">
+          <div class="label-value-row">
+            <p class="label">Date:</p>
+            <p class="value">{{ date }}</p>
+          </div>
+          <div class="label-value-row">
+            <p class="label">Division/Section:</p>
+            <p class="value">{{ division }}</p>
+          </div>
+          <div class="label-value-row">
+            <p class="label">Official Station:</p>
+            <p class="value">{{ station }}</p>
+          </div>
+          <div class="label-value-row">
+            <p class="label">Arrival Date:</p>
+            <p class="value">{{ arrival }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="label-value-row2">
+        <p class="label2">Purpose of Travel:</p>
+        <p class="value2">{{ arrival }}</p>
+      </div>
+      <div class="label-value-row2">
+        <p class="label2">Per Diems/Expense Allowed:</p>
+        <p class="value2">{{ arrival }}</p>
+      </div>
+      <div class="label-value-row2">
+        <p class="label2">Assistance or Laborer Allowed:</p>
+        <p class="value2">{{ arrival }}</p>
+      </div>
+      <div class="label-value-row2">
+        <p class="label2">Appropriations to which travel should be charged:</p>
+        <p class="value2">{{ arrival }}</p>
+      </div>
+      <div class="label-value-row2">
+        <p class="label2">Remarks or Special instructions:</p>
+        <p class="value2">{{ arrival }}</p>
+      </div>
+      <div style="display: flex; flex-direction: column; justify-content: flex-start; ">
+        <div style="display: flex; justify-content: flex-start; margin-top: -10px;">
+            <p class="label2" style="margin-top: 30px; margin-left: 6%;">Certifications:</p>
+        </div>
+        <div style="display: flex; justify-content: flex-start; margin-top: -25px">
+            <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
+        </div>
+        <div class="outer-container" style="margin-top: -30px;">
+            <div class="inner-container">
+                <p>Recommended by:</p>
+                <p class="value" style="font-weight: bold; margin-top: 50px;">Janice B. Furog</p>
+                <p>Engineer V</p>
+            </div>
+            <div class="inner-container">
+                <p>Approved by:</p>
+                <p class="value" style="font-weight: bold; margin-top: 50px;">Rodante B. Felina</p>
+                <p>OIC, Regional Director</p>
+            </div>
+        </div>
+        <p style="letter-spacing: 5px; text-align: center;">AUTORIZATION</p>
+        <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
+        <div class="inner-container" style="align-self: flex-end; margin-right: 6%; ">
+                <p class="value" style="font-weight: bold; text-align: center;">{{ name }}</p>
+                <p style="text-align: center;">Official Employee</p>
+        </div>
+        <p style="text-align: left; margin-top: -30px; margin-left: 6%;">MGB-X-FAD-FO-033</p>
+    </div>
+    </div>
+  </div>
+  <div class="buttons">
+      <button @click="close">Close</button>
+      <button @click="downloadPDF">Download as PDF</button>
+    </div>
+</template>
+
+<script>
+// Import the necessary libraries
+import jsPDF from 'jspdf';
+
+export default {
+  data() {
+    return {
+      yearToday: new Date().getFullYear(), // Get the current year
+      name: 'John Doe',
+      position: 'Manager',
+      departure: '2024-03-10',
+      destination: 'City B',
+      date: '2024-03-10',
+      division: 'Marketing',
+      station: 'Station X',
+      arrival: '2024-03-15'
+    };
+  },
+  methods: {
+    close() {
+      // Close logic
+      console.log('Close button clicked');
+    },
+    downloadPDF() {
+  // Initialize jsPDF with A4 size
+  const pdf = new jsPDF('p', 'mm', 'a4');
+
+  // Get the HTML content
+  const content = document.getElementById('pdf-content');
+
+  // Add HTML content to PDF
+  pdf.html(content, {
+    // Set width and height of PDF to A4 size
+    html2canvas: { scale: 0.26 }, // Adjust scale as needed to fit content
+    x: 0,
+    y: 0,
+    callback: () => {
+      // Download the PDF file
+      pdf.save('travel_order.pdf');
+    }
+  });
+}
+
+  }
+};
+</script>
+
+
+
+<style scoped>
+.a4-container {
+  position: relative;
+  width: 210mm; /* A4 width */
+  height: 296mm; /* A4 height */
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.a4-content {
+  /* Adjust this height based on your content */
+  height: 295mm; /* A4 height minus padding and border */
+}
+
+.a4-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 98%;
+  z-index: -1; /* Place the photo behind other content */
+}
+.a4-to {
+    margin-top: 22.5%;
+    letter-spacing: 5px; 
+    font-weight: bold;
+    font-size: 20px;
+    color: #000000
+}
+.a4-textBold {
+    font-weight: bold;
+    font-size: 20px;
+    color: #000000;
+    margin-bottom: -10px;
+}
+.outer-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .inner-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin: 10px; /* Adding margin for spacing between inner containers */
+    margin-left: -20px;
+  }
+  .label-value-row {
+  display: flex;
+  flex-direction: row;
+}
+  .inner-container p {
+    margin: 5px 0;
+    display: flex;
+    font-size: 18px;
+    align-items: flex-start; /* Align items to the start of the flex container */
+  }  
+  .label {
+    font-weight: bold;
+    width: 180px; /* Adjust the width as needed */
+  }
+  .value {
+    text-decoration: underline;
+  }
+  .label-value-row2 {
+  display: flex;
+  flex-direction: row;
+  margin-left: 6%;
+  margin-top: -10px;
+}
+.label2 {
+    font-weight: bold;
+    width: auto; /* Adjust the width as needed */
+  }
+  .value2 {
+    text-decoration: underline;
+    margin-left: 20px;
+  }
+.buttons {
+  margin-top: 20px;
+  z-index: 9;
+}
+
+button {
+  padding: 10px 20px;
+  margin-right: 10px;
+}
+</style>
