@@ -3,6 +3,7 @@ import home from './views/home.vue'
 import dashboard from './views/dashboard.vue'
 import form from './views/form.vue'
 import login from './views/login.vue'
+import pdf from './views/pdf.vue'
 
 export default createRouter({
   history: createWebHistory(),
@@ -22,6 +23,10 @@ export default createRouter({
     {
         path: '/form',
         component:form,
+      },
+      {
+        path: '/pdf',
+        component:pdf,
       },
   ],
 })
