@@ -7,7 +7,10 @@
          <div class="inside">
             <div style="display: flex; flex-direction: column;  width: 100%;">
                <label class="n">Name:</label>
-               <input type="type" v-model="name"  class ='inputsss'  id = 'namein' required @input="convertToUpperCase" placeholder="name">
+                  <!-- Dropdown for names -->
+               <select v-model="selectedName" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 90%;" required>
+                  <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{ name.first_name }} {{ name.middle_init }}</option>
+               </select>
 
                <label class="p"> Position: </label>
                <input type="text" v-model="position" class ='inputsss'  id = 'positionin' required readonly>
@@ -63,125 +66,193 @@
 
          <div class="buttonss">
             <button class="button" @click="submit">Submit</button>
-            <!-- <button class="button" @click="cancelForm">Cancel</button> -->
          </div>
          
    </div>   
  </div>
- <!-- <footer style="background-color: lightgray; padding: 5px; text-align: center; height: 15px; ">
-        <p style="margin-top: -5px">Team Kokkak</p>
-      </footer> -->
    </div>
 </template>
 
 
 
- <script>
-   import { ref } from 'vue';
-   import { toggleForm } from '../views/dashboard.vue';
-   const isVisible = ref(true);
+<script>
+import { ref } from 'vue';
+import axios from 'axios';
 
-const cancelForm = () => {
-  toggleForm();
-};
+export default {
+  data() {
+    return {
+      selectedName: '',
+      names: [],
+      position: '',
+      departure: '',
+      destination: '',
+      purpose: '',
+      date: this.getCurrentDate(),
+      division: '',
+      station: 'MGB-X',
+      arrival: '',
+      pdea: '',
+      ala: '',
+      appropriation: '',
+      remarks: '',
+      isValid: false,
+      isVisible: true,
+      employees: [],
+      positions: [],
+      divisions: [],
+      positionID: '',
+      divisionID: '',
+    };
+  },
+  methods: {
+   // Function to fetch the selected employee based on selectedName
+   fetchSelectedEmployee() {
+    if (this.selectedName) {
+      const selectedEmployee = this.employees.find(employee => employee.name_id === this.selectedName);
+      console.log(selectedEmployee); // Correct logging variable name
+      if (selectedEmployee) {
+         this.positionID = selectedEmployee.position_id
+         this.divisionID = selectedEmployee.division_id
+        this.position = this.findPositionName(selectedEmployee.position_id);
+        this.division = this.findDivisionName(selectedEmployee.division_id);
 
-export { isVisible, cancelForm };
- export default {
-   data() {
-      return {
-       name: '',
-       position: '',
-       departure: '',
-       destination: '',
-       purpose: '',
-       date: this.getCurrentDate(),
-       division: '',
-       station: 'MGB-X',
-       arrival: '',
-       pdea: '',
-       ala: '',
-       appropriation: '',
-       remarks: '',
-       isValid: false,
-       isVisible: true,
-      };
-   },
-   methods: {
-      convertToUpperCase() {
+      }
+    }
+    },
+    // Function to find the employee's position name based on their position_id
+    findPositionName(positionId) {
+      const matchedPosition = this.positions.find(position => position.position_id === positionId);
+      return matchedPosition ? matchedPosition.position_name : '';
+    },
+    // Function to find the employee's division name based on their division_id
+    findDivisionName(divisionId) {
+      const matchedDivision = this.divisions.find(division => division.division_id === divisionId);
+      return matchedDivision ? matchedDivision.division_name : '';
+    },
+    convertToUpperCase() {
       this.name = this.name.toUpperCase();
     },
-      enableTyping(event) {
-    event.target.removeAttribute('readonly');
-  },
-
-  getCurrentDate() {
+    enableTyping(event) {
+      event.target.removeAttribute('readonly');
+    },
+    getCurrentDate() {
       const today = new Date();
       let dd = today.getDate();
       let mm = today.getMonth() + 1; // January is 0!
       const yyyy = today.getFullYear();
-
       if (dd < 10) {
         dd = `0${dd}`;
       }
-
       if (mm < 10) {
         mm = `0${mm}`;
       }
-
       return `${yyyy}-${mm}-${dd}`;
     },
+    submit() {
+      if (
+        this.selectedName === '' ||
+        this.position === '' ||
+        this.departure === '' ||
+        this.destination === '' ||
+        this.date === '' ||
+        this.division === '' ||
+        this.station === '' ||
+        this.arrival === '' ||
+        this.purpose === ''
+      ) {
+        this.isValid = true;
+        setTimeout(() => {
+          this.isValid = false;
+        }, 3000);
+      } else {
+        const formData = {
+         name_id: '' + this.selectedName,
+         position_id: '' + this.positionID,
+            division_id: '' + this.divisionID,     
+          station: this.station,
+          destination: this.destination,
+          purpose: this.purpose,
+          departure: this.departure,
+          arrival: this.arrival,
+        };
 
-     submit() {
-      if (this.name ==='' ||
-         this.position ===""||
-         this.departure ===''|| 
-         this.destination ===''|| 
-         this.date ===""||
-         this.division ==="" ||
-         this.station ===""||
-         this.arrival ===''||
-         this.purpose ===''
-        ){
-         // alert('Please fill all the fields')
-         this.isValid = true;
-         
-         setTimeout(() => {
-            this.isValid = false; // Reset isValid after 2 seconds
-         }, 3000);
-         
-       }else{
-         this.isValid = true;
-         console.log("name:",this.name);
-         console.log("position:",this.position);
-         console.log("departure:",this.departure);
-         console.log("destination:",this.destination);
-         console.log("purpose:",this.purpose);
-         console.log("date:",this.date);
-         console.log("division:",this.division);
-         console.log("station:",this.station);
-         console.log("arrival:",this.arrival);
-         console.log("pdea:",this.pdea);
-         console.log("ala:",this.ala);
-         console.log("appropriation:",this.appropriation);
-         console.log("remarks:",this.remarks);
+        axios.post('http://127.0.0.1:8000/add_form/', formData)
+        .then(response => {
+          if (response.status === 200) {
+            this.resetForm();
+            console.log('Form submitted successfully');
+          } else {
+            throw new Error('Failed to submit form');
+          }
+        })
+        .catch(error => {
+          console.error('Error submitting form:', error);
+        });
+      }
+    },
+    resetForm() {
+      this.selectedName = '';
+      this.position = '';
+      this.departure = '';
+      this.destination = '';
+      this.division = '';
+      this.purpose = '';
+      this.arrival = '';
+      this.pdea = '';
+      this.ala = '';
+      this.appropriation = '';
+      this.remarks = '';
+      window.location.reload();
+    },
+    fetchData() {
+      fetch('http://127.0.0.1:8000/get_names_json/')
+        .then(response => response.json())
+        .then(data => {
+          this.names = data;
+        })
+        .catch(error => {
+          console.error('Error fetching names:', error);
+        });
 
-         this.name=''
-         this.position=""
-         this.departure=''
-         this.destination=''
-         this.division=""
-         this.purpose=''
-         this.arrival=''
-         this.pdea=''
-         this.ala=''
-         this.appropriation=''
-         this.remarks=''
-         
-       }
-     },
-   },
- };
- </script>
+      fetch('http://127.0.0.1:8000/get_employees_json/')
+      .then(response => response.json())
+      .then(data => {
+        this.employees = data;
+      })
+      .catch(error => {
+        console.error('Error fetching employees:', error);
+      });
+      // Fetch positions data
+      fetch('http://127.0.0.1:8000/get_positions_json/')
+        .then(response => response.json())
+        .then(data => {
+          this.positions = data;
+        })
+        .catch(error => {
+          console.error('Error fetching positions:', error);
+        });
+
+      // Fetch divisions data
+      fetch('http://127.0.0.1:8000/get_divisions_json/')
+        .then(response => response.json())
+        .then(data => {
+          this.divisions = data;
+        })
+        .catch(error => {
+          console.error('Error fetching divisions:', error);
+        });
+    },
+  },
+  watch: {
+    selectedName: 'fetchSelectedEmployee', // Watch for changes in selectedName
+  },
+  mounted() {
+    this.fetchData();
+  },
+};
+</script>
+
 
 
 <style scoped>

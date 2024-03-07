@@ -10,6 +10,10 @@
      <div style="display: flex; justify-content: center;" v-if="isVisible">
         <formzz ></formzz>
      </div>
+     <div style="display: flex; justify-content: center;" v-if="!isVisible">
+        <tablez></tablez>
+     </div>
+
   
    </div>
   </template>
@@ -17,6 +21,7 @@
   <script setup>
   import alerz from '../components/heder.vue'
   import formzz from './form.vue';
+  import tablez from './table.vue';
   </script>
   
   <script>
