@@ -1,4 +1,5 @@
 <template>
+   <div style="display: flex; justify-content: center;" v-if="isVisible">
  <div class="first">
    <div class="second">
       <p class="form">Travel Order Form</p>
@@ -6,64 +7,85 @@
          <div class="inside">
             <div style="display: flex; flex-direction: column;  width: 100%;">
                <label class="n">Name:</label>
-               <input type="type" v-model="name"  class = 'namein' required @input="convertToUpperCase" placeholder="name">
+               <input type="type" v-model="name"  class ='inputsss'  id = 'namein' required @input="convertToUpperCase" placeholder="name">
 
                <label class="p"> Position: </label>
-               <input type="text" v-model="position" class = 'positionin' required readonly>
+               <input type="text" v-model="position" class ='inputsss'  id = 'positionin' required readonly>
 
                <label class="dd"> Depature Date: </label>
-               <input type="date" v-model="departure" class = 'departurein' required>
+               <input type="date" v-model="departure" class ='inputsss'  id = 'departurein' required>
 
                <label class="d"> Destination: </label>
-               <input type="text" v-model="destination" class = 'destinationin' required>
+               <input type="text" v-model="destination" class ='inputsss'  id = 'destinationin' required>
 
 
             </div>
             <div style="display: flex; flex-direction: column;  width: 100%;">
                <label class="da"> Date: </label>
-               <input type="type" v-model="date" class = 'datein' required readonly>
+               <input type="type" v-model="date" class ='inputsss'  id = 'datein' required readonly>
 
                <label class="ds"> Division/Section: </label>
-               <input type="text" v-model="division" class = 'divisionin' required readonly>
+               <input type="text" v-model="division" class ='inputsss'  id = 'divisionin' required readonly>
 
                <label class="os"> Official Station:</label>
-               <input type="text" v-model="station" class = 'stationin' required readonly>
+               <input type="text" v-model="station" class ='inputsss'  id = 'stationin' required readonly>
 
                <label class="ad"> Arrival Date: </label>
-               <input type="date" v-model="arrival" class = 'arrivalin' required>
+               <input type="date" v-model="arrival" class ='inputsss'  id = 'arrivalin' required>
             </div>
          </div>
       
          <div style="display: flex; flex-direction: column; justify-content: center; ">
             <label class="pt"> Purpose of Travel: </label>
-            <input type="text" v-model="purpose" class = 'purposein' required>
+            <input type="text" v-model="purpose" class ='inputss'  id = 'purposein' required>
 
             <label class="per"> Per Deims/Expense Allowed</label>
-            <input type="text" v-model="pdea" class = 'pdeain' required>
+            <input type="text" v-model="pdea" class ='inputss'  id = 'pdeain' required>
 
             <label class="al"> Assistants or Laborer Allowed: </label>
-            <input type="text" v-model="ala" class = 'alain' required>
+            <input type="text" v-model="ala" class ='inputss'  id = 'alain' required>
 
             <label class="at"> Appropriations to which travel ahould be charged: </label>
-            <input type="text" v-model="appropriation" class = 'appropriationin' required>
+            <input type="text" v-model="appropriation" class ='inputss'  id = 'appropriationin' required>
 
             <label class="r"> Remarks or Special Instructios: </label>
-            <input type="text" v-model="remarks" class = 'remarksin' required> 
+            <input type="text" v-model="remarks" class ='inputss'  id = 'remarksin' required> 
          </div>
-         <div v-if="!isValid" class="error">Please fill in the position field</div>
+
+         <div v-if="isValid" class="error">
+            <a class="errormsg1">
+               Warning Alert!!
+            </a>
+            <a class="errormsg">
+               Please Fill out the Text Fields
+            </a>
+         </div>
+
          <div class="buttonss">
             <button class="button" @click="submit">Submit</button>
-            <button class="button" @click="submit">cancel</button>
+            <!-- <button class="button" @click="cancelForm">Cancel</button> -->
          </div>
          
    </div>   
  </div>
- <footer style="background-color: lightgray; padding: 5px; text-align: center; height: 15px; ">
+ <!-- <footer style="background-color: lightgray; padding: 5px; text-align: center; height: 15px; ">
         <p style="margin-top: -5px">Team Kokkak</p>
-      </footer>
+      </footer> -->
+   </div>
 </template>
- 
+
+
+
  <script>
+   import { ref } from 'vue';
+   import { toggleForm } from '../views/dashboard.vue';
+   const isVisible = ref(true);
+
+const cancelForm = () => {
+  toggleForm();
+};
+
+export { isVisible, cancelForm };
  export default {
    data() {
       return {
@@ -80,11 +102,11 @@
        ala: '',
        appropriation: '',
        remarks: '',
-       isValid: true
+       isValid: false,
+       isVisible: true,
       };
    },
    methods: {
-
       convertToUpperCase() {
       this.name = this.name.toUpperCase();
     },
@@ -121,10 +143,11 @@
          this.purpose ===''
         ){
          // alert('Please fill all the fields')
-         this.isValid = false;
-        setTimeout(() => {
-          this.isValid = true; // Reset isValid after 3 seconds
-        }, 30000);
+         this.isValid = true;
+         
+         setTimeout(() => {
+            this.isValid = false; // Reset isValid after 2 seconds
+         }, 3000);
          
        }else{
          this.isValid = true;
@@ -163,26 +186,27 @@
 
 <style scoped>
 .first{
-   background-color: black;
-   width: 100%;
-   min-height: 100vh;
+   width: 20%;
+   min-height: 10vh;
    display: flex;
    flex-direction: column;
-   align-items: center;
    justify-content: center;
+   align-items: center;
 }
 .second{
    display: flex;
    flex-direction: column;
    border-radius: 25px;
-   background-color: #f56e06;
+   background-color: white;
    width: 80vw; /* Set width to a percentage of the viewport width */
    max-width: 950px; /* Set a maximum width */
    height: auto; /* Let the height adjust based on content */
    padding: 20px;
    color: #212121;
+   border: 2px solid black;
+   box-shadow: 0px 0px 35px -2px black;
 }
-.second.zoomed {
+.second.zoomed {  
   transform: scale(2); /* Zoom in by a factor of 2 */
 }
 
@@ -190,16 +214,17 @@
    font-weight:bold;
    font-size: 25px;
 }
-.namein,.positionin,.departurein,.destinationin,
-.datein,.divisionin,.stationin,.arrivalin
+.inputsss
 {
+   font-size: 18px;
    border-radius: 5px;
    width: 90%;
    height: 30px;
 }
 
-.pdeain,.alain,.purposein,.appropriationin,.remarksin{
+.inputss{
    border-radius: 5px;
+   font-size: 18px;
    width: 95%;
    height: 30px;
 }
@@ -220,15 +245,47 @@
 
 .buttonss{
    display: flex; 
+   position: relative;
    flex-direction: row;
    height: 40px;
    justify-content: space-around;
-   margin-top: 15px;
+   margin-top: 8px;
+
 }
 
 .button{
    border-radius: 10px;
    width: 30%;
+   font-weight: bold;
+   font-size: 20px;
+   cursor: pointer;
+}
+
+.error{
+   width: fit-content; /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #212121;
+   background-color: #fff3cd;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 35px -2px #fff3cd;
+}
+
+.errormsg1{
+   height: 20px;
+   width: 100%;
+   text-align: center;
+   color:red;
+   
+}
+
+.errormsg{
+   height: 20px;
+   width: 100%;
+   text-align: center;
 }
 
 @media (max-width: 768px) {
@@ -239,7 +296,7 @@
    .inside {
     flex-direction: column;
    }
-  .pdeain,.alain,.purposein,.appropriationin,.remarksin{
+  .inputss{
       border-radius: 5px;
       width: 90%;
       height: 30px;

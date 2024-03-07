@@ -2,6 +2,7 @@
     <div class="buttons">
       <button @click="close">Close</button>
       <button @click="downloadPDF">Download as PDF</button>
+      <alerz></alerz>
     </div>
   <div class="a4-container" id="pdf-content">
     <div ref="content" class="a4-content">
@@ -96,12 +97,12 @@
     </div>
     </div>
   </div>
-  <div class="buttons">
-      <button @click="close">Close</button>
-      <button @click="downloadPDF">Download as PDF</button>
-    </div>
+ 
 </template>
 
+<script setup>
+import alerz from '../components/heder.vue'
+</script>
 <script>
 // Import the necessary libraries
 import jsPDF from 'jspdf';
