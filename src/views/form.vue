@@ -1,73 +1,73 @@
 <template>
-   <div style="display: flex; justify-content: center;" v-if="isVisible">
- <div class="first">
-   <div class="second">
-      <p class="form">Travel Order Form</p>
+   <div class=zero style="display: flex; justify-content: center;" v-if="isVisible">
+      <div class="first">
+         <div class="second">
+            <p class="form">Travel Order Form</p>
 
-         <div class="inside">
-            <div style="display: flex; flex-direction: column;  width: 100%;">
-               <label class="n">Name:</label>
-               <input type="type" v-model="name"  class ='inputsss'  id = 'namein' required @input="convertToUpperCase" placeholder="name">
+               <div class="inside">
+                  <div style="display: flex; flex-direction: column;  width: 100%;">
+                     <label class="n">Name:</label>
+                     <input type="type" v-model="name"  class ='inputsss'  id = 'namein' required @input="convertToUpperCase" placeholder="name">
 
-               <label class="p"> Position: </label>
-               <input type="text" v-model="position" class ='inputsss'  id = 'positionin' required readonly>
+                     <label class="p"> Position: </label>
+                     <input type="text" v-model="position" class ='inputsss'  id = 'positionin' required readonly>
 
-               <label class="dd"> Depature Date: </label>
-               <input type="date" v-model="departure" class ='inputsss'  id = 'departurein' required>
+                     <label class="dd"> Depature Date: </label>
+                     <input type="date" v-model="departure" class ='inputsss'  id = 'departurein' required>
 
-               <label class="d"> Destination: </label>
-               <input type="text" v-model="destination" class ='inputsss'  id = 'destinationin' required>
+                     <label class="d"> Destination: </label>
+                     <input type="text" v-model="destination" class ='inputsss'  id = 'destinationin' required>
 
 
-            </div>
-            <div style="display: flex; flex-direction: column;  width: 100%;">
-               <label class="da"> Date: </label>
-               <input type="type" v-model="date" class ='inputsss'  id = 'datein' required readonly>
+                  </div>
+                  <div style="display: flex; flex-direction: column;  width: 100%;">
+                     <label class="da"> Date: </label>
+                     <input type="type" v-model="date" class ='inputsss'  id = 'datein' required readonly>
 
-               <label class="ds"> Division/Section: </label>
-               <input type="text" v-model="division" class ='inputsss'  id = 'divisionin' required readonly>
+                     <label class="ds"> Division/Section: </label>
+                     <input type="text" v-model="division" class ='inputsss'  id = 'divisionin' required readonly>
 
-               <label class="os"> Official Station:</label>
-               <input type="text" v-model="station" class ='inputsss'  id = 'stationin' required readonly>
+                     <label class="os"> Official Station:</label>
+                     <input type="text" v-model="station" class ='inputsss'  id = 'stationin' required readonly>
 
-               <label class="ad"> Arrival Date: </label>
-               <input type="date" v-model="arrival" class ='inputsss'  id = 'arrivalin' required>
-            </div>
-         </div>
-      
-         <div style="display: flex; flex-direction: column; justify-content: center; ">
-            <label class="pt"> Purpose of Travel: </label>
-            <input type="text" v-model="purpose" class ='inputss'  id = 'purposein' required>
+                     <label class="ad"> Arrival Date: </label>
+                     <input type="date" v-model="arrival" class ='inputsss'  id = 'arrivalin' required>
+                  </div>
+               </div>
+            
+               <div style="display: flex; flex-direction: column; justify-content: center; ">
+                  <label class="pt"> Purpose of Travel: </label>
+                  <input type="text" v-model="purpose" class ='inputss'  id = 'purposein' required>
 
-            <label class="per"> Per Deims/Expense Allowed</label>
-            <input type="text" v-model="pdea" class ='inputss'  id = 'pdeain' required>
+                  <label class="per"> Per Deims/Expense Allowed</label>
+                  <input type="text" v-model="pdea" class ='inputss'  id = 'pdeain' required>
 
-            <label class="al"> Assistants or Laborer Allowed: </label>
-            <input type="text" v-model="ala" class ='inputss'  id = 'alain' required>
+                  <label class="al"> Assistants or Laborer Allowed: </label>
+                  <input type="text" v-model="ala" class ='inputss'  id = 'alain' required>
 
-            <label class="at"> Appropriations to which travel ahould be charged: </label>
-            <input type="text" v-model="appropriation" class ='inputss'  id = 'appropriationin' required>
+                  <label class="at"> Appropriations to which travel ahould be charged: </label>
+                  <input type="text" v-model="appropriation" class ='inputss'  id = 'appropriationin' required>
 
-            <label class="r"> Remarks or Special Instructios: </label>
-            <input type="text" v-model="remarks" class ='inputss'  id = 'remarksin' required> 
-         </div>
+                  <label class="r"> Remarks or Special Instructios: </label>
+                  <input type="text" v-model="remarks" class ='inputss'  id = 'remarksin' required> 
+               </div>
 
-         <div v-if="isValid" class="error">
-            <a class="errormsg1">
-               Warning Alert!!
-            </a>
-            <a class="errormsg">
-               Please Fill out the Text Fields
-            </a>
-         </div>
+               <div v-if="isValid" class="error">
+                  <a class="errormsg1">
+                     Warning Alert!!
+                  </a>
+                  <a class="errormsg">
+                     Please Fill out the Text Fields
+                  </a>
+               </div>
 
-         <div class="buttonss">
-            <button class="button" @click="submit">Submit</button>
-            <!-- <button class="button" @click="cancelForm">Cancel</button> -->
-         </div>
-         
-   </div>   
- </div>
+               <div class="buttonss">
+                  <button class="button" @click="submit">Submit</button>
+                  <!-- <button class="button" @click="cancelForm">Cancel</button> -->
+               </div>
+               
+         </div>   
+      </div>
  <!-- <footer style="background-color: lightgray; padding: 5px; text-align: center; height: 15px; ">
         <p style="margin-top: -5px">Team Kokkak</p>
       </footer> -->
@@ -150,7 +150,6 @@ export { isVisible, cancelForm };
          }, 3000);
          
        }else{
-         this.isValid = true;
          console.log("name:",this.name);
          console.log("position:",this.position);
          console.log("departure:",this.departure);
@@ -213,6 +212,7 @@ export { isVisible, cancelForm };
 .form{
    font-weight:bold;
    font-size: 25px;
+   margin-top: -5px;
 }
 .inputsss
 {
@@ -302,7 +302,9 @@ export { isVisible, cancelForm };
       height: 30px;
    }
 
-
+.zero{
+   margin-top: 40px;
+}
 }
 
 </style>
