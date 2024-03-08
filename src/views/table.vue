@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; flex-direction: row;">
+  <div style="display: flex; flex-direction: column;">
     <div>
       <h2>History</h2>
       <table>
@@ -31,7 +31,7 @@
         </tbody>
       </table>
     </div>
-    <div v-if="selectedTravelOrderId !== null">
+    <div v-if="selectedTravelOrderId !== null" style="height: 0px;">
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
    </div>
   </div>
@@ -49,7 +49,7 @@
       return {
         formData: [],
         names: {},
-        selectedTravelOrderId: null
+        selectedTravelOrderId: 0
       };
     },
     mounted() {

@@ -9,7 +9,7 @@
       <!-- Your content goes here -->
       <img src="@/components/assets/hnf.jpg" alt="A4-sized photo" class="a4-photo">
       <p class="a4-to" style="text-align: center;">TRAVEL ORDER</p>
-      <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span style="text-decoration: underline; text-align: center;">{{travel_order_id}}-{{ yearToday }}</span></p>
+      <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span style="text-decoration: underline; text-align: center;">{{ padWithZeroes(travel_order_id) }}-{{ yearToday }}</span></p>
       <div class="outer-container">
         <div class="inner-container">
           <div class="label-value-row">
@@ -17,7 +17,7 @@
             <p class="value" style="font-weight: bold;">{{ name }}</p>
           </div>
           <div class="label-value-row">
-            <p class="label">Position: {{ positionID }}</p>
+            <p class="label">Position: </p>
             <p class="value">{{ position }}</p>
           </div>
           <div class="label-value-row">
@@ -35,7 +35,7 @@
             <p class="value">{{ date }}</p>
           </div>
           <div class="label-value-row">
-            <p class="label">Division/Section: {{ divisionID }}</p>
+            <p class="label">Division/Section: </p>
             <p class="value">{{ division }}</p>
           </div>
           <div class="label-value-row">
@@ -75,13 +75,13 @@
         <div style="display: flex; justify-content: flex-start; margin-top: -25px">
             <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
-        <div class="outer-container" style="margin-top: -30px;">
-            <div class="inner-container">
+        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }" >
+            <div class="inner-container" v-if="division !== 'ORD'" style="margin-left: 50px;">
                 <p>Recommended by:</p>
                 <p class="value" style="font-weight: bold; margin-top: 50px;">Janice B. Furog</p>
                 <p>Engineer V</p>
             </div>
-            <div class="inner-container">
+            <div class="inner-container" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
                 <p>Approved by:</p>
                 <p class="value" style="font-weight: bold; margin-top: 50px;">Rodante B. Felina</p>
                 <p>OIC, Regional Director</p>
@@ -154,6 +154,18 @@ export default {
     }
   },
   methods: {
+    padWithZeroes(travel_order_id) {
+    // Convert travel_order_id to string
+    const idString = travel_order_id.toString();
+    // Check if the length is less than 4
+    if (idString.length < 4) {
+      // Pad with zeroes to make it four digits
+      return '0'.repeat(4 - idString.length) + idString;
+    } else {
+      // If already four digits, return as is
+      return idString;
+    }
+  },
     close() {
       // Close logic
       console.log('Close button clicked');
