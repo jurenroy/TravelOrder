@@ -1,10 +1,11 @@
 <template>
+  <div style="display: flex; flex-direction: row;">
     <div>
       <h2>History</h2>
       <table>
         <thead>
           <tr>
-            <th>TO No.</th>
+            <th>TO No. {{ selectedTravelOrderId }}</th>
             <th>Name</th>
             <th>Departure Date</th>
             <th>Destination</th>
@@ -24,22 +25,31 @@
             <td>{{ item.purpose }}</td>
             <td>{{ item.arrival }}</td>
             <td>{{ item.date }}</td>
-            <td>Edit or View</td>
+            <td><button @click="openPDF(item.travel_order_id)">PDF</button></td>
             <!-- Add more table data cells as needed -->
           </tr>
         </tbody>
       </table>
     </div>
+    <div v-if="selectedTravelOrderId !== null">
+      <pdf :travel_order_id="selectedTravelOrderId"></pdf>
+   </div>
+  </div>
   </template>
   
   <script>
   import axios from 'axios';
+  import pdf from './pdf.vue'
   
   export default {
+    components: {
+      pdf
+    },
     data() {
       return {
         formData: [],
         names: {},
+        selectedTravelOrderId: null
       };
     },
     mounted() {
@@ -66,12 +76,16 @@
         });
     },
     getName(nameId) {
-        const name = this.names[nameId];
+        const name = this.names[nameId-1];
       if (name) {
         const { first_name, middle_init, last_name } = name;
         return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
       }
       return 'Unknown';
+    },
+    openPDF(travelOrderId) {
+      // Set the selected travel order ID
+      this.selectedTravelOrderId = travelOrderId;
     }
     }
   }
