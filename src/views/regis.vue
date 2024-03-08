@@ -14,17 +14,16 @@
                         <input type="type" v-model="name" class ='inputsss'  id = 'name' required >
 
                         <label class="n">Email:</label>
-                        <input type="email" v-model="email"  class ='inputsss'  id = 'email' required @input="convertToUpperCase">
+                        <input type="email" v-model="email"  class ='inputsss'  id = 'email' required >
  
                         <label class="p"> Password: </label>
                         <input type="password" v-model="password" class ='inputsss'  id = 'password' required >
- 
  
                    </div>
                    
                 </div>
                            
-                <div v-if="isValid" class="error">
+                <div v-if="isValid"  class="error">
                    <a class="errormsg1">
                       Warning Alert!!
                    </a>
@@ -33,17 +32,18 @@
                    </a>
                 </div>
  
-                <div v-if="isEmail" class="wronge">
-                   <a class="wronge1">
-                      MALI
-                   </a>
-                   <a class="wronge2">
-                      Pleaseweweweweweweweds
-                   </a>
-                </div>
+                <div v-else-if="isEmail" class="wronge">
+                  <a class="wronge1">
+                     Error Alert!!
+                  </a>
+                  <a class="wronge2">
+                     Wrong input Password and Username
+                  </a>
+               </div>
  
                 <div class="buttonss">
-                   <button class="button" @click="submit">Login</button>
+                   <button class="button re" @click="submit">Register</button>
+                   <button class="button ba" @click="cancelButton">Back</button>
                   
                 </div>
                 
@@ -57,25 +57,36 @@
    
    <script setup>
    import alerz from '../components/heder2.vue'
+   import { isRegistrationClicked, isVisible, cancelButton } from './dashboard.vue';
  
    </script>
    
    <script>
-   import { ref } from 'vue';
- 
+   
     export default {
+      // props:{
+      //    isRegistrationClicked:Boolean,
+      //    isVisible:Boolean
+      // },
+
+      cancelButton () {
+         isRegistrationClicked.value = false;
+         isVisible.value = false;
+      },
+
     data() {
        return {
         email: '',
         password: '',
-       
+         
         isValid: false,
         isEmail:false,
  
        };
     },
     methods: {
-    
+      
+
       submit() {
        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
        const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
@@ -83,49 +94,62 @@
        if (this.email === '' && this.password === ''&& this.account_type === ''&& this.name === '') {
  
           console.log('wlay sulod');
-          this.isValid = true; // Set isValid to true to show the error message
+          this.isValid = true; 
           setTimeout(() => {
-          this.isValid = false; // Reset isValid to false after 3 seconds
+          this.isValid = false; 
        }, 3000);
  
-        } else if (this.email === '') {
-            console.log('wlay sulod ang imong email');
-            this.isValid = true; // Set isValid to true to show the error message
-            setTimeout(() => {
-            this.isValid = false; // Reset isValid to false after 3 seconds
-        }, 3000);
+        
 
         } else if (this.account_type === '') {
-          console.log('wlay sulod ang imong email');
-          this.isValid = true; // Set isValid to true to show the error message
+          console.log('wlay sulod ang imong account type');
+          this.isValid = true; 
           setTimeout(() => {
-          this.isValid = false; // Reset isValid to false after 3 seconds
+          this.isValid = false; 
        }, 3000);
 
         } else if (this.name === '') {
-          console.log('wlay sulod ang imong email');
-          this.isValid = true; // Set isValid to true to show the error message
+          console.log('wlay sulod ang imong name');
+          this.isValid = true; 
           setTimeout(() => {
-          this.isValid = false; // Reset isValid to false after 3 seconds
+          this.isValid = false; 
        }, 3000);
- 
+       
+       } else if (this.email === '') {
+            console.log('wlay sulod ang imong email');
+            this.isValid = true; 
+            setTimeout(() => {
+            this.isValid = false; 
+        }, 3000);
+
+      } else if (emailPattern.test(this.email) === false) {
+         console.log('mali ang imong email')
+         this.isEmail = true; // Set isEmail to true to show the error message
+         setTimeout(() => {
+         this.isEmail = false; // Reset isValid to false after 3 seconds
+      }, 3000);
  
        }else if (this.password === '') {
           console.log('wlay sulod ang imong password')
-          this.isValid = true; // Set isValid to true to show the error message
+          this.isValid = true; 
           setTimeout(() => {
-          this.isValid = false; // Reset isValid to false after 3 seconds
+          this.isValid = false; 
        }, 3000);
        
        } else if (passvalid.test(this.password) === false) {
           console.log('mali ang imong password')
-          this.isEmail = true; // Set isEmail to true to show the error message
+          this.isEmail = true; 
           setTimeout(() => {
-          this.isEmail = false; // Reset isValid to false after 3 seconds
+          this.isEmail = false; 
        }, 3000);
        } else {
-          console.log("email:",this.email);
-          console.log("password:",this.password);
+         console.log("account type: ", this.account_type)
+         console.log("name: ",this.name)
+          console.log("email: ",this.email);
+          console.log("password: ",this.password);
+
+          this.account_type=''
+          this.name=''
           this.email=''
           this.password=""
          
@@ -197,6 +221,7 @@
    display: flex;
    flex-direction: row;
    justify-content: space-around;
+
  }
  
  .buttonss{
@@ -204,7 +229,7 @@
     position: relative;
     flex-direction: row;
     height: 40px;
-    justify-content: space-around;
+    justify-content: space-between;
     margin-top: 8px;
  
  }
@@ -216,8 +241,20 @@
     font-size: 20px;
     cursor: pointer;
  }
+
+ .re{
+   margin-left: -20px;
+ }
+
+ .ba{
+   margin-left: 50px;
+ }
+
  
+
 .error{
+   top:0;
+   left:0;
    width: fit-content; /* Adjust width based on content */
    justify-self: center;
    display: flex;
@@ -245,6 +282,8 @@
 }
 
 .wronge{
+   top:0;
+   left:0;
    width: fit-content; /* Adjust width based on content */
    justify-self: center;
    display: flex;
