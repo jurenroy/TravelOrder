@@ -4,7 +4,7 @@ import dashboard from './views/dashboard.vue'
 import form from './views/form.vue'
 import login from './views/login.vue'
 import pdf from './views/pdf.vue'
-
+import registration from '../src/views/registration.vue'
 export default createRouter({
   history: createWebHistory(),
   routes: [
@@ -28,5 +28,10 @@ export default createRouter({
         path: '/pdf',
         component:pdf,
       },
+      {
+        path: '/registration',
+        component:registration,
+      },
   ],
+  
 })

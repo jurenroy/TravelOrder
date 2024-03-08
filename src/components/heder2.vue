@@ -1,7 +1,3 @@
-<script >
-
-</script>
-
 <template>
  <div class="una">
    <div class="imagediv1">
@@ -10,11 +6,29 @@
       <img class="ima" src="../assets/bago.png" alt="Description of the image">
    </div>
    <div class="imagediv1">
-      <text class="ima usew">username</text>
-      <button class = "ima imabut">logout</button>
+      <button class = "ima imabut" @click="toggleForm">{{ isRegistration ? 'Login' : 'Registration' }}</button>
    </div>
   </div>
 </template>
+
+<script >
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const isRegistration = ref(true);
+
+    const toggleButton = () => {
+      isRegistration.value = !isRegistration.value;
+    };
+
+    return {
+      isRegistration,
+      toggleButton
+    };
+  }
+};
+</script>
 
 <style >
 
@@ -52,8 +66,9 @@
 .imabut{
     border-radius:10px;
     font-size: 13px;
-    width: 60px;
+    width: 90px;
     height: 40px;
+    margin-right: 50px;
 }
 .ims{
    width: 200px; 
@@ -64,20 +79,23 @@
    margin-right: 0px;
   }
   .ims{
-   width: 145.9px; 
+   width: 150px; 
 }
 .imabut{
     border-radius:10px;
     font-size: 13px;
-    width: 50px;
+    width: 90px;
     height: 30px;
-    margin-right: 1px;
+    margin-right: 10px;
     
 }
 .usew{
    margin-right: -1px;
 }
 
+.ims{
+   width: 145.9px; 
+}
 
 }
 </style>
