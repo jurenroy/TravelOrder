@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex; flex-direction: column;">
+  <div style="display: flex; flex-direction: column;" >
     <div>
       <h2>History</h2>
       <table>
@@ -25,13 +25,16 @@
             <td>{{ item.purpose }}</td>
             <td>{{ item.arrival }}</td>
             <td>{{ item.date }}</td>
-            <td><button @click="openPDF(item.travel_order_id)">PDF</button></td>
+            <td>
+              <button v-if="selectedTravelOrderId != item.travel_order_id" @click="openPDF(item.travel_order_id)">PDF</button>
+              <button v-if="selectedTravelOrderId == item.travel_order_id" @click="close">Close</button>
+            </td>
             <!-- Add more table data cells as needed -->
           </tr>
         </tbody>
       </table>
     </div>
-    <div v-if="selectedTravelOrderId !== null" style="height: 0px;">
+    <div v-show="selectedTravelOrderId" style="height: 0px;">
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
    </div>
   </div>
@@ -86,6 +89,9 @@
     openPDF(travelOrderId) {
       // Set the selected travel order ID
       this.selectedTravelOrderId = travelOrderId;
+    },
+    close() {
+      this.selectedTravelOrderId = 0
     }
     }
   }

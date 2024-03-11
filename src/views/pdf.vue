@@ -1,6 +1,5 @@
 <template>
     <div class="buttons">
-      <button @click.stop="close">Close</button>
       <button @click="downloadPDF">Download as PDF</button>
       <alerz></alerz>
     </div>
