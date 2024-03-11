@@ -48,6 +48,10 @@
     components: {
       pdf
     },
+    mounted() {
+      this.fetchData();
+      this.fetchNames();
+    },
     data() {
       return {
         formData: [],
