@@ -77,8 +77,8 @@
         <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }" >
             <div class="inner-container" v-if="division !== 'ORD'" style="margin-left: 50px;">
                 <p>Recommended by:</p>
-                <p class="value" style="font-weight: bold; margin-top: 50px;">Janice B. Furog</p>
-                <p>Engineer V</p>
+                <p class="value" style="font-weight: bold; margin-top: 50px;">{{recommended}}</p>
+                <p>Chief, {{ division }}</p>
             </div>
             <div class="inner-container" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
                 <p>Approved by:</p>
@@ -131,6 +131,9 @@ export default {
       names: {},
       positions: [],
       divisions: [],
+      employees: [],
+      recommended: '',
+      recommendedID: '',
     };
   },
   mounted() {
@@ -143,6 +146,7 @@ export default {
     this.fetchNames();
     this.fetchPositions();
     this.fetchDivisions();
+    this.fetchEmployees()
   },
   watch: {
     travel_order_id(newVal) {
@@ -167,7 +171,6 @@ export default {
   },
     close() {
       // Close logic
-      console.log('Close button clicked');
       travel_order_id = null;
       this.$emit('close');
     },
@@ -194,7 +197,6 @@ export default {
         axios.get('http://127.0.0.1:8000/get_forms_json')
           .then(response => {
             this.formData = response.data;
-            console.log(this.formData)
           })
           .catch(error => {
             console.error('Error fetching data:', error);
@@ -204,7 +206,6 @@ export default {
       axios.get('http://127.0.0.1:8000/get_names_json')
         .then(response => {
           this.names = response.data;
-          console.log(this.names)
         })
         .catch(error => {
           console.error('Error fetching names:', error);
@@ -215,7 +216,6 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.positions = data;
-          console.log(this.positions)
         })
         .catch(error => {
           console.error('Error fetching positions:', error);
@@ -226,11 +226,20 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
-          console.log(this.divisions)
         })
         .catch(error => {
           console.error('Error fetching divisions:', error);
         });
+    },
+    fetchEmployees(){
+      fetch('http://127.0.0.1:8000/get_employees_json/')
+      .then(response => response.json())
+      .then(data => {
+        this.employees = data;
+      })
+      .catch(error => {
+        console.error('Error fetching employees:', error);
+      });
     },
     getName(nameId) {
         const name = this.names[nameId];
@@ -270,6 +279,11 @@ export default {
         const selectedDivision = this.divisions.find(division => division.division_id === this.division_id);
         if (selectedDivision) {
           this.division = selectedDivision.division_name;
+          console.log(this.employees)
+          const recommendedEmployee = this.employees.find(employee => employee.division_id === this.division_id && employee.chief > 0);
+          if (recommendedEmployee) {
+            this.recommended = this.getName(recommendedEmployee.name_id-1);
+          }
         }
       } else {
         this.name_id = '';
@@ -281,6 +295,8 @@ export default {
         this.divisionID = '';
         this.station = '';
         this.arrival = '';
+        this.recommended = '';
+        this.recommendedID = '';
       }
     },
     

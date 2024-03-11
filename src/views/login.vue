@@ -7,7 +7,7 @@
 
                <div class="inside">
                   <div style="display: flex; flex-direction: column;  width: 100%;">
-                     <label class="n">Email:</label>
+                     <label class="n">Email:  {{ accountIdz }}</label>
                      <input type="email" v-model="email"  class ='inputsss'  id = 'email' required >
 
                      <label class="p"> Password: </label>
@@ -32,7 +32,7 @@
                      Error Alert!!
                   </a>
                   <a class="wronge2">
-                     Wrong input Password and Username
+                     {{ error }}
                   </a>
                </div>
 
@@ -49,78 +49,93 @@
    </div>
   </template>
   
+  
   <script setup>
   import alerz from '../components/heder2.vue'
+import { ref } from 'vue';
+import axios from 'axios';
+import { useAuthStore } from '../store/auth';
 
-  </script>
-  
-  <script>
-  import { ref } from 'vue';
+const email = ref('');
+const password = ref('');
+const accounts = ref([]);
+const isValid = ref(false);
+const isEmail = ref(false);
+const error = ref('');
+const authStore = useAuthStore();
 
-   export default {
-   data() {
-      return {
-       email: '',
-       password: '',
-      
-       isValid: false,
-       isEmail:false,
+const accountIdz = localStorage.getItem('accountId');
 
-      };
-   },
-   methods: {
-   
-     submit() {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
+const submit = () => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
+    const account = accounts.value.find(acc => acc.email === email.value);
 
-      if (this.email === '' && this.password === '') {
+    if (email.value === '' && password.value === '') {
+        isValid.value = true;
+        setTimeout(() => {
+            isValid.value = false;
+        }, 3000);
+    } else if (email.value === '') {
+        error.value = 'Input Email';
+        isValid.value = true;
+        setTimeout(() => {
+            isValid.value = false;
+        }, 3000);
+    } else if (emailPattern.test(email.value) === false) {
+        error.value = 'Not Valid Email';
+        isEmail.value = true;
+        setTimeout(() => {
+            isEmail.value = false;
+        }, 3000);
+    } else if (!account) {
+        error.value = 'Email not Found';
+        isEmail.value = true;
+        setTimeout(() => {
+            isEmail.value = false;
+        }, 3000);
+    } else if (password.value === '') {
+        isValid.value = true;
+        setTimeout(() => {
+            isValid.value = false;
+        }, 3000);
+    } else if (passvalid.test(password.value) === false) {
+        error.value = 'Invalid Password Format';
+        isEmail.value = true;
+        setTimeout(() => {
+            isEmail.value = false;
+        }, 3000);
+    } else if (account.password !== password.value) {
+        error.value = 'Wrong Password';
+        isEmail.value = true;
+        setTimeout(() => {
+            isEmail.value = false;
+        }, 3000);
+    } else {
+        console.log("email:", email.value);
+        console.log("password:", password.value);
+        email.value = '';
+        password.value = '';
+        authStore.login(account.account_id);
+        localStorage.setItem('isLoggedIn', true);
+        localStorage.setItem('accountId', account.account_id);
+        window.location.reload();
+    }
+};
 
-         console.log('wlay sulod');
-         this.isValid = true; // Set isValid to true to show the error message
-         setTimeout(() => {
-         this.isValid = false; // Reset isValid to false after 3 seconds
-      }, 3000);
+const fetchAccounts = () => {
+    axios.get('http://127.0.0.1:8000/get_accounts_json')
+        .then(response => {
+            accounts.value = response.data;
+            console.log(accounts.value);
+        })
+        .catch(error => {
+            console.error('Error fetching accounts:', error);
+        });
+};
 
-      } else if (this.email === '') {
-         console.log('wlay sulod ang imong email');
-         this.isValid = true; // Set isValid to true to show the error message
-         setTimeout(() => {
-         this.isValid = false; // Reset isValid to false after 3 seconds
-      }, 3000);
-
-      } else if (emailPattern.test(this.email) === false) {
-         console.log('mali ang imong email')
-         this.isEmail = true; // Set isEmail to true to show the error message
-         setTimeout(() => {
-         this.isEmail = false; // Reset isValid to false after 3 seconds
-      }, 3000);
-
-      } else if (this.password === '') {
-         console.log('wlay sulod ang imong password')
-         this.isValid = true; // Set isValid to true to show the error message
-         setTimeout(() => {
-         this.isValid = false; // Reset isValid to false after 3 seconds
-      }, 3000);
-      
-      } else if (passvalid.test(this.password) === false) {
-         console.log('mali ang imong password')
-         this.isEmail = true; // Set isEmail to true to show the error message
-         setTimeout(() => {
-         this.isEmail = false; // Reset isValid to false after 3 seconds
-      }, 3000);
-      } else {
-         console.log("email:",this.email);
-         console.log("password:",this.password);
-         this.email=''
-         this.password=""
-        
-      }
-
-}
-   },
- };
- </script>
+fetchAccounts();
+</script>
 
 
 <style scoped>

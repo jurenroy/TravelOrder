@@ -5,7 +5,7 @@
       <table>
         <thead>
           <tr>
-            <th>TO No. {{ selectedTravelOrderId }}</th>
+            <th>TO No.</th>
             <th>Name</th>
             <th>Departure Date</th>
             <th>Destination</th>
@@ -17,8 +17,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in formData" :key="item.id">
-            <td>{{ item.travel_order_id }}</td>
+          <tr v-for="item in formData" :key="item.id" >
+            <td>{{ padWithZeroes(item.travel_order_id )}}</td>
             <td>{{ getName(item.name_id) }}</td>
             <td>{{ item.departure }}</td>
             <td>{{ item.destination }}</td>
@@ -60,11 +60,22 @@
       };
     },
   methods: {
+    padWithZeroes(travel_order_id) {
+    // Convert travel_order_id to string
+    const idString = travel_order_id.toString();
+    // Check if the length is less than 4
+    if (idString.length < 4) {
+      // Pad with zeroes to make it four digits
+      return '0'.repeat(4 - idString.length) + idString;
+    } else {
+      // If already four digits, return as is
+      return idString;
+    }
+  },
     fetchData() {
       axios.get('http://127.0.0.1:8000/get_forms_json')
         .then(response => {
           this.formData = response.data;
-          this.updateVisibleItems();
         })
         .catch(error => {
           console.error('Error fetching data:', error);
