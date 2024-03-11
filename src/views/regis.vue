@@ -1,26 +1,29 @@
 <template>
     <div class=zero style="display: flex; justify-content: center; margin-top: 90px;">
        <div class="first">
-          <alerz></alerz>
           <div class="second">
              <p class="form">Registration Form</p>
  
                 <div class="inside">
                    <div style="display: flex; flex-direction: column;  width: 100%;">
                         <label class="n">Account Type:</label>
-                        <input type="type" v-model="account_type"  class ='inputsss'  id = 'account_type' required >
+
+                        <select v-model="account_type" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 90%;" required>
+                           <option v-for="type in types" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</option>
+                        </select>
+
  
-                        <label class="p"> Name: </label>
-                        <input type="type" v-model="name" class ='inputsss'  id = 'name' required >
+                        <label class="p"> Name:</label>
+                        <select v-model="name" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 90%;" required>
+                           <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{ name.first_name }} {{ name.middle_init }}</option>
+                        </select>
 
                         <label class="n">Email:</label>
                         <input type="email" v-model="email"  class ='inputsss'  id = 'email' required >
  
                         <label class="p"> Password: </label>
                         <input type="password" v-model="password" class ='inputsss'  id = 'password' required >
- 
                    </div>
-                   
                 </div>
                            
                 <div v-if="isValid"  class="error">
@@ -56,18 +59,14 @@
    </template>
    
    <script setup>
-   import alerz from '../components/heder2.vue'
    import { isRegistrationClicked, isVisible, cancelButton } from './dashboard.vue';
- 
+   import axios from 'axios';
    </script>
    
    <script>
    
     export default {
-      // props:{
-      //    isRegistrationClicked:Boolean,
-      //    isVisible:Boolean
-      // },
+    
 
       cancelButton () {
          isRegistrationClicked.value = false;
@@ -76,6 +75,10 @@
 
     data() {
        return {
+         types:[],
+         names:{},
+         name:'',
+         account_type:'',
         email: '',
         password: '',
          
@@ -84,6 +87,9 @@
  
        };
     },
+    mounted() {
+    this.fetchData();
+  },
     methods: {
       
 
@@ -143,19 +149,63 @@
           this.isEmail = false; 
        }, 3000);
        } else {
-         console.log("account type: ", this.account_type)
-         console.log("name: ",this.name)
-          console.log("email: ",this.email);
-          console.log("password: ",this.password);
-
-          this.account_type=''
+         const formData = {
+            type_id:'' + this.account_type,
+            name_id: '' + this.name,
+            email:''+this.email,
+            password:''+this.password
+         
+        };
+        axios.post('http://127.0.0.1:8000/add_account/', formData)
+        .then(response => {
+          if (response.status === 200) {
+            this.account_type=''
           this.name=''
           this.email=''
           this.password=""
+          window.location.reload();
+            console.log('Form submitted successfully');
+          } else {
+            throw new Error('Failed to submit form');
+          }
+        })
+        .catch(error => {
+          console.error('Error submitting form:', error);
+        });
+
+
+        
+         // console.log("account type: ", this.account_type)
+         // console.log("name: ",this.name)
+         //  console.log("email: ",this.email);
+         //  console.log("password: ",this.password);
+
+         
          
        }
  
- }
+   },
+   fetchData() {
+      fetch('http://127.0.0.1:8000/get_names_json/')
+        .then(response => response.json())
+        .then(data => {
+          this.names = data;
+        })
+        .catch(error => {
+          console.error('Error fetching names:', error);
+        });
+
+      fetch('http://127.0.0.1:8000/get_type_json/')
+      .then(response => response.json())
+      .then(data => {
+        this.types = data;
+      })
+      .catch(error => {
+        console.error('Error fetching employees:', error);
+      });
+    },
+
+ 
     },
   };
   </script>
