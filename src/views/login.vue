@@ -32,7 +32,7 @@
                      Error Alert!!
                   </a>
                   <a class="wronge2">
-                     Wrong input password and username
+                     Wrong input Password and Username
                   </a>
                </div>
 

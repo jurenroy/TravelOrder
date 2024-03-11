@@ -55,21 +55,18 @@
         selectedTravelOrderId: 0
       };
     },
-    mounted() {
-      this.fetchData();
-      this.fetchNames();
+  methods: {
+    fetchData() {
+      axios.get('http://127.0.0.1:8000/get_forms_json')
+        .then(response => {
+          this.formData = response.data;
+          this.updateVisibleItems();
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
     },
-    methods: {
-      fetchData() {
-        axios.get('http://127.0.0.1:8000/get_forms_json')
-          .then(response => {
-            this.formData = response.data;
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
-      },
-      fetchNames() {
+    fetchNames() {
       axios.get('http://127.0.0.1:8000/get_names_json')
         .then(response => {
           this.names = response.data;
