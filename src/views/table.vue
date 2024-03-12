@@ -48,6 +48,13 @@
   import pdf from './pdf.vue'
   
   export default {
+
+    provide() {
+    return {
+      close: this.close,
+    };
+  },
+  
     components: {
       pdf
     },
@@ -122,7 +129,11 @@
     return this.formData.slice().reverse();
   }
 }
+
+
   }
+
+  
   </script>
   
   <style scoped>

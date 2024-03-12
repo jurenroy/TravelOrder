@@ -8,13 +8,13 @@
                    <div style="display: flex; flex-direction: column;  width: 100%;">
                         <label class="n">Account Type:</label>
 
-                        <select v-model="account_type" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 90%;" required>
+                        <select v-model="account_type" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
                            <option v-for="type in types" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</option>
                         </select>
 
  
                         <label class="p"> Name:</label>
-                        <select v-model="name" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 90%;" required>
+                        <select v-model="name" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
                            <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{ name.first_name }} {{ name.middle_init }}</option>
                         </select>
 
