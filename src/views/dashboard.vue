@@ -4,6 +4,7 @@
     <alerz/>
       <div v-if="!isRegistrationClicked">
          <div>
+            <signature/>
             <p class="travel" >Travel Order</p>
             <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
             <button v-show="!isVisible" class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
@@ -33,6 +34,7 @@
 
   <script setup>
   import alerz from '../components/heder.vue'
+  import signature from '../components/signature.vue'
   import formzz from './form.vue';
   import tablez from './table.vue';
   import yow from './regis.vue';
