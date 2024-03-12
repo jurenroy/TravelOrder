@@ -1,7 +1,3 @@
-<script >
-
-</script>
-
 <template>
  <div class="una">
    <div class="imagediv1">
@@ -12,6 +8,8 @@
    <div class="imagediv1">
       <text class="ima usew">{{ name.first_name }} {{ name.middle_init }} {{ name.last_name }}</text>
       <button class="ima imabut" @click="logout">Logout</button>
+      <text class="ima usew">username</text>
+      <button class = "ima imabut" @click="logButton">Logout</button>
    </div>
   </div>
 </template>
@@ -19,6 +17,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useAuthStore } from '../store/auth';
+import { logButton, isButssClicked } from '@/views/dashboard.vue';
 import axios from 'axios';
 
 const authStore = useAuthStore();
@@ -35,6 +34,10 @@ const logout = () => {
   localStorage.removeItem('accountId'); // Remove any other relevant data from localStorage
   window.location.reload();
 }
+
+logButton(){
+   isButssClicked.value = true;
+  }
 
 const fetchAccounts = async () => {
   try {
@@ -76,7 +79,7 @@ const fetchNames = async () => {
 
 fetchAccounts();
 fetchNames();
-
+logButton();
 
 </script>
 

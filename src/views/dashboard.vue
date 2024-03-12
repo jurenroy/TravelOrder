@@ -1,5 +1,6 @@
 <template>
    <div>
+      <div>
     <alerz/>
       <div v-if="!isRegistrationClicked">
          <div>
@@ -16,13 +17,15 @@
          </div>
       </div>
 
-
-     
       <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked">
             <yow></yow>
       </div>
-      
-      
+
+   </div>
+
+      <div class="logssss" v-if="isButssClicked">
+         <logsss></logsss>
+      </div>     
   
    </div>
   </template>
@@ -33,38 +36,42 @@
   import formzz from './form.vue';
   import tablez from './table.vue';
   import yow from './regis.vue';
+  import logsss from '../components/logout.vue'
   </script>
   
   <script>
   import { ref } from 'vue';
-  
-//   const isVisible = ref(false);
-  
-//   const toggleForm = () => {
-//     isVisible.value = !isVisible.value;
-//   };
-  
-//   export { isVisible, toggleForm };
-const isVisible = ref(false);
+ const isVisible = ref(false);
 const isRegistrationClicked = ref(false);
+const isButssClicked = ref (false);
 
+
+// visible sa  Add form
 const toggleForm = () => {
     isVisible.value = !isVisible.value;
   };
 
+// makita ang registration
 const toggleRegistration = () => {
   isRegistrationClicked.value = true;
 };
 
-
-const cancelButton = () =>{
+//ma back ang registration
+const backButton = () =>{
    isRegistrationClicked.value = false;
    isVisible.value = false;
 }
 
+//makita ang logout
+const logButton = () =>{
+   isButssClicked.value = true;
+}
 
+const noButton = () => {
+   isButssClicked.value = false;
+}
 
-export { isVisible, toggleForm, isRegistrationClicked, toggleRegistration,  cancelButton };
+export { isVisible,  isRegistrationClicked, isButssClicked, noButton, toggleForm, toggleRegistration,  backButton, logButton, };
   </script>
   
   
@@ -110,6 +117,13 @@ export { isVisible, toggleForm, isRegistrationClicked, toggleRegistration,  canc
       font-weight: bold;
       box-shadow: 7px 7px 12px black;
       cursor: pointer;
+  }
+  .logssss{
+   flex-direction: column; 
+   justify-content: center;
+   /* align-items: center; */
+   top: 0px;
+   width: auto
   }
   </style>
   

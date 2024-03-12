@@ -1,7 +1,9 @@
 <template>
   <div style="display: flex; flex-direction: column;" >
-    <div>
-      <h2>History</h2>
+    <h2>History</h2>
+    <div class="outer">
+      <div class="scrollable-table">
+     
       <table>
         <thead>
           <tr>
@@ -17,8 +19,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in formData" :key="item.id" >
-            <td>{{ padWithZeroes(item.travel_order_id )}}</td>
+          <tr v-for="item in reversedFormData" :key="item.id">
+            <td>{{ item.travel_order_id }}</td>
             <td>{{ getName(item.name_id) }}</td>
             <td>{{ item.departure }}</td>
             <td>{{ item.destination }}</td>
@@ -33,6 +35,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
     <div v-show="selectedTravelOrderId" style="height: 0px;">
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
@@ -104,8 +107,21 @@
     },
     close() {
       this.selectedTravelOrderId = 0
-    }
-    }
+    },
+    
+    updateVisibleItems() {
+      this.visibleItems = this.formData.slice(0, 20);
+      // this.visibleItems = this.formData.slice(-20).reverse();
+    },
+  
+
+    },
+
+    computed: {
+  reversedFormData() {
+    return this.formData.slice().reverse();
+  }
+}
   }
   </script>
   
@@ -123,7 +139,20 @@
   }
   
   th {
-    background-color: #f2f2f2;
-  }
+  background-color: #f2f2f2;
+  position: sticky;
+  top: -2px;
+}
+
+.scrollable-table {
+  max-height: 630px; /* Set the maximum height here */
+  overflow-y: auto; /* Add vertical scrollbar if needed */
+  margin: 15px;
+}
+.outer{
+  border: 1px solid black;
+  box-shadow: 0px 0px 3px black;
+  border-radius: 5px;
+}
   </style>
   
