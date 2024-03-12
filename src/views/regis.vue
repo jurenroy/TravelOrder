@@ -46,20 +46,17 @@
  
                 <div class="buttonss">
                    <button class="button re" @click="submit">Register</button>
-                   <button class="button ba" @click="cancelButton">Back</button>
+                   <button class="button ba" @click="backButton">Back</button>
                   
                 </div>
                 
           </div>   
        </div>
-  <!-- <footer style="background-color: lightgray; padding: 5px; text-align: center; height: 15px; ">
-         <p style="margin-top: -5px">Team Kokkak</p>
-       </footer> -->
-    </div>
+      </div>
    </template>
    
    <script setup>
-   import { isRegistrationClicked, isVisible, cancelButton } from './dashboard.vue';
+   import { isRegistrationClicked, isVisible, backButton } from './dashboard.vue';
    import axios from 'axios';
    </script>
    
@@ -68,7 +65,7 @@
     export default {
     
 
-      cancelButton () {
+      backButton () {
          isRegistrationClicked.value = false;
          isVisible.value = false;
       },

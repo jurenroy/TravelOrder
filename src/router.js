@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import logout from './components/logout.vue'
 import home from './views/home.vue'
 import dashboard from './views/dashboard.vue'
 import form from './views/form.vue'
@@ -13,8 +14,8 @@ export default createRouter({
       component: login,
     },
     {
-      path: '/home',
-      component: home,
+      path: '/logout',
+      component: logout,
     },
     {
       path: '/dashboard',

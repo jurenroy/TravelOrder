@@ -1,7 +1,3 @@
-<script >
-
-</script>
-
 <template>
  <div class="una">
    <div class="imagediv1">
@@ -11,10 +7,24 @@
    </div>
    <div class="imagediv1">
       <text class="ima usew">username</text>
-      <button class = "ima imabut">logout</button>
+      <button class = "ima imabut" @click="logButton">Logout</button>
    </div>
   </div>
 </template>
+
+
+<script setup>
+import { logButton, isButssClicked } from '@/views/dashboard.vue';
+</script>
+
+<script>
+export default {
+  logButton(){
+   isButssClicked.value = true;
+  }
+}
+</script>
+
 
 <style >
 
