@@ -1,11 +1,11 @@
 <template>
-  <div class=zero23 style="display: flex; justify-content: center;" >
-      <div class="first21">
-         <div class="second21">
+  <div class=zerologout style="display: flex; justify-content: center;" >
+      <div class="firstlogout">
+         <div class="secondlogout">
             <p class="logoutform">Are you sure you want to logout?</p>
-               <div class="buttonss">
-                   <button class="button yes" >Yes</button>
-                   <button class="button no" @click="noButton">No</button>
+               <div class="buttonsslogout">
+                   <button class="button yeslogout" @click="logout">Yes</button>
+                   <button class="button nologout" @click="noButton">No</button>
                </div>
          </div>   
       </div>
@@ -14,19 +14,42 @@
 </template>
 
 <script setup>
-import { noButton, isButssClicked } from '@/views/dashboard.vue';
+import { noButton, isButssClicked,showHeader1,showHeader2 } from '@/views/dashboard.vue';
+import { useAuthStore } from '../store/auth';
+
+
+
+const authStore = useAuthStore();
+ 
+ const accountIdz = localStorage.getItem('accountId');
+ 
+
+ const logout = () => {
+   authStore.logout(); // Call the logout method from your authentication store
+   localStorage.setItem('isLoggedIn', 'false'); // Update the isLoggedIn key in localStorage
+   localStorage.removeItem('accountId'); // Remove any other relevant data from localStorage
+   window.location.reload();
+ }
+ 
+
 </script>
 
 <script>
+
    export default {
-      noButton () {
-         isButssClicked.value = false;
-      }
+      methods: {
+    noButton() {
+      isButssClicked.value = false;
+      showHeader1.value = true;
+      showHeader2.value = false
+    },
+  },
    }
 </script>
 
 <style>
-.first21{
+
+.firstlogout{
     top: 0px;
     position:absolute;
    width:200vh;
@@ -38,7 +61,7 @@ import { noButton, isButssClicked } from '@/views/dashboard.vue';
    /* background-color: black; */
    backdrop-filter: blur(10px);
 }
-.second21{
+.secondlogout{
    display: flex;
    flex-direction: column;
    justify-content: center;
@@ -53,7 +76,7 @@ import { noButton, isButssClicked } from '@/views/dashboard.vue';
    border: 2px solid black;
    box-shadow: 0px 0px 35px -2px black;
 }
-.second21.zoomed {  
+.secondlogout.zoomed {  
   transform: scale(2); /* Zoom in by a factor of 2 */
 }
 .logoutform{
@@ -61,7 +84,7 @@ import { noButton, isButssClicked } from '@/views/dashboard.vue';
     font-size: 25px;
     margin-top: 20px;
 }
-.buttonss{
+.buttonsslogout{
     display: flex; 
     position: relative;
     flex-direction: row;
@@ -71,24 +94,24 @@ import { noButton, isButssClicked } from '@/views/dashboard.vue';
  
  }
  
- .button{
+ .buttonlogout{
     border-radius: 10px;
-    width: 100%;
+    width: 100px;
     font-weight: bold;
     font-size: 20px;
     cursor: pointer;
  }
 
- .yes{
+ .yeslogout{
    margin-left: -20px;
  }
 
- .no{
+ .nologout{
    margin-left: 50px;
  }
 
 @media (max-width: 768px) {
-.zero23{
+.zerologout{
     top:-3000px   
  }}
 

@@ -2,7 +2,7 @@
    <div class=zero style="display: flex; justify-content: center;" v-if="isVisible">
       <div class="first">
          <div class="second">
-            <p class="form">Travel Order Form</p>
+            <p class="form">Fill up Form</p>
 
          <div class="inside">
             <div style="display: flex; flex-direction: column;  width: 100%;">

@@ -1,7 +1,8 @@
 <template>
    <div>
       <div>
-    <alerz/>
+    <alerz v-if="showHeader1"/>
+    <alerz1 v-if="showHeader2"/>
       <div v-if="!isRegistrationClicked">
          <div>
             <p class="travel" >Travel Order</p>
@@ -21,22 +22,30 @@
             <yow></yow>
       </div>
 
+      <div style="flex-direction: column; justify-content: center;" v-if="isEdits">
+            <editzz></editzz>
+
+      </div>
+
    </div>
 
       <div class="logssss" v-if="isButssClicked">
          <logsss></logsss>
       </div>     
-  
+
+      <buttom @click="showEditss"></buttom>
    </div>
   </template>
 
 
   <script setup>
   import alerz from '../components/heder.vue'
+  import alerz1 from '../components/heder2.vue'
   import formzz from './form.vue';
   import tablez from './table.vue';
   import yow from './regis.vue';
   import logsss from '../components/logout.vue'
+  import editzz from '../views/editpage.vue'
   </script>
   
   <script>
@@ -44,6 +53,11 @@
  const isVisible = ref(false);
 const isRegistrationClicked = ref(false);
 const isButssClicked = ref (false);
+const isEdits = ref (false)
+
+//header
+const showHeader1 = ref (true)
+const showHeader2 = ref (false)
 
 
 // visible sa  Add form
@@ -60,18 +74,29 @@ const toggleRegistration = () => {
 const backButton = () =>{
    isRegistrationClicked.value = false;
    isVisible.value = false;
-}
+};
 
 //makita ang logout
 const logButton = () =>{
    isButssClicked.value = true;
-}
+};
 
 const noButton = () => {
    isButssClicked.value = false;
+   showHeader1.value = true;
+   showHeader2.value = false
+};
+
+const showEditss = () => {
+   isEdits.value = true
 }
 
-export { isVisible,  isRegistrationClicked, isButssClicked, noButton, toggleForm, toggleRegistration,  backButton, logButton, };
+
+
+
+
+
+export { isVisible,  isRegistrationClicked, isButssClicked,showHeader1,showHeader2 ,isEdits , noButton, toggleForm, toggleRegistration,  backButton, logButton, showEditss};
   </script>
   
   

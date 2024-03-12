@@ -5,9 +5,7 @@
       <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
       <img class="ima" src="../assets/bago.png" alt="Description of the image">
    </div>
-   <div class="imagediv1">
-      <button class = "ima imabut" @click="toggleForm">{{ isRegistration ? 'Login' : 'Registration' }}</button>
-   </div>
+   
   </div>
 </template>
 
