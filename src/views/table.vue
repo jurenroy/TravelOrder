@@ -20,7 +20,7 @@
         </thead>
         <tbody>
           <tr v-for="item in reversedFormData" :key="item.id">
-            <td>{{ item.travel_order_id }}</td>
+            <td>{{ padWithZeroes(item.travel_order_id) }}</td>
             <td>{{ getName(item.name_id) }}</td>
             <td>{{ item.departure }}</td>
             <td>{{ item.destination }}</td>
