@@ -1,42 +1,42 @@
 <template>
    <div>
       <div>
-    <alerz v-if="showHeader1"/>
-    <alerz1 v-if="showHeader2"/>
-      <div v-if="!isRegistrationClicked">
-         <div>
-            <signature/>
-            <p class="travel" >Travel Order</p>
-            <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
-            <button v-show="!isVisible" class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
-         </div>   
-         
-         <div style="display: flex; justify-content: center;" v-if="isVisible" >
-            <formzz ></formzz>
+         <alerz v-if="showHeader1"/>
+         <alerz1 v-if="showHeader2"/>
+         <div class="sig">
+         <signature v-if="acc.signature === null"/>
+         <div v-else>
+            <div v-if="!isRegistrationClicked">
+               <div>
+                  <p class="travel" >Travel Order</p>
+                  <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
+                  <button v-show="!isVisible" class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
+               </div>   
+               
+               <div style="display: flex; justify-content: center;" v-if="isVisible" >
+                  <formzz ></formzz>
+               </div>
+               <div style="display: flex; justify-content: center;" v-if="!isVisible">
+                  <tablez></tablez>
+               </div>
+            </div>
+
+            <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked">
+               <yow></yow>
+            </div>
+
+            <div style="flex-direction: column; justify-content: center;" v-if="isEdits">
+               <editzz></editzz>
+            </div>
+
          </div>
-         <div style="display: flex; justify-content: center;" v-if="!isVisible">
-            <tablez></tablez>
-         </div>
       </div>
-
-      <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked">
-            <yow></yow>
+         <div class="logssss" v-if="isButssClicked">
+            <logsss></logsss>
+         </div>     
       </div>
-
-      <div style="flex-direction: column; justify-content: center;" v-if="isEdits">
-            <editzz></editzz>
-
-      </div>
-
    </div>
-
-      <div class="logssss" v-if="isButssClicked">
-         <logsss></logsss>
-      </div>     
-
-      <buttom @click="showEditss"></buttom>
-   </div>
-  </template>
+</template>
 
 
   <script setup>
@@ -52,6 +52,9 @@
   
   <script>
   import { ref } from 'vue';
+  import axios from 'axios';
+  const acc = ref ([]);
+const accountId = localStorage.getItem('accountId');
  const isVisible = ref(false);
 const isRegistrationClicked = ref(false);
 const isButssClicked = ref (false);
@@ -93,7 +96,18 @@ const showEditss = () => {
    isEdits.value = true
 }
 
+const fetchAccounts= async () => {
+    try {
+        const response = await axios.get('http://127.0.0.1:8000/get_accounts_json/');
+        // Filter the fetched OTP data based on the accountId
+        acc.value = response.data.find(result => result.account_id == accountId);
+        console.log('OTP data loaded successfully:', acc.value);
+    } catch (error) {
+        console.error('Error fetching OTP data:', error);
+    }
+};
 
+fetchAccounts()
 
 
 
@@ -151,6 +165,10 @@ export { isVisible,  isRegistrationClicked, isButssClicked,showHeader1,showHeade
    /* align-items: center; */
    top: 0px;
    width: auto
+  }
+  .sig{
+   margin-top: 80px;
+ 
   }
   </style>
   

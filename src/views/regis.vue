@@ -8,21 +8,21 @@
                    <div style="display: flex; flex-direction: column;  width: 100%;">
                         <label class="n">Account Type:</label>
 
-                        <select v-model="account_type" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
+                        <select v-model="account_type" class='regsinput' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
                            <option v-for="type in types" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</option>
                         </select>
 
  
                         <label class="p"> Name:</label>
-                        <select v-model="name" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
+                        <select v-model="name" class='regsinput' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
                            <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{ name.first_name }} {{ name.middle_init }}</option>
                         </select>
 
                         <label class="n">Email:</label>
-                        <input type="email" v-model="email"  class ='inputsss'  id = 'email' required >
+                        <input type="email" v-model="email"  class ='regsinput'  id = 'email' required >
  
                         <label class="p"> Password: </label>
-                        <input type="password" v-model="password" class ='inputsss'  id = 'password' required >
+                        <input type="password" v-model="password" class ='regsinput'  id = 'password' required >
                    </div>
                 </div>
                            
@@ -43,9 +43,19 @@
                      Wrong input Password and Username
                   </a>
                </div>
+
+               <div v-else-if="pleaseWait" class="correct">
+                  <a class="correct1">
+                    Registered!!
+                  </a>
+                  <a class="correct2">
+                     Please wait for a moment....
+                  </a>
+                 
+               </div>
  
                 <div class="buttonss">
-                   <button class="button re" @click="submit">Register</button>
+                   <button class="button re" :disabled="submitting" @click="submit">Register</button>
                    <button class="button ba" @click="backButton">Back</button>
                   
                 </div>
@@ -81,6 +91,7 @@
          
         isValid: false,
         isEmail:false,
+        pleaseWait:false
  
        };
     },
@@ -153,23 +164,48 @@
             password:''+this.password
          
         };
-        axios.post('http://127.0.0.1:8000/add_account/', formData)
-        .then(response => {
-          if (response.status === 200) {
-            this.account_type=''
-          this.name=''
-          this.email=''
-          this.password=""
-          window.location.reload();
-            console.log('Form submitted successfully');
-          } else {
-            throw new Error('Failed to submit form');
-          }
-        })
-        .catch(error => {
-          console.error('Error submitting form:', error);
-        });
+      //   axios.post('http://127.0.0.1:8000/add_account/', formData)
+      //   .then(response => {
+      //     if (response.status === 200) {
+      //       this.pleaseWait = true
+      //       this.account_type=''
+      //     this.name=''
+      //     this.email=''
+      //     this.password=""
+      //     window.location.reload();
+      //       console.log('Form submitted successfully');
+      //     } else {
+      //       throw new Error('Failed to submit form');
+      //     }
+      //   })
+      //   .catch(error => {
+      //     console.error('Error submitting form:', error);
+      //   });
+      axios.post('http://127.0.0.1:8000/add_account/', formData)
+         .then(response => {
+            if (response.status === 200) {
+               this.submitting = true; // Set submitting to true while processing the request
+               this.pleaseWait = true;
+               this.account_type = '';
+               this.name = '';
+               this.email = '';
+               this.password = '';
 
+               // Set a 3-second timer before reloading the page
+               setTimeout(() => {
+               window.location.reload();
+               this.submitting = false; // Set submitting back to false after timeout
+               }, 3000);
+
+               console.log('Form submitted successfully');
+            } else {
+               throw new Error('Failed to submit form');
+            }
+         })
+         .catch(error => {
+            console.error('Error submitting form:', error);
+            this.submitting = false; // Set submitting back to false if there's an error
+         });
 
         
          // console.log("account type: ", this.account_type)
@@ -241,7 +277,7 @@
     font-size: 25px;
     margin-top: -5px;
  }
- .inputsss
+ .regsinput
  {
     font-size: 18px;
     border-radius: 5px;
@@ -314,6 +350,21 @@
    box-shadow: 0px 0px 35px -2px #f8a837;
 }
 
+.correct{
+   top:0;
+   left:0;
+   width: fit-content; /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #212121;
+   background-color: #39b259;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 35px -2px #39b259;
+}
+
 .errormsg1{
    height: 20px;
    width: 100%;
@@ -322,11 +373,13 @@
    
 }
 
-.errormsg,.wronge2{
+.errormsg,.wronge2,.correct2{
    height: 20px;
    width: 100%;
    text-align: center;
 }
+
+
 
 .wronge{
    top:0;
@@ -350,7 +403,7 @@
    color:white;
    
 }
-.wronge2{
+.wronge2,.correct1,.correct2{
    color: white;
 }
  @media (max-width: 768px) {

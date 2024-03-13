@@ -64,8 +64,18 @@
                   </a>
                </div>
 
+               <div v-else-if="pleaseWait" class="formcorrect">
+                <a class="formcorrect1">
+                     Submited!!
+                  </a>
+                  <a class="formcorrect1">
+                     Please wait for a moment....
+                  </a>
+                 
+               </div>
+
          <div class="buttonss">
-            <button class="button" @click="submit">Submit</button>
+            <button class="button" :disabled="submitting" @click="submit">Submit</button>
          </div>
          
    </div>   
@@ -98,6 +108,7 @@ export default {
       remarks: '',
       isValid: false,
       isVisible: true,
+      pleaseWait: false,
       employees: [],
       positions: [],
       divisions: [],
@@ -181,6 +192,10 @@ export default {
         .then(response => {
           if (response.status === 200) {
             this.resetForm();
+            setTimeout(() => {
+               window.location.reload();
+               this.submitting = false; // Set submitting back to false after timeout
+               }, 3000);
             console.log('Form submitted successfully');
           } else {
             throw new Error('Failed to submit form');
@@ -203,7 +218,8 @@ export default {
       this.ala = '';
       this.appropriation = '';
       this.remarks = '';
-      window.location.reload();
+      this.pleaseWait = true;
+      this.submitting = true;
     },
     fetchData() {
       fetch('http://127.0.0.1:8000/get_names_json/')
@@ -344,6 +360,23 @@ export default {
    margin: 10px auto;
    border-radius: 10px;
    box-shadow: 0px 0px 35px -2px #fff3cd;
+}
+.formcorrect{
+   top:0;
+   left:0;
+   width: fit-content; /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #212121;
+   background-color: #39b259;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 35px -2px #39b259;
+}
+.formcorrect1,.formcorrect2{
+  color: white;
 }
 
 .errormsg1{

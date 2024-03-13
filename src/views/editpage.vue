@@ -1,39 +1,41 @@
 <template>
-  <div class=zero23 style="display: flex; justify-content: center;" >
-      <div class="first21">
-         <div class="second21">
-            <p class="logoutform">{{ name.first_name }} {{ name.middle_init }} {{ name.last_name }}</p>
-            <p>{{ email }}</p>
-            <p>{{ oldPass }}</p>
-            <p>{{ password }}</p>
-            <p>{{ oldPass === password ? 'oldPass is equal to password' : 'oldPass is not equal to password' }}</p>
-            <input placeholder="password" type="password" v-model="password">
-            <div class="inside">
-                  <!-- <div style="display: flex; flex-direction: column;  width: 100%;">
-                     <label class="n">Email:  {{ accountIdz }}</label>
-                     <input type="email" v-model="email"  class ='inputsss'  id = 'email' required >
+  <div class=update1 style="display: flex; justify-content: center; margin-top: 90px;">
+     <div class="update2">
+        <div class="update3">
+           <p class="updateform">{{ name.first_name }} {{ name.middle_init }} {{ name.last_name }}</p>
 
-                     <label class="p"> Password: </label>
-                     <input type="password" v-model="password" class ='inputsss'  id = 'password' required >
+              <div class="updateinside">
+                 <div style="display: flex; flex-direction: column;  width: 100%;">
+                    <label class="updatelabel old">Old Email:</label>
+                    <input type="email" v-model="email"  class ='updateinput'  id = 'email' required readonly>
+                    <label class="updatelabel old">Enter Old Password: </label>
+                    <input type="password" v-model="password" class ='updateinput'  id = 'password' required >
+             
+                    <label class="updatelabel new">Enter Email: </label>
+                    <input type="email" class ='updateinput'  id = 'password' required >
+                    <label class="updatelabel new">Enter Password: </label>
+                    <input type="password" class ='updateinput'  id = 'password' required >
+                    <signature/>
+                 </div>
+                 
+              </div>
 
-
-                  </div> -->
-                  
-               </div>
-               <div class="buttonss">
-                   <button class="button yes" @click="logout">Yes</button>
-                   <button class="button no" @click="cli">back</button>
-               </div>
-         </div>   
-      </div>
-
-   </div>
-</template>
+              <div class="buttonss">
+                <button class="button yes" @click="updatebutss">Update</button>
+                   <button class="button no" @click="cli">Back</button>
+                
+              </div>
+              
+        </div>   
+     </div>
+  </div>
+ </template>
 
 
 <script setup>
  import { ref } from 'vue';
  import { useAuthStore } from '../store/auth';
+ import signature from '@/components/signature.vue';
  import axios from 'axios';
  
  const authStore = useAuthStore();
@@ -101,8 +103,8 @@
  </script>
 
 <script>
-import { Usernames, showEdit } from '@/components/heder.vue'; 
-import { isEdits } from '@/views/dashboard.vue';
+import { Usernames, showEdit, } from '@/components/heder.vue'; 
+import { isEdits, isRegistrationClicked,isVisible } from '@/views/dashboard.vue';
    export default {
      
       methods: {
@@ -110,6 +112,8 @@ import { isEdits } from '@/views/dashboard.vue';
          showEdit.value = false;
          isEdits.value = false
          Usernames.value = true
+         isRegistrationClicked.value = false;
+          isVisible.value=false
       },
       
     }
@@ -118,7 +122,7 @@ import { isEdits } from '@/views/dashboard.vue';
 
 <style>
 
-.first21{
+.update2{
     top: 0px;
     position:absolute;
    width:200vh;
@@ -130,14 +134,14 @@ import { isEdits } from '@/views/dashboard.vue';
    background-color: white;
    /* backdrop-filter: blur(10px); */
 }
-.second21{
+.update3{
    display: flex;
    flex-direction: column;
    justify-content: center;
    align-items: center;
    border-radius: 25px;
    background-color: white;
-   width: 75w; /* Set width to a percentage of the viewport width */
+   width: 400px; /* Set width to a percentage of the viewport width */
    max-width: 500px; /* Set a maximum width */
    height: auto; /* Let the height adjust based on content */
    padding: 20px;
@@ -145,13 +149,19 @@ import { isEdits } from '@/views/dashboard.vue';
    border: 2px solid black;
    box-shadow: 0px 0px 35px -2px black;
 }
-.second21.zoomed {  
+.update3.zoomed {  
   transform: scale(2); /* Zoom in by a factor of 2 */
 }
-.logoutform{
+.updateform{
    font-weight:bold;
     font-size: 25px;
     margin-top: 20px;
+}
+.updateinside {
+  display: flex;
+  width: 300px;
+  flex-direction: row;
+  justify-content: space-around;
 }
 .buttonss{
     display: flex; 
@@ -179,8 +189,27 @@ import { isEdits } from '@/views/dashboard.vue';
    margin-left: 50px;
  }
 
+ .updateinput
+{
+   font-size: 18px;
+   border-radius: 5px;
+   width: 96%;
+   height: 30px;
+   margin-bottom: 12px;
+}
+
+.updatelabel{
+  font-weight:bold;
+    font-size: 18px;
+    text-align: left;
+}
+
 @media (max-width: 768px) {
-.zero23{
+
+   .updateinside {
+    flex-direction: column;
+   }
+.update1{
     top:-3000px   
  }}
 
