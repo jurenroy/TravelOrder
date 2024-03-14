@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column;" >
-    <h2>History</h2>
+    <h2 style="display: flex; flex-direction: column; align-items: center;">History</h2>
     <div class="outer">
       <div class="scrollable-table">
      

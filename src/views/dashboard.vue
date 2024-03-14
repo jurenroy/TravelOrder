@@ -3,34 +3,39 @@
       <div>
          <alerz v-if="showHeader1"/>
          <alerz1 v-if="showHeader2"/>
+         
          <div class="sig">
-         <signature v-if="acc.signature === null"/>
-         <div v-else>
-            <div v-if="!isRegistrationClicked">
-               <div>
-                  <p class="travel" >Travel Order</p>
-                  <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
-                  <button v-show="!isVisible" class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
-               </div>   
-               
-               <div style="display: flex; justify-content: center;" v-if="isVisible" >
-                  <formzz ></formzz>
+            <signature v-if="acc.signature === null"/>
+            <div v-else>
+               <div v-if="!isRegistrationClicked">
+                  <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                     <div>
+                     <p class="travel" >Travel Order</p>
+                     </div>
+                     <div>
+                        <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
+                        <button v-show="!isVisible" class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
+                      </div>
+                  </div>   
+                  
+                  <div style="display: flex; justify-content: center;" v-if="isVisible" >
+                     <formzz ></formzz>
+                  </div>
+                  <div style="display: flex; justify-content: center;" v-if="!isVisible">
+                     <tablez></tablez>
+                  </div>
                </div>
-               <div style="display: flex; justify-content: center;" v-if="!isVisible">
-                  <tablez></tablez>
+
+               <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked">
+                  <yow></yow>
                </div>
-            </div>
 
-            <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked">
-               <yow></yow>
-            </div>
+               <div style="flex-direction: column; justify-content: center;" v-if="isEdits">
+                  <editzz></editzz>
+               </div>
 
-            <div style="flex-direction: column; justify-content: center;" v-if="isEdits">
-               <editzz></editzz>
             </div>
-
          </div>
-      </div>
          <div class="logssss" v-if="isButssClicked">
             <logsss></logsss>
          </div>     
@@ -120,7 +125,7 @@ export { isVisible,  isRegistrationClicked, isButssClicked,showHeader1,showHeade
   .travel{
      font-weight: bold;
      font-size: 40px;
-     margin-top: 90px;
+     margin-top: 10px;
   }
   .add{
       margin-top:-19px;

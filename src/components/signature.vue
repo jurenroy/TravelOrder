@@ -30,10 +30,11 @@ import axios from 'axios';
 const uploadedImageUrl = ref('');
 const accountId = localStorage.getItem('accountId');
 const OTPsent = ref(false);
-const otp = ref('');
+const otp = ref('');//ge type
 const OTPverified = ref(false);
-const otpData = ref([]);
+const otpData = ref([]);//confirm
 const hideUpload = ref(false);
+
 
 const showUpload = () => {
 hideUpload.value = true
@@ -121,7 +122,15 @@ const fetchOTPData = async () => {
     console.error('Error fetching OTP data:', error);
   }
 };
+
+
+
 </script>
+
+<script>
+
+</script>
+
   
 <style scoped>
 .sign1{

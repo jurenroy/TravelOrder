@@ -55,7 +55,7 @@
                </div>
  
                 <div class="buttonss">
-                   <button class="button re" :disabled="submitting" @click="submit">Register</button>
+                   <button class="button re" :disabled="submit2" @click="submit">Register</button>
                    <button class="button ba" @click="backButton">Back</button>
                   
                 </div>
@@ -88,7 +88,7 @@
          account_type:'',
         email: '',
         password: '',
-         
+        submit2:false,
         isValid: false,
         isEmail:false,
         pleaseWait:false
@@ -164,27 +164,11 @@
             password:''+this.password
          
         };
-      //   axios.post('http://127.0.0.1:8000/add_account/', formData)
-      //   .then(response => {
-      //     if (response.status === 200) {
-      //       this.pleaseWait = true
-      //       this.account_type=''
-      //     this.name=''
-      //     this.email=''
-      //     this.password=""
-      //     window.location.reload();
-      //       console.log('Form submitted successfully');
-      //     } else {
-      //       throw new Error('Failed to submit form');
-      //     }
-      //   })
-      //   .catch(error => {
-      //     console.error('Error submitting form:', error);
-      //   });
+      
       axios.post('http://127.0.0.1:8000/add_account/', formData)
          .then(response => {
             if (response.status === 200) {
-               this.submitting = true; // Set submitting to true while processing the request
+               this.submit2 = true; 
                this.pleaseWait = true;
                this.account_type = '';
                this.name = '';
@@ -194,7 +178,7 @@
                // Set a 3-second timer before reloading the page
                setTimeout(() => {
                window.location.reload();
-               this.submitting = false; // Set submitting back to false after timeout
+               this.submit2 = false; 
                }, 3000);
 
                console.log('Form submitted successfully');
@@ -204,17 +188,8 @@
          })
          .catch(error => {
             console.error('Error submitting form:', error);
-            this.submitting = false; // Set submitting back to false if there's an error
+            this.submit2 = false; 
          });
-
-        
-         // console.log("account type: ", this.account_type)
-         // console.log("name: ",this.name)
-         //  console.log("email: ",this.email);
-         //  console.log("password: ",this.password);
-
-         
-         
        }
  
    },
