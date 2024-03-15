@@ -18,11 +18,11 @@
                     <label class="updatelabel new" >Enter New Password: </label>
                     <input type="password" class ='updateinput' v-model="newPassword" id = 'newPassword' :disabled="isDisabledinput" required title="Please Input Old Password First">
                     <!-- <signature/> -->
-
+                    <div class="uploadpicsignature">
                     <label for="fileInput" class="uploadsignature" v-if="uploads" >Upload Signature</label>
-            <input class="buttonz" type="file" accept="image/*" id="fileInput" ref="fileInput" style="display: none;" @change="handleFileUpload" v-if="uploads">
-            <img class="uploadimagesig" :src="uploadedImageUrl" alt="Uploaded Image" v-if="uploadedImageUrl">
-                    
+                    <input class="buttonz" type="file" accept="image/*" id="fileInput" ref="fileInput" style="display: none;" @change="handleFileUpload" v-if="uploads">
+                    <img class="uploadimagesig" :src="uploadedImageUrl" alt="Uploaded Image" v-if="uploadedImageUrl">
+                    </div>
                  </div>
                  
               </div>
@@ -36,11 +36,22 @@
                   </a>
                </div>
 
-              <div >
-               <label for="otpInput" v-if="showotp">Enter OTP: {{ hakdog }}</label>
+              <div class="verifyOTPS">
+               <label for="otpInput" class="Enterotp" v-if="showotp" >Enter OTP: </label>
                 <input class="otpedit" type="text" id="otpInput" v-model="otp" @keydown.enter="verifyOTP" v-if="showotp">
-                <button class="verifyotp" @click="verifyOTP" v-if="showotp">Verify OTP</button>
+                <button class="verifyotp" @click="verifyOTP" v-if="showotp" :disabled="isVerify" >Verify OTP</button>
               </div>
+
+                <div  v-if="succesful" class="succesfully"> 
+                  <a class="succesfully1">
+                    OTP loaded successfully
+                  </a>
+                </div>
+                <div  v-if="verifiedotp" class="verified"> 
+                  <a class="verified1">
+                    Success Verified OTP
+                  </a>
+                </div>
 
 
               <div class="buttonss">
@@ -78,6 +89,8 @@
  const otpData = ref([]);//confirm
  const showotp = ref (false)
  const uploads = ref (true)
+ const succesful = ref (false);
+ const verifiedotp = ref (false)
 
 
  const isDisabled = computed(() => {
@@ -90,6 +103,10 @@ const isDisabledinput = computed(() => {
 
 const isbackDisabled = computed(() => {
       return showotp.value === false && uploads.value === true 
+    });
+
+    const isVerify = computed(() => {
+      return otp.value ===''
     });
 
     
@@ -113,18 +130,20 @@ const handleFileUpload = (event) => {
 const sendOTP = async () => {
   
   try {
+    
     await axios.post(`http://127.0.0.1:8000/send-otp/${accountIdz}`);
     
-    console.log('OTP Sent to Email Successfully');
-    showotp.value = true;
-    uploads.value = false;
-    uploadedImageUrl.value = ''
-    await fetchOTPData();
-    handleFileUpload()
-    
-    console.log(newPassword)
-    console.log(newEmail)
-    
+      succesful.value = true; 
+      await fetchOTPData();
+      setTimeout(() => {
+        succesful.value = false; 
+        showotp.value = true;
+        uploads.value = false;
+        uploadedImageUrl.value = ''
+        handleFileUpload()
+        console.log(newPassword)
+        console.log(newEmail)
+      }, 2000);
   } catch (error) {
     console.error('Error sending OTP:', error);
   }
@@ -132,10 +151,12 @@ const sendOTP = async () => {
 
 const verifyOTP = () => {
   if (otpData.value.length > 0) {
+    
     console.log('wews',parseInt(otpData.value[0].code))
     console.log(otp.value)
     if (parseInt(otpData.value[0].code) === parseInt(otp.value)) {
       updateProfile()
+      
     } else {
       console.log('Invalid OTP');
     }   
@@ -146,16 +167,6 @@ const verifyOTP = () => {
 };
  
 
-// consts updateProfile = () => {
-//     axios.post (`http://127.0.0.1/update_account/{accountIdz}`, formData)
-//     .then response => ({
-//     console.log(''success')
-//     windows.reload.location()
-//     })
-//     .catch(error){
-//     console.error(invalid data)
-//     }
-// }
 const updateProfile = () => {
   const formData = new FormData();
   try {
@@ -187,6 +198,10 @@ const updateProfile = () => {
     axios.post(`http://127.0.0.1:8000/update_account/${accountIdz}`, formData)
         .then(response => {
             console.log('Success');
+            verifiedotp.value = (true)
+            setTimeout(() => {
+            window.location.reload();
+            }, 2000);
         })
         .catch(error => {
             console.error('Invalid data:', error);
@@ -394,10 +409,7 @@ import { isEdits, isRegistrationClicked,isVisible } from '@/views/dashboard.vue'
    width: 100%;
    text-align: center;
 }
-.otpedit{
-    margin-bottom: 9px;
-    
-}
+
 .uploadimagesig {
   margin-top: 10px;
   max-width: 100%;
@@ -425,7 +437,79 @@ import { isEdits, isRegistrationClicked,isVisible } from '@/views/dashboard.vue'
   border: 1px solid white;
 }
 
+.uploadpicsignature{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 
+.succesfully{
+   top:0;
+   left:0;
+   width: fit-content; /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #212121;
+   background-color: #39b259;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 35px -2px #39b259;
+}
+.succesfully1,.verified1{
+   height: 20px;
+   width: 100%;
+   text-align: center;
+   color: white;
+}
+
+.verifyOTPS{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.verified{
+    top:0;
+   left:0;
+   width: fit-content; /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #212121;
+   background-color: #39b259;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 35px -2px #39b259;
+}
+
+.verifyotp{
+  height: 20px;
+    width: 100px; 
+    margin-top:-5px; 
+    cursor: pointer;
+    border-radius:5px;
+     font-size: 13px;
+}
+.otpedit{
+   font-size: 12px;
+   border-radius: 5px;
+   width: 50%;
+   height: 15px;
+   margin-bottom: 12px;
+
+
+}
+
+.Enterotp{
+  font-weight:bold;
+    font-size: 18px;
+    text-align: left;
+}
 @media (max-width: 768px) {
 
    .updateinside {

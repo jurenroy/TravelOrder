@@ -6,14 +6,29 @@
             <input class="buttonz" type="file" accept="image/*" id="fileInput" ref="fileInput" style="display: none;" @change="handleFileUpload">
             <img class="uploaded-image" :src="uploadedImageUrl" alt="Uploaded Image" v-if="uploadedImageUrl">
 
+            <div  v-if="OTPsuccesful" class="succesfullyotp"> 
+                  <a class="succesfullyotp1">
+                    OTP loaded successfully
+                  </a>
+                </div>
             <button class="submit-button" @click="sendOTP" v-if="hideUpload">Submit</button>
         </div>
+
+        
+
         <div v-if="OTPsent">
-        <p>OTP Sent to Email Successfully</p>
-        <div>
-            <label for="otpInput">Enter OTP:</label>
+        <!-- <p>OTP Sent to Email Successfully</p> -->
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+            <label for="otpInput" class="Enterotps">Enter OTP:</label>
             <input class="otpinput" type="text" id="otpInput" v-model="otp" @keydown.enter="verifyOTP">
-            <button class="verifyotp" @click="verifyOTP">Verify OTP</button>
+            
+            <div  v-if="verifiedotps" class="verifieds"> 
+                  <a class="verifieds1">
+                    Success Verified OTP
+                  </a>
+                </div>
+            
+            <button class="verifyotps" @click="verifyOTP">Verify OTP</button>
         </div>
     </div>
     
@@ -34,7 +49,9 @@ const otp = ref('');//ge type
 const OTPverified = ref(false);
 const otpData = ref([]);//confirm
 const hideUpload = ref(false);
-
+const OTPsuccesful = ref (false)
+const verifiedotps = ref (false)
+ 
 
 const showUpload = () => {
 hideUpload.value = true
@@ -56,9 +73,16 @@ const handleFileUpload = (event) => {
 const sendOTP = async () => {
   try {
     await axios.post(`http://127.0.0.1:8000/send-otp/${accountId}`);
-    OTPsent.value = true;
-    console.log('OTP Sent to Email Successfully');
+    
+    
+    OTPsuccesful.value = true;
     await fetchOTPData();
+    setTimeout(() => {
+      OTPsuccesful.value = false;
+      OTPsent.value = true;
+      }, 2000);
+    console.log('OTP Sent to Email Successfully');
+
   } catch (error) {
     console.error('Error sending OTP:', error);
   }
@@ -101,9 +125,12 @@ const verifyOTP = () => {
     console.log(otp.value)
     if (parseInt(otpData.value[0].code) === parseInt(otp.value)) {
       console.log('OTP Verified Successfully');
-      OTPverified.value = true;
+      // OTPverified.value = true;
+      verifiedotps.value = true;
       submitImage();
-      window.location.reload();
+      setTimeout(() => {
+            window.location.reload();
+            }, 2000);
     } else {
       console.log('Invalid OTP');
     }   
@@ -133,6 +160,27 @@ const fetchOTPData = async () => {
 
   
 <style scoped>
+.succesfullyotp{
+   top:0;
+   left:0;
+   width: fit-content; /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #212121;
+   background-color: #39b259;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 35px -2px #39b259;
+}
+.succesfullyotp1,.verifieds1{
+   height: 20px;
+   width: 100%;
+   text-align: center;
+   color: white;
+}
+
 .sign1{
     display:flex;
     flex-direction: column;
@@ -144,6 +192,7 @@ const fetchOTPData = async () => {
 .buttonz {
   margin-top: 90px;
 }
+
 .uploaded-image {
   margin-top: 10px;
   max-width: 100%;
@@ -153,12 +202,12 @@ const fetchOTPData = async () => {
 }
 .submit-button {
   margin-top: 20px;
-    height: 50px;
-    width: auto;
+    height: 30px;
+    width: 90px;
      font-size: 13px;
   color: black;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 10px;
     margin-left: 10px;
 }
 .custom-button {
@@ -182,7 +231,41 @@ const fetchOTPData = async () => {
   border: 1px solid white;
 }
 .otpinput{
-    margin-bottom: 9px;
+  font-size: 12px;
+   border-radius: 5px;
+   width: 50%;
+   height: 15px;
+   margin-bottom: 12px;
+
+}
+.Enterotps{
+  font-weight:bold;
+    font-size: 18px;
+    text-align: left;
+}
+
+
+.verifyotps{
+  height: 20px;
+    width: 100px; 
+    margin-top:-5px; 
+    cursor: pointer;
+    border-radius:5px;
+     font-size: 13px;
+}
+.verifieds{
+    top:0;
+   left:0;
+   width: fit-content; /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #212121;
+   background-color: #39b259;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 35px -2px #39b259;
 }
 
 </style>

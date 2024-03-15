@@ -137,7 +137,7 @@ const submit = () => {
         setTimeout(() => {
                window.location.reload();
                submitting = false; // Set submitting back to false after timeout
-               }, 3000);;
+               }, 2000);;
     }
 };
 
