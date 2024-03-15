@@ -1,6 +1,7 @@
 <template>
   <div style="display: flex; flex-direction: column;" >
     <h2>History</h2>
+    <!-- <img :src="imageUrl" alt="Image" /> -->
     <div class="outer">
       <div class="scrollable-table">
      
@@ -14,7 +15,7 @@
             <th>Purpose</th>
             <th>Arrival Date</th>
             <th>Date</th>
-            <th>Action</th>
+            <th>PDF View</th>
             <!-- Add more table headers as needed -->
           </tr>
         </thead>
@@ -27,10 +28,12 @@
             <td>{{ item.purpose }}</td>
             <td>{{ item.arrival }}</td>
             <td>{{ item.date }}</td>
-            <td>
+            <td style="display: flex; justify-content: center;">
               <button v-if="selectedTravelOrderId != item.travel_order_id" @click="openPDF(item.travel_order_id)">PDF</button>
               <button v-if="selectedTravelOrderId == item.travel_order_id" @click="close">Close</button>
             </td>
+            <td v-if="siga" style="display: flex; justify-content: center;"><button @click="signature1(item.travel_order_id)">Recommend</button></td>
+            <td v-if="siga1" style="display: flex; justify-content: center;"><button @click="signature2(item.travel_order_id)">Approve</button></td>
             <!-- Add more table data cells as needed -->
           </tr>
         </tbody>
@@ -59,17 +62,55 @@
       pdf
     },
     mounted() {
-      this.fetchData();
+      this.fetchAccounts();
+      this.fetchEmployees();
       this.fetchNames();
     },
     data() {
       return {
         formData: [],
         names: {},
-        selectedTravelOrderId: 0
+        employees: {},
+        selectedTravelOrderId: 0,
+        accountId: localStorage.getItem('accountId'),
+        acc: [],
+        imageUrl: '',
+        siga: '',
+        siga1: '',
       };
     },
   methods: {
+    signature1(form_id) {
+    const formData = new FormData();
+    formData.append('signature1', this.acc.signature);
+    axios.post(`http://127.0.0.1:8000/update_form/${form_id}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }).then(() => {
+        this.fetchData();
+        this.selectedTravelOrderId = 0
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+},
+
+signature2(form_id) {
+    const formData = new FormData();
+    formData.append('signature2', this.acc.signature);
+    axios.post(`http://127.0.0.1:8000/update_form/${form_id}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    }).then(() => {
+        this.fetchData();
+        this.selectedTravelOrderId = 0
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+},
     padWithZeroes(travel_order_id) {
     // Convert travel_order_id to string
     const idString = travel_order_id.toString();
@@ -82,10 +123,46 @@
       return idString;
     }
   },
+  fetchAccounts() {
+      axios.get('http://127.0.0.1:8000/get_accounts_json')
+        .then(response => {
+          this.acc = response.data.find(result => result.account_id == this.accountId);
+          console.log('http://127.0.0.1:8000/storage/',this.acc)
+          this.fetchData()   
+          if (this.acc){
+            console.log(this.acc.signature)
+            this.imageUrl = `http://127.0.0.1:8000/storage/${this.acc.signature}`;
+        }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    },
+
     fetchData() {
       axios.get('http://127.0.0.1:8000/get_forms_json')
         .then(response => {
+          console.log(response.data)
+          console.log(this.acc.name_id)
+        if (this.acc.type_id == 2) {
+          console.log('user')
+          console.log(this.acc.name_id)
+          this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
+          this.siga = false
+        } else if (this.acc.name_id == 20) {
+          this.formData = response.data.filter(form => form.signature2 === null && form.signature1 !== null);
+          this.siga1 = true
+          console.log('chief1')
+        } else if (this.acc.type_id == 3) {
+          const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
+          this.formData = response.data.filter(form => form.division_id == division_id && form.signature1 === null);
+          this.siga = true
+          console.log('chief')
+        } else if (this.acc.type_id == 1) {
           this.formData = response.data;
+          console.log('superuser')
+          this.siga = false
+        }
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -98,6 +175,15 @@
         })
         .catch(error => {
           console.error('Error fetching names:', error);
+        });
+    },
+    fetchEmployees() {
+      axios.get('http://127.0.0.1:8000/get_employees_json')
+        .then(response => {
+          this.employees = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching employeess:', error);
         });
     },
     getName(nameId) {

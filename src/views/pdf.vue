@@ -77,16 +77,18 @@
         <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }" >
             <div class="inner-container" v-if="division !== 'ORD'" style="margin-left: 50px;">
                 <p>Recommended by:</p>
-                <p class="value" style="font-weight: bold; margin-top: 50px;">{{recommended}}</p>
+                <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://127.0.0.1:8000/storage/null'"/>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://127.0.0.1:8000/storage/null') ? '50px' : '50px' }">{{recommended}}</p>
                 <p>Chief, {{ division }}</p>
             </div>
             <div class="inner-container" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
                 <p>Approved by:</p>
-                <p class="value" style="font-weight: bold; margin-top: 50px;">Rodante B. Felina</p>
+                <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://127.0.0.1:8000/storage/null'"/>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://127.0.0.1:8000/storage/null') ? '50px' : '50px' }">Rodante B. Felina</p>
                 <p>OIC, Regional Director</p>
             </div>
         </div>
-        <p style="letter-spacing: 5px; text-align: center;">AUTORIZATION</p>
+        <p style="letter-spacing: 5px; text-align: center; margin-top: -5px;">AUTORIZATION</p>
         <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-container" style="align-self: flex-end; margin-right: 6%; ">
                 <p class="value" style="font-weight: bold; text-align: center;">{{ name }}</p>
@@ -127,6 +129,8 @@ export default {
       ala: '',
       appropriations: '',
       remarks: '',
+      signature1: '',
+      signature2: '',
       formData: [],
       names: {},
       positions: [],
@@ -134,6 +138,8 @@ export default {
       employees: [],
       recommended: '',
       recommendedID: '',
+      signature1: '',
+      signature2: '',
     };
   },
   mounted() {
@@ -265,6 +271,13 @@ export default {
         this.ala = selectedForm.ala;
         this.appropriation = selectedForm.appropriations;
         this.remarks = selectedForm.remarks;
+        this.signature1 = `http://127.0.0.1:8000/storage/${selectedForm.signature1}`;
+        console.log(this.signature1)
+        this.signature2 = `http://127.0.0.1:8000/storage/${selectedForm.signature2}`;
+        console.log(this.signature1)
+
+        console.log(selectedForm)
+        console.log(this.signature1)
 
         const nameDetails = this.names[this.name_id-1];
         if (nameDetails) {
@@ -354,6 +367,8 @@ export default {
     padding: 10px;
     margin: 10px; /* Adding margin for spacing between inner containers */
     margin-left: -20px;
+    justify-content: center;
+    align-items: center;
   }
   .label-value-row {
   display: flex;
@@ -363,7 +378,7 @@ export default {
     margin: 5px 0;
     display: flex;
     font-size: 18px;
-    align-items: flex-start; /* Align items to the start of the flex container */
+    text-align: left;
   }  
   .label {
     font-weight: bold;
@@ -397,5 +412,10 @@ export default {
 button {
   padding: 10px 20px;
   margin-right: 10px;
+}
+.signatiz{
+  height: auto;
+  width: 50px;
+  margin-bottom: -50px;
 }
 </style>

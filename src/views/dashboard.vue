@@ -5,10 +5,10 @@
     <alerz1 v-if="showHeader2"/>
       <div v-if="!isRegistrationClicked">
          <div>
-            <signature/>
+            <signature v-if="acc.signature == null"/>
             <p class="travel" >Travel Order</p>
             <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
-            <button v-show="!isVisible" class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
+            <button v-show="!isVisible && acc.type_id == 1" class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
          </div>   
          
          <div style="display: flex; justify-content: center;" v-if="isVisible" >
@@ -38,7 +38,6 @@
    </div>
   </template>
 
-
   <script setup>
   import alerz from '../components/heder.vue'
   import signature from '../components/signature.vue'
@@ -52,14 +51,18 @@
   
   <script>
   import { ref } from 'vue';
+  import axios from 'axios';
  const isVisible = ref(false);
 const isRegistrationClicked = ref(false);
 const isButssClicked = ref (false);
-const isEdits = ref (false)
+const isEdits = ref (false);
+const acc = ref ([]);
 
 //header
 const showHeader1 = ref (true)
 const showHeader2 = ref (false)
+
+const accountId = localStorage.getItem('accountId');
 
 
 // visible sa  Add form
@@ -93,10 +96,19 @@ const showEditss = () => {
    isEdits.value = true
 }
 
+// Fetch OTP data function
+const fetchAccounts= async () => {
+    try {
+        const response = await axios.get('http://127.0.0.1:8000/get_accounts_json/');
+        // Filter the fetched OTP data based on the accountId
+        acc.value = response.data.find(result => result.account_id == accountId);
+        console.log('Account data loaded successfully:', acc.value);
+    } catch (error) {
+        console.error('Error fetching OTP data:', error);
+    }
+};
 
-
-
-
+fetchAccounts()
 
 export { isVisible,  isRegistrationClicked, isButssClicked,showHeader1,showHeader2 ,isEdits , noButton, toggleForm, toggleRegistration,  backButton, logButton, showEditss};
   </script>

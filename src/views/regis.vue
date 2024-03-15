@@ -15,7 +15,7 @@
  
                         <label class="p"> Name:</label>
                         <select v-model="name" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
-                           <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{ name.first_name }} {{ name.middle_init }}</option>
+                           <option v-for="name in namez" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{ name.first_name }} {{ name.middle_init }}</option>
                         </select>
 
                         <label class="n">Email:</label>
@@ -74,6 +74,8 @@
        return {
          types:[],
          names:{},
+         namez:[],
+         employees: [],
          name:'',
          account_type:'',
         email: '',
@@ -87,9 +89,21 @@
     mounted() {
     this.fetchData();
   },
+  watch: {
+  account_type(newVal) {
+    if (newVal === 3) {
+      console.log(this.employee)
+      const employeeNameIds = this.employee.map(employees => employees.name_id);
+      console.log('chiefs are',this.employee)
+      console.log('chiefs are',employeeNameIds)
+      this.namez = this.names.filter(name => employeeNameIds.includes(name.name_id));
+      console.log('chiefs are',this.namez)
+    } else {
+      this.namez = this.names
+    }
+  }
+},
     methods: {
-      
-
       submit() {
        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
        const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
@@ -200,11 +214,23 @@
       .catch(error => {
         console.error('Error fetching employees:', error);
       });
+
+      fetch('http://127.0.0.1:8000/get_employees_json/')
+      .then(response => response.json())
+      .then(data => {
+        this.employee = data.filter(emp => emp.chief > 0)
+        console.log(this.employee)
+      })
+      .catch(error => {
+        console.error('Error fetching employees:', error);
+      });
     },
 
  
     },
   };
+
+ 
   </script>
  
  
