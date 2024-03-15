@@ -186,7 +186,10 @@ export default {
           purpose: this.purpose,
           departure: this.departure,
           arrival: this.arrival,
-          signature1: this.divisionID === 5 ? 'exemption' : ''
+          pdea: this.pdea,
+          ala: this.ala,
+          appropriations: this.appropriation,
+          remarks: this.remarks,
         };
 
         axios.post('http://127.0.0.1:8000/add_form/', formData)

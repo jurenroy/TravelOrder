@@ -149,7 +149,7 @@ signature2(form_id) {
           this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
           this.siga = false
         } else if (this.acc.name_id == 20) {
-          this.formData = response.data.filter(form => form.signature2 === null && form.signature1 !== null);
+          this.formData = response.data.filter(form => form.signature2 === null && form.signature1 !== null || form.division_id === 5);
           this.siga1 = true
           console.log('chief1')
         } else if (this.acc.type_id == 3) {
