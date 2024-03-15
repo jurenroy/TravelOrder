@@ -30,6 +30,7 @@
  const accounts = ref([]);
  const names = ref([]);
  const name = ref('')
+ const nameLoaded = ref(false)
 
  
  
@@ -37,7 +38,6 @@
    try {
      const response = await axios.get('http://127.0.0.1:8000/get_accounts_json');
      accounts.value = response.data;
-     console.log(accounts.value);
    } catch (error) {
      console.error('Error fetching accounts:', error);
    }
@@ -47,24 +47,18 @@
    try {
      const response = await axios.get('http://127.0.0.1:8000/get_names_json');
      names.value = response.data;
-     console.log(names.value);
  
      const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
-   console.log("Found account:", account);
  
    if (account) {
      const nameId = account.name_id;
-     console.log("Found nameId:", nameId);
      const foundName = names.value.find(name => name.name_id === nameId);
      if (foundName) {
-       console.log("Found name:", foundName);
        name.value = foundName;
        nameLoaded.value = true; // Set the flag to true when the name is found
      } else {
-       console.log("Name not found for nameId:", nameId);
      }
    } else {
-     console.log("Account not found for accountId:", accountIdz);
    }
    } catch (error) {
      console.error('Error fetching names:', error);

@@ -121,7 +121,6 @@ export default {
    fetchSelectedEmployee() {
     if (this.selectedName) {
       const selectedEmployee = this.employees.find(employee => employee.name_id === this.selectedName);
-      console.log(selectedEmployee); // Correct logging variable name
       if (selectedEmployee) {
          this.positionID = selectedEmployee.position_id
          this.divisionID = selectedEmployee.division_id
@@ -200,7 +199,6 @@ export default {
                window.location.reload();
                this.submitting = false; // Set submitting back to false after timeout
                }, 3000);
-            console.log('Form submitted successfully');
           } else {
             throw new Error('Failed to submit form');
           }

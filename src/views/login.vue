@@ -7,7 +7,7 @@
 
                <div class="inside">
                   <div style="display: flex; flex-direction: column;  width: 100%;">
-                     <label class="n">Email:  {{ accountIdz }}</label>
+                     <label class="n">Email:    </label>
                      <input type="email" v-model="email"  class ='inputsss'  id = 'email' required >
 
                      <label class="p"> Password: </label>
@@ -53,9 +53,6 @@
                
          </div>   
       </div>
- <!-- <footer style="background-color: lightgray; padding: 5px; text-align: center; height: 15px; ">
-        <p style="margin-top: -5px">Team Kokkak</p>
-      </footer> -->
    </div>
   </template>
   
@@ -124,8 +121,6 @@ const submit = () => {
             isEmail.value = false;
         }, 3000);
     } else {
-        console.log("email:", email.value);
-        console.log("password:", password.value);
         email.value = '';
         password.value = '';
         authStore.login(account.account_id);
@@ -136,7 +131,7 @@ const submit = () => {
         
         setTimeout(() => {
                window.location.reload();
-               submitting = false; // Set submitting back to false after timeout
+               submitting.value = false; // Set submitting back to false after timeout
                }, 2000);;
     }
 };
@@ -145,7 +140,6 @@ const fetchAccounts = () => {
     axios.get('http://127.0.0.1:8000/get_accounts_json')
         .then(response => {
             accounts.value = response.data;
-            console.log(accounts.value);
             
         })
         .catch(error => {

@@ -7,12 +7,6 @@
     <alerz v-if="showHeader1"/>
     <alerz1 v-if="showHeader2"/>
       <div v-if="!isRegistrationClicked">
-         <!-- <div>
-            <signature v-if="acc.signature == null"/>
-            <p class="travel" >Travel Order</p>
-            <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
-            <button  class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
-         </div>    -->
          <alerz v-if="showHeader1"/>
          <alerz1 v-if="showHeader2"/>
          <div class="sig">
@@ -117,8 +111,6 @@ const fetchAccounts= async () => {
         const response = await axios.get('http://127.0.0.1:8000/get_accounts_json/');
         // Filter the fetched OTP data based on the accountId
         acc.value = response.data.find(result => result.account_id == accountId);
-        console.log('Account data loaded successfully:', acc.value);
-        console.log('OTP data loaded successfully:', acc.value);
     } catch (error) {
         console.error('Error fetching OTP data:', error);
     }
@@ -184,7 +176,7 @@ export { isVisible,  isRegistrationClicked, isButssClicked,showHeader1,showHeade
    width: auto
   }
   .sig{
-   margin-top: 180px;
+   margin-top: 100px;
  
   }
   </style>

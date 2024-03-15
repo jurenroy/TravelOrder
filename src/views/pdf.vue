@@ -272,12 +272,8 @@ export default {
         this.appropriation = selectedForm.appropriations;
         this.remarks = selectedForm.remarks;
         this.signature1 = `http://127.0.0.1:8000/storage/${selectedForm.signature1}`;
-        console.log(this.signature1)
         this.signature2 = `http://127.0.0.1:8000/storage/${selectedForm.signature2}`;
-        console.log(this.signature1)
 
-        console.log(selectedForm)
-        console.log(this.signature1)
 
         const nameDetails = this.names[this.name_id-1];
         if (nameDetails) {
@@ -292,7 +288,6 @@ export default {
         const selectedDivision = this.divisions.find(division => division.division_id === this.division_id);
         if (selectedDivision) {
           this.division = selectedDivision.division_name;
-          console.log(this.employees)
           const recommendedEmployee = this.employees.find(employee => employee.division_id === this.division_id && employee.chief > 0);
           if (recommendedEmployee) {
             this.recommended = this.getName(recommendedEmployee.name_id-1);

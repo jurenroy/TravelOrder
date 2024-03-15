@@ -10,13 +10,13 @@
                     <input type="email" v-model="email"  class ='updateinput'  id = 'oldemail' required readonly>
                     
                     <label class="updatelabel old">Enter Old Password: </label>
-                    <input type="password" v-model="passwords" class ='updateinput'  id = 'oldpassword' required >
+                    <input type="password" v-model="passwords" class ='updateinput'  id = 'oldpassword' required :disabled="notClikable1">
 
                 
                     <label class="updatelabel new">Enter New Email: </label>
-                    <input type="email" class ='updateinput' v-model="newEmail"  id = 'newEmail' required >
+                    <input type="email" class ='updateinput' v-model="newEmail"  id = 'newEmail' required :disabled="notClikable1">
                     <label class="updatelabel new" >Enter New Password: </label>
-                    <input type="password" class ='updateinput' v-model="newPassword" id = 'newPassword' :disabled="isDisabledinput" required title="Please Input Old Password First">
+                    <input type="password" class ='updateinput' v-model="newPassword" id = 'newPassword' :disabled="isDisabledinput || notClikable1" required title="Please Input Old Password First">
                     <!-- <signature/> -->
                     <div class="uploadpicsignature">
                     <label for="fileInput" class="uploadsignature" v-if="uploads" >Upload Signature</label>
@@ -35,6 +35,18 @@
                      Not Equal to Old Password
                   </a>
                </div>
+
+               <div v-else-if="isEditemail" class="editwronge">
+                  <a class="editwronge1">
+                     Error Alert!!
+                  </a>
+                  <a class="editwronge2">
+                     Invalid {{ validation }} Input
+                  </a>
+               </div>
+
+               
+               
 
               <div class="verifyOTPS">
                <label for="otpInput" class="Enterotp" v-if="showotp" >Enter OTP: </label>
@@ -91,11 +103,17 @@
  const uploads = ref (true)
  const succesful = ref (false);
  const verifiedotp = ref (false)
+ const isEditemail = ref (false)
+ const validation = ref ('')
+ const notClikable1 = ref(false)
+//  const isNewPassword = ref (false)
 
+ const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passvalids = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
 
  const isDisabled = computed(() => {
       return newEmail.value ==='' && newPassword.value ==='' && signature.value === '' && !uploadedImageUrl.value;
-    });
+      });
 
 const isDisabledinput = computed(() => {
   return oldPass.value !== passwords.value;
@@ -109,7 +127,10 @@ const isbackDisabled = computed(() => {
       return otp.value ===''
     });
 
-    
+const clickableDisable = () => {
+  notClikable1.value = true
+
+}
 
  
 const handleFileUpload = (event) => {
@@ -119,7 +140,6 @@ const handleFileUpload = (event) => {
     reader.onload = (e) => {
       uploadedImageUrl.value = e.target.result;
       
-      console.log('Uploaded image file:', file.name);
     };
     reader.readAsDataURL(file);
   }
@@ -128,11 +148,22 @@ const handleFileUpload = (event) => {
 
   
 const sendOTP = async () => {
-  
   try {
-    
     await axios.post(`http://127.0.0.1:8000/send-otp/${accountIdz}`);
-    
+
+    if (regex.test(newEmail.value) === false && newEmail.value !== ''){
+         isEditemail.value = true; // Set isEmail to true to show the error message
+         validation.value = 'Email'
+         setTimeout(() => {
+         isEditemail.value = false; // Reset isValid to false after 3 seconds
+      }, 3000);
+    }else if (passvalids.test(newPassword.value) === false  && newPassword.value !== ''){
+         isEditemail.value = true; // Set isEmail to true to show the error message
+         validation.value = 'Password'
+         setTimeout(() => {
+         isEditemail.value = false; // Reset isValid to false after 3 seconds
+      }, 3000);
+    }else {
       succesful.value = true; 
       await fetchOTPData();
       setTimeout(() => {
@@ -140,10 +171,11 @@ const sendOTP = async () => {
         showotp.value = true;
         uploads.value = false;
         uploadedImageUrl.value = ''
+        clickableDisable()
         handleFileUpload()
-        console.log(newPassword)
-        console.log(newEmail)
       }, 2000);
+
+    }
   } catch (error) {
     console.error('Error sending OTP:', error);
   }
@@ -152,13 +184,10 @@ const sendOTP = async () => {
 const verifyOTP = () => {
   if (otpData.value.length > 0) {
     
-    console.log('wews',parseInt(otpData.value[0].code))
-    console.log(otp.value)
     if (parseInt(otpData.value[0].code) === parseInt(otp.value)) {
       updateProfile()
       
     } else {
-      console.log('Invalid OTP');
     }   
   } else {
     console.error('OTP data not preloaded.');
@@ -174,30 +203,22 @@ const updateProfile = () => {
     if (newEmail.value !== '') {
     formData.append('email', newEmail.value);
     
-    console.log('has email')
     }else{
-      console.log('no email')
     }
 
-    console.log(newEmail)
     if (passwords.value !== '' && newPassword.value !== '') {
         formData.append('password', newPassword.value);
-        console.log('has password')
     }else{
-      console.log('no password')
     }
 
     if (signature.value !== '') {
         formData.append('signature', signature.value);
-        console.log('no signature')
     }else{
       signature
     }
 
-    console.log(formData)
     axios.post(`http://127.0.0.1:8000/update_account/${accountIdz}`, formData)
         .then(response => {
-            console.log('Success');
             verifiedotp.value = (true)
             setTimeout(() => {
             window.location.reload();
@@ -207,7 +228,6 @@ const updateProfile = () => {
             console.error('Invalid data:', error);
         });
 }catch(error){
-  console.log('error')
 }
 }
 
@@ -216,8 +236,6 @@ const updateProfile = () => {
      const response = await axios.get('http://127.0.0.1:8000/get_accounts_json');
 
      accounts.value = await response.data.filter(result => result.account_id == accountIdz);
-     console.log('hakdog')
-     console.log(accounts.value);
      email.value = accounts.value[0].email
      oldPass.value = accounts.value[0].password
    } catch (error) {
@@ -229,24 +247,18 @@ const updateProfile = () => {
    try {
      const response = await axios.get('http://127.0.0.1:8000/get_names_json');
      names.value = response.data;
-     console.log(names.value);
  
      const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
-   console.log("Found account:", account);
  
    if (account) {
      const nameId = account.name_id;
-     console.log("Found nameId:", nameId);
      const foundName = names.value.find(name => name.name_id === nameId);
      if (foundName) {
-       console.log("Found name:", foundName);
        name.value = foundName;
        nameLoaded.value = true; // Set the flag to true when the name is found
      } else {
-       console.log("Name not found for nameId:", nameId);
      }
    } else {
-     console.log("Account not found for accountId:", accountIdz);
    }
    } catch (error) {
      console.error('Error fetching names:', error);
@@ -261,7 +273,6 @@ const updateProfile = () => {
   try {
     const response = await axios.get('http://127.0.0.1:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountIdz);
-    console.log('OTP data loaded successfully:', otpData.value);
   } catch (error) {
     console.error('Error fetching OTP data:', error);
   }
@@ -501,8 +512,32 @@ import { isEdits, isRegistrationClicked,isVisible } from '@/views/dashboard.vue'
    width: 50%;
    height: 15px;
    margin-bottom: 12px;
+}
 
+.editwronge{
+   top:0;
+   left:0;
+   width: fit-content; /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #212121;
+   background-color: #c95e58;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 35px -2px #c95e58;
+}
 
+.editwronge1{
+   height: 20px;
+   width: 100%;
+   text-align: center;
+   color:white;
+   
+}
+.editwronge2,.correct1,.correct2{
+   color: white;
 }
 
 .Enterotp{

@@ -105,12 +105,8 @@
   watch: {
   account_type(newVal) {
     if (newVal === 3) {
-      console.log(this.employee)
       const employeeNameIds = this.employee.map(employees => employees.name_id);
-      console.log('chiefs are',this.employee)
-      console.log('chiefs are',employeeNameIds)
       this.namez = this.names.filter(name => employeeNameIds.includes(name.name_id));
-      console.log('chiefs are',this.namez)
     } else {
       this.namez = this.names
     }
@@ -123,7 +119,6 @@
  
        if (this.email === '' && this.password === ''&& this.account_type === ''&& this.name === '') {
  
-          console.log('wlay sulod');
           this.isValid = true; 
           setTimeout(() => {
           this.isValid = false; 
@@ -132,42 +127,36 @@
         
 
         } else if (this.account_type === '') {
-          console.log('wlay sulod ang imong account type');
           this.isValid = true; 
           setTimeout(() => {
           this.isValid = false; 
        }, 3000);
 
         } else if (this.name === '') {
-          console.log('wlay sulod ang imong name');
           this.isValid = true; 
           setTimeout(() => {
           this.isValid = false; 
        }, 3000);
        
        } else if (this.email === '') {
-            console.log('wlay sulod ang imong email');
             this.isValid = true; 
             setTimeout(() => {
             this.isValid = false; 
         }, 3000);
 
       } else if (emailPattern.test(this.email) === false) {
-         console.log('mali ang imong email')
          this.isEmail = true; // Set isEmail to true to show the error message
          setTimeout(() => {
          this.isEmail = false; // Reset isValid to false after 3 seconds
       }, 3000);
  
        }else if (this.password === '') {
-          console.log('wlay sulod ang imong password')
           this.isValid = true; 
           setTimeout(() => {
           this.isValid = false; 
        }, 3000);
        
        } else if (passvalid.test(this.password) === false) {
-          console.log('mali ang imong password')
           this.isEmail = true; 
           setTimeout(() => {
           this.isEmail = false; 
@@ -197,7 +186,6 @@
                this.submit2 = false; 
                }, 3000);
 
-               console.log('Form submitted successfully');
             } else {
                throw new Error('Failed to submit form');
             }
@@ -232,7 +220,6 @@
       .then(response => response.json())
       .then(data => {
         this.employee = data.filter(emp => emp.chief > 0)
-        console.log(this.employee)
       })
       .catch(error => {
         console.error('Error fetching employees:', error);

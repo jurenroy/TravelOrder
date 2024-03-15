@@ -126,10 +126,8 @@ signature2(form_id) {
       axios.get('http://127.0.0.1:8000/get_accounts_json')
         .then(response => {
           this.acc = response.data.find(result => result.account_id == this.accountId);
-          console.log('http://127.0.0.1:8000/storage/',this.acc)
           this.fetchData()   
           if (this.acc){
-            console.log(this.acc.signature)
             this.imageUrl = `http://127.0.0.1:8000/storage/${this.acc.signature}`;
         }
         })
@@ -141,25 +139,18 @@ signature2(form_id) {
     fetchData() {
       axios.get('http://127.0.0.1:8000/get_forms_json')
         .then(response => {
-          console.log(response.data)
-          console.log(this.acc.name_id)
         if (this.acc.type_id == 2) {
-          console.log('user')
-          console.log(this.acc.name_id)
           this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
           this.siga = false
         } else if (this.acc.name_id == 20) {
           this.formData = response.data.filter(form => form.signature2 === null && form.signature1 !== null || form.division_id === 5);
           this.siga1 = true
-          console.log('chief1')
         } else if (this.acc.type_id == 3) {
           const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
           this.formData = response.data.filter(form => form.division_id == division_id && form.signature1 === null);
           this.siga = true
-          console.log('chief')
         } else if (this.acc.type_id == 1) {
           this.formData = response.data;
-          console.log('superuser')
           this.siga = false
         }
         })
