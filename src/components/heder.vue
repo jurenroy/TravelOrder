@@ -30,6 +30,8 @@
  const accounts = ref([]);
  const names = ref([]);
  const name = ref('')
+
+ 
  
  const fetchAccounts = async () => {
    try {
@@ -81,7 +83,7 @@
 
 <script>
   import { ref } from 'vue';
-import { isButssClicked , showHeader1, showHeader2, isEdits } from '../views/dashboard.vue';
+import { isButssClicked , showHeader1, showHeader2, isEdits, isRegistrationClicked,isVisible } from '../views/dashboard.vue';
 
  
 
@@ -98,6 +100,7 @@ export default {
       isButssClicked.value = true;
       showHeader1.value = false;
       showHeader2.value = true
+      
       
     },
     closeAndLog() {
@@ -117,6 +120,8 @@ export default {
       showEdit.value = false;
       isEdits.value = true
       Usernames.value = false
+      isRegistrationClicked.value = true;
+      isVisible.value=false
     },
 
     backUpdate() {

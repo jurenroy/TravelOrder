@@ -1,7 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column;" >
-    <h2>History</h2>
-    <!-- <img :src="imageUrl" alt="Image" /> -->
+    <h2 style="display: flex; flex-direction: column; align-items: center;">History</h2>
     <div class="outer">
       <div class="scrollable-table">
      
@@ -15,7 +14,7 @@
             <th>Purpose</th>
             <th>Arrival Date</th>
             <th>Date</th>
-            <th>PDF View</th>
+            <th>Action</th>
             <!-- Add more table headers as needed -->
           </tr>
         </thead>

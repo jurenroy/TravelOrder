@@ -1,42 +1,57 @@
 <template>
    <div>
+      <div style="flex-direction: column; justify-content: center;" v-if="isEdits">
+                  <editzz></editzz>
+               </div>
       <div>
     <alerz v-if="showHeader1"/>
     <alerz1 v-if="showHeader2"/>
       <div v-if="!isRegistrationClicked">
-         <div>
+         <!-- <div>
             <signature v-if="acc.signature == null"/>
             <p class="travel" >Travel Order</p>
             <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
-            <button v-show="!isVisible && acc.type_id == 1" class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
-         </div>   
-         
-         <div style="display: flex; justify-content: center;" v-if="isVisible" >
-            <formzz ></formzz>
+            <button  class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
+         </div>    -->
+         <alerz v-if="showHeader1"/>
+         <alerz1 v-if="showHeader2"/>
+         <div class="sig">
+            <signature v-if="acc.signature === null"/>
+            <div v-else>
+               <div v-if="!isRegistrationClicked">
+                  <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                     <div>
+                     <p class="travel" >Travel Order</p>
+                     </div>
+                     <div>
+                        <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
+                        <button v-show="!isVisible && acc.type_id == 1"  class="reg" @click="toggleRegistration">{{ 'Registration' }}</button>
+                      </div>
+                  </div>   
+                  
+                  <div style="display: flex; justify-content: center;" v-if="isVisible" >
+                     <formzz ></formzz>
+                  </div>
+                  <div style="display: flex; justify-content: center;" v-if="!isVisible">
+                     <tablez></tablez>
+                  </div>
+               </div>
+
+               <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked">
+                  <yow></yow>
+               </div>
+
+               
+
+            </div>
          </div>
-         <div style="display: flex; justify-content: center;" v-if="!isVisible">
-            <tablez></tablez>
-         </div>
+         <div class="logssss" v-if="isButssClicked">
+            <logsss></logsss>
+         </div>     
       </div>
-
-      <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked">
-            <yow></yow>
-      </div>
-
-      <div style="flex-direction: column; justify-content: center;" v-if="isEdits">
-            <editzz></editzz>
-
-      </div>
-
    </div>
-
-      <div class="logssss" v-if="isButssClicked">
-         <logsss></logsss>
-      </div>     
-
-      <buttom @click="showEditss"></buttom>
    </div>
-  </template>
+</template>
 
   <script setup>
   import alerz from '../components/heder.vue'
@@ -52,6 +67,7 @@
   <script>
   import { ref } from 'vue';
   import axios from 'axios';
+const accountId = localStorage.getItem('accountId');
  const isVisible = ref(false);
 const isRegistrationClicked = ref(false);
 const isButssClicked = ref (false);
@@ -62,7 +78,6 @@ const acc = ref ([]);
 const showHeader1 = ref (true)
 const showHeader2 = ref (false)
 
-const accountId = localStorage.getItem('accountId');
 
 
 // visible sa  Add form
@@ -103,12 +118,16 @@ const fetchAccounts= async () => {
         // Filter the fetched OTP data based on the accountId
         acc.value = response.data.find(result => result.account_id == accountId);
         console.log('Account data loaded successfully:', acc.value);
+        console.log('OTP data loaded successfully:', acc.value);
     } catch (error) {
         console.error('Error fetching OTP data:', error);
     }
 };
 
 fetchAccounts()
+
+
+
 
 export { isVisible,  isRegistrationClicked, isButssClicked,showHeader1,showHeader2 ,isEdits , noButton, toggleForm, toggleRegistration,  backButton, logButton, showEditss};
   </script>
@@ -118,7 +137,7 @@ export { isVisible,  isRegistrationClicked, isButssClicked,showHeader1,showHeade
   .travel{
      font-weight: bold;
      font-size: 40px;
-     margin-top: 90px;
+     margin-top: 10px;
   }
   .add{
       margin-top:-19px;
@@ -163,6 +182,10 @@ export { isVisible,  isRegistrationClicked, isButssClicked,showHeader1,showHeade
    /* align-items: center; */
    top: 0px;
    width: auto
+  }
+  .sig{
+   margin-top: 180px;
+ 
   }
   </style>
   

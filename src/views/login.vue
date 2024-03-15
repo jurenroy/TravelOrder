@@ -36,8 +36,18 @@
                   </a>
                </div>
 
+               <div v-else-if="pleaseWait" class="logincorrect">
+                  <a class="logincorrect1">
+                     Login!!
+                  </a>
+                  <a class="logincorrect2">
+                     Please wait for a moment....
+                  </a>
+                 
+               </div>
+
                <div class="buttonss">
-                  <button class="button" @click="submit">Login</button>
+                  <button class="button" :disabled="submitting" @click="submit">Login</button>
                  
                </div>
                
@@ -61,6 +71,8 @@ const password = ref('');
 const accounts = ref([]);
 const isValid = ref(false);
 const isEmail = ref(false);
+const pleaseWait = ref(false);
+const submitting = ref (false);
 const error = ref('');
 const authStore = useAuthStore();
 
@@ -119,7 +131,13 @@ const submit = () => {
         authStore.login(account.account_id);
         localStorage.setItem('isLoggedIn', true);
         localStorage.setItem('accountId', account.account_id);
-        window.location.reload();
+        submitting.value = true;
+        pleaseWait.value = true;
+        
+        setTimeout(() => {
+               window.location.reload();
+               submitting = false; // Set submitting back to false after timeout
+               }, 2000);;
     }
 };
 
@@ -128,6 +146,7 @@ const fetchAccounts = () => {
         .then(response => {
             accounts.value = response.data;
             console.log(accounts.value);
+            
         })
         .catch(error => {
             console.error('Error fetching accounts:', error);
@@ -231,6 +250,21 @@ fetchAccounts();
    box-shadow: 0px 0px 35px -2px #f8a837;
 }
 
+.logincorrect{
+   top:0;
+   left:0;
+   width: fit-content; /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #212121;
+   background-color: #39b259;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 35px -2px #39b259;
+}
+
 .errormsg1{
    height: 20px;
    width: 100%;
@@ -265,7 +299,7 @@ fetchAccounts();
    color:white;
    
 }
-.wronge2{
+.wronge2,.logincorrect1,.logincorrect2{
    color: white;
 }
 

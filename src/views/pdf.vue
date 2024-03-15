@@ -405,6 +405,9 @@ export default {
     margin-left: 20px;
   }
 .buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
   margin-top: 20px;
   z-index: 9;
 }
