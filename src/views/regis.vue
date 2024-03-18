@@ -8,20 +8,20 @@
                    <div style="display: flex; flex-direction: column;  width: 100%;">
                         <label class="n">Account Type:</label>
 
-                        <select v-model="account_type" class='regsinput' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
-                           <option v-for="type in types" :key="type.type_id" :value="type.type_id">{{ type.type_name }}</option>
+                        <select v-model="account_type" class='regsinput' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required @click="disablenames">
+                           <option v-for="type in types" :key="type.type_id" :value="type.type_id" >{{ type.type_name }}</option>
                         </select>
 
                         <label class="p"> Name:</label>
-                        <select v-model="name" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
+                        <select v-model="name" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required :disabled='disablename'>
                            <option v-for="name in namez" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{ name.first_name }} {{ name.middle_init }}</option>
                         </select>
 
                         <label class="n">Email:</label>
-                        <input type="email" v-model="email"  class ='regsinput'  id = 'email' required @keydown.enter='submit'>
+                        <input type="email" v-model="email"  class ='regsinput'  id = 'email' required @keydown.enter='regis_submit'>
  
                         <label class="p"> Password: </label>
-                        <input type="password" v-model="password" class ='regsinput'  id = 'password' required @keydown.enter='submit'>
+                        <input type="password" v-model="password" class ='regsinput'  id = 'password' required @keydown.enter='regis_submit'>
                    </div>
                 </div>
                            
@@ -39,7 +39,10 @@
                      Error Alert!!
                   </a>
                   <a class="wronge2">
-                     Wrong input Password and Username
+                     Wrong Input {{ valid }}
+                  </a>
+                  <a class="wronge2" v-if='valid3 !== "" '>
+                    {{ valid3 }}
                   </a>
                </div>
 
@@ -54,7 +57,7 @@
                </div>
  
                 <div class="buttonss">
-                   <button class="button re" :disabled="submit2" @click="submit">Register</button>
+                   <button class="button re" :disabled="submit2" @click="regis_submit">Register</button>
                    <button class="button ba" @click="backButton">Back</button>
                   
                 </div>
@@ -92,7 +95,10 @@
         submit2:false,
         isValid: false,
         isEmail:false,
-        pleaseWait:false
+        pleaseWait:false,
+        valid: '',
+        valid3: '',
+        disablename: true
  
        };
     },
@@ -110,7 +116,10 @@
   }
 },
     methods: {
-      submit() {
+      disablenames () {
+         this.disablename= false;
+      },
+      regis_submit() {
        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
        const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
  
@@ -142,7 +151,9 @@
         }, 3000);
 
       } else if (emailPattern.test(this.email) === false) {
-         this.isEmail = true; // Set isEmail to true to show the error message
+         this.isEmail = true;
+         this.valid = 'Email'; // Set isEmail to true to show the error message
+         this.valid3 = ''; 
          setTimeout(() => {
          this.isEmail = false; // Reset isValid to false after 3 seconds
       }, 3000);
@@ -154,7 +165,9 @@
        }, 3000);
        
        } else if (passvalid.test(this.password) === false) {
-          this.isEmail = true; 
+         this.isEmail = true;
+          this.valid = 'Password'; 
+          this.valid3 = 'Must contain A-a letters & numbers with 8 characters...'
           setTimeout(() => {
           this.isEmail = false; 
        }, 3000);

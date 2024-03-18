@@ -45,6 +45,15 @@
                   </a>
                </div>
 
+               <div v-if="sendingOTP" class="succesfully">
+                  <a class="succesfully1">
+                     Sending OTP....
+                  </a>
+
+                  
+                 
+               </div>
+
                
                
 
@@ -67,7 +76,7 @@
 
 
               <div class="buttonss">
-                <button class="button yes" @click="sendOTP" :disabled="isDisabled" v-if="isbackDisabled">Update</button>
+                <button class="button yes" @click="sendOTP" :disabled="isDisabled && buttdis" v-if="isbackDisabled">Update</button>
                    <button class="button no" @click="cli" v-if="isbackDisabled">Back</button>
                 
               </div>
@@ -106,6 +115,8 @@
  const isEditemail = ref (false)
  const validation = ref ('')
  const notClikable1 = ref(false)
+ const sendingOTP = ref (false)
+ const buttdis = ref (false);
 //  const isNewPassword = ref (false)
 
  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -148,9 +159,10 @@ const handleFileUpload = (event) => {
 
   
 const sendOTP = async () => {
+    sendingOTP.value = true;
   try {
+    
     await axios.post(`http://172.31.10.148:8000/send-otp/${accountIdz}`);
-
     if (regex.test(newEmail.value) === false && newEmail.value !== ''){
          isEditemail.value = true; // Set isEmail to true to show the error message
          validation.value = 'Email'
@@ -164,18 +176,25 @@ const sendOTP = async () => {
          isEditemail.value = false; // Reset isValid to false after 3 seconds
       }, 3000);
     }else {
+      sendingOTP.value = false;
       succesful.value = true; 
       await fetchOTPData();
       setTimeout(() => {
+        
         succesful.value = false; 
         showotp.value = true;
         uploads.value = false;
         uploadedImageUrl.value = ''
+        
         clickableDisable()
         handleFileUpload()
       }, 2000);
 
     }
+    // sendingOTP.value = false;
+
+
+
   } catch (error) {
     console.error('Error sending OTP:', error);
   }
@@ -545,6 +564,8 @@ import { isEdits, isRegistrationClicked,isVisible } from '@/views/dashboard.vue'
     font-size: 18px;
     text-align: left;
 }
+
+
 @media (max-width: 768px) {
 
    .updateinside {
