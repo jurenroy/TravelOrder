@@ -12,19 +12,19 @@
       <div class="outer-container">
         <div class="inner-container">
           <div class="label-value-row">
-            <p class="label">Name:</p>
+            <p class="label" style="margin-left: 50px;">Name:</p>
             <p class="value" style="font-weight: bold;">{{ name }}</p>
           </div>
           <div class="label-value-row">
-            <p class="label">Position: </p>
+            <p class="label" style="margin-left: 50px;">Position: </p>
             <p class="value">{{ position }}</p>
           </div>
           <div class="label-value-row">
-            <p class="label">Departure:</p>
+            <p class="label" style="margin-left: 50px;">Departure:</p>
             <p class="value">{{ departure }}</p>
           </div>
           <div class="label-value-row">
-            <p class="label">Destination:</p>
+            <p class="label" style="margin-left: 50px;">Destination:</p>
             <p class="value">{{ destination }}</p>
           </div>
         </div>
@@ -75,17 +75,17 @@
             <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
         <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }" >
-            <div class="inner-container" v-if="division !== 'ORD'" style="margin-left: 50px;">
+            <div class="inner-container2" v-if="division !== 'ORD'" style="margin-left: 50px;">
                 <p>Recommended by:</p>
-                <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://127.0.0.1:8000/storage/null'"/>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://127.0.0.1:8000/storage/null') ? '50px' : '50px' }">{{recommended}}</p>
-                <p>Chief, {{ division }}</p>
+                <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.148:8000/storage/null'"/>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.148:8000/storage/null') ? '50px' : '50px' }">{{recommended}}</p>
+                <p style="margin-top: -10px;">Chief, {{ division }}</p>
             </div>
-            <div class="inner-container" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
+            <div class="inner-container2" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
                 <p>Approved by:</p>
-                <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://127.0.0.1:8000/storage/null'"/>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://127.0.0.1:8000/storage/null') ? '50px' : '50px' }">Rodante B. Felina</p>
-                <p>OIC, Regional Director</p>
+                <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.148:8000/storage/null'"/>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.148:8000/storage/null') ? '50px' : '50px' }">Rodante B. Felina</p>
+                <p style="margin-top: -10px;">OIC, Regional Director</p>
             </div>
         </div>
         <p style="letter-spacing: 5px; text-align: center; margin-top: -5px;">AUTORIZATION</p>
@@ -200,7 +200,7 @@ export default {
       });
     },
     fetchData() {
-        axios.get('http://127.0.0.1:8000/get_forms_json')
+        axios.get('http://172.31.10.148:8000/get_forms_json')
           .then(response => {
             this.formData = response.data;
           })
@@ -209,7 +209,7 @@ export default {
           });
       },
       fetchNames() {
-      axios.get('http://127.0.0.1:8000/get_names_json')
+      axios.get('http://172.31.10.148:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -218,7 +218,7 @@ export default {
         });
     },
     fetchPositions() {
-      fetch('http://127.0.0.1:8000/get_positions_json/')
+      fetch('http://172.31.10.148:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -228,7 +228,7 @@ export default {
         });
     },
     fetchDivisions() {
-      fetch('http://127.0.0.1:8000/get_divisions_json/')
+      fetch('http://172.31.10.148:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
@@ -238,7 +238,7 @@ export default {
         });
     },
     fetchEmployees(){
-      fetch('http://127.0.0.1:8000/get_employees_json/')
+      fetch('http://172.31.10.148:8000/get_employees_json/')
       .then(response => response.json())
       .then(data => {
         this.employees = data;
@@ -271,8 +271,8 @@ export default {
         this.ala = selectedForm.ala;
         this.appropriation = selectedForm.appropriations;
         this.remarks = selectedForm.remarks;
-        this.signature1 = `http://127.0.0.1:8000/storage/${selectedForm.signature1}`;
-        this.signature2 = `http://127.0.0.1:8000/storage/${selectedForm.signature2}`;
+        this.signature1 = `http://172.31.10.148:8000/storage/${selectedForm.signature1}`;
+        this.signature2 = `http://172.31.10.148:8000/storage/${selectedForm.signature2}`;
 
 
         const nameDetails = this.names[this.name_id-1];
@@ -357,6 +357,13 @@ export default {
   }
 
   .inner-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    margin: 10px; /* Adding margin for spacing between inner containers */
+    margin-left: -20px;
+  }
+  .inner-container2 {
     display: flex;
     flex-direction: column;
     padding: 10px;

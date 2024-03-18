@@ -36,7 +36,7 @@
  
  const fetchAccounts = async () => {
    try {
-     const response = await axios.get('http://127.0.0.1:8000/get_accounts_json');
+     const response = await axios.get('http://172.31.10.148:8000/get_accounts_json');
      accounts.value = response.data;
    } catch (error) {
      console.error('Error fetching accounts:', error);
@@ -45,7 +45,7 @@
  
  const fetchNames = async () => {
    try {
-     const response = await axios.get('http://127.0.0.1:8000/get_names_json');
+     const response = await axios.get('http://172.31.10.148:8000/get_names_json');
      names.value = response.data;
  
      const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));

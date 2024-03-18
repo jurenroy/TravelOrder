@@ -149,7 +149,7 @@ const handleFileUpload = (event) => {
   
 const sendOTP = async () => {
   try {
-    await axios.post(`http://127.0.0.1:8000/send-otp/${accountIdz}`);
+    await axios.post(`http://172.31.10.148:8000/send-otp/${accountIdz}`);
 
     if (regex.test(newEmail.value) === false && newEmail.value !== ''){
          isEditemail.value = true; // Set isEmail to true to show the error message
@@ -217,7 +217,7 @@ const updateProfile = () => {
       signature
     }
 
-    axios.post(`http://127.0.0.1:8000/update_account/${accountIdz}`, formData)
+    axios.post(`http://172.31.10.148:8000/update_account/${accountIdz}`, formData)
         .then(response => {
             verifiedotp.value = (true)
             setTimeout(() => {
@@ -233,7 +233,7 @@ const updateProfile = () => {
 
  const fetchAccounts = async () => {
    try {
-     const response = await axios.get('http://127.0.0.1:8000/get_accounts_json');
+     const response = await axios.get('http://172.31.10.148:8000/get_accounts_json');
 
      accounts.value = await response.data.filter(result => result.account_id == accountIdz);
      email.value = accounts.value[0].email
@@ -245,7 +245,7 @@ const updateProfile = () => {
  
  const fetchNames = async () => {
    try {
-     const response = await axios.get('http://127.0.0.1:8000/get_names_json');
+     const response = await axios.get('http://172.31.10.148:8000/get_names_json');
      names.value = response.data;
  
      const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
@@ -271,7 +271,7 @@ const updateProfile = () => {
 
  const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://127.0.0.1:8000/get_otp_json');
+    const response = await axios.get('http://172.31.10.148:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountIdz);
   } catch (error) {
     console.error('Error fetching OTP data:', error);

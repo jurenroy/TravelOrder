@@ -16,9 +16,6 @@
                         <select v-model="name" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
                            <option v-for="name in namez" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{ name.first_name }} {{ name.middle_init }}</option>
                         </select>
-                        <select v-model="name" class='regsinput' id='namein' style="height: 35px; border: 2px solid black; width: 93%;" required>
-                           <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{ name.first_name }} {{ name.middle_init }}</option>
-                        </select>
 
                         <label class="n">Email:</label>
                         <input type="email" v-model="email"  class ='regsinput'  id = 'email' required >
@@ -170,7 +167,7 @@
          
         };
       
-      axios.post('http://127.0.0.1:8000/add_account/', formData)
+      axios.post('http://172.31.10.148:8000/add_account/', formData)
          .then(response => {
             if (response.status === 200) {
                this.submit2 = true; 
@@ -198,7 +195,7 @@
  
    },
    fetchData() {
-      fetch('http://127.0.0.1:8000/get_names_json/')
+      fetch('http://172.31.10.148:8000/get_names_json/')
         .then(response => response.json())
         .then(data => {
           this.names = data;
@@ -207,7 +204,7 @@
           console.error('Error fetching names:', error);
         });
 
-      fetch('http://127.0.0.1:8000/get_type_json/')
+      fetch('http://172.31.10.148:8000/get_type_json/')
       .then(response => response.json())
       .then(data => {
         this.types = data;
@@ -216,7 +213,7 @@
         console.error('Error fetching employees:', error);
       });
 
-      fetch('http://127.0.0.1:8000/get_employees_json/')
+      fetch('http://172.31.10.148:8000/get_employees_json/')
       .then(response => response.json())
       .then(data => {
         this.employee = data.filter(emp => emp.chief > 0)

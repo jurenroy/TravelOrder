@@ -70,7 +70,7 @@ if (file && file.type.startsWith('image/')) {
 
 const sendOTP = async () => {
 try {
-  await axios.post(`http://127.0.0.1:8000/send-otp/${accountId}`);
+  await axios.post(`http://172.31.10.148:8000/send-otp/${accountId}`);
   
   
   OTPsuccesful.value = true;
@@ -94,7 +94,7 @@ try {
   const formData = new FormData();
   const file = dataURItoBlob(uploadedImageUrl.value);
   formData.append('signature', file);
-  await axios.post(`http://127.0.0.1:8000/update_account/${accountId}`, formData, {
+  await axios.post(`http://172.31.10.148:8000/update_account/${accountId}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
@@ -134,7 +134,7 @@ if (otpData.value.length > 0) {
 
 const fetchOTPData = async () => {
 try {
-  const response = await axios.get('http://127.0.0.1:8000/get_otp_json');
+  const response = await axios.get('http://172.31.10.148:8000/get_otp_json');
   otpData.value = response.data.filter(result => result.account_id == accountId);
 } catch (error) {
   console.error('Error fetching OTP data:', error);

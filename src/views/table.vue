@@ -20,7 +20,7 @@
         </thead>
         <tbody>
           <tr v-for="item in reversedFormData" :key="item.id">
-            <td>{{ padWithZeroes(item.travel_order_id) }}</td>
+            <td>{{ padWithZeroes(item.travel_order_id) }} - {{ yearToday }}</td>
             <td>{{ getName(item.name_id) }}</td>
             <td>{{ item.departure }}</td>
             <td>{{ item.destination }}</td>
@@ -67,6 +67,7 @@
     },
     data() {
       return {
+        yearToday: new Date().getFullYear(),
         formData: [],
         names: {},
         employees: {},
@@ -82,7 +83,7 @@
     signature1(form_id) {
     const formData = new FormData();
     formData.append('signature1', this.acc.signature);
-    axios.post(`http://127.0.0.1:8000/update_form/${form_id}`, formData, {
+    axios.post(`http://172.31.10.148:8000/update_form/${form_id}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
@@ -98,7 +99,7 @@
 signature2(form_id) {
     const formData = new FormData();
     formData.append('signature2', this.acc.signature);
-    axios.post(`http://127.0.0.1:8000/update_form/${form_id}`, formData, {
+    axios.post(`http://172.31.10.148:8000/update_form/${form_id}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
@@ -123,12 +124,12 @@ signature2(form_id) {
     }
   },
   fetchAccounts() {
-      axios.get('http://127.0.0.1:8000/get_accounts_json')
+      axios.get('http://172.31.10.148:8000/get_accounts_json')
         .then(response => {
           this.acc = response.data.find(result => result.account_id == this.accountId);
           this.fetchData()   
           if (this.acc){
-            this.imageUrl = `http://127.0.0.1:8000/storage/${this.acc.signature}`;
+            this.imageUrl = `http://172.31.10.148:8000/storage/${this.acc.signature}`;
         }
         })
         .catch(error => {
@@ -137,7 +138,7 @@ signature2(form_id) {
     },
 
     fetchData() {
-      axios.get('http://127.0.0.1:8000/get_forms_json')
+      axios.get('http://172.31.10.148:8000/get_forms_json')
         .then(response => {
         if (this.acc.type_id == 2) {
           this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
@@ -159,7 +160,7 @@ signature2(form_id) {
         });
     },
     fetchNames() {
-      axios.get('http://127.0.0.1:8000/get_names_json')
+      axios.get('http://172.31.10.148:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -168,7 +169,7 @@ signature2(form_id) {
         });
     },
     fetchEmployees() {
-      axios.get('http://127.0.0.1:8000/get_employees_json')
+      axios.get('http://172.31.10.148:8000/get_employees_json')
         .then(response => {
           this.employees = response.data;
         })

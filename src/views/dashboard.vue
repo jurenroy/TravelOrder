@@ -1,7 +1,10 @@
 <template>
    <div>
-      <div style="flex-direction: column; justify-content: center;" v-if="isEdits">
+      <div style="flex-direction: column; justify-content: center;" v-if="isEdits && isRegistrationClicked">
                   <editzz></editzz>
+               </div>
+               <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked && !isEdits">
+                  <yow></yow>
                </div>
       <div>
     <alerz v-if="showHeader1"/>
@@ -31,9 +34,7 @@
                   </div>
                </div>
 
-               <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked">
-                  <yow></yow>
-               </div>
+               
 
                
 
@@ -108,7 +109,7 @@ const showEditss = () => {
 // Fetch OTP data function
 const fetchAccounts= async () => {
     try {
-        const response = await axios.get('http://127.0.0.1:8000/get_accounts_json/');
+        const response = await axios.get('http://172.31.10.148:8000/get_accounts_json/');
         // Filter the fetched OTP data based on the accountId
         acc.value = response.data.find(result => result.account_id == accountId);
     } catch (error) {
