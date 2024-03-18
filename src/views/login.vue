@@ -8,10 +8,10 @@
                <div class="inside">
                   <div style="display: flex; flex-direction: column;  width: 100%;">
                      <label class="n">Email:    </label>
-                     <input type="email" v-model="email"  class ='inputsss'  id = 'email' required >
+                     <input type="email" v-model="email"  class ='inputsss'  id = 'email' required @keydown.enter='submit'>
 
                      <label class="p"> Password: </label>
-                     <input type="password" v-model="password" class ='inputsss'  id = 'password' required >
+                     <input type="password" v-model="password" class ='inputsss'  id = 'password' required @keydown.enter='submit'>
 
 
                   </div>

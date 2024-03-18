@@ -7,20 +7,20 @@
               <div class="updateinside">
                  <div style="display: flex; flex-direction: column;  width: 100%;">
                     <label class="updatelabel old">Old Email:</label>
-                    <input type="email" v-model="email"  class ='updateinput'  id = 'oldemail' required readonly>
+                    <input @keydown.enter='sendOTP' type="email" v-model="email"  class ='updateinput'  id = 'oldemail' required readonly >
                     
                     <label class="updatelabel old">Enter Old Password: </label>
-                    <input type="password" v-model="passwords" class ='updateinput'  id = 'oldpassword' required :disabled="notClikable1">
+                    <input @keydown.enter='sendOTP' type="password" v-model="passwords" class ='updateinput'  id = 'oldpassword' required :disabled="notClikable1" >
 
                 
                     <label class="updatelabel new">Enter New Email: </label>
-                    <input type="email" class ='updateinput' v-model="newEmail"  id = 'newEmail' required :disabled="notClikable1">
+                    <input @keydown.enter='sendOTP' type="email" class ='updateinput' v-model="newEmail"  id = 'newEmail' required :disabled="notClikable1">
                     <label class="updatelabel new" >Enter New Password: </label>
-                    <input type="password" class ='updateinput' v-model="newPassword" id = 'newPassword' :disabled="isDisabledinput || notClikable1" required title="Please Input Old Password First">
+                    <input @keydown.enter='sendOTP' type="password" class ='updateinput' v-model="newPassword" id = 'newPassword' :disabled="isDisabledinput || notClikable1" required title="Please Input Old Password First">
                     <!-- <signature/> -->
                     <div class="uploadpicsignature">
                     <label for="fileInput" class="uploadsignature" v-if="uploads" >Upload Signature</label>
-                    <input class="buttonz" type="file" accept="image/*" id="fileInput" ref="fileInput" style="display: none;" @change="handleFileUpload" v-if="uploads">
+                    <input @keydown.enter='sendOTP' class="buttonz" type="file" accept="image/*" id="fileInput" ref="fileInput" style="display: none;" @change="handleFileUpload" v-if="uploads">
                     <img class="uploadimagesig" :src="uploadedImageUrl" alt="Uploaded Image" v-if="uploadedImageUrl">
                     </div>
                  </div>
@@ -50,7 +50,7 @@
 
               <div class="verifyOTPS">
                <label for="otpInput" class="Enterotp" v-if="showotp" >Enter OTP: </label>
-                <input class="otpedit" type="text" id="otpInput" v-model="otp" @keydown.enter="verifyOTP" v-if="showotp">
+                <input @keydown.enter='verifyOTP' class="otpedit" type="text" id="otpInput" v-model="otp" v-if="showotp">
                 <button class="verifyotp" @click="verifyOTP" v-if="showotp" :disabled="isVerify" >Verify OTP</button>
               </div>
 

@@ -13,46 +13,46 @@
                </select>
 
                      <label class="p"> Position: </label>
-                     <input type="text" v-model="position" class ='inputsss'  id = 'positionin' required readonly>
+                     <input @keydown.enter="submit" type="text" v-model="position" class ='inputsss'  id = 'positionin' required readonly>
 
                      <label class="dd"> Depature Date: </label>
-                     <input type="date" v-model="departure" class ='inputsss'  id = 'departurein' required>
+                     <input @keydown.enter="submit" type="date" v-model="departure" class ='inputsss'  id = 'departurein' required>
 
                      <label class="d"> Destination: </label>
-                     <input type="text" v-model="destination" class ='inputsss'  id = 'destinationin' required>
+                     <input @keydown.enter="submit" type="text" v-model="destination" class ='inputsss'  id = 'destinationin' required>
 
 
                   </div>
                   <div style="display: flex; flex-direction: column;  width: 100%;">
                      <label class="da"> Date: </label>
-                     <input type="type" v-model="date" class ='inputsss'  id = 'datein' required readonly>
+                     <input @keydown.enter="submit" type="type" v-model="date" class ='inputsss'  id = 'datein' required readonly>
 
                      <label class="ds"> Division/Section: </label>
-                     <input type="text" v-model="division" class ='inputsss'  id = 'divisionin' required readonly>
+                     <input @keydown.enter="submit" type="text" v-model="division" class ='inputsss'  id = 'divisionin' required readonly>
 
                      <label class="os"> Official Station:</label>
-                     <input type="text" v-model="station" class ='inputsss'  id = 'stationin' required readonly>
+                     <input @keydown.enter="submit" type="text" v-model="station" class ='inputsss'  id = 'stationin' required readonly>
 
                      <label class="ad"> Arrival Date: </label>
-                     <input type="date" v-model="arrival" class ='inputsss'  id = 'arrivalin' required>
+                     <input @keydown.enter="submit" type="date" v-model="arrival" class ='inputsss'  id = 'arrivalin' required>
                   </div>
                </div>
             
                <div style="display: flex; flex-direction: column; justify-content: center; ">
                   <label class="pt"> Purpose of Travel: </label>
-                  <input type="text" v-model="purpose" class ='inputss'  id = 'purposein' required>
+                  <input @keydown.enter="submit" type="text" v-model="purpose" class ='inputss'  id = 'purposein' required>
 
                   <label class="per"> Per Deims/Expense Allowed</label>
-                  <input type="text" v-model="pdea" class ='inputss'  id = 'pdeain' required>
+                  <input @keydown.enter="submit" type="text" v-model="pdea" class ='inputss'  id = 'pdeain' required>
 
                   <label class="al"> Assistants or Laborer Allowed: </label>
-                  <input type="text" v-model="ala" class ='inputss'  id = 'alain' required>
+                  <input @keydown.enter="submit" type="text" v-model="ala" class ='inputss'  id = 'alain' required>
 
                   <label class="at"> Appropriations to which travel ahould be charged: </label>
-                  <input type="text" v-model="appropriation" class ='inputss'  id = 'appropriationin' required>
+                  <input @keydown.enter="submit" type="text" v-model="appropriation" class ='inputss'  id = 'appropriationin' required>
 
                   <label class="r"> Remarks or Special Instructios: </label>
-                  <input type="text" v-model="remarks" class ='inputss'  id = 'remarksin' required> 
+                  <input @keydown.enter="submit" type="text" v-model="remarks" class ='inputss'  id = 'remarksin' required> 
                </div>
 
                <div v-if="isValid" class="error">

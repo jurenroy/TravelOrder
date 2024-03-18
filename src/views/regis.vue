@@ -18,10 +18,10 @@
                         </select>
 
                         <label class="n">Email:</label>
-                        <input type="email" v-model="email"  class ='regsinput'  id = 'email' required >
+                        <input type="email" v-model="email"  class ='regsinput'  id = 'email' required @keydown.enter='submit'>
  
                         <label class="p"> Password: </label>
-                        <input type="password" v-model="password" class ='regsinput'  id = 'password' required >
+                        <input type="password" v-model="password" class ='regsinput'  id = 'password' required @keydown.enter='submit'>
                    </div>
                 </div>
                            
