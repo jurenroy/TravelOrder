@@ -6,6 +6,12 @@
           <input class="buttonz" type="file" accept="image/*" id="fileInput" ref="fileInput" style="display: none;" @change="handleFileUpload">
           <img class="uploaded-image" :src="uploadedImageUrl" alt="Uploaded Image" v-if="uploadedImageUrl">
 
+          <div  v-if="sendingOTPS" class="verifieds"> 
+                <a class="verifieds1">
+                  Sending OTP....
+                </a>
+              </div>
+
           <div  v-if="OTPsuccesful" class="succesfullyotp"> 
                 <a class="succesfullyotp1">
                   OTP loaded successfully
@@ -51,6 +57,7 @@ const otpData = ref([]);//confirm
 const hideUpload = ref(false);
 const OTPsuccesful = ref (false)
 const verifiedotps = ref (false)
+const sendingOTPS = ref (false)
 
 
 const showUpload = () => {
@@ -70,10 +77,11 @@ if (file && file.type.startsWith('image/')) {
 };
 
 const sendOTP = async () => {
+  sendingOTPS.value = true;
 try {
   await axios.post(`http://172.31.10.148:8000/send-otp/${accountId}`);
   
-  
+  sendingOTPS.value = false
   OTPsuccesful.value = true;
   await fetchOTPData();
   setTimeout(() => {

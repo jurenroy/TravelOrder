@@ -8,10 +8,10 @@
                <div class="inside">
                   <div style="display: flex; flex-direction: column;  width: 100%;">
                      <label class="n">Email:    </label>
-                     <input type="email" v-model="email"  class ='inputsss'  id = 'email' required @keydown.enter='submit'>
+                     <input type="email" v-model="email"  class ='inputsss'  id = 'email' required @keydown.enter='login_submit'>
 
                      <label class="p"> Password: </label>
-                     <input type="password" v-model="password" class ='inputsss'  id = 'password' required @keydown.enter='submit'>
+                     <input type="password" v-model="password" class ='inputsss'  id = 'password' required @keydown.enter='login_submit'>
 
 
                   </div>
@@ -47,7 +47,7 @@
                </div>
 
                <div class="buttonss">
-                  <button class="button" :disabled="submitting" @click="submit">Login</button>
+                  <button class="button" :disabled="submitting" @click="login_submit">Login</button>
                  
                </div>
                
@@ -75,7 +75,7 @@ const authStore = useAuthStore();
 
 const accountIdz = localStorage.getItem('accountId');
 
-const submit = () => {
+const login_submit = () => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
     const account = accounts.value.find(acc => acc.email === email.value);
