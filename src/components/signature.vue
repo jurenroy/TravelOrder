@@ -28,6 +28,7 @@
               </div>
           
           <button class="verifyotps" @click="verifyOTP">Verify OTP</button>
+          <button class="verifyotps" @click="sendOTP">Resend OTP</button>
       </div>
   </div>
   
@@ -242,7 +243,8 @@ height: 20px;
   margin-top:-5px; 
   cursor: pointer;
   border-radius:5px;
-   font-size: 13px;
+  font-size: 13px;
+  margin-bottom: 10px;
 }
 .verifieds{
   top:0;

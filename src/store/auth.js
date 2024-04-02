@@ -6,6 +6,7 @@ export const useAuthStore = defineStore({
   state: () => ({
     isLoggedIn: 'false',
     accountId: '',
+    verifiedOTPs: 'false', // Define your state variables here
   }),
   actions: {
     login(accountId) {
@@ -15,6 +16,9 @@ export const useAuthStore = defineStore({
     logout() {
       this.isLoggedIn = 'false'
       this.accountId = ''
+    },
+    updateVerifiedOTPs(value) {
+      this.verifiedOTPs = value;
     },
   },
 })

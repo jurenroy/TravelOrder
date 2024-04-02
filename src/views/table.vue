@@ -1,6 +1,10 @@
 <template>
   <div style="display: flex; flex-direction: column;" >
+    
     <h2 style="display: flex; flex-direction: column; align-items: center;">History</h2>
+    <div style="display: flex; flex-direction: column; align-items: center;" v-if="otp">
+      <otpz/>
+    </div>
     <div class="outer">
       <div class="scrollable-table">
      
@@ -48,6 +52,9 @@
   <script>
   import axios from 'axios';
   import pdf from './pdf.vue'
+  import otpz from '../components/otp.vue';
+  
+  import { useAuthStore } from '../store/auth';
   
   export default {
 
@@ -55,10 +62,10 @@
     return {
       close: this.close,
     };
-  },
-  
+  }, 
     components: {
-      pdf
+      pdf,
+      otpz
     },
     mounted() {
       this.fetchAccounts();
@@ -77,40 +84,80 @@
         imageUrl: '',
         siga: '',
         siga1: '',
+        otp: false,
+        verifiedOTPs: localStorage.getItem('verifiedOTPs')
       };
     },
+    created() {
+    // Watch for changes in localStorage and update verifiedOTPs accordingly
+    window.addEventListener('storage', this.updateVerifiedOTPs);
+  },
+  destroyed() {
+    // Cleanup the event listener when the component is destroyed
+    window.removeEventListener('storage', this.updateVerifiedOTPs);
+  },
   methods: {
-    signature1(form_id) {
-    const formData = new FormData();
-    formData.append('signature1', this.acc.signature);
-    axios.post(`http://172.31.10.148:8000/update_form/${form_id}`, formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    }).then(() => {
-        this.fetchData();
-        this.selectedTravelOrderId = 0
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-},
+    updateVerifiedOTPs(event) {
+      if (event.key === 'verifiedOTPs') {
+        this.verifiedOTPs = event.newValue;
+      }
+    },
+    async signature1(form_id) {
+      
+      console.log(this.verifiedOTPs)
+      this.otp = true;
+      
+      console.log(this.verifiedOTPs)
+      await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
+      this.otp = false;
 
-signature2(form_id) {
-    const formData = new FormData();
-    formData.append('signature2', this.acc.signature);
-    axios.post(`http://172.31.10.148:8000/update_form/${form_id}`, formData, {
+      const formData = new FormData();
+      formData.append('signature1', this.acc.signature);
+
+      axios.post(`http://172.31.10.148:8000/update_form/${form_id}`, formData, {
         headers: {
-            'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data'
         }
-    }).then(() => {
+      }).then(() => {
         this.fetchData();
-        this.selectedTravelOrderId = 0
-    })
-    .catch(error => {
+        this.selectedTravelOrderId = 0;
+        useAuthStore().updateVerifiedOTPs('false');
+        localStorage.setItem('verifiedOTPs', 'false');
+        this.otp = false;
+      }).catch(error => {
         console.error('Error:', error);
-    });
-},
+      });
+    },
+
+    async signature2(form_id) {
+      this.otp = true;
+      await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
+      this.otp = false;
+
+      const formData = new FormData();
+      formData.append('signature2', this.acc.signature);
+
+      axios.post(`http://172.31.10.148:8000/update_form/${form_id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(() => {
+        this.fetchData();
+        this.selectedTravelOrderId = 0;
+        useAuthStore().updateVerifiedOTPs('false');
+        localStorage.setItem('verifiedOTPs', 'false');
+        this.otp = false;
+      }).catch(error => {
+        console.error('Error:', error);
+      });
+    },
+
+    async waitForVerifiedOTPs() {
+      while (this.verifiedOTPs == 'false') {
+        await new Promise(resolve => setTimeout(resolve, 1000), this.verifiedOTPs = localStorage.getItem('verifiedOTPs')); // Wait for 10 seconds
+      }
+    },
+
     padWithZeroes(travel_order_id) {
     // Convert travel_order_id to string
     const idString = travel_order_id.toString();
@@ -131,6 +178,8 @@ signature2(form_id) {
           if (this.acc){
             this.imageUrl = `http://172.31.10.148:8000/storage/${this.acc.signature}`;
         }
+        useAuthStore().updateVerifiedOTPs('false');
+        localStorage.setItem('verifiedOTPs', 'false');
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -188,6 +237,8 @@ signature2(form_id) {
     openPDF(travelOrderId) {
       // Set the selected travel order ID
       this.selectedTravelOrderId = travelOrderId;
+      useAuthStore().updateVerifiedOTPs('false');
+      localStorage.setItem('verifiedOTPs', 'false');
     },
     close() {
       this.selectedTravelOrderId = 0

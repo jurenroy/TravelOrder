@@ -51,7 +51,7 @@
               <div class="verifyOTPS">
                <label for="otpInput" class="Enterotp" v-if="showotp" >Enter OTP: </label>
                 <input @keydown.enter='verifyOTP' class="otpedit" type="text" id="otpInput" v-model="otp" v-if="showotp">
-                <button class="verifyotp" @click="verifyOTP" v-if="showotp" :disabled="isVerify" >Verify OTP</button>
+                <button class="verifyotp" @click="verifyOTP" v-if="showotp" :disabled="isVerify" >Verify OTP</button>       
               </div>
 
                 <div  v-if="succesful" class="succesfully"> 
@@ -139,10 +139,21 @@ const handleFileUpload = (event) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       uploadedImageUrl.value = e.target.result;
-      
+      signature.value = dataURItoBlob(uploadedImageUrl.value);
     };
     reader.readAsDataURL(file);
   }
+};
+
+const dataURItoBlob = (dataURI) => {
+const byteString = atob(dataURI.split(',')[1]);
+const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+const arrayBuffer = new ArrayBuffer(byteString.length);
+const uint8Array = new Uint8Array(arrayBuffer);
+for (let i = 0; i < byteString.length; i++) {
+  uint8Array[i] = byteString.charCodeAt(i);
+}
+return new Blob([arrayBuffer], { type: mimeString });
 };
 
 
@@ -214,7 +225,6 @@ const updateProfile = () => {
     if (signature.value !== '') {
         formData.append('signature', signature.value);
     }else{
-      signature
     }
 
     axios.post(`http://172.31.10.148:8000/update_account/${accountIdz}`, formData)

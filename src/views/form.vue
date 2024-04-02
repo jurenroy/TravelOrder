@@ -114,6 +114,10 @@ export default {
       divisions: [],
       positionID: '',
       divisionID: '',
+      accounts: [],
+      accountz: [],
+      accountIdz: localStorage.getItem('accountId')
+
     };
   },
   methods: {
@@ -260,6 +264,24 @@ export default {
         .catch(error => {
           console.error('Error fetching divisions:', error);
         });
+        // Fetch divisions data
+        if (this.names){
+      fetch('http://172.31.10.148:8000/get_accounts_json/')
+        .then(response => response.json())
+        .then(data => {
+          if (this.accountIdz){
+            this.accounts = data;
+            this.accountz = this.accounts.find(acc => parseInt(acc.account_id) === parseInt(this.accountIdz));
+            if (this.accountz.type_id == 1){
+            } else{
+              this.names = this.names.filter(nem => parseInt(nem.name_id) === parseInt(this.accountz.name_id))
+            }
+          }else{
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching accounts:', error);
+        });}
     },
   },
   watch: {
