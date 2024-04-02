@@ -88,7 +88,7 @@
                 <p style="margin-top: -10px;">OIC, Regional Director</p>
             </div>
         </div>
-        <p style="letter-spacing: 5px; text-align: center; margin-top: -5px;">AUTORIZATION</p>
+        <p style="letter-spacing: 5px; text-align: center; margin-top: -5px;">AUTHORIZATION</p>
         <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-container" style="align-self: flex-end; margin-right: 6%; ">
                 <p class="value" style="font-weight: bold; text-align: center;">{{ name }}</p>

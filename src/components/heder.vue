@@ -107,7 +107,7 @@ export default {
 
 
     showEdits() {
-        showEdit.value = true;
+        showEdit.value = !showEdit.value;
     },
 
     clickEdit() {
@@ -153,6 +153,7 @@ export default {
     align-items: center ;
     border-bottom: 1px solid black;
     box-shadow: 0px 0px 35px -2px black;
+    box-shadow: 0px 0px 25px -2px black, 0px 0px 10px black inset;
  }
  
  .imagediv1{

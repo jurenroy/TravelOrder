@@ -1,29 +1,31 @@
 <template>
-  <div style="justify-content: center; align-items: center; background-color: transparent; display: flex; margin-top: 200px;">
-  <div class="sign1">
-      <div class="sign1"  v-if="!OTPsent">
-          <label for="fileInput" class="custom-button"  >Upload Signature</label>
-          <input class="buttonz" type="file" accept="image/*" id="fileInput" ref="fileInput" style="display: none;" @change="handleFileUpload">
-          <img class="uploaded-image" :src="uploadedImageUrl" alt="Uploaded Image" v-if="uploadedImageUrl">
+  <div
+    style="justify-content: center; align-items: center; background-color: transparent; display: flex; margin-top: 200px;">
+    <div class="sign1">
+      <div class="sign1" v-if="!OTPsent">
+        <label for="fileInput" class="custom-button">Upload Signature</label>
+        <input class="buttonz" type="file" accept="image/*" id="fileInput" ref="fileInput" style="display: none;"
+          @change="handleFileUpload">
+        <img class="uploaded-image" :src="uploadedImageUrl" alt="Uploaded Image" v-if="uploadedImageUrl">
 
-          <div  v-if="sendingOTPS" class="verifieds"> 
-                <a class="verifieds1">
-                  Sending OTP....
-                </a>
-              </div>
+        <div v-if="sendingOTPS" class="verifieds">
+          <a class="verifieds1">
+            Sending OTP....
+          </a>
+        </div>
 
-          <div  v-if="OTPsuccesful" class="succesfullyotp"> 
-                <a class="succesfullyotp1">
-                  OTP loaded successfully
-                </a>
-              </div>
-          <button class="submit-button" @click="sendOTP" v-if="hideUpload">Submit</button>
+        <div v-if="OTPsuccesful" class="succesfullyotp">
+          <a class="succesfullyotp1">
+            OTP loaded successfully
+          </a>
+        </div>
+        <button class="submit-button" @click="sendOTP" :disabled="dlimaclick" v-if="hideUpload">Submit</button>
       </div>
 
-      
+
 
       <div v-if="OTPsent">
-      <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
           <label for="otpInput" class="Enterotps">Enter OTP:</label>
           <input class="otpinput" type="text" id="otpInput" v-model="otp" @keydown.enter="verifyOTP">
           
@@ -35,17 +37,59 @@
           
           <button class="verifyotps" @click="verifyOTP">Verify OTP</button>
           <button class="verifyotps" @click="sendOTP">Resend OTP</button>
+          <div style="display: flex; flex-direction: row;">
+            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 1, 0)"
+              @input="moveToNextField($event, 2)" class="otpinput" type="text" id="otpInput1" v-model="otp1"
+              maxlength="1" autofocus>
+            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 2, 1)"
+              @input="moveToNextField($event, 3)" class="otpinput" type="text" id="otpInput2" v-model="otp2"
+              maxlength="1">
+            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 3, 2)"
+              @input="moveToNextField($event, 4)" class="otpinput" type="text" id="otpInput3" v-model="otp3"
+              maxlength="1">
+            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 4, 3)"
+              @input="moveToNextField($event, 5)" class="otpinput" type="text" id="otpInput4" v-model="otp4"
+              maxlength="1">
+            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 5, 4)"
+              @input="moveToNextField($event, 6)" class="otpinput" type="text" id="otpInput5" v-model="otp5"
+              maxlength="1">
+            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 6, 5)"
+              @input="moveToNextField($event, 0)" class="otpinput" type="text" id="otpInput6" v-model="otp6"
+              maxlength="1">
+
+          </div>
+
+
+
+          <div v-if="verifyingotp" class="verifieds">
+            <a class="verifieds1">
+              Verifying OTP....
+            </a>
+          </div>
+
+          <div v-if="verifiedotps" class="verifieds">
+            <a class="verifieds1">
+              Success Verified OTP
+            </a>
+          </div>
+          <div v-if="wrongsOTPs" class="notequal">
+            <a class="notequal1">
+              Incorrect Input OTP
+            </a>
+          </div>
+
+          <button class="verifyotps" @click="verifyOTP" :disabled="verify">Verify OTP</button>
+        </div>
       </div>
+
+    </div>
   </div>
-  
-  </div>
-</div>
 </template>
 
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import axios from 'axios';
 
 const uploadedImageUrl = ref('');
@@ -55,99 +99,158 @@ const otp = ref('');//ge type
 const OTPverified = ref(false);
 const otpData = ref([]);//confirm
 const hideUpload = ref(false);
-const OTPsuccesful = ref (false)
-const verifiedotps = ref (false)
-const sendingOTPS = ref (false)
+const OTPsuccesful = ref(false)
+const verifiedotps = ref(false)
+const sendingOTPS = ref(false)
+const dlimaclick = ref(false)
+const verifyingotp = ref(false)
+const wrongsOTPs = ref(false)
+// const verify = ref (false)
+const otp1 = ref('');
+const otp2 = ref('');
+const otp3 = ref('');
+const otp4 = ref('');
+const otp5 = ref('');
+const otp6 = ref('');
 
+
+const moveToPrevField = (event, currentField, prevField) => {
+  if (event.key === 'Backspace' && event.target.value === '') {
+    const prevInput = document.getElementById(`otpInput${prevField}`);
+    if (prevInput) {
+      prevInput.focus();
+    }
+  } else if (event.target.value && !isNaN(event.target.value)) {
+    const nextInput = document.getElementById(`otpInput${currentField}`);
+    if (nextInput) {
+      nextInput.focus();
+    }
+  }
+};
+
+const moveToNextField = (event, nextField) => {
+  if (event.target.value && !isNaN(event.target.value)) {
+    const nextInput = document.getElementById(`otpInput${nextField}`);
+    if (nextInput) {
+      nextInput.focus();
+    }
+  }
+};
+
+const verify = computed(() => {
+  return otp1.value === '' || otp2.value === '' || otp3.value === '' || otp4.value === '' || otp5.value === '' || otp6.value === '';
+});
 
 const showUpload = () => {
-hideUpload.value = true
+  hideUpload.value = true
 }
 
 const handleFileUpload = (event) => {
-const file = event.target.files[0];
-if (file && file.type.startsWith('image/')) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    uploadedImageUrl.value = e.target.result;
-    showUpload();
-  };
-  reader.readAsDataURL(file);
-}
+  const file = event.target.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      uploadedImageUrl.value = e.target.result;
+      showUpload();
+    };
+    reader.readAsDataURL(file);
+  }
 };
 
 const sendOTP = async () => {
   sendingOTPS.value = true;
-try {
-  await axios.post(`http://172.31.10.148:8000/send-otp/${accountId}`);
-  
-  sendingOTPS.value = false
-  OTPsuccesful.value = true;
-  await fetchOTPData();
-  setTimeout(() => {
-    OTPsuccesful.value = false;
-    OTPsent.value = true;
+  try {
+    await axios.post(`http://172.31.10.148:8000/send-otp/${accountId}`);
+
+
+
+
+
+
+
+
+    await fetchOTPData();
+    sendingOTPS.value = false;
+    OTPsuccesful.value = true;
+    setTimeout(() => {
+
+      OTPsuccesful.value = false;
+      OTPsent.value = true;
     }, 2000);
 
-} catch (error) {
-  console.error('Error sending OTP:', error);
-}
+  } catch (error) {
+    console.error('Error sending OTP:', error);
+  }
 };
 
 const submitImage = async () => {
-if (!uploadedImageUrl.value) {
-  console.error('No image uploaded.');
-  return;
-}
-try {
-  const formData = new FormData();
-  const file = dataURItoBlob(uploadedImageUrl.value);
-  formData.append('signature', file);
-  await axios.post(`http://172.31.10.148:8000/update_account/${accountId}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
-} catch (error) {
-  console.error('Error uploading image:', error);
-}
+  if (!uploadedImageUrl.value) {
+    console.error('No image uploaded.');
+    return;
+  }
+  try {
+    const formData = new FormData();
+    const file = dataURItoBlob(uploadedImageUrl.value);
+    formData.append('signature', file);
+    await axios.post(`http://172.31.10.148:8000/update_account/${accountId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+  }
 };
 
 const dataURItoBlob = (dataURI) => {
-const byteString = atob(dataURI.split(',')[1]);
-const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-const arrayBuffer = new ArrayBuffer(byteString.length);
-const uint8Array = new Uint8Array(arrayBuffer);
-for (let i = 0; i < byteString.length; i++) {
-  uint8Array[i] = byteString.charCodeAt(i);
-}
-return new Blob([arrayBuffer], { type: mimeString });
+  const byteString = atob(dataURI.split(',')[1]);
+  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+  const arrayBuffer = new ArrayBuffer(byteString.length);
+  const uint8Array = new Uint8Array(arrayBuffer);
+  for (let i = 0; i < byteString.length; i++) {
+    uint8Array[i] = byteString.charCodeAt(i);
+  }
+  return new Blob([arrayBuffer], { type: mimeString });
 };
 
 const verifyOTP = () => {
-if (otpData.value.length > 0) {
-  if (parseInt(otpData.value[0].code) === parseInt(otp.value)) {
-    // OTPverified.value = true;
-    verifiedotps.value = true;
-    submitImage();
-    setTimeout(() => {
+  const fullOTP = otp1.value + otp2.value + otp3.value + otp4.value + otp5.value + otp6.value;
+
+  verifyingotp.value = true;
+  verify.value = true;
+  setTimeout(() => {
+    if (otpData.value.length > 0) {
+      if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
+        // OTPverified.value = true;
+        verifyingotp.value = false;
+        verifiedotps.value = true;
+        submitImage();
+        setTimeout(() => {
           window.location.reload();
-          }, 2000);
-  } else {
-  }   
-} else {
-  console.error('OTP data not preloaded.');
-  return;
-}
+        }, 2000);
+      } else {
+        verifyingotp.value = false;
+        wrongsOTPs.value = true;
+        setTimeout(() => {
+          wrongsOTPs.value = false
+        }, 2000);
+      }
+    } else {
+      console.error('OTP data not preloaded.');
+      return;
+    }
+  }, 2000);
+
+
 };
 
 const fetchOTPData = async () => {
-try {
-  const response = await axios.get('http://172.31.10.148:8000/get_otp_json');
-  otpData.value = response.data.filter(result => result.account_id == accountId);
-} catch (error) {
-  console.error('Error fetching OTP data:', error);
-}
+  try {
+    const response = await axios.get('http://172.31.10.148:8000/get_otp_json');
+    otpData.value = response.data.filter(result => result.account_id == accountId);
+  } catch (error) {
+    console.error('Error fetching OTP data:', error);
+  }
 };
 
 
@@ -160,95 +263,110 @@ try {
 
 
 <style scoped>
-.succesfullyotp{
- top:0;
- left:0;
- width: fit-content; /* Adjust width based on content */
- justify-self: center;
- display: flex;
- flex-direction: column;
- border: 1px solid #212121;
- background-color: #39b259;
- padding: 10px;
- margin: 10px auto;
- border-radius: 10px;
- box-shadow: 0px 0px 35px -2px #39b259;
-}
-.succesfullyotp1,.verifieds1{
- height: 20px;
- width: 100%;
- text-align: center;
- color: white;
+.succesfullyotp {
+  top: 0;
+  left: 0;
+  width: 200px;
+  /* Adjust width based on content */
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #39b259;
+  padding: 10px;
+  margin-top: 12px;
+  margin-left: 15px;
+  /* margin: 10px auto; */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;
 }
 
-.sign1{
-  display:flex;
+.succesfullyotp1,
+.verifieds1 {
+  height: 20px;
+  width: 100%;
+  text-align: center;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.sign1 {
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: auto;
-  width:200px;
+  width: 200px;
 }
+
 .buttonz {
-margin-top: 90px;
+  margin-top: 90px;
 }
 
 .uploaded-image {
-margin-top: 10px;
-max-width: 100%;
-height: 90px;
-width: auto;
-border: 1px solid black;
+  margin-top: 10px;
+  max-width: 200%;
+  height: 200px;
+  width: auto;
+  border: 1px solid black;
 }
+
 .submit-button {
-margin-top: 20px;
-  height: 30px;
-  width: 90px;
-   font-size: 13px;
-color: black;
-cursor: pointer;
-border-radius: 10px;
+  margin-top: 20px;
+  height: 60px;
+  width: 190px;
+  font-size: 22px;
+  color: black;
+  cursor: pointer;
+  border-radius: 10px;
   margin-left: 10px;
+  background-color: white;
+  border-radius: 2px solid black;
 }
+
 .custom-button {
-  height: 20px;
-  width: 100px;
-  font-size: 13px;
+  text-align: center;
+  height: 30px;
+  width: 200px;
   color: black;
   cursor: pointer;
   padding: 5px;
-  border: 1px solid black;
+  border: 2px solid black;
   border-radius: 5px;
   margin-left: 10px;
-  font-weight:bold;
-  font-size: 13px;
+  font-weight: bold;
+  font-size: 24px;
 
 }
 
 .custom-button:hover {
-background-color: black;
-color: white;
-border: 1px solid white;
+  background-color: black;
+  color: white;
+  border: 1px solid white;
 }
-.otpinput{
-font-size: 12px;
- border-radius: 5px;
- width: 50%;
- height: 15px;
- margin-bottom: 12px;
+
+.otpinput {
+  font-size: 24px;
+  border-radius: 5px;
+  width: 40px;
+  height: 45px;
+  margin-left: 9px;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 24px;
 
 }
-.Enterotps{
-font-weight:bold;
-  font-size: 18px;
+
+.Enterotps {
+  font-weight: bold;
+  font-size: 24px;
   text-align: left;
 }
 
 
-.verifyotps{
-height: 20px;
-  width: 100px; 
-  margin-top:-5px; 
+.verifyotps {
+  height: 40px;
+  width: 150px;
+  margin-top: 9px;
   cursor: pointer;
   border-radius:5px;
   font-size: 13px;
@@ -267,6 +385,49 @@ height: 20px;
  margin: 10px auto;
  border-radius: 10px;
  box-shadow: 0px 0px 35px -2px #39b259;
+  border-radius: 5px;
+  font-size: 20px;
 }
 
+.verifieds {
+  top: 0;
+  left: 0;
+  width: fit-content;
+  /* Adjust width based on content */
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #39b259;
+  padding: 10px;
+  margin: 10px auto;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;
+}
+
+.notequal1 {
+  height: 20px;
+  width: 100%;
+  text-align: center;
+  color: white;
+
+
+}
+
+.notequal {
+  top: 0;
+  left: 0;
+  width: 200px;
+  /* Adjust width based on content */
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid red;
+  padding: 10px;
+  margin-top: 12px;
+  margin-left: 60px;
+  /* margin: 10px auto; */
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px red, 0px 0px 10px red inset;
+
+}
 </style>

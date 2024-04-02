@@ -74,7 +74,8 @@ const authStore = useAuthStore();
    padding: 20px;
    color: #212121;
    border: 2px solid black;
-   box-shadow: 0px 0px 35px -2px black;
+   /* box-shadow: 0px 0px 35px -2px black; */
+   box-shadow: 0px 0px 10px black, 0px 0px 10px black inset;
 }
 .secondlogout.zoomed {  
   transform: scale(2); /* Zoom in by a factor of 2 */
@@ -91,6 +92,7 @@ const authStore = useAuthStore();
     height: 40px;
     justify-content: space-between;
     margin-top: 8px;
+    
  
  }
  
@@ -100,10 +102,12 @@ const authStore = useAuthStore();
     font-weight: bold;
     font-size: 20px;
     cursor: pointer;
+    
  }
 
  .yeslogout{
    margin-left: -20px;
+   
  }
 
  .nologout{
