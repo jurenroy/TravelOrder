@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div style="display: flex; flex-direction: column; ">
     <!-- <div v-if="load" class="loadings">
       <a class="loadings1">
