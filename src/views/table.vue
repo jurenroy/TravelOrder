@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div style="display: flex; flex-direction: column; ">
     
     <h2 style="display: flex; flex-direction: column; align-items: center;">History</h2>

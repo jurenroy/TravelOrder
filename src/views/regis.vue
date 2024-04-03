@@ -61,12 +61,15 @@
                </a>
             </div>
 
+            <div v-if="loadingregis" class="correct">
+          <a class="correct1">
+            Registering....
+          </a>
+        </div>
+
             <div v-else-if="pleaseWait" class="correct">
                <a class="correct1">
-                  Registered!!
-               </a>
-               <a class="correct2">
-                  Please wait for a moment....
+                 Account Registered!! 
                </a>
 
             </div>
@@ -122,6 +125,7 @@ export default {
          disablename: true,
          lods: false,
          regiss: false,
+         loadingregis:false,
       };
    },
    computed: {
@@ -151,7 +155,10 @@ export default {
 
          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
          const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
-
+         this.loadingregis = true;
+         this.submit2 = true;
+         setTimeout(() => {
+              
          if (this.email === '' && this.password === '' && this.account_type === '' && this.name === '') {
 
             this.isValid = true;
@@ -214,7 +221,8 @@ export default {
             axios.post('http://172.31.10.148:8000/add_account/', formData)
                .then(response => {
                   if (response.status === 200) {
-                     this.submit2 = true;
+                     this.loadingregis = false;
+                     
                      this.pleaseWait = true;
                      this.account_type = '';
                      this.name = '';
@@ -238,6 +246,7 @@ export default {
                   this.submit2 = false;
                });
          }
+      }, 3000);
 
       },
       fetchData() {

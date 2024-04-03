@@ -8,45 +8,45 @@
           <div style="display: flex; flex-direction: column;  width: 100%;">
             <label class="n">Name:</label>
             <!-- Dropdown for names -->
-            <select v-model="selectedName" class='inputsss' id='namein' style="height: 35px; border: 2px solid black; width: 90%;" required >
+            <select v-model="selectedName" class='inputsss' id='namein' style="height: 35px;  border: 2px solid black; width: 90%; " :class="{ 'red-border': isRed && selectedName === '' }" required >
               <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{name.first_name }} {{ name.middle_init }}</option>
             </select>
 
             <label class="p"> Position: </label>
-            <input @keydown.enter="form_submit" type="text" v-model="position" class='inputsss' id='positionin' required 
+            <input @keydown.enter="form_submit" type="text" v-model="position" :class="{ 'red-border': isRed && position === '' }" class='inputsss' @input="resetRed" id='positionin' required 
               readonly>
 
             <label class="dd"> Depature Date: </label>
-            <input @keydown.enter="form_submit" type="date" v-model="departure" class='inputsss' id='departurein' 
+            <input @keydown.enter="form_submit" type="date" v-model="departure" class='inputsss' :class="{ 'red-border': isRed && departure === '' }" @input="resetRed" id='departurein' 
               required>
 
             <label class="d"> Destination: </label>
-            <input @keydown.enter="form_submit" type="text" v-model="destination" class='inputsss' id='destinationin'
+            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }" @input="resetRed" type="text" v-model="destination" class='inputsss' id='destinationin'
               required>
 
 
           </div>
           <div style="display: flex; flex-direction: column;  width: 100%;">
             <label class="da"> Date: </label>
-            <input @keydown.enter="form_submit" type="type" v-model="date" class='inputsss' id='datein' required
+            <input @keydown.enter="form_submit" type="type"  v-model="date" class='inputsss' id='datein'   required
               readonly>
 
             <label class="ds"> Division/Section: </label>
-            <input @keydown.enter="form_submit" type="text" v-model="division" class='inputsss' id='divisionin' required
+            <input @keydown.enter="form_submit" type="text" v-model="division" :class="{ 'red-border': isRed && division === '' }" @input="resetRed" class='inputsss'  id='divisionin' required
               readonly>
 
             <label class="os"> Official Station:</label>
-            <input @keydown.enter="form_submit" type="text" v-model="station" class='inputsss' id='stationin' required
+            <input @keydown.enter="form_submit" type="text" v-model="station"  class='inputsss' id='stationin' required
               readonly>
 
             <label class="ad"> Arrival Date: </label>
-            <input @keydown.enter="form_submit" type="date" v-model="arrival" class='inputsss' id='arrivalin' required > 
+            <input @keydown.enter="form_submit" type="date" v-model="arrival" :class="{ 'red-border': isRed && arrival === '' }" @input="resetRed" class='inputsss' id='arrivalin' required > 
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; justify-content: center; ">
           <label class="pt"> Purpose of Travel: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="purpose" class='inputss' id='purposein' required >
+          <input @keydown.enter="form_submit" type="text" v-model="purpose"  :class="{ 'red-border': isRed && purpose === '' }" @input="resetRed" class='inputss' id='purposein' required >
 
           <label class="per"> Per Deims/Expense Allowed</label>
           <input @keydown.enter="form_submit" type="text" v-model="pdea" class='inputss' id='pdeain' required>
@@ -99,6 +99,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      isRed: false,
       selectedName: '',
       names: [],
       position: '',
@@ -122,10 +123,6 @@ export default {
       positionID: '',
       submitting: false,
       divisionID: '',
-      accounts: [],
-      accountz: [],
-      accountIdz: localStorage.getItem('accountId')
-
     };
   },
   computed: {
@@ -136,6 +133,9 @@ export default {
          porpos() {return this.purpose !== ''},
    },
   methods: {
+    resetRed() {
+      this.isRed = false; // Reset the isRed flag when typing in the input
+    },
     // Function to fetch the selected employee based on selectedName
     fetchSelectedEmployee() {
       if (this.selectedName) {
@@ -179,7 +179,10 @@ export default {
       return `${yyyy}-${mm}-${dd}`;
     },
     form_submit() {
+      this.isRed=true
+      
       if (
+        
         this.selectedName === '' ||
         this.position === '' ||
         this.departure === '' ||
@@ -189,7 +192,9 @@ export default {
         this.station === '' ||
         this.arrival === '' ||
         this.purpose === ''
+        
       ) {
+        // this.isRed = false;
         this.isValid = true;
         
         setTimeout(() => {
@@ -242,6 +247,7 @@ export default {
       this.remarks = '';
       this.pleaseWait = true;
       this.submitting = true;
+      this.isRed=false
     },
     fetchData() {
       fetch('http://172.31.10.148:8000/get_names_json/')
@@ -280,24 +286,6 @@ export default {
         .catch(error => {
           console.error('Error fetching divisions:', error);
         });
-        // Fetch divisions data
-        if (this.names){
-      fetch('http://172.31.10.148:8000/get_accounts_json/')
-        .then(response => response.json())
-        .then(data => {
-          if (this.accountIdz){
-            this.accounts = data;
-            this.accountz = this.accounts.find(acc => parseInt(acc.account_id) === parseInt(this.accountIdz));
-            if (this.accountz.type_id == 1){
-            } else{
-              this.names = this.names.filter(nem => parseInt(nem.name_id) === parseInt(this.accountz.name_id))
-            }
-          }else{
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching accounts:', error);
-        });}
     },
   },
   watch: {
@@ -313,6 +301,9 @@ export default {
 
 
 <style scoped>
+.red-border {
+  border: 1px solid red;
+}
 .first {
   width: 20%;
   min-height: 10vh;

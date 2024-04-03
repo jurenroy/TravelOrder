@@ -83,7 +83,8 @@
               @input="moveToNextField($event, 0)" class="otpedit" type="text" id="otpInput6" v-model="otp6"
               v-if="showotp" maxlength="1">
           </div>
-          <button class="verifyotp" @click="verifyOTP" v-if="showotp" :disabled="isVerify">Verify OTP</button>
+          <button class="verifyotp" @click="verifyOTP" v-if="showotp" :disabled="isVerify || verifydisab">Verify OTP</button>
+          <button class="verifyotp VO" @click="sendOTP"  v-if="showotp" :disabled="resed">Resend OTP</button>
         </div>
 
         <!-- pag send sa otp -->
@@ -111,6 +112,13 @@
         <div v-if="wrongOTPs" class="notequal">
           <a class="notequal1">
             Incorrect Input OTP
+          </a>
+        </div>
+
+        <!-- expired1 OTP -->
+        <div v-if="expi" class="notequal">
+          <a class="notequal1">
+            OTP Expired
           </a>
         </div>
 
@@ -158,6 +166,9 @@ const sendingOTP = ref(false)
 const buttdis = ref(false);
 const veryOTP = ref(false);
 const wrongOTPs = ref (false);
+const resed = ref(true)
+const expi = ref (false)
+const verifydisab = ref(false);
 //  const isNewPassword = ref (false)
 const otp1 = ref('');
 const otp2 = ref('');
@@ -245,7 +256,16 @@ const dataURItoBlob = (dataURI) => {
 
 
 const sendOTP = async () => {
+  resed.value=true;
   sendingOTP.value = true;
+  verifydisab.value = false;
+    
+  otp1.value = ''
+  otp2.value = ''
+  otp3.value = ''
+  otp4.value = ''
+  otp5.value = ''
+  otp6.value = ''
   try {
 
     await axios.post(`http://172.31.10.148:8000/send-otp/${accountIdz}`);
@@ -310,12 +330,28 @@ const submitImage = async () => {
 
 const verifyOTP = () => {
   const fullOTP = otp1.value + otp2.value + otp3.value + otp4.value + otp5.value + otp6.value;
+  verifydisab.value = true;
   veryOTP.value = true;
   isVerify.value=true;
   setTimeout(() => {
     veryOTP.value = false;
     if (otpData.value.length > 0) {
+      const currentTime = getCurrentTimeAdjusted();
+    const backendExpiryTime = otpData.value[0].expires_at;
+
+
+    const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
+    if (expiryTimeAdjusted > currentTime) {
+
+      console.log('OTP still valid');  
+      verifydisab.value = false;
+      wrongOTPs.value = true 
+      setTimeout(() => {
+          wrongOTPs.value = false
+        }, 3000);
+      verifydisab.value = false
       if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
+        wrongOTPs.value = false;
         submitImage();
         updateProfile();
       } else {
@@ -326,6 +362,18 @@ const verifyOTP = () => {
         }, 3000);
       }
     } else {
+      
+      console.log('OTP expired');
+      expi.value = true
+      resed .value = false
+      setTimeout(() => {
+        expi.value=false
+        verifydisab.value = true
+        }, 2000);
+
+     
+    }
+    } else {
       console.error('OTP data not preloaded.');
       return;
     }
@@ -333,6 +381,40 @@ const verifyOTP = () => {
 
 };
 
+const adjustExpiryTime = (expiryTime) => {
+  const expiryTimeParts = expiryTime.split(':');
+  let hours = parseInt(expiryTimeParts[0]);
+  let minutes = parseInt(expiryTimeParts[1]);
+  let seconds = parseInt(expiryTimeParts[2]);
+
+  // Ensure 24-hour format
+  hours = hours % 24;
+
+  // Format hours, minutes, seconds
+  hours = (hours < 10) ? '0' + hours : hours;
+  minutes = (minutes < 10) ? '0' + minutes : minutes;
+  seconds = (seconds < 10) ? '0' + seconds : seconds;
+
+  return `${hours}:${minutes}:${seconds}`;
+};
+
+
+
+
+const getCurrentTimeAdjusted = () => {
+  const today = new Date();
+  today.setHours(today.getHours() - 8); // Add 8 hours
+  let hr = today.getHours();
+  let mn = today.getMinutes();
+  let sc = today.getSeconds();
+
+  // Ensure leading zero for single digit values
+  hr = (hr < 10) ? '0' + hr : hr;
+  mn = (mn < 10) ? '0' + mn : mn;
+  sc = (sc < 10) ? '0' + sc : sc;
+
+  return `${hr}:${mn}:${sc}`;
+};
 
 const updateProfile = () => {
   const formData = new FormData();
@@ -545,19 +627,19 @@ export default {
   justify-self: center;
   display: flex;
   flex-direction: column;
-  border: 1px solid red;
-  background-color: #c95e58;
+  border: 1px solid #c95e58;
+  /* background-color: #c95e58; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 35px -2px #c95e58;
+  box-shadow: 0px 0px 10px #c95e58, 0px 0px 10px #c95e58 inset;;
 }
 
 .notequal1 {
   height: 20px;
   width: 100%;
   text-align: center;
-  color: white;
+  color: black;
 
 }
 
@@ -611,12 +693,12 @@ export default {
   justify-self: center;
   display: flex;
   flex-direction: column;
-  border: 1px solid #212121;
-  background-color: #39b259;
+  border: 1px solid #39b259;
+  /* background-color: #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 35px -2px #39b259;
+  box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;;
 }
 
 .succesfully1,
@@ -624,7 +706,7 @@ export default {
   height: 20px;
   width: 100%;
   text-align: center;
-  color: white;
+  color: black;
 }
 
 .verifyOTPS {
@@ -642,12 +724,12 @@ export default {
   justify-self: center;
   display: flex;
   flex-direction: column;
-  border: 1px solid #212121;
-  background-color: #39b259;
+  border: 1px solid #39b259;
+  /* background-color: #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 35px -2px #39b259;
+  box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;;
 }
 
 .verifyotp {
@@ -657,6 +739,10 @@ export default {
   cursor: pointer;
   border-radius: 5px;
   font-size: 13px;
+}
+
+.VO{
+  margin-top: 1px;
 }
 
 .otpedit {
@@ -678,26 +764,26 @@ export default {
   justify-self: center;
   display: flex;
   flex-direction: column;
-  border: 1px solid #212121;
-  background-color: #c95e58;
+  border: 1px solid #c95e58;
+  /* background-color: #c95e58; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 35px -2px #c95e58;
+  box-shadow: 0px 0px 10px #c95e58, 0px 0px 10px #c95e58 inset;;
 }
 
 .editwronge1 {
   height: 20px;
   width: 100%;
   text-align: center;
-  color: white;
+  color: black;
 
 }
 
 .editwronge2,
 .correct1,
 .correct2 {
-  color: white;
+  color: black;
 }
 
 .Enterotp {
