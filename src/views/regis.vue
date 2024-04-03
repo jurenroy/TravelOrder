@@ -32,9 +32,9 @@
                      @keydown.enter='regis_submit'>
 
                   <div style=" color: red;">
-                     <div v-if="!upper && !regiss">* Upper Case</div>
-                     <div v-if="!lower && !regiss">* Lower Case</div>
-                     <div v-if="!charz && !regiss">* Must contain 8 characters</div>
+                     <div v-if="!upper && !regiss">*At least one Upper Case</div>
+                     <div v-if="!lower && !regiss">*At least one Lower Case</div>
+                     <div v-if="!charz && !regiss">* At least 8 characters long</div>
                   </div>
 
                </div>
