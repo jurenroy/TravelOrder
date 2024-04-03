@@ -1,13 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column; ">
-    <!-- <div v-if="load" class="loadings">
-      <a class="loadings1">
-        Loading
-      </a>
-      <a class="loadings2">
-        Please wait for a moment....
-      </a>
-    </div> -->
+    
     <h2 style="display: flex; flex-direction: column; align-items: center;">History</h2>
     <div v-if="load" class="loadings">
       <img src='../assets/loading.gif' width="auto" height="100px" />
@@ -15,6 +8,38 @@
     <div style="display: flex; flex-direction: column; align-items: center;" v-if="otp">
       <otpz/>
     </div>
+    <div class="note" v-if="addNote">
+    <!-- Title and Close Icon -->
+    <div class="title-bar">
+      <div class="title">Add note</div>
+      <div class="close-icon" @click="closeNote">X</div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
+      <div class="butokz">
+      <button @click="postNote">Save</button>
+      <button @click="postNote">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div class="note" v-if="viewNote">
+    <!-- Title and Close Icon -->
+    <div class="title-bar">
+      <div class="title">View note</div>
+      <div class="close-icon" @click="closeNote">X</div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <textarea v-model="noteText" rows="3" readonly></textarea>
+      <div class="butokz">
+      <button @click="closeNote">Close</button>
+      </div>
+    </div>
+  </div>
+
     <div v-if="mawala" class="outer">
       <div class="scrollable-table">
         <table>
@@ -47,6 +72,14 @@
               </td>
               <td v-if="siga" style="display: flex; justify-content: center;"><button
                   @click="signature1(item.travel_order_id)">Recommend</button></td>
+              <td v-if="siga && item.travel_order_id !== notenum && item.note == null && acc.name_id == 37 " style="display: flex; justify-content: center;"><button
+                  @click="openNote(item.travel_order_id)">Add note</button></td>
+                  <td v-if="siga && addNote == true && item.travel_order_id == notenum && acc.name_id == 37 " style="display: flex; justify-content: center;"><button
+                  @click="closeNote()">Close Add note</button></td>
+              <td v-if="item.note !== null && notenum !== item.travel_order_id" style="display: flex; justify-content: center;"><button
+                  @click="viewNotez(item.note,item.travel_order_id)">View note</button></td>
+              <td v-if="item.note !== null && notenum == item.travel_order_id" style="display: flex; justify-content: center;"><button
+                  @click="closeNote()">Close View note</button></td>
               <td v-if="siga1" style="display: flex; justify-content: center;"><button
                   @click="signature2(item.travel_order_id)">Approve</button></td>
               <!-- Add more table data cells as needed -->
@@ -98,7 +131,11 @@
         otp: false,
         verifiedOTPs: localStorage.getItem('verifiedOTPs'),
         load: true,
-        mawala: false
+        mawala: false,
+        addNote: false,
+        viewNote: false,
+        notenum: 0,
+        noteText: ''
       };
     },
     created() {
@@ -110,6 +147,46 @@
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
+    viewNotez(nutz,numx) {
+      this.viewNote = true,
+      console.log("Note opened");
+      this.noteText = nutz
+      this.notenum = numx
+    },
+    openNote(numz) {
+      this.addNote = true,
+      this.notenum = numz
+      console.log("Note opened");
+      this.noteText = ''
+    },
+    closeNote() {
+      this.addNote = false,
+      this.viewNote = false,
+      this.notenum = 0
+      console.log("Note closed");
+    },
+    postNote() {
+      // Axios POST request logic here
+      const formData = new FormData();
+      formData.append('note', this.noteText);
+
+      axios.post(`http://172.31.10.148:8000/update_form/${this.notenum}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(() => {
+        this.fetchData();
+        this.selectedTravelOrderId = 0;
+        useAuthStore().updateVerifiedOTPs('false');
+        localStorage.setItem('verifiedOTPs', 'false');
+        this.otp = false;
+      }).catch(error => {
+        console.error('Error:', error);
+      });
+
+      console.log("Note posted:", this.noteText);
+      this.closeNote()
+    },
     updateVerifiedOTPs(event) {
       if (event.key === 'verifiedOTPs') {
         this.verifiedOTPs = event.newValue;
@@ -340,4 +417,70 @@ th {
   font-weight: bold;
   font-size: 20px;
 }
+.note {
+  width: 300px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+
+
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.butokz {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.close-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: #333;
+}
+
+.content {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  height: 75px;
+}
+
+button {
+  background-color: #656867;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  width: fit-content;
+}
+button:hover {
+  background-color: #141414;
+  color: white;
+}
+
 </style>
