@@ -220,8 +220,11 @@ const moveToPrevField = (event, currentField, prevField) => {
 };
 
 const moveToNextField = (event, nextField) => {
+  event.target.value = event.target.value.replace(/[^0-9]/g, "");
+  
   if (event.target.value && !isNaN(event.target.value)) {
     const nextInput = document.getElementById(`otpInput${nextField}`);
+    
     if (nextInput) {
       nextInput.focus();
     }
