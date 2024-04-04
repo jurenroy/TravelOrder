@@ -9,11 +9,11 @@
                <div style="display: flex; flex-direction: column;  width: 100%;">
                   <label class="n">Email: </label>
                   <input type="email" v-model="email" class='inputsss' id='email' required
-                     @keydown.enter='login_submit'>
+                     @keydown.enter='login_submit'   :class="{ 'red-border': isRed && email === '' }" @input="resetRed">
 
                   <label class="p"> Password: </label>
                   <input type="password" v-model="password" class='inputsss' id='password' required
-                     @keydown.enter='login_submit'>
+                     @keydown.enter='login_submit'   :class="{ 'red-border': isRed && password === '' }" @input="resetRed">
 
 
                </div>
@@ -75,53 +75,69 @@ const submitting = ref(false);
 const error = ref('');
 const authStore = useAuthStore();
 
+const isRed = ref (false);
+
+
 const accountIdz = localStorage.getItem('accountId');
+
+const resetRed = () => {
+   isRed.value = false;
+}
 
 const login_submit = () => {
    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
    const account = accounts.value.find(acc => acc.email === email.value);
 
+   isRed.value = true
+   
    if (email.value === '' && password.value === '') {
       isValid.value = true;
+      isRed.value = true
       setTimeout(() => {
          isValid.value = false;
-      }, 3000);
+      }, 2000);
    } else if (email.value === '') {
       error.value = 'Input Email';
       isValid.value = true;
+      isRed.value = true
       setTimeout(() => {
          isValid.value = false;
-      }, 3000);
+      }, 2000);
    } else if (emailPattern.test(email.value) === false) {
       error.value = 'Not Valid Email';
       isEmail.value = true;
+      isRed.value = true
       setTimeout(() => {
          isEmail.value = false;
-      }, 3000);
+      }, 2000);
    } else if (!account) {
       error.value = 'Email not Found';
       isEmail.value = true;
+      isRed.value = true
       setTimeout(() => {
          isEmail.value = false;
-      }, 3000);
+      }, 2000);
    } else if (password.value === '') {
       isValid.value = true;
+      isRed.value = true
       setTimeout(() => {
          isValid.value = false;
-      }, 3000);
+      }, 2000);
    } else if (passvalid.test(password.value) === false) {
       error.value = 'Invalid Password Format';
       isEmail.value = true;
+      isRed.value = true
       setTimeout(() => {
          isEmail.value = false;
-      }, 3000);
+      }, 2000);
    } else if (account.password !== password.value) {
       error.value = 'Wrong Password';
       isEmail.value = true;
+      isRed.value = true
       setTimeout(() => {
          isEmail.value = false;
-      }, 3000);
+      }, 2000);
    } else {
       email.value = '';
       password.value = '';
@@ -130,6 +146,7 @@ const login_submit = () => {
       localStorage.setItem('accountId', account.account_id);
       submitting.value = true;
       pleaseWait.value = true;
+      isRed.value = false
 
       setTimeout(() => {
          window.location.reload();
@@ -149,10 +166,26 @@ const fetchAccounts = () => {
 };
 
 fetchAccounts();
+
+const emil=()=>{
+  
+      return this.email !== ''
+    
+};
+
+const pas=()=>{
+  
+  return this.password !== ''
+
+}
 </script>
 
 
 <style scoped>
+.red-border {
+  border: 2px solid red;
+}
+
 .first {
    width: 20%;
    min-height: 10vh;

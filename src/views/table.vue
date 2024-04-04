@@ -469,9 +469,9 @@ textarea {
 }
 
 button {
-  background-color: #656867;
-  border: none;
-  color: white;
+  background-color: white;
+  border: 1px solid black;
+  color: black;
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 5px;
@@ -479,7 +479,7 @@ button {
   width: fit-content;
 }
 button:hover {
-  background-color: #141414;
+  background-color: black;
   color: white;
 }
 

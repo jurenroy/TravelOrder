@@ -8,45 +8,55 @@
           <div style="display: flex; flex-direction: column;  width: 100%;">
             <label class="n">Name:</label>
             <!-- Dropdown for names -->
-            <select v-model="selectedName" class='inputsss' id='namein' style="height: 35px;  border: 2px solid black; width: 90%; " :class="{ 'red-border': isRed && selectedName === '' }" required >
-              <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{name.first_name }} {{ name.middle_init }}</option>
+            <select v-model="selectedName" class='inputsss' id='namein'
+              style="height: 35px; border: 2px solid black; width: 90%;"
+              :class="{ 'red-border': isRed && selectedName === '' }" required>
+              <option value="" disabled>Select a Name</option>
+              <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }},
+                {{ name.first_name }} {{ name.middle_init }}</option>
             </select>
 
             <label class="p"> Position: </label>
-            <input @keydown.enter="form_submit" type="text" v-model="position" :class="{ 'red-border': isRed && position === '' }" class='inputsss' @input="resetRed" id='positionin' required 
-              readonly>
+            <input @keydown.enter="form_submit" type="text" v-model="position"
+              :class="{ 'red-border': isRed && position === '' }" class='inputsss' @input="resetRed" id='positionin'
+              required readonly>
 
             <label class="dd"> Depature Date: </label>
-            <input @keydown.enter="form_submit" type="date" v-model="departure" class='inputsss' :class="{ 'red-border': isRed && departure === '' }" @input="resetRed" id='departurein' 
-              required>
+            <input @keydown.enter="form_submit" type="date" v-model="departure" class='inputsss'
+              :class="{ 'red-border': isRed && departure === '' }" @input="resetRed" id='departurein' required>
 
             <label class="d"> Destination: </label>
-            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }" @input="resetRed" type="text" v-model="destination" class='inputsss' id='destinationin'
-              required>
+            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }" @input="resetRed"
+              type="text" v-model="destination" class='inputsss' id='destinationin' required>
 
 
           </div>
           <div style="display: flex; flex-direction: column;  width: 100%;">
             <label class="da"> Date: </label>
-            <input @keydown.enter="form_submit" type="type"  v-model="date" class='inputsss' id='datein'   required
+            <input @keydown.enter="form_submit" type="type" v-model="date" class='inputsss' id='datein' required
               readonly>
 
             <label class="ds"> Division/Section: </label>
-            <input @keydown.enter="form_submit" type="text" v-model="division" :class="{ 'red-border': isRed && division === '' }" @input="resetRed" class='inputsss'  id='divisionin' required
-              readonly>
+            <input @keydown.enter="form_submit" type="text" v-model="division"
+              :class="{ 'red-border': isRed && division === '' }" @input="resetRed" class='inputsss' id='divisionin'
+              required readonly>
 
             <label class="os"> Official Station:</label>
-            <input @keydown.enter="form_submit" type="text" v-model="station"  class='inputsss' id='stationin' required
+            <input @keydown.enter="form_submit" type="text" v-model="station" class='inputsss' id='stationin' required
               readonly>
 
             <label class="ad"> Arrival Date: </label>
-            <input @keydown.enter="form_submit" type="date" v-model="arrival" :class="{ 'red-border': isRed && arrival === '' }" @input="resetRed" class='inputsss' id='arrivalin' required > 
+            <input @keydown.enter="form_submit" type="date" v-model="arrival"
+              :class="{ 'red-border': isRed && arrival === '' }" @input="resetRed" class='inputsss' id='arrivalin'
+              required>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; justify-content: center; ">
           <label class="pt"> Purpose of Travel: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="purpose"  :class="{ 'red-border': isRed && purpose === '' }" @input="resetRed" class='inputss' id='purposein' required >
+          <input @keydown.enter="form_submit" type="text" v-model="purpose"
+            :class="{ 'red-border': isRed && purpose === '' }" @input="resetRed" class='inputss' id='purposein'
+            required>
 
           <label class="per"> Per Deims/Expense Allowed</label>
           <input @keydown.enter="form_submit" type="text" v-model="pdea" class='inputss' id='pdeain' required>
@@ -126,12 +136,23 @@ export default {
     };
   },
   computed: {
-      nem() { return this.selectedName !== ''},
-         departor() { return this.departure !== ''},
-         destinashwon() { return this.destination !== ''},
-         araybal() {return this.arrival !== ''},
-         porpos() {return this.purpose !== ''},
-   },
+    nem() {
+      return this.selectedName;
+    },
+    departor() {
+      return this.departure !== ''
+    },
+    destinashwon() {
+      return this.destination !== ''
+    },
+    araybal() {
+      return this.arrival !== ''
+    },
+    porpos() {
+      return this.purpose !== ''
+    },
+
+  },
   methods: {
     resetRed() {
       this.isRed = false; // Reset the isRed flag when typing in the input
@@ -179,10 +200,10 @@ export default {
       return `${yyyy}-${mm}-${dd}`;
     },
     form_submit() {
-      this.isRed=true
-      
+      // this.isRed = true
+
       if (
-        
+
         this.selectedName === '' ||
         this.position === '' ||
         this.departure === '' ||
@@ -192,11 +213,12 @@ export default {
         this.station === '' ||
         this.arrival === '' ||
         this.purpose === ''
-        
+
       ) {
         // this.isRed = false;
+        this.isRed = true
         this.isValid = true;
-        
+
         setTimeout(() => {
           this.isValid = false;
         }, 3000);
@@ -247,7 +269,7 @@ export default {
       this.remarks = '';
       this.pleaseWait = true;
       this.submitting = true;
-      this.isRed=false
+      this.isRed = false
     },
     fetchData() {
       fetch('http://172.31.10.148:8000/get_names_json/')
@@ -302,8 +324,9 @@ export default {
 
 <style scoped>
 .red-border {
-  border: 1px solid red;
+  border: 2px solid red;
 }
+
 .first {
   width: 20%;
   min-height: 10vh;
@@ -320,9 +343,9 @@ export default {
   background-color: white;
   width: 80vw;
   max-width: 950px;
-  
+
   height: auto;
-  
+
   padding: 20px;
   color: #212121;
   border: 2px solid black;

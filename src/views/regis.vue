@@ -16,7 +16,7 @@
                   </select>
 
                   <label class="p"> Name:</label>
-                  <select v-model="name" class='inputsss' id='namein'
+                  <select v-model="name" class='regsinput' id='namein'
                      style="height: 35px; border: 2px solid black; width: 93%;" required :disabled='disablename'
                      @keydown.enter='regis_submit'>
                      <option v-for="name in namez" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{
@@ -25,16 +25,18 @@
 
                   <label class="n">Email:</label>
                   <input type="email" v-model="email" class='regsinput' id='email' required
+                  :class="{ 'red-border': isRed && email === '' }" @input="resetRed"
                      @keydown.enter='regis_submit'>
 
                   <label class="p"> Password: </label>
                   <input type="password" v-model="password" class='regsinput' id='password' required
+                  :class="{ 'red-border': isRed && password === '' }" @input="resetRed"
                      @keydown.enter='regis_submit'>
 
                   <div style=" color: red;">
                      <div v-if="!upper && !regiss">*At least one Upper Case</div>
                      <div v-if="!lower && !regiss">*At least one Lower Case</div>
-                     <div v-if="!charz && !regiss">* At least 8 characters long</div>
+                     <div v-if="!charz && !regiss">*At least 8 characters long</div>
                   </div>
 
                </div>
@@ -108,6 +110,7 @@ export default {
 
    data() {
       return {
+         isRed: false,
          types: [],
          names: {},
          namez: [],
@@ -148,19 +151,30 @@ export default {
       }
    },
    methods: {
+      emai() {
+         return this.email !== ''
+    },
+    pasw() {
+      return this.password !== ''
+    },
+    resetRed() {
+      this.isRed = false; // Reset the isRed flag when typing in the input
+    },
       disablenames() {
          this.disablename = false;
       },
+      resetRed() {
+      this.isRed = false; // Reset the isRed flag when typing in the input
+    },
+
       regis_submit() {
 
          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
          const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
-         this.loadingregis = true;
-         this.submit2 = true;
-         setTimeout(() => {
-              
+         
          if (this.email === '' && this.password === '' && this.account_type === '' && this.name === '') {
-
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
@@ -169,24 +183,32 @@ export default {
 
 
          } else if (this.account_type === '') {
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
             }, 3000);
 
          } else if (this.name === '') {
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
             }, 3000);
 
          } else if (this.email === '') {
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
             }, 3000);
 
          } else if (emailPattern.test(this.email) === false) {
+            this.isRed = true
+            this.loadingregis = false;
             this.isEmail = true;
             this.valid = 'Email'; // Set isEmail to true to show the error message
             this.valid3 = '';
@@ -195,12 +217,16 @@ export default {
             }, 3000);
 
          } else if (this.password === '') {
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
             }, 3000);
 
          } else if (passvalid.test(this.password) === false) {
+            this.isRed = true
+            this.loadingregis = false;
             this.isEmail = true;
             this.valid = 'Password';
             // this.valid3 = 'Must contain A-a letters & numbers with 8 characters...'
@@ -209,6 +235,9 @@ export default {
                this.lods = true
             }, 3000);
          } else {
+            this.loadingregis = true;
+            this.submit2 = true;
+         setTimeout(() => {
             const formData = {
                type_id: '' + this.account_type,
                name_id: '' + this.name,
@@ -245,8 +274,9 @@ export default {
                   console.error('Error submitting form:', error);
                   this.submit2 = false;
                });
+            },2000);
          }
-      }, 3000);
+      
 
       },
       fetchData() {
@@ -287,6 +317,10 @@ export default {
 
 
 <style scoped>
+.red-border {
+  border: 2px solid red;
+}
+
 .first {
    width: 20%;
    min-height: 10vh;
