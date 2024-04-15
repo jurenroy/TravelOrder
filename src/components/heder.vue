@@ -5,6 +5,17 @@
        <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
        <img class="ima" src="../assets/bago.png" alt="Description of the image">
     </div>
+    <div style="display: flex; margin-top: -40px">
+      <h1 style="position: absolute; margin-top: -10px; margin-left: -120px;">Status:</h1>
+      <h1 :style="{ position: 'absolute', marginTop: '-10px', marginLeft: '-20px', color: setEmployee == selectedEmployee ? 'black' : 'red' }" v-if="setEmployee === 20">In</h1>
+      <h1 :style="{ position: 'absolute', marginTop: '-10px', marginLeft: '-20px', color: setEmployee == selectedEmployee ? 'black' : 'red' }" v-else>Sub</h1>
+      <button style="position: absolute; margin-top: 8px; margin-left: 50px; height: 30px;" v-if="setEmployee !== selectedEmployee" @click="setAccount">Save Changes</button>
+      <select v-model="setEmployee" style="position: absolute; margin-top: 25px; margin-left: -120px;">
+        <option v-for="employee in employees" :key="employee.employee_id" :value="employee.name_id">
+          {{ getName(employee.name_id) }}
+        </option>
+      </select>
+    </div>
 
     <div class="imagediv2">
       <div>
@@ -28,24 +39,54 @@
  const accountIdz = localStorage.getItem('accountId');
  
  const accounts = ref([]);
+ const employees = ref([]);
  const names = ref([]);
  const name = ref('')
  const nameLoaded = ref(false)
+ const selectedEmployee = ref(null); // Store the selected employee ID
+ const setEmployee = ref(null); // Store the selected employee ID
 
- 
- 
- const fetchAccounts = async () => {
+ const setAccount = async () => {
    try {
-     const response = await axios.get('http://172.31.10.148:8000/get_accounts_json');
-     accounts.value = response.data;
+     const response = await axios.post(`http://172.31.10.164:8000/update_employee/${setEmployee.value}`);
+     window.location.reload();
    } catch (error) {
      console.error('Error fetching accounts:', error);
    }
  };
  
+ 
+ const fetchAccounts = async () => {
+   try {
+     const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
+     accounts.value = response.data;
+   } catch (error) {
+     console.error('Error fetching accounts:', error);
+   }
+ };
+
+ const fetchEmployee = async () => {
+   try {
+     const response = await axios.get('http://172.31.10.164:8000/get_employees_json');
+     employees.value = response.data.filter(emp => emp.chief > 0)
+       // Find the first employee with a non-null 'rd' property and set its 'name_id' as selectedEmployee
+      const selectedEmp = response.data.find(emp => emp.rd !== null);
+      if (selectedEmp) {
+        setEmployee.value = selectedEmp.name_id;
+        selectedEmployee.value = selectedEmp.name_id;
+      } else {
+        setEmployee.value = null; // Set selectedEmployee to null if no employee meets the condition
+        selectedEmployee.value = null;
+      }
+   } catch (error) {
+     console.error('Error fetching employees:', error);
+   }
+ };
+
+ 
  const fetchNames = async () => {
    try {
-     const response = await axios.get('http://172.31.10.148:8000/get_names_json');
+     const response = await axios.get('http://172.31.10.164:8000/get_names_json');
      names.value = response.data;
  
      const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
@@ -65,13 +106,20 @@
    }
  };
 
- const convert = async () => {
-   name.value = name.value.toUpperCase()
- };
+ // Define the function to get the formatted name
+ const getName = (nameId) => {
+  const namec = names.value.find(name => name.name_id === nameId);
+  if (namec) {
+    const { first_name, middle_init, last_name } = namec;
+    return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
+  }
+  return 'Unknown';
+};
+ 
  
  fetchAccounts();
+ fetchEmployee();
  fetchNames();
- convert();
  
  </script>
 

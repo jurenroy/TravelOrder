@@ -110,7 +110,7 @@ const showEditss = () => {
 // Fetch OTP data function
 const fetchAccounts = async () => {
    try {
-      const response = await axios.get('http://172.31.10.148:8000/get_accounts_json/');
+      const response = await axios.get('http://172.31.10.164:8000/get_accounts_json/');
       // Filter the fetched OTP data based on the accountId
       acc.value = response.data.find(result => result.account_id == accountId);
    } catch (error) {

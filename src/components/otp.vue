@@ -150,7 +150,7 @@ const sendOTP = async () => {
     OTPsent.value = false;
     verifiedotps.value = false;
     console.log('sending OTP')
-    await axios.post(`http://172.31.10.148:8000/send-otp/${accountId}`);
+    await axios.post(`http://172.31.10.164:8000/send-otp/${accountId}`);
     OTPsuccesful.value = true;
     expired.value = false
     await fetchOTPData();
@@ -229,7 +229,7 @@ const adjustExpiryTime = (expiryTime) => {
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://172.31.10.148:8000/get_otp_json');
+    const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountId);
     console.log(otpData.value[0].id)
     console.log(otpData.value[0].code)

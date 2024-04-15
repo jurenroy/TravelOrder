@@ -47,7 +47,7 @@
           </div>
         </div>
       </div>
-      <div class="label-value-row2">
+      <div class="label-value-row2" style="margin-top: -20px;">
         <p class="label2">Purpose of Travel:</p>
         <p class="value2">{{ purpose }}</p>
       </div>
@@ -69,28 +69,29 @@
       </div>
       <div style="display: flex; flex-direction: column; justify-content: flex-start; ">
         <div style="display: flex; justify-content: flex-start; margin-top: -10px;">
-            <p class="label2" style="margin-top: 30px; margin-left: 6%;">Certifications:</p>
+            <p class="label2" style="margin-top: 35px; margin-left: 6%;">Certifications:</p>
         </div>
-        <div style="display: flex; justify-content: flex-start; margin-top: -25px">
+        <div style="display: flex; justify-content: flex-start; margin-top: -25px; margin-bottom: -10px;">
             <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
         <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }" >
             <div class="inner-container2" v-if="division !== 'ORD'" style="margin-left: 50px;">
                 <p>Recommended by:</p>
-                <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.148:8000/storage/null'"/>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.148:8000/storage/null') ? '50px' : '50px' }">{{recommended}}</p>
+                <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'"/>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">{{recommended}}</p>
                 <p style="margin-top: -10px;">Chief, {{ division }}</p>
             </div>
             <div class="inner-container2" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
                 <p>Approved by:</p>
-                <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.148:8000/storage/null'"/>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.148:8000/storage/null') ? '50px' : '50px' }">Rodante B. Felina</p>
+                <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'"/>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">Rodante B. Felina</p>
                 <p style="margin-top: -10px;">OIC, Regional Director</p>
             </div>
         </div>
-        <p style="letter-spacing: 5px; text-align: center; margin-top: -5px;">AUTHORIZATION</p>
+        <p style="letter-spacing: 5px; text-align: center; margin-top: -25px;">AUTHORIZATION</p>
         <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-container" style="align-self: flex-end; margin-right: 6%; ">
+              <img :src="signature3" class="signatiz" v-if="signature3 !== 'http://172.31.10.164:8000/storage/null'" style="margin-top: -60px; margin-bottom: 0px"/>
                 <p class="value" style="font-weight: bold; text-align: center;">{{ name }}</p>
                 <p style="text-align: center;">Official Employee</p>
         </div>
@@ -132,6 +133,7 @@ export default {
       signature1: '',
       signature2: '',
       formData: [],
+      formData: [],
       names: {},
       positions: [],
       divisions: [],
@@ -140,6 +142,8 @@ export default {
       recommendedID: '',
       signature1: '',
       signature2: '',
+      signature3: '',
+      accounts: [],
     };
   },
   mounted() {
@@ -152,7 +156,8 @@ export default {
     this.fetchNames();
     this.fetchPositions();
     this.fetchDivisions();
-    this.fetchEmployees()
+    this.fetchEmployees();
+    this.fetchAccounts();
   },
   watch: {
     travel_order_id(newVal) {
@@ -199,8 +204,17 @@ export default {
         }
       });
     },
+    fetchAccounts() {
+        axios.get('http://172.31.10.164:8000/get_accounts_json')
+          .then(response => {
+            this.accounts = response.data;
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+      },
     fetchData() {
-        axios.get('http://172.31.10.148:8000/get_forms_json')
+        axios.get('http://172.31.10.164:8000/get_forms_json')
           .then(response => {
             this.formData = response.data;
           })
@@ -209,7 +223,7 @@ export default {
           });
       },
       fetchNames() {
-      axios.get('http://172.31.10.148:8000/get_names_json')
+      axios.get('http://172.31.10.164:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -218,7 +232,7 @@ export default {
         });
     },
     fetchPositions() {
-      fetch('http://172.31.10.148:8000/get_positions_json/')
+      fetch('http://172.31.10.164:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -228,7 +242,7 @@ export default {
         });
     },
     fetchDivisions() {
-      fetch('http://172.31.10.148:8000/get_divisions_json/')
+      fetch('http://172.31.10.164:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
@@ -238,7 +252,7 @@ export default {
         });
     },
     fetchEmployees(){
-      fetch('http://172.31.10.148:8000/get_employees_json/')
+      fetch('http://172.31.10.164:8000/get_employees_json/')
       .then(response => response.json())
       .then(data => {
         this.employees = data;
@@ -271,11 +285,13 @@ export default {
         this.ala = selectedForm.ala;
         this.appropriation = selectedForm.appropriations;
         this.remarks = selectedForm.remarks;
-        this.signature1 = `http://172.31.10.148:8000/storage/${selectedForm.signature1}`;
-        this.signature2 = `http://172.31.10.148:8000/storage/${selectedForm.signature2}`;
+        this.signature1 = `http://172.31.10.164:8000/storage/${selectedForm.signature1}`;
+        this.signature2 = `http://172.31.10.164:8000/storage/${selectedForm.signature2}`;
 
 
         const nameDetails = this.names[this.name_id-1];
+        console.log(nameDetails)
+        console.log(nameDetails.name_id)
         if (nameDetails) {
           this.name = `${nameDetails.first_name.toUpperCase()} ${nameDetails.middle_init.toUpperCase()} ${nameDetails.last_name.toUpperCase()}`;
         }
@@ -293,6 +309,14 @@ export default {
             this.recommended = this.getName(recommendedEmployee.name_id-1);
           }
         }
+        console.log(this.accounts)
+        console.log(this.name_id)
+        const selectedAccount = this.accounts.find(acc => acc.name_id === nameDetails.name_id);
+        if (selectedAccount) {
+          this.signature3 = `http://172.31.10.164:8000/storage/${selectedAccount.signature}`;
+          console.log(this.signature3)
+        }
+        console.log(selectedAccount)
       } else {
         this.name_id = '';
         this.name = '';
@@ -397,6 +421,7 @@ export default {
   flex-direction: row;
   margin-left: 6%;
   margin-top: -10px;
+  margin-bottom: -20px;
 }
 .label2 {
     font-weight: bold;
@@ -419,8 +444,9 @@ button {
   margin-right: 10px;
 }
 .signatiz{
-  height: auto;
-  width: 50px;
+  height: 100px;
+  width: auto;
   margin-bottom: -50px;
+  margin-top: -15px;
 }
 </style>

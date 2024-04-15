@@ -138,7 +138,7 @@ const login_submit = () => {
 };
 
 const fetchAccounts = () => {
-   axios.get('http://172.31.10.148:8000/get_accounts_json')
+   axios.get('http://172.31.10.164:8000/get_accounts_json')
       .then(response => {
          accounts.value = response.data;
 

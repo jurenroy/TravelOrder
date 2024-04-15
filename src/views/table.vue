@@ -33,8 +33,9 @@
 
     <!-- Content -->
     <div class="content">
-      <textarea v-model="noteText" rows="3" readonly></textarea>
+      <textarea v-model="noteText" rows="3" ></textarea>
       <div class="butokz">
+      <button @click="postNote" v-if="siga || siga1">Save</button>
       <button @click="closeNote">Close</button>
       </div>
     </div>
@@ -70,11 +71,11 @@
                   @click="openPDF(item.travel_order_id)">PDF</button>
                 <button v-if="selectedTravelOrderId == item.travel_order_id" @click="close">Close</button>
               </td>
-              <td v-if="siga" style="display: flex; justify-content: center;"><button
+              <td v-if="siga && item.note !== null" style="display: flex; justify-content: center;"><button
                   @click="signature1(item.travel_order_id)">Recommend</button></td>
-              <td v-if="siga && item.travel_order_id !== notenum && item.note == null && acc.name_id == 37 " style="display: flex; justify-content: center;"><button
+              <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37 " style="display: flex; justify-content: center;"><button
                   @click="openNote(item.travel_order_id)">Add note</button></td>
-                  <td v-if="siga && addNote == true && item.travel_order_id == notenum && acc.name_id == 37 " style="display: flex; justify-content: center;"><button
+                  <td v-if="addNote == true && item.travel_order_id == notenum && acc.name_id == 37 " style="display: flex; justify-content: center;"><button
                   @click="closeNote()">Close Add note</button></td>
               <td v-if="item.note !== null && notenum !== item.travel_order_id" style="display: flex; justify-content: center;"><button
                   @click="viewNotez(item.note,item.travel_order_id)">View note</button></td>
@@ -170,7 +171,7 @@
       const formData = new FormData();
       formData.append('note', this.noteText);
 
-      axios.post(`http://172.31.10.148:8000/update_form/${this.notenum}`, formData, {
+      axios.post(`http://172.31.10.164:8000/update_form/${this.notenum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -204,7 +205,7 @@
       const formData = new FormData();
       formData.append('signature1', this.acc.signature);
 
-      axios.post(`http://172.31.10.148:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -227,7 +228,7 @@
       const formData = new FormData();
       formData.append('signature2', this.acc.signature);
 
-      axios.post(`http://172.31.10.148:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -261,12 +262,12 @@
       }
     },
     fetchAccounts() {
-      axios.get('http://172.31.10.148:8000/get_accounts_json')
+      axios.get('http://172.31.10.164:8000/get_accounts_json')
         .then(response => {
           this.acc = response.data.find(result => result.account_id == this.accountId);
           this.fetchData()
           if (this.acc) {
-            this.imageUrl = `http://172.31.10.148:8000/storage/${this.acc.signature}`;
+            this.imageUrl = `http://172.31.10.164:8000/storage/${this.acc.signature}`;
         }
         useAuthStore().updateVerifiedOTPs('false');
         localStorage.setItem('verifiedOTPs', 'false');
@@ -278,12 +279,16 @@
 
     fetchData() {
       this.load = true
-      axios.get('http://172.31.10.148:8000/get_forms_json')
+      axios.get('http://172.31.10.164:8000/get_forms_json')
         .then(response => {
           this.mawala = true;
           this.load = false
-
-          if (this.acc.type_id == 2) {
+          console.log(this.acc.name_id)
+          if (this.acc.name_id == 37) {
+            this.formData = response.data.filter(form => form.note == null);
+            this.siga = false
+          }
+          else if (this.acc.type_id == 2) {
             this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
             this.siga = false
           } else if (this.acc.name_id == 20) {
@@ -304,7 +309,7 @@
         });
     },
     fetchNames() {
-      axios.get('http://172.31.10.148:8000/get_names_json')
+      axios.get('http://172.31.10.164:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -313,7 +318,7 @@
         });
     },
     fetchEmployees() {
-      axios.get('http://172.31.10.148:8000/get_employees_json')
+      axios.get('http://172.31.10.164:8000/get_employees_json')
         .then(response => {
           this.employees = response.data;
         })
