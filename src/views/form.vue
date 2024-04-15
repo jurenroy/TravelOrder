@@ -290,7 +290,7 @@ export default {
         .then(data => {
           this.names = data;
           if (this.names){
-          fetch('http://172.31.10.148:8000/get_accounts_json/')
+          fetch('http://172.31.10.164:8000/get_accounts_json/')
           .then(response => response.json())
           .then(data => {
             if (this.accountIdz){
