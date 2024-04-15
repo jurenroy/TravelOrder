@@ -69,7 +69,7 @@
               <td style="display: flex; justify-content: center;">
                 <button v-if="selectedTravelOrderId != item.travel_order_id"
                   @click="openPDF(item.travel_order_id)">PDF</button>
-                <button v-if="selectedTravelOrderId == item.travel_order_id" @click="close">Close</button>
+                <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close" style="width: 40px; height: 40px; cursor: pointer;"/>
               </td>
               <td v-if="siga && item.note !== null" style="display: flex; justify-content: center;"><button
                   @click="signature1(item.travel_order_id)">Recommend</button></td>

@@ -7,11 +7,9 @@
          <registrationform></registrationform>
       </div>
       <div>
-         <alerz v-if="showHeader1" />
          <alerz1 v-if="showHeader2" />
          <div v-if="!isRegistrationClicked">
             <alerz v-if="showHeader1" />
-            <alerz1 v-if="showHeader2" />
             <div class="sig">
                <signature v-if="acc.signature === null" />
                <div v-else>

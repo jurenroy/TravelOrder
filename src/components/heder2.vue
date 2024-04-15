@@ -1,9 +1,9 @@
 <template>
-   <div class="una">
+   <div class="una1">
       <div class="imagediv1" @click="window.location.reload()">
-         <img class="ima" src="../assets/logo.png" alt="Description of the image">
-         <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
-         <img class="ima" src="../assets/bago.png" alt="Description of the image">
+         <img class="ima1" src="../assets/logo.png" alt="Description of the image">
+         <img class="ima1 ims1" src="../assets/republic.png" alt="Description of the image">
+         <img class="ima1" src="../assets/bago.png" alt="Description of the image">
       </div>
 
    </div>
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style>
-.una {
+.una1 {
    background-color: white;
    display: flex;
    height: 70px;
@@ -49,7 +49,7 @@ export default {
    align-items: center
 }
 
-.ima {
+.ima1 {
    height: 50px;
    width: 50px;
    margin-top: -5px;
@@ -59,7 +59,7 @@ export default {
 }
 
 .imabut,
-.ima {
+.ima1 {
    margin-right: 30px;
 }
 
@@ -71,18 +71,18 @@ export default {
    margin-right: 50px;
 }
 
-.ims {
+.ims1 {
    width: 200px;
 }
 
 @media (max-width: 768px) {
 
    .imabut,
-   .ima {
+   .ima1 {
       margin-right: 0px;
    }
 
-   .ims {
+   .ims1 {
       width: 150px;
    }
 
@@ -99,7 +99,7 @@ export default {
       margin-right: -1px;
    }
 
-   .ims {
+   .ims1 {
       width: 145.9px;
    }
 

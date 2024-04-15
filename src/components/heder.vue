@@ -5,110 +5,119 @@
       <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
       <img class="ima" src="../assets/bago.png" alt="Description of the image">
     </div>
-    <div style="display: flex; margin-top: -40px">
-      <h1 style="position: absolute; margin-top: -10px; margin-left: -120px;">Status:</h1>
-      <h1 :style="{ position: 'absolute', marginTop: '-10px', marginLeft: '-20px', color: setEmployee == selectedEmployee ? 'black' : 'red' }" v-if="setEmployee === 20">In</h1>
-      <h1 :style="{ position: 'absolute', marginTop: '-10px', marginLeft: '-20px', color: setEmployee == selectedEmployee ? 'black' : 'red' }" v-else>Sub</h1>
-      <button style="position: absolute; margin-top: 8px; margin-left: 50px; height: 30px;" v-if="setEmployee !== selectedEmployee" @click="setAccount">Save Changes</button>
-      <select v-model="setEmployee" style="position: absolute; margin-top: 25px; margin-left: -120px;">
-        <option v-for="employee in employees" :key="employee.employee_id" :value="employee.name_id">
-          {{ getName(employee.name_id) }}
-        </option>
-      </select>
-    </div>
 
+    <div
+  style="display: flex; margin-top: 2px; margin-left:-100px ; height: inherit; width: 250px; justify-content: center;"
+  v-if="setEmployee === name.name_id || name.name_id === 20">
+  <h1 style="position: fixed; margin-left:-90px ; margin-top: 3px;">Status:</h1>
+
+  <div v-if="setEmployee !== null && setEmployee !== ''">
+    <h1 :style="{ position: 'fixed', marginTop: '3px', color: setEmployee == selectedEmployee ? 'black' : 'red' }"
+        v-if="setEmployee === 20">In</h1>
+    <h1 :style="{ position: 'fixed', marginTop: '3px', color: setEmployee == selectedEmployee ? 'black' : 'red' }"
+        v-else>Sub</h1>
+  </div>
+  <button style="position: fixed; margin-top: 9px; margin-left: 280px; height: 30px;"
+          v-if="setEmployee !== selectedEmployee" @click="setAccount">Save Changes</button>
+  <select v-model="setEmployee" style="position: fixed; margin-top: 39px; margin-left: -40px;" v-if="setEmployee !== name.name_id || name.name_id === 20">
+    <option v-for="employee in employees" :key="employee.employee_id" :value="employee.name_id">
+      {{ getName(employee.name_id) }}
+    </option>
+  </select>
+</div>
     <div class="imagediv2">
       <div>
         <text class="ima2 usew" v-if="Usernames" @click="showEdits" style="user-select: none;">{{ name.first_name }} {{
-          name.middle_init }} {{ name.last_name }}</text>
+        name.middle_init }} {{ name.last_name }}</text>
         <button class="ima2 editbut imagediv1 tes" v-if="showEdit" @click="backUpdate">Edit</button>
       </div>
       <button class="ima imabut" @click="closeAndLog">Logout</button>
     </div>
-    
-   </div>
- </template>
- 
- <script setup>
- import { ref } from 'vue';
- import { useAuthStore } from '../store/auth';
- import { isButssClicked } from '../views/dashboard.vue';
- import axios from 'axios';
- 
- const authStore = useAuthStore();
- 
- const accountIdz = localStorage.getItem('accountId');
- 
- const accounts = ref([]);
- const employees = ref([]);
- const names = ref([]);
- const name = ref('')
- const nameLoaded = ref(false)
- const selectedEmployee = ref(null); // Store the selected employee ID
- const setEmployee = ref(null); // Store the selected employee ID
 
- const setAccount = async () => {
-   try {
-     const response = await axios.post(`http://172.31.10.164:8000/update_employee/${setEmployee.value}`);
-     window.location.reload();
-   } catch (error) {
-     console.error('Error fetching accounts:', error);
-   }
- };
- 
- 
- const fetchAccounts = async () => {
-   try {
-     const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
-     accounts.value = response.data;
-   } catch (error) {
-     console.error('Error fetching accounts:', error);
-   }
- };
 
- const fetchEmployee = async () => {
-   try {
-     const response = await axios.get('http://172.31.10.164:8000/get_employees_json');
-     employees.value = response.data.filter(emp => emp.chief > 0)
-       // Find the first employee with a non-null 'rd' property and set its 'name_id' as selectedEmployee
-      const selectedEmp = response.data.find(emp => emp.rd !== null);
-      if (selectedEmp) {
-        setEmployee.value = selectedEmp.name_id;
-        selectedEmployee.value = selectedEmp.name_id;
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { useAuthStore } from '../store/auth';
+import { isButssClicked } from '../views/dashboard.vue';
+import axios from 'axios';
+
+const authStore = useAuthStore();
+
+const accountIdz = localStorage.getItem('accountId');
+
+const accounts = ref([]);
+const employees = ref([]);
+const names = ref([]);
+const name = ref('')
+const nameLoaded = ref(false)
+const selectedEmployee = ref(null); // Store the selected employee ID
+const setEmployee = ref(null); // Store the selected employee ID
+
+const setAccount = async () => {
+  try {
+    const response = await axios.post(`http://172.31.10.164:8000/update_employee/${setEmployee.value}`);
+    window.location.reload();
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+  }
+};
+
+
+const fetchAccounts = async () => {
+  try {
+    const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
+    accounts.value = response.data;
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+  }
+};
+
+const fetchEmployee = async () => {
+  try {
+    const response = await axios.get('http://172.31.10.164:8000/get_employees_json');
+    employees.value = response.data.filter(emp => emp.chief > 0)
+    // Find the first employee with a non-null 'rd' property and set its 'name_id' as selectedEmployee
+    const selectedEmp = response.data.find(emp => emp.rd !== null);
+    if (selectedEmp) {
+      setEmployee.value = selectedEmp.name_id;
+      selectedEmployee.value = selectedEmp.name_id;
+    } else {
+      setEmployee.value = null; // Set selectedEmployee to null if no employee meets the condition
+      selectedEmployee.value = null;
+    }
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+  }
+};
+
+
+const fetchNames = async () => {
+  try {
+    const response = await axios.get('http://172.31.10.164:8000/get_names_json');
+    names.value = response.data;
+
+    const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
+
+    if (account) {
+      const nameId = account.name_id;
+      const foundName = names.value.find(name => name.name_id === nameId);
+      if (foundName) {
+        name.value = foundName;
+        nameLoaded.value = true; // Set the flag to true when the name is found
       } else {
-        setEmployee.value = null; // Set selectedEmployee to null if no employee meets the condition
-        selectedEmployee.value = null;
       }
-   } catch (error) {
-     console.error('Error fetching employees:', error);
-   }
- };
+    } else {
+    }
+  } catch (error) {
+    console.error('Error fetching names:', error);
+  }
+};
 
- 
- const fetchNames = async () => {
-   try {
-     const response = await axios.get('http://172.31.10.164:8000/get_names_json');
-     names.value = response.data;
- 
-     const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
- 
-   if (account) {
-     const nameId = account.name_id;
-     const foundName = names.value.find(name => name.name_id === nameId);
-     if (foundName) {
-       name.value = foundName;
-       nameLoaded.value = true; // Set the flag to true when the name is found
-     } else {
-     }
-   } else {
-   }
-   } catch (error) {
-     console.error('Error fetching names:', error);
-   }
- };
-
- // Define the function to get the formatted name
- const getName = (nameId) => {
+// Define the function to get the formatted name
+const getName = (nameId) => {
   const namec = names.value.find(name => name.name_id === nameId);
   if (namec) {
     const { first_name, middle_init, last_name } = namec;
@@ -116,13 +125,13 @@
   }
   return 'Unknown';
 };
- 
- 
- fetchAccounts();
- fetchEmployee();
- fetchNames();
- 
- </script>
+
+
+fetchAccounts();
+fetchEmployee();
+fetchNames();
+
+</script>
 
 <script>
 import { ref } from 'vue';
@@ -216,11 +225,17 @@ export default {
   height: inherit;
 }
 
+.imagediv3 {
+  display: flex;
+  align-items: center;
+  height: inherit;
+}
+
 .ima {
   height: 50px;
   width: 50px;
   margin-top: -5px;
-  margin-left: 10px;
+  margin-left: 5px;
   cursor: pointer;
 }
 
@@ -259,7 +274,7 @@ export default {
 }
 
 .ims {
-  width: 200px;
+  width: 160px;
 }
 
 .usew {
@@ -267,30 +282,18 @@ export default {
 }
 
 @media (max-width: 768px) {
-
-  .imabut,
-  .ima,
-  .ima2 {
-    margin-right: 0px;
+  .imagediv1 {
+    display: flex;
+    align-items: center;
   }
 
-  .ims {
-    width: 145.9px;
+  .ima {
+    height: 10px;
+    width: 10px;
+    margin-top: -5px;
+    margin-left: 10px;
+    cursor: pointer;
   }
-
-  .imabut {
-    border-radius: 10px;
-    font-size: 13px;
-    width: 50px;
-    height: 30px;
-    margin-right: 1px;
-
-  }
-
-  .usew {
-    margin-right: -1px;
-  }
-
 
 }
 </style>
