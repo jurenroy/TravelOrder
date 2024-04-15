@@ -1,4 +1,4 @@
-  <template>
+<template>
   <div style="display: flex; flex-direction: column; ">
     
     <h2 style="display: flex; flex-direction: column; align-items: center;">History</h2>
@@ -93,53 +93,53 @@
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
     </div>
   </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  import pdf from './pdf.vue'
-  import otpz from '../components/otp.vue';
-  
-  import { useAuthStore } from '../store/auth';
-  
-  export default {
+</template>
+
+<script>
+import axios from 'axios';
+import pdf from './pdf.vue'
+import otpz from '../components/otp.vue';
+
+import { useAuthStore } from '../store/auth';
+
+export default {
   provide() {
     return {
       close: this.close,
     };
-  }, 
-    components: {
-      pdf,
-      otpz
-    },
-    mounted() {
-      this.fetchAccounts();
-      this.fetchEmployees();
-      this.fetchNames();
-    },
-    data() {
-      return {
-        yearToday: new Date().getFullYear(),
-        formData: [],
-        names: {},
-        employees: {},
-        selectedTravelOrderId: 0,
-        accountId: localStorage.getItem('accountId'),
-        acc: [],
-        imageUrl: '',
-        siga: '',
-        siga1: '',
-        otp: false,
-        verifiedOTPs: localStorage.getItem('verifiedOTPs'),
-        load: true,
-        mawala: false,
-        addNote: false,
-        viewNote: false,
-        notenum: 0,
-        noteText: ''
-      };
-    },
-    created() {
+  },
+  components: {
+    pdf,
+    otpz
+  },
+  mounted() {
+    this.fetchAccounts();
+    this.fetchEmployees();
+    this.fetchNames();
+  },
+  data() {
+    return {
+      yearToday: new Date().getFullYear(),
+      formData: [],
+      names: {},
+      employees: {},
+      selectedTravelOrderId: 0,
+      accountId: localStorage.getItem('accountId'),
+      acc: [],
+      imageUrl: '',
+      siga: '',
+      siga1: '',
+      otp: false,
+      verifiedOTPs: localStorage.getItem('verifiedOTPs'),
+      load: true,
+      mawala: false,
+      addNote: false,
+      viewNote: false,
+      notenum: 0,
+      noteText: ''
+    };
+  },
+  created() {
     // Watch for changes in localStorage and update verifiedOTPs accordingly
     window.addEventListener('storage', this.updateVerifiedOTPs);
   },
@@ -148,22 +148,22 @@
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
-    viewNotez(nutz,numx) {
+    viewNotez(nutz, numx) {
       this.viewNote = true,
-      console.log("Note opened");
+        console.log("Note opened");
       this.noteText = nutz
       this.notenum = numx
     },
     openNote(numz) {
       this.addNote = true,
-      this.notenum = numz
+        this.notenum = numz
       console.log("Note opened");
       this.noteText = ''
     },
     closeNote() {
       this.addNote = false,
-      this.viewNote = false,
-      this.notenum = 0
+        this.viewNote = false,
+        this.notenum = 0
       console.log("Note closed");
     },
     postNote() {
@@ -194,10 +194,10 @@
       }
     },
     async signature1(form_id) {
-      
+
       console.log(this.verifiedOTPs)
       this.otp = true;
-      
+
       console.log(this.verifiedOTPs)
       await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
       this.otp = false;
@@ -393,7 +393,7 @@ th {
 .outer {
   border: 1px solid black;
   /* box-shadow: 0px 0px 3px black; */
-  box-shadow: 0px 0px 10px black, 0px 0px 10px black inset;
+  box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
   border-radius: 5px;
 }
 
@@ -422,6 +422,7 @@ th {
   font-weight: bold;
   font-size: 20px;
 }
+
 .note {
   width: 300px;
   background-color: #fff;
@@ -474,18 +475,18 @@ textarea {
 }
 
 button {
-  background-color: #656867;
-  border: none;
-  color: white;
+  background-color: white;
+  border: 1px solid black;
+  color: black;
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
   width: fit-content;
 }
+
 button:hover {
-  background-color: #141414;
+  background-color: black;
   color: white;
 }
-
 </style>

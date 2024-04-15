@@ -16,7 +16,7 @@
                   </select>
 
                   <label class="p"> Name:</label>
-                  <select v-model="name" class='inputsss' id='namein'
+                  <select v-model="name" class='regsinput' id='namein'
                      style="height: 35px; border: 2px solid black; width: 93%;" required :disabled='disablename'
                      @keydown.enter='regis_submit'>
                      <option v-for="name in namez" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{
@@ -25,16 +25,17 @@
 
                   <label class="n">Email:</label>
                   <input type="email" v-model="email" class='regsinput' id='email' required
-                     @keydown.enter='regis_submit'>
+                     :class="{ 'red-border': isRed && email === '' }" @input="resetRed" @keydown.enter='regis_submit'>
 
                   <label class="p"> Password: </label>
                   <input type="password" v-model="password" class='regsinput' id='password' required
+                     :class="{ 'red-border': isRed && password === '' }" @input="resetRed"
                      @keydown.enter='regis_submit'>
 
                   <div style=" color: red;">
                      <div v-if="!upper && !regiss">*At least one Upper Case</div>
                      <div v-if="!lower && !regiss">*At least one Lower Case</div>
-                     <div v-if="!charz && !regiss">* At least 8 characters long</div>
+                     <div v-if="!charz && !regiss">*At least 8 characters long</div>
                   </div>
 
                </div>
@@ -61,15 +62,14 @@
                </a>
             </div>
 
-            <div v-if="loadingregis" class="correct">
-          <a class="correct1">
-            Registering....
-          </a>
-        </div>
+            <div v-if="loadingregis" class="loadid">
+               <div class="loader"></div>
+
+            </div>
 
             <div v-else-if="pleaseWait" class="correct">
                <a class="correct1">
-                 Account Registered!! 
+                  Account Registered!!
                </a>
 
             </div>
@@ -108,6 +108,7 @@ export default {
 
    data() {
       return {
+         isRed: false,
          types: [],
          names: {},
          namez: [],
@@ -125,7 +126,7 @@ export default {
          disablename: true,
          lods: false,
          regiss: false,
-         loadingregis:false,
+         loadingregis: false,
       };
    },
    computed: {
@@ -148,19 +149,30 @@ export default {
       }
    },
    methods: {
+      emai() {
+         return this.email !== ''
+      },
+      pasw() {
+         return this.password !== ''
+      },
+      resetRed() {
+         this.isRed = false; // Reset the isRed flag when typing in the input
+      },
       disablenames() {
          this.disablename = false;
       },
+      resetRed() {
+         this.isRed = false; // Reset the isRed flag when typing in the input
+      },
+
       regis_submit() {
 
          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
          const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
-         this.loadingregis = true;
-         this.submit2 = true;
-         setTimeout(() => {
-              
-         if (this.email === '' && this.password === '' && this.account_type === '' && this.name === '') {
 
+         if (this.email === '' && this.password === '' && this.account_type === '' && this.name === '') {
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
@@ -169,24 +181,32 @@ export default {
 
 
          } else if (this.account_type === '') {
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
             }, 3000);
 
          } else if (this.name === '') {
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
             }, 3000);
 
          } else if (this.email === '') {
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
             }, 3000);
 
          } else if (emailPattern.test(this.email) === false) {
+            this.isRed = true
+            this.loadingregis = false;
             this.isEmail = true;
             this.valid = 'Email'; // Set isEmail to true to show the error message
             this.valid3 = '';
@@ -195,12 +215,16 @@ export default {
             }, 3000);
 
          } else if (this.password === '') {
+            this.isRed = true
+            this.loadingregis = false;
             this.isValid = true;
             setTimeout(() => {
                this.isValid = false;
             }, 3000);
 
          } else if (passvalid.test(this.password) === false) {
+            this.isRed = true
+            this.loadingregis = false;
             this.isEmail = true;
             this.valid = 'Password';
             // this.valid3 = 'Must contain A-a letters & numbers with 8 characters...'
@@ -209,44 +233,48 @@ export default {
                this.lods = true
             }, 3000);
          } else {
-            const formData = {
-               type_id: '' + this.account_type,
-               name_id: '' + this.name,
-               email: '' + this.email,
-               password: '' + this.password
+            this.loadingregis = true;
+            this.submit2 = true;
+            setTimeout(() => {
+               const formData = {
+                  type_id: '' + this.account_type,
+                  name_id: '' + this.name,
+                  email: '' + this.email,
+                  password: '' + this.password
 
-            };
+               };
 
 
-            axios.post('http://172.31.10.164:8000/add_account/', formData)
-               .then(response => {
-                  if (response.status === 200) {
-                     this.loadingregis = false;
-                     
-                     this.pleaseWait = true;
-                     this.account_type = '';
-                     this.name = '';
-                     this.email = '';
-                     this.password = '';
-                     this.regiss = true;
+               axios.post('http://172.31.10.164:8000/add_account/', formData)
+                  .then(response => {
+                     if (response.status === 200) {
+                        this.loadingregis = false;
 
-                     // Set a 3-second timer before reloading the page
-                     setTimeout(() => {
-                        window.location.reload();
+                        this.pleaseWait = true;
+                        this.account_type = '';
+                        this.name = '';
+                        this.email = '';
+                        this.password = '';
+                        this.regiss = true;
 
-                        this.submit2 = false;
-                     }, 3000);
+                        // Set a 3-second timer before reloading the page
+                        setTimeout(() => {
+                           window.location.reload();
 
-                  } else {
-                     throw new Error('Failed to submit form');
-                  }
-               })
-               .catch(error => {
-                  console.error('Error submitting form:', error);
-                  this.submit2 = false;
-               });
+                           this.submit2 = false;
+                        }, 3000);
+
+                     } else {
+                        throw new Error('Failed to submit form');
+                     }
+                  })
+                  .catch(error => {
+                     console.error('Error submitting form:', error);
+                     this.submit2 = false;
+                  });
+            }, 2000);
          }
-      }, 3000);
+
 
       },
       fetchData() {
@@ -287,6 +315,55 @@ export default {
 
 
 <style scoped>
+.loadid {
+   display: flex;
+   position: relative;
+   margin-top: 8px;
+}
+
+.loader {
+   display: flex;
+   --height-of-loader: 4px;
+   --loader-color: black;
+   width: 210px;
+   height: 4px;
+   border-radius: 30px;
+   background-color: rgba(0, 0, 0, 0.2);
+   position: relative;
+   margin-top: 10px;
+   left: -10px;
+}
+
+.loader::before {
+   content: "";
+   position: absolute;
+   background: var(--loader-color);
+   top: 0;
+   left: 0;
+   width: 0%;
+   height: 100%;
+   border-radius: 30px;
+   animation: moving 1s ease-in-out infinite;
+   ;
+}
+
+
+@keyframes moving {
+   50% {
+      width: 100%;
+   }
+
+   100% {
+      width: 0;
+      right: 0;
+      left: unset;
+   }
+}
+
+.red-border {
+   border: 2px solid red;
+}
+
 .first {
    width: 20%;
    min-height: 10vh;
@@ -312,7 +389,7 @@ export default {
    padding: 20px;
    color: #212121;
    border: 2px solid black;
-   box-shadow: 0px 0px 10px black, 0px 0px 10px black inset;
+   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
 }
 
 .second.zoomed {
@@ -405,7 +482,7 @@ export default {
    padding: 10px;
    margin: 10px auto;
    border-radius: 10px;
-   box-shadow: 0px 0px 10px #f8a837, 0px 0px 10px #f8a837 inset;
+   box-shadow: 0px 0px 4px #f8a837, 0px 0px 3px #f8a837 inset;
 }
 
 .correct {
@@ -420,7 +497,7 @@ export default {
    padding: 10px;
    margin: 10px auto;
    border-radius: 10px;
-   box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;
+   box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
 }
 
 .errormsg1 {
@@ -454,7 +531,7 @@ export default {
    padding: 10px;
    margin: 10px auto;
    border-radius: 10px;
-   box-shadow: 0px 0px 10px #c95e58, 0px 0px 10px #c95e58 inset;
+   box-shadow: 0px 0px 4px #c95e58, 0px 0px 3px #c95e58 inset;
 }
 
 .wronge1 {

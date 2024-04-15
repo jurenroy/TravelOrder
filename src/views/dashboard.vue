@@ -60,6 +60,7 @@ import logsss from '../components/logout.vue'
 import editss from '../views/editpage.vue'
 </script>
 
+
 <script>
 import { ref } from 'vue';
 import axios from 'axios';

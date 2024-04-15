@@ -8,45 +8,55 @@
           <div style="display: flex; flex-direction: column;  width: 100%;">
             <label class="n">Name:</label>
             <!-- Dropdown for names -->
-            <select v-model="selectedName" class='inputsss' id='namein' style="height: 35px;  border: 2px solid black; width: 90%; " :class="{ 'red-border': isRed && selectedName === '' }" required >
-              <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{name.first_name }} {{ name.middle_init }}</option>
+            <select v-model="selectedName" class='inputsss' id='namein'
+              style="height: 35px; border: 2px solid black; width: 90%;"
+              :class="{ 'red-border': isRed && selectedName === '' }" required>
+              <option value="" disabled>Select a Name</option>
+              <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }},
+                {{ name.first_name }} {{ name.middle_init }}</option>
             </select>
 
             <label class="p"> Position: </label>
-            <input @keydown.enter="form_submit" type="text" v-model="position" :class="{ 'red-border': isRed && position === '' }" class='inputsss' @input="resetRed" id='positionin' required 
-              readonly>
+            <input @keydown.enter="form_submit" type="text" v-model="position"
+              :class="{ 'red-border': isRed && position === '' }" class='inputsss' @input="resetRed" id='positionin'
+              required readonly>
 
             <label class="dd"> Depature Date: </label>
-            <input @keydown.enter="form_submit" type="date" v-model="departure" class='inputsss' :class="{ 'red-border': isRed && departure === '' }" @input="resetRed" id='departurein' 
-              required>
+            <input @keydown.enter="form_submit" type="date" v-model="departure" class='inputsss'
+              :class="{ 'red-border': isRed && departure === '' }" @input="resetRed" id='departurein' required>
 
             <label class="d"> Destination: </label>
-            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }" @input="resetRed" type="text" v-model="destination" class='inputsss' id='destinationin'
-              required>
+            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }" @input="resetRed"
+              type="text" v-model="destination" class='inputsss' id='destinationin' required>
 
 
           </div>
           <div style="display: flex; flex-direction: column;  width: 100%;">
             <label class="da"> Date: </label>
-            <input @keydown.enter="form_submit" type="type"  v-model="date" class='inputsss' id='datein'   required
+            <input @keydown.enter="form_submit" type="type" v-model="date" class='inputsss' id='datein' required
               readonly>
 
             <label class="ds"> Division/Section: </label>
-            <input @keydown.enter="form_submit" type="text" v-model="division" :class="{ 'red-border': isRed && division === '' }" @input="resetRed" class='inputsss'  id='divisionin' required
-              readonly>
+            <input @keydown.enter="form_submit" type="text" v-model="division"
+              :class="{ 'red-border': isRed && division === '' }" @input="resetRed" class='inputsss' id='divisionin'
+              required readonly>
 
             <label class="os"> Official Station:</label>
-            <input @keydown.enter="form_submit" type="text" v-model="station"  class='inputsss' id='stationin' required
+            <input @keydown.enter="form_submit" type="text" v-model="station" class='inputsss' id='stationin' required
               readonly>
 
             <label class="ad"> Arrival Date: </label>
-            <input @keydown.enter="form_submit" type="date" v-model="arrival" :class="{ 'red-border': isRed && arrival === '' }" @input="resetRed" class='inputsss' id='arrivalin' required > 
+            <input @keydown.enter="form_submit" type="date" v-model="arrival"
+              :class="{ 'red-border': isRed && arrival === '' }" @input="resetRed" class='inputsss' id='arrivalin'
+              required>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; justify-content: center; ">
           <label class="pt"> Purpose of Travel: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="purpose"  :class="{ 'red-border': isRed && purpose === '' }" @input="resetRed" class='inputss' id='purposein' required >
+          <input @keydown.enter="form_submit" type="text" v-model="purpose"
+            :class="{ 'red-border': isRed && purpose === '' }" @input="resetRed" class='inputss' id='purposein'
+            required>
 
           <label class="per"> Per Deims/Expense Allowed</label>
           <input @keydown.enter="form_submit" type="text" v-model="pdea" class='inputss' id='pdeain' required>
@@ -79,6 +89,10 @@
             Please wait for a moment....
           </a>
 
+        </div>
+
+        <div v-else-if="loadis" class="loadid">
+          <div class="loader"></div>
         </div>
 
         <div class="buttonss">
@@ -125,16 +139,28 @@ export default {
       divisionID: '',
       accounts: [],
       accountz: [],
-      accountIdz: localStorage.getItem('accountId')
+      accountIdz: localStorage.getItem('accountId'),
+      loadis: false
     };
   },
   computed: {
-      nem() { return this.selectedName !== ''},
-         departor() { return this.departure !== ''},
-         destinashwon() { return this.destination !== ''},
-         araybal() {return this.arrival !== ''},
-         porpos() {return this.purpose !== ''},
-   },
+    nem() {
+      return this.selectedName;
+    },
+    departor() {
+      return this.departure !== ''
+    },
+    destinashwon() {
+      return this.destination !== ''
+    },
+    araybal() {
+      return this.arrival !== ''
+    },
+    porpos() {
+      return this.purpose !== ''
+    },
+
+  },
   methods: {
     resetRed() {
       this.isRed = false; // Reset the isRed flag when typing in the input
@@ -181,10 +207,10 @@ export default {
       return `${yyyy}-${mm}-${dd}`;
     },
     form_submit() {
-      this.isRed=true
-      
+      // this.isRed = true
+
       if (
-        
+
         this.selectedName === '' ||
         this.position === '' ||
         this.departure === '' ||
@@ -194,11 +220,12 @@ export default {
         this.station === '' ||
         this.arrival === '' ||
         this.purpose === ''
-        
+
       ) {
         // this.isRed = false;
+        this.isRed = true
         this.isValid = true;
-        
+
         setTimeout(() => {
           this.isValid = false;
         }, 3000);
@@ -217,8 +244,11 @@ export default {
           appropriations: this.appropriation,
           remarks: this.remarks,
         };
-
-        axios.post('http://172.31.10.148:8000/add_form/', formData)
+        this.submitting = true;
+        this.loadis = true
+        
+        axios.post('http://172.31.10.164:8000/add_form/', formData)
+        
           .then(response => {
             if (response.status === 200) {
               this.resetForm();
@@ -233,6 +263,9 @@ export default {
           .catch(error => {
             console.error('Error submitting form:', error);
           });
+        setTimeout(() => {
+          this.loadis = false
+        }, 3000);
       }
     },
     resetForm() {
@@ -249,10 +282,10 @@ export default {
       this.remarks = '';
       this.pleaseWait = true;
       this.submitting = true;
-      this.isRed=false
+      this.isRed = false
     },
     fetchData() {
-      fetch('http://172.31.10.148:8000/get_names_json/')
+      fetch('http://172.31.10.164:8000/get_names_json/')
         .then(response => response.json())
         .then(data => {
           this.names = data;
@@ -278,7 +311,7 @@ export default {
           console.error('Error fetching names:', error);
         });
 
-      fetch('http://172.31.10.148:8000/get_employees_json/')
+      fetch('http://172.31.10.164:8000/get_employees_json/')
         .then(response => response.json())
         .then(data => {
           this.employees = data;
@@ -287,7 +320,7 @@ export default {
           console.error('Error fetching employees:', error);
         });
       // Fetch positions data
-      fetch('http://172.31.10.148:8000/get_positions_json/')
+      fetch('http://172.31.10.164:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -297,7 +330,7 @@ export default {
         });
 
       // Fetch divisions data
-      fetch('http://172.31.10.148:8000/get_divisions_json/')
+      fetch('http://172.31.10.164:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
@@ -321,8 +354,9 @@ export default {
 
 <style scoped>
 .red-border {
-  border: 1px solid red;
+  border: 2px solid red;
 }
+
 .first {
   width: 20%;
   min-height: 10vh;
@@ -339,13 +373,13 @@ export default {
   background-color: white;
   width: 80vw;
   max-width: 950px;
-  
+
   height: auto;
-  
+
   padding: 20px;
   color: #212121;
   border: 2px solid black;
-  box-shadow: 0px 0px 10px black, 0px 0px 10px black inset;
+  box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
 }
 
 .second.zoomed {
@@ -426,7 +460,7 @@ export default {
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #f8a837, 0px 0px 10px #f8a837 inset;
+  box-shadow: 0px 0px 4px #f8a837, 0px 0px 3px #f8a837 inset;
 }
 
 .formcorrect {
@@ -441,7 +475,7 @@ export default {
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;
+  box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
 }
 
 .formcorrect1,
@@ -466,6 +500,51 @@ export default {
   font-weight: bold;
 }
 
+.loadid {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 8px;
+}
+
+.loader {
+  display: flex;
+  --height-of-loader: 4px;
+  --loader-color: black;
+  width: 285px;
+  height: 4px;
+  border-radius: 30px;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: relative;
+  margin-top: 10px;
+}
+
+.loader::before {
+  content: "";
+  position: absolute;
+  background: var(--loader-color);
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  border-radius: 30px;
+  animation: moving 1s ease-in-out infinite;
+  ;
+}
+
+@keyframes moving {
+  50% {
+    width: 100%;
+  }
+
+  100% {
+    width: 0;
+    right: 0;
+    left: unset;
+  }
+}
+
 @media (max-width: 768px) {
   .first {
     margin-top: -120px;
@@ -484,6 +563,11 @@ export default {
 
   .zero {
     margin-top: 40px;
+  }
+
+  .loader {
+    width: 125px;
+    height: 4px;
   }
 }
 </style>

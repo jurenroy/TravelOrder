@@ -83,8 +83,9 @@
               @input="moveToNextField($event, 0)" class="otpedit" type="text" id="otpInput6" v-model="otp6"
               v-if="showotp" maxlength="1">
           </div>
-          <button class="verifyotp" @click="verifyOTP" v-if="showotp" :disabled="isVerify || verifydisab">Verify OTP</button>
-          <button class="verifyotp VO" @click="sendOTP"  v-if="showotp" :disabled="resed">Resend OTP</button>
+          <button class="verifyotp" @click="verifyOTP" v-if="showotp" :disabled="isVerify || verifydisab">Verify
+            OTP</button>
+          <button class="verifyotp VO" @click="sendOTP" v-if="showotp" :disabled="resed">Resend OTP</button>
         </div>
 
         <!-- pag send sa otp -->
@@ -165,9 +166,9 @@ const notClikable1 = ref(false)
 const sendingOTP = ref(false)
 const buttdis = ref(false);
 const veryOTP = ref(false);
-const wrongOTPs = ref (false);
+const wrongOTPs = ref(false);
 const resed = ref(true)
-const expi = ref (false)
+const expi = ref(false)
 const verifydisab = ref(false);
 //  const isNewPassword = ref (false)
 const otp1 = ref('');
@@ -221,10 +222,10 @@ const moveToPrevField = (event, currentField, prevField) => {
 
 const moveToNextField = (event, nextField) => {
   event.target.value = event.target.value.replace(/[^0-9]/g, "");
-  
+
   if (event.target.value && !isNaN(event.target.value)) {
     const nextInput = document.getElementById(`otpInput${nextField}`);
-    
+
     if (nextInput) {
       nextInput.focus();
     }
@@ -259,10 +260,10 @@ const dataURItoBlob = (dataURI) => {
 
 
 const sendOTP = async () => {
-  resed.value=true;
+  resed.value = true;
   sendingOTP.value = true;
   verifydisab.value = false;
-    
+
   otp1.value = ''
   otp2.value = ''
   otp3.value = ''
@@ -335,47 +336,53 @@ const verifyOTP = () => {
   const fullOTP = otp1.value + otp2.value + otp3.value + otp4.value + otp5.value + otp6.value;
   verifydisab.value = true;
   veryOTP.value = true;
-  isVerify.value=true;
+  isVerify.value = true;
   setTimeout(() => {
     veryOTP.value = false;
     if (otpData.value.length > 0) {
       const currentTime = getCurrentTimeAdjusted();
-    const backendExpiryTime = otpData.value[0].expires_at;
+      const backendExpiryTime = otpData.value[0].expires_at;
 
 
-    const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
-    if (expiryTimeAdjusted > currentTime) {
+      const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
+      if (expiryTimeAdjusted > currentTime) {
 
-      console.log('OTP still valid');  
-      verifydisab.value = false;
-      wrongOTPs.value = true 
-      setTimeout(() => {
-          wrongOTPs.value = false
-        }, 3000);
-      verifydisab.value = false
-      if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
-        wrongOTPs.value = false;
-        submitImage();
-        updateProfile();
-      } else {
-       
-        wrongOTPs.value = true;
+        console.log('OTP still valid');
+        verifydisab.value = false;
+        wrongOTPs.value = true
         setTimeout(() => {
           wrongOTPs.value = false
-        }, 3000);
-      }
-    } else {
-      
-      console.log('OTP expired');
-      expi.value = true
-      resed .value = false
-      setTimeout(() => {
-        expi.value=false
-        verifydisab.value = true
+          otp1.value = "";
+          otp2.value = "";
+          otp3.value = "";
+          otp4.value = "";
+          otp5.value = "";
+          otp6.value = "";
+        }, 2000);
+        verifydisab.value = false
+        if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
+          wrongOTPs.value = false;
+          submitImage();
+          updateProfile();
+        } else {
+
+          wrongOTPs.value = true;
+          setTimeout(() => {
+            wrongOTPs.value = false
+          }, 3000);
+        }
+      } else {
+
+        console.log('OTP expired');
+        expi.value = true
+        resed.value = false
+        setTimeout(() => {
+          expi.value = false
+          verifydisab.value = true
         }, 2000);
 
-     
-    }
+
+      }
     } else {
       console.error('OTP data not preloaded.');
       return;
@@ -435,8 +442,8 @@ const updateProfile = () => {
     }
 
     if (signature.value !== '') {
-        formData.append('signature', signature.value);
-    }else{
+      formData.append('signature', signature.value);
+    } else {
     }
 
     axios.post(`http://172.31.10.164:8000/update_account/${accountIdz}`, formData)
@@ -561,7 +568,7 @@ export default {
   padding: 20px;
   color: #212121;
   border: 2px solid black;
-  box-shadow: 0px 0px 10px black, 0px 0px 10px black inset;
+  box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
 }
 
 .update3.zoomed {
@@ -635,7 +642,8 @@ export default {
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #c95e58, 0px 0px 10px #c95e58 inset;;
+  box-shadow: 0px 0px 4px #c95e58, 0px 0px 3px #c95e58 inset;
+  ;
 }
 
 .notequal1 {
@@ -701,7 +709,8 @@ export default {
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;;
+  box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
+  ;
 }
 
 .succesfully1,
@@ -732,7 +741,8 @@ export default {
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;;
+  box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
+  ;
 }
 
 .verifyotp {
@@ -744,7 +754,7 @@ export default {
   font-size: 13px;
 }
 
-.VO{
+.VO {
   margin-top: 1px;
 }
 
@@ -772,7 +782,8 @@ export default {
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #c95e58, 0px 0px 10px #c95e58 inset;;
+  box-shadow: 0px 0px 4px #c95e58, 0px 0px 3px #c95e58 inset;
+  ;
 }
 
 .editwronge1 {

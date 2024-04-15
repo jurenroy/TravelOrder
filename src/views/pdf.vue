@@ -1,14 +1,16 @@
 <template>
-    <div class="buttons">
-      <button @click="downloadPDF">Download as PDF</button>
-      <alerz></alerz>
-    </div>
+  <div class="buttons">
+    <button @click="downloadPDF">Download as PDF</button>
+    <alerz></alerz>
+  </div>
   <div class="a4-container" id="pdf-content">
     <div ref="content" class="a4-content">
       <!-- Your content goes here -->
       <img src="@/components/assets/hnf.jpg" alt="A4-sized photo" class="a4-photo">
       <p class="a4-to" style="text-align: center;">TRAVEL ORDER</p>
-      <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span style="text-decoration: underline; text-align: center;">{{ padWithZeroes(travel_order_id) }}-{{ yearToday }}</span></p>
+      <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span
+          style="text-decoration: underline; text-align: center;">{{ padWithZeroes(travel_order_id) }}-{{ yearToday
+          }}</span></p>
       <div class="outer-container">
         <div class="inner-container">
           <div class="label-value-row">
@@ -96,10 +98,10 @@
                 <p style="text-align: center;">Official Employee</p>
         </div>
         <p style="text-align: left; margin-top: -30px; margin-left: 6%;">MGB-X-FAD-FO-033</p>
-    </div>
+      </div>
     </div>
   </div>
- 
+
 </template>
 
 <script setup>
@@ -169,17 +171,17 @@ export default {
   },
   methods: {
     padWithZeroes(travel_order_id) {
-    // Convert travel_order_id to string
-    const idString = travel_order_id.toString();
-    // Check if the length is less than 4
-    if (idString.length < 4) {
-      // Pad with zeroes to make it four digits
-      return '0'.repeat(4 - idString.length) + idString;
-    } else {
-      // If already four digits, return as is
-      return idString;
-    }
-  },
+      // Convert travel_order_id to string
+      const idString = travel_order_id.toString();
+      // Check if the length is less than 4
+      if (idString.length < 4) {
+        // Pad with zeroes to make it four digits
+        return '0'.repeat(4 - idString.length) + idString;
+      } else {
+        // If already four digits, return as is
+        return idString;
+      }
+    },
     close() {
       // Close logic
       travel_order_id = null;
@@ -262,7 +264,7 @@ export default {
       });
     },
     getName(nameId) {
-        const name = this.names[nameId];
+      const name = this.names[nameId];
       if (name) {
         const { first_name, middle_init, last_name } = name;
         return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
@@ -300,13 +302,13 @@ export default {
         if (selectedPosition) {
           this.position = selectedPosition.position_name;
         }
-      
+
         const selectedDivision = this.divisions.find(division => division.division_id === this.division_id);
         if (selectedDivision) {
           this.division = selectedDivision.division_name;
           const recommendedEmployee = this.employees.find(employee => employee.division_id === this.division_id && employee.chief > 0);
           if (recommendedEmployee) {
-            this.recommended = this.getName(recommendedEmployee.name_id-1);
+            this.recommended = this.getName(recommendedEmployee.name_id - 1);
           }
         }
         console.log(this.accounts)
@@ -331,7 +333,7 @@ export default {
         this.recommendedID = '';
       }
     },
-    
+
   }
 };
 </script>
@@ -341,8 +343,10 @@ export default {
 <style scoped>
 .a4-container {
   position: relative;
-  width: 210mm; /* A4 width */
-  height: 296mm; /* A4 height */
+  width: 210mm;
+  /* A4 width */
+  height: 296mm;
+  /* A4 height */
   margin: 0 auto;
   padding: 10px;
   border: 1px solid #ccc;
@@ -350,7 +354,8 @@ export default {
 
 .a4-content {
   /* Adjust this height based on your content */
-  height: 295mm; /* A4 height minus padding and border */
+  height: 295mm;
+  /* A4 height minus padding and border */
 }
 
 .a4-photo {
@@ -359,78 +364,95 @@ export default {
   left: 0;
   width: 100%;
   height: 98%;
-  z-index: -1; /* Place the photo behind other content */
+  z-index: -1;
+  /* Place the photo behind other content */
 }
-.a4-to {
-    margin-top: 22.5%;
-    letter-spacing: 5px; 
-    font-weight: bold;
-    font-size: 20px;
-    color: #000000
-}
-.a4-textBold {
-    font-weight: bold;
-    font-size: 20px;
-    color: #000000;
-    margin-bottom: -10px;
-}
-.outer-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-  }
 
-  .inner-container {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    margin: 10px; /* Adding margin for spacing between inner containers */
-    margin-left: -20px;
-  }
-  .inner-container2 {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    margin: 10px; /* Adding margin for spacing between inner containers */
-    margin-left: -20px;
-    justify-content: center;
-    align-items: center;
-  }
-  .label-value-row {
+.a4-to {
+  margin-top: 22.5%;
+  letter-spacing: 5px;
+  font-weight: bold;
+  font-size: 20px;
+  color: #000000
+}
+
+.a4-textBold {
+  font-weight: bold;
+  font-size: 20px;
+  color: #000000;
+  margin-bottom: -10px;
+}
+
+.outer-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.inner-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin: 10px;
+  /* Adding margin for spacing between inner containers */
+  margin-left: -20px;
+}
+
+.inner-container2 {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin: 10px;
+  /* Adding margin for spacing between inner containers */
+  margin-left: -20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.label-value-row {
   display: flex;
   flex-direction: row;
 }
-  .inner-container p {
-    margin: 5px 0;
-    display: flex;
-    font-size: 18px;
-    text-align: left;
-  }  
-  .label {
-    font-weight: bold;
-    width: 180px; /* Adjust the width as needed */
-  }
-  .value {
-    text-decoration: underline;
-    word-wrap: break-word;
-    max-width: 30ch;
-    text-align: left;
-  }
-  .label-value-row2 {
+
+.inner-container p {
+  margin: 5px 0;
+  display: flex;
+  font-size: 18px;
+  text-align: left;
+}
+
+.label {
+  font-weight: bold;
+  width: 180px;
+  /* Adjust the width as needed */
+}
+
+.value {
+  text-decoration: underline;
+  word-wrap: break-word;
+  max-width: 30ch;
+  text-align: left;
+}
+
+.label-value-row2 {
   display: flex;
   flex-direction: row;
   margin-left: 6%;
   margin-top: -10px;
   margin-bottom: -20px;
 }
+
 .label2 {
-    font-weight: bold;
-    width: auto; /* Adjust the width as needed */
-  }
-  .value2 {
-    text-decoration: underline;
-    margin-left: 20px;
-  }
+  font-weight: bold;
+  width: auto;
+  /* Adjust the width as needed */
+}
+
+.value2 {
+  text-decoration: underline;
+  margin-left: 20px;
+}
+
 .buttons {
   display: flex;
   justify-content: center;
