@@ -4,9 +4,8 @@
 </template>
 
 <script setup>
- import login from './login.vue';
- import dashboard from './dashboard.vue'
+import login from './login.vue';
+import dashboard from './dashboard.vue'
 
- const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'; // Parse as boolean
+const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'; // Parse as boolean
 </script>
-

@@ -1,6 +1,12 @@
 <template>
   <div
-    style="justify-content: center;  background-color: white; display: flex; margin-top: 100px; position: absolute; z-index:999; width: 300px; height: auto; ">
+    style="justify-content: center;  background-color: white; display: flex; margin-top: 100px; position: absolute;  width: 300px; height: auto; ">
+    <div v-if="sendingOTPS" class="verifieds">
+      <a class="verifieds1">
+        Sending OTP....
+      </a>
+    </div>
+
     <div v-if="OTPsuccesful" class="succesfullyotp">
       <a class="succesfullyotp1">
         OTP loaded successfully
@@ -11,12 +17,13 @@
         OTP loaded unsuccessfully
       </a>
     </div>
-    <div v-if="OTPsent" style="border: 2px solid black">
+    <div v-if="OTPsent" style="border: 2px solid black; border-radius: 10px;">
       <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
         <label for="otpInput1" class="Enterotps">Enter OTP: </label>
         <div style="display: flex; flex-direction: row;">
+
           <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 1, 0)" @input="moveToNextField($event, 2)"
-            class="otprecomen" type="text" id="otpInput1" v-model="otp1" maxlength="1" autofocus>
+            class="otprecomen" type="text" id="otpInput1" v-model="otp1" maxlength="1">
           <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 2, 1)" @input="moveToNextField($event, 3)"
             class="otprecomen" type="text" id="otpInput2" v-model="otp2" maxlength="1">
           <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 3, 2)" @input="moveToNextField($event, 4)"
@@ -47,8 +54,8 @@
           </a>
         </div>
 
-        <button class="verifyotps" v-if="!expired" @click="verifyOTP">Verify OTP</button>
-        <button class="verifyotps" v-if="expired" @click="sendOTP">Resend OTP</button>
+        <button class="verifyotps" v-if="expir" :disabled="isVerify" @click="verifyOTP">Verify OTP</button>
+        <button class="verifyotps" v-if="expire" @click="sendOTP">Resend OTP</button>
       </div>
     </div>
 
@@ -59,15 +66,19 @@
 
 <script setup>
 import axios from 'axios';
-import { ref } from 'vue';
 import { useAuthStore } from '../store/auth';
+import { ref, computed } from 'vue';
+
+const otpInput1 = ref(null);
+
+
 
 const authStore = useAuthStore();
 
 const uploadedImageUrl = ref('');
 const accountId = localStorage.getItem('accountId');
 const otp = ref('');//ge type
-const OTPverified = ref(false);
+// const OTPverified = ref(false);
 const OTPsent = ref(false);
 const otpData = ref([]);//confirm
 const hideUpload = ref(false);
@@ -75,7 +86,10 @@ const OTPsuccesful = ref(false)
 const verifiedotps = ref(false)
 const ANSAK = ref(false)
 const expired = ref(false)
+const expire = ref(false)
+const expir = ref(true)
 const wrongOTPs = ref(false)
+const sendingOTPS = ref(true)
 
 const otp1 = ref('');
 const otp2 = ref('');
@@ -83,6 +97,10 @@ const otp3 = ref('');
 const otp4 = ref('');
 const otp5 = ref('');
 const otp6 = ref('');
+
+const isVerify = computed(() => {
+  return otp1.value === '' || otp2.value === '' || otp3.value === '' || otp4.value === '' || otp5.value === '' || otp6.value === '';
+});
 
 // Function to update the value of verifiedotps and emit the event
 const updateVerifiedOTPs = (value) => {
@@ -122,7 +140,7 @@ const getCurrentTimeAdjusted = () => {
   let sc = today.getSeconds();
 
   // Ensure leading zero for single digit values
-  hr = (hr < 10) ? '0' + hr : hr;   
+  hr = (hr < 10) ? '0' + hr : hr;
   mn = (mn < 10) ? '0' + mn : mn;
   sc = (sc < 10) ? '0' + sc : sc;
 
@@ -146,13 +164,22 @@ const handleFileUpload = (event) => {
 };
 
 const sendOTP = async () => {
+  expire.value = false
+  otp1.value = ''
+  otp2.value = ''
+  otp3.value = ''
+  otp4.value = ''
+  otp5.value = ''
+  otp6.value = ''
   try {
     OTPsent.value = false;
     verifiedotps.value = false;
     console.log('sending OTP')
-    await axios.post(`http://172.31.10.148:8000/send-otp/${accountId}`);
+    await axios.post(`http://172.31.10.164:8000/send-otp/${accountId}`);
+    sendingOTPS.value = false
     OTPsuccesful.value = true;
     expired.value = false
+    expir.value = true
     await fetchOTPData();
     setTimeout(() => {
       OTPsuccesful.value = false;
@@ -192,13 +219,27 @@ const verifyOTP = () => {
       } else {
         console.log('wa jud ta nagkadimao bai')
         wrongOTPs.value = true
+        otp1.value = ''
+        otp2.value = ''
+        otp3.value = ''
+        otp4.value = ''
+        otp5.value = ''
+        otp6.value = ''
         setTimeout(() => {
           wrongOTPs.value = false
         }, 2000);
       }
     } else {
       console.log('OTP expired');
+      otp1.value = ''
+      otp2.value = ''
+      otp3.value = ''
+      otp4.value = ''
+      otp5.value = ''
+      otp6.value = ''
+      expire.value = true
       expired.value = true
+      expir.value = false
       setTimeout(() => {
         expired.value = false
       }, 2000);
@@ -229,7 +270,7 @@ const adjustExpiryTime = (expiryTime) => {
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://172.31.10.148:8000/get_otp_json');
+    const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountId);
     console.log(otpData.value[0].id)
     console.log(otpData.value[0].code)
@@ -245,11 +286,6 @@ const fetchOTPData = async () => {
 
 sendOTP()
 </script>
-
-<script>
-
-</script>
-
 
 <style scoped>
 .succesfullyotp {

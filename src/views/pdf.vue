@@ -1,14 +1,16 @@
 <template>
-    <div class="buttons">
-      <button @click="downloadPDF">Download as PDF</button>
-      <alerz></alerz>
-    </div>
+  <div class="buttons">
+    <button @click="downloadPDF">Download as PDF</button>
+    <alerz></alerz>
+  </div>
   <div class="a4-container" id="pdf-content">
     <div ref="content" class="a4-content">
       <!-- Your content goes here -->
       <img src="@/components/assets/hnf.jpg" alt="A4-sized photo" class="a4-photo">
       <p class="a4-to" style="text-align: center;">TRAVEL ORDER</p>
-      <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span style="text-decoration: underline; text-align: center;">{{ padWithZeroes(travel_order_id) }}-{{ yearToday }}</span></p>
+      <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span
+          style="text-decoration: underline; text-align: center;">{{ padWithZeroes(travel_order_id) }}-{{ yearToday
+          }}</span></p>
       <div class="outer-container">
         <div class="inner-container">
           <div class="label-value-row">
@@ -69,36 +71,45 @@
       </div>
       <div style="display: flex; flex-direction: column; justify-content: flex-start; ">
         <div style="display: flex; justify-content: flex-start; margin-top: -10px;">
-            <p class="label2" style="margin-top: 30px; margin-left: 6%;">Certifications:</p>
+          <p class="label2" style="margin-top: 30px; margin-left: 6%;">Certifications:</p>
         </div>
         <div style="display: flex; justify-content: flex-start; margin-top: -25px">
-            <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
+          <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel
+            is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
-        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }" >
-            <div class="inner-container2" v-if="division !== 'ORD'" style="margin-left: 50px;">
-                <p>Recommended by:</p>
-                <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.148:8000/storage/null'"/>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.148:8000/storage/null') ? '50px' : '50px' }">{{recommended}}</p>
-                <p style="margin-top: -10px;">Chief, {{ division }}</p>
-            </div>
-            <div class="inner-container2" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
-                <p>Approved by:</p>
-                <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.148:8000/storage/null'"/>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.148:8000/storage/null') ? '50px' : '50px' }">Rodante B. Felina</p>
-                <p style="margin-top: -10px;">OIC, Regional Director</p>
-            </div>
+        <div class="outer-container"
+          :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }">
+          <div class="inner-container2" v-if="division !== 'ORD'" style="margin-left: 50px;">
+            <p>Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              {{ recommended }}</p>
+            <p style="margin-top: -10px;">Chief, {{ division }}</p>
+          </div>
+          <div class="inner-container2" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
+            <p>Approved by:</p>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              Rodante B. Felina</p>
+            <p style="margin-top: -10px;">OIC, Regional Director</p>
+          </div>
         </div>
         <p style="letter-spacing: 5px; text-align: center; margin-top: -5px;">AUTHORIZATION</p>
-        <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
+        <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby
+          authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my
+          succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent
+          official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-container" style="align-self: flex-end; margin-right: 6%; ">
-                <p class="value" style="font-weight: bold; text-align: center;">{{ name }}</p>
-                <p style="text-align: center;">Official Employee</p>
+          <p class="value" style="font-weight: bold; text-align: center;">{{ name }}</p>
+          <p style="text-align: center;">Official Employee</p>
         </div>
         <p style="text-align: left; margin-top: -30px; margin-left: 6%;">MGB-X-FAD-FO-033</p>
-    </div>
+      </div>
     </div>
   </div>
- 
+
 </template>
 
 <script setup>
@@ -164,17 +175,17 @@ export default {
   },
   methods: {
     padWithZeroes(travel_order_id) {
-    // Convert travel_order_id to string
-    const idString = travel_order_id.toString();
-    // Check if the length is less than 4
-    if (idString.length < 4) {
-      // Pad with zeroes to make it four digits
-      return '0'.repeat(4 - idString.length) + idString;
-    } else {
-      // If already four digits, return as is
-      return idString;
-    }
-  },
+      // Convert travel_order_id to string
+      const idString = travel_order_id.toString();
+      // Check if the length is less than 4
+      if (idString.length < 4) {
+        // Pad with zeroes to make it four digits
+        return '0'.repeat(4 - idString.length) + idString;
+      } else {
+        // If already four digits, return as is
+        return idString;
+      }
+    },
     close() {
       // Close logic
       travel_order_id = null;
@@ -200,16 +211,16 @@ export default {
       });
     },
     fetchData() {
-        axios.get('http://172.31.10.148:8000/get_forms_json')
-          .then(response => {
-            this.formData = response.data;
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
-      },
-      fetchNames() {
-      axios.get('http://172.31.10.148:8000/get_names_json')
+      axios.get('http://172.31.10.164:8000/get_forms_json')
+        .then(response => {
+          this.formData = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    },
+    fetchNames() {
+      axios.get('http://172.31.10.164:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -218,7 +229,7 @@ export default {
         });
     },
     fetchPositions() {
-      fetch('http://172.31.10.148:8000/get_positions_json/')
+      fetch('http://172.31.10.164:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -228,7 +239,7 @@ export default {
         });
     },
     fetchDivisions() {
-      fetch('http://172.31.10.148:8000/get_divisions_json/')
+      fetch('http://172.31.10.164:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
@@ -237,18 +248,18 @@ export default {
           console.error('Error fetching divisions:', error);
         });
     },
-    fetchEmployees(){
-      fetch('http://172.31.10.148:8000/get_employees_json/')
-      .then(response => response.json())
-      .then(data => {
-        this.employees = data;
-      })
-      .catch(error => {
-        console.error('Error fetching employees:', error);
-      });
+    fetchEmployees() {
+      fetch('http://172.31.10.164:8000/get_employees_json/')
+        .then(response => response.json())
+        .then(data => {
+          this.employees = data;
+        })
+        .catch(error => {
+          console.error('Error fetching employees:', error);
+        });
     },
     getName(nameId) {
-        const name = this.names[nameId];
+      const name = this.names[nameId];
       if (name) {
         const { first_name, middle_init, last_name } = name;
         return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
@@ -271,11 +282,11 @@ export default {
         this.ala = selectedForm.ala;
         this.appropriation = selectedForm.appropriations;
         this.remarks = selectedForm.remarks;
-        this.signature1 = `http://172.31.10.148:8000/storage/${selectedForm.signature1}`;
-        this.signature2 = `http://172.31.10.148:8000/storage/${selectedForm.signature2}`;
+        this.signature1 = `http://172.31.10.164:8000/storage/${selectedForm.signature1}`;
+        this.signature2 = `http://172.31.10.164:8000/storage/${selectedForm.signature2}`;
 
 
-        const nameDetails = this.names[this.name_id-1];
+        const nameDetails = this.names[this.name_id - 1];
         if (nameDetails) {
           this.name = `${nameDetails.first_name.toUpperCase()} ${nameDetails.middle_init.toUpperCase()} ${nameDetails.last_name.toUpperCase()}`;
         }
@@ -284,13 +295,13 @@ export default {
         if (selectedPosition) {
           this.position = selectedPosition.position_name;
         }
-      
+
         const selectedDivision = this.divisions.find(division => division.division_id === this.division_id);
         if (selectedDivision) {
           this.division = selectedDivision.division_name;
           const recommendedEmployee = this.employees.find(employee => employee.division_id === this.division_id && employee.chief > 0);
           if (recommendedEmployee) {
-            this.recommended = this.getName(recommendedEmployee.name_id-1);
+            this.recommended = this.getName(recommendedEmployee.name_id - 1);
           }
         }
       } else {
@@ -307,7 +318,7 @@ export default {
         this.recommendedID = '';
       }
     },
-    
+
   }
 };
 </script>
@@ -317,8 +328,10 @@ export default {
 <style scoped>
 .a4-container {
   position: relative;
-  width: 210mm; /* A4 width */
-  height: 296mm; /* A4 height */
+  width: 210mm;
+  /* A4 width */
+  height: 296mm;
+  /* A4 height */
   margin: 0 auto;
   padding: 10px;
   border: 1px solid #ccc;
@@ -326,7 +339,8 @@ export default {
 
 .a4-content {
   /* Adjust this height based on your content */
-  height: 295mm; /* A4 height minus padding and border */
+  height: 295mm;
+  /* A4 height minus padding and border */
 }
 
 .a4-photo {
@@ -335,77 +349,94 @@ export default {
   left: 0;
   width: 100%;
   height: 98%;
-  z-index: -1; /* Place the photo behind other content */
+  z-index: -1;
+  /* Place the photo behind other content */
 }
-.a4-to {
-    margin-top: 22.5%;
-    letter-spacing: 5px; 
-    font-weight: bold;
-    font-size: 20px;
-    color: #000000
-}
-.a4-textBold {
-    font-weight: bold;
-    font-size: 20px;
-    color: #000000;
-    margin-bottom: -10px;
-}
-.outer-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-  }
 
-  .inner-container {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    margin: 10px; /* Adding margin for spacing between inner containers */
-    margin-left: -20px;
-  }
-  .inner-container2 {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    margin: 10px; /* Adding margin for spacing between inner containers */
-    margin-left: -20px;
-    justify-content: center;
-    align-items: center;
-  }
-  .label-value-row {
+.a4-to {
+  margin-top: 22.5%;
+  letter-spacing: 5px;
+  font-weight: bold;
+  font-size: 20px;
+  color: #000000
+}
+
+.a4-textBold {
+  font-weight: bold;
+  font-size: 20px;
+  color: #000000;
+  margin-bottom: -10px;
+}
+
+.outer-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.inner-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin: 10px;
+  /* Adding margin for spacing between inner containers */
+  margin-left: -20px;
+}
+
+.inner-container2 {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin: 10px;
+  /* Adding margin for spacing between inner containers */
+  margin-left: -20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.label-value-row {
   display: flex;
   flex-direction: row;
 }
-  .inner-container p {
-    margin: 5px 0;
-    display: flex;
-    font-size: 18px;
-    text-align: left;
-  }  
-  .label {
-    font-weight: bold;
-    width: 180px; /* Adjust the width as needed */
-  }
-  .value {
-    text-decoration: underline;
-    word-wrap: break-word;
-    max-width: 30ch;
-    text-align: left;
-  }
-  .label-value-row2 {
+
+.inner-container p {
+  margin: 5px 0;
+  display: flex;
+  font-size: 18px;
+  text-align: left;
+}
+
+.label {
+  font-weight: bold;
+  width: 180px;
+  /* Adjust the width as needed */
+}
+
+.value {
+  text-decoration: underline;
+  word-wrap: break-word;
+  max-width: 30ch;
+  text-align: left;
+}
+
+.label-value-row2 {
   display: flex;
   flex-direction: row;
   margin-left: 6%;
   margin-top: -10px;
 }
+
 .label2 {
-    font-weight: bold;
-    width: auto; /* Adjust the width as needed */
-  }
-  .value2 {
-    text-decoration: underline;
-    margin-left: 20px;
-  }
+  font-weight: bold;
+  width: auto;
+  /* Adjust the width as needed */
+}
+
+.value2 {
+  text-decoration: underline;
+  margin-left: 20px;
+}
+
 .buttons {
   display: flex;
   justify-content: center;
@@ -418,7 +449,8 @@ button {
   padding: 10px 20px;
   margin-right: 10px;
 }
-.signatiz{
+
+.signatiz {
   height: auto;
   width: 50px;
   margin-bottom: -50px;

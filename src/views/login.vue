@@ -8,12 +8,13 @@
             <div class="inside">
                <div style="display: flex; flex-direction: column;  width: 100%;">
                   <label class="n">Email: </label>
-                  <input type="email" v-model="email" class='inputsss' id='email' required
-                     @keydown.enter='login_submit'   :class="{ 'red-border': isRed && email === '' }" @input="resetRed">
+                  <input type="email" v-model="email" class='inputsss' id='email' required @keydown.enter='login_submit'
+                     :class="{ 'red-border': isRed && email === '' }" @input="resetRed">
 
                   <label class="p"> Password: </label>
                   <input type="password" v-model="password" class='inputsss' id='password' required
-                     @keydown.enter='login_submit'   :class="{ 'red-border': isRed && password === '' }" @input="resetRed">
+                     @keydown.enter='login_submit' :class="{ 'red-border': isRed && password === '' }"
+                     @input="resetRed">
 
 
                </div>
@@ -75,7 +76,7 @@ const submitting = ref(false);
 const error = ref('');
 const authStore = useAuthStore();
 
-const isRed = ref (false);
+const isRed = ref(false);
 
 
 const accountIdz = localStorage.getItem('accountId');
@@ -90,7 +91,7 @@ const login_submit = () => {
    const account = accounts.value.find(acc => acc.email === email.value);
 
    isRed.value = true
-   
+
    if (email.value === '' && password.value === '') {
       isValid.value = true;
       isRed.value = true
@@ -145,8 +146,8 @@ const login_submit = () => {
       localStorage.setItem('isLoggedIn', true);
       localStorage.setItem('accountId', account.account_id);
       submitting.value = true;
-      pleaseWait.value = true;
       isRed.value = false
+      pleaseWait.value = true;
 
       setTimeout(() => {
          window.location.reload();
@@ -155,7 +156,7 @@ const login_submit = () => {
 };
 
 const fetchAccounts = () => {
-   axios.get('http://172.31.10.148:8000/get_accounts_json')
+   axios.get('http://172.31.10.164:8000/get_accounts_json')
       .then(response => {
          accounts.value = response.data;
 
@@ -167,15 +168,15 @@ const fetchAccounts = () => {
 
 fetchAccounts();
 
-const emil=()=>{
-  
-      return this.email !== ''
-    
+const emil = () => {
+
+   return this.email !== ''
+
 };
 
-const pas=()=>{
-  
-  return this.password !== ''
+const pas = () => {
+
+   return this.password !== ''
 
 }
 </script>
@@ -183,7 +184,7 @@ const pas=()=>{
 
 <style scoped>
 .red-border {
-  border: 2px solid red;
+   border: 2px solid red;
 }
 
 .first {
@@ -211,7 +212,7 @@ const pas=()=>{
    padding: 20px;
    color: #212121;
    border: 2px solid black;
-   box-shadow: 0px 0px 35px -2px black;
+   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
 }
 
 .second.zoomed {
@@ -291,7 +292,7 @@ const pas=()=>{
    padding: 10px;
    margin: 10px auto;
    border-radius: 10px;
-   box-shadow: 0px 0px 10px #f8a837, 0px 0px 10px #f8a837 inset;
+   box-shadow: 0px 0px 4px #f8a837, 0px 0px 3px #f8a837 inset;
 }
 
 .logincorrect {
@@ -306,7 +307,7 @@ const pas=()=>{
    padding: 10px;
    margin: 10px auto;
    border-radius: 10px;
-   box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;
+   box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
 }
 
 .logincorrect {
@@ -339,7 +340,7 @@ const pas=()=>{
    padding: 10px;
    margin: 10px auto;
    border-radius: 10px;
-   box-shadow: 0px 0px 10px #c95e58, 0px 0px 10px #c95e58 inset;
+   box-shadow: 0px 0px 4px #c95e58, 0px 0px 3px #c95e58 inset;
 }
 
 .wronge1 {

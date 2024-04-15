@@ -22,12 +22,12 @@
         <button class="submit-button" @click="sendOTP" :disabled="dlimaclick" v-if="hideUpload">Submit</button>
       </div>
 
-      
+
 
       <div v-if="OTPsent">
         <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
           <label for="otpInput" class="Enterotps">Enter OTP:</label>
-          
+
           <div style="display: flex; flex-direction: row;">
 
             <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 1, 0)"
@@ -50,23 +50,23 @@
               maxlength="1">
 
           </div>
-          
-         
-          
-              <div v-if="sendingOTPS2" class="verifieds">
-          <a class="verifieds1">
-            Sending OTP....
-          </a>
-        </div>
-         
-         
-              <div v-if="expired" class="notequal">
-          <a class="notequal1">
-            OTP Expired
-          </a>
-        </div>
 
-        
+
+
+          <div v-if="sendingOTPS2" class="verifieds">
+            <a class="verifieds1">
+              Sending OTP....
+            </a>
+          </div>
+
+
+          <div v-if="expired" class="notequal">
+            <a class="notequal1">
+              OTP Expired
+            </a>
+          </div>
+
+
 
           <div v-if="verifyingotp" class="verifieds">
             <a class="verifieds1">
@@ -86,7 +86,7 @@
           </div>
 
           <button class="verifyotps" @click="verifyOTP" :disabled="verify || verifydisab">Verify OTP</button>
-          
+
           <button class="verifyotps" @click="sendOTP" :disabled="resed">Resend OTP</button>
         </div>
       </div>
@@ -113,13 +113,13 @@ const OTPsuccesful = ref(false)
 const OTPsuccesful2 = ref(false)
 const verifiedotps = ref(false)
 const sendingOTPS = ref(false)
-const sendingOTPS2 =ref (false)
+const sendingOTPS2 = ref(false)
 const dlimaclick = ref(false)
 const verifyingotp = ref(false)
 const wrongsOTPs = ref(false)
 const expired = ref(false)
 const resed = ref(true)
-const OTPsent2 = ref (false)
+const OTPsent2 = ref(false)
 
 const verifydisab = ref(false);
 const otp1 = ref('');
@@ -176,9 +176,9 @@ const handleFileUpload = (event) => {
 
 const sendOTP = async () => {
   sendingOTPS.value = true;
-  resed.value=true;
-  verifydisab.value =false
-  
+  resed.value = true;
+  verifydisab.value = false
+
   otp1.value = ''
   otp2.value = ''
   otp3.value = ''
@@ -187,7 +187,7 @@ const sendOTP = async () => {
   otp6.value = ''
   console.log('sending OTP')
   try {
-    await axios.post(`http://172.31.10.148:8000/send-otp/${accountId}`);
+    await axios.post(`http://172.31.10.164:8000/send-otp/${accountId}`);
     await fetchOTPData();
     sendingOTPS.value = false;
     console.log('success OTP')
@@ -215,7 +215,7 @@ const submitImage = async () => {
     const formData = new FormData();
     const file = dataURItoBlob(uploadedImageUrl.value);
     formData.append('signature', file);
-    await axios.post(`http://172.31.10.148:8000/update_account/${accountId}`, formData, {
+    await axios.post(`http://172.31.10.164:8000/update_account/${accountId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -244,42 +244,42 @@ const verifyOTP = () => {
   setTimeout(() => {
     if (otpData.value.length > 0) {
       const currentTime = getCurrentTimeAdjusted();
-    const backendExpiryTime = otpData.value[0].expires_at;
+      const backendExpiryTime = otpData.value[0].expires_at;
 
 
-    const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
-    if (expiryTimeAdjusted > currentTime) {
-      console.log('OTP still valid');   
-      verifydisab.value = false
-      if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
-        // OTPverified.value = true;
-        
-        verifyingotp.value = false;
-        verifiedotps.value = true;
-        submitImage();
+      const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
+      if (expiryTimeAdjusted > currentTime) {
+        console.log('OTP still valid');
+        verifydisab.value = false
+        if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
+          // OTPverified.value = true;
+
+          verifyingotp.value = false;
+          verifiedotps.value = true;
+          submitImage();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          verifyingotp.value = false;
+          // verifydisab.value = false
+          wrongsOTPs.value = true;
+          setTimeout(() => {
+
+            wrongsOTPs.value = false
+          }, 2000);
+        }
+      } else {
+        console.log('OTP expired');
+        verifyingotp.value = false
+        expired.value = true
+        resed.value = false
         setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else { 
-        verifyingotp.value = false;
-        // verifydisab.value = false
-        wrongsOTPs.value = true;
-        setTimeout(() => {
+          expired.value = false
+          verifydisab.value = true
 
-          wrongsOTPs.value = false
         }, 2000);
       }
-    } else {
-      console.log('OTP expired');
-      verifyingotp.value=false
-      expired.value=true
-      resed.value = false
-      setTimeout(() => {
-        expired.value=false
-        verifydisab.value = true
-        
-        }, 2000);
-    }
     } else {
       console.error('OTP data not preloaded.');
       return;
@@ -325,7 +325,7 @@ const getCurrentTimeAdjusted = () => {
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://172.31.10.148:8000/get_otp_json');
+    const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountId);
   } catch (error) {
     console.error('Error fetching OTP data:', error);
@@ -353,7 +353,7 @@ const fetchOTPData = async () => {
   margin-left: 15px;
   /* margin: 10px auto; */
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;
+  box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
 }
 
 .succesfullyotp1,
@@ -444,23 +444,25 @@ const fetchOTPData = async () => {
   width: 150px;
   margin-top: 9px;
   cursor: pointer;
-  border-radius:5px;
+  border-radius: 5px;
   font-size: 13px;
   margin-bottom: 10px;
 }
-.verifieds{
-  top:0;
- left:0;
- width: fit-content; /* Adjust width based on content */
- justify-self: center;
- display: flex;
- flex-direction: column;
- border: 1px solid #39b259;
- /* background-color: #39b259; */
- padding: 10px;
- margin: 10px auto;
- border-radius: 10px;
- box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;
+
+.verifieds {
+  top: 0;
+  left: 0;
+  width: fit-content;
+  /* Adjust width based on content */
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #39b259;
+  /* background-color: #39b259; */
+  padding: 10px;
+  margin: 10px auto;
+  border-radius: 10px;
+  box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
   border-radius: 5px;
   font-size: 20px;
 }
@@ -477,7 +479,7 @@ const fetchOTPData = async () => {
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset;
+  box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
 }
 
 .notequal1 {
@@ -503,7 +505,7 @@ const fetchOTPData = async () => {
   margin-left: 60px;
   /* margin: 10px auto; */
   border-radius: 10px;
-  box-shadow: 0px 0px 10px red, 0px 0px 10px red inset;
+  box-shadow: 0px 0px 4px red, 0px 0px 3px red inset;
 
 }
 </style>
