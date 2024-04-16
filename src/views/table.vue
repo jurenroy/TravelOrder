@@ -69,7 +69,7 @@
               <td style="display: flex; justify-content: center;">
                 <button v-if="selectedTravelOrderId != item.travel_order_id"
                   @click="openPDF(item.travel_order_id)">PDF</button>
-                <button v-if="selectedTravelOrderId == item.travel_order_id" @click="close">Close</button>
+                <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close" style="width: 40px; height: 40px; cursor: pointer;"/>
               </td>
               <td v-if="siga && item.note !== null && item.signature1 == null" style="display: flex; justify-content: center;"><button
                   @click="signature1(item.travel_order_id)">Recommend</button></td>
@@ -81,7 +81,7 @@
                   @click="viewNotez(item.note,item.travel_order_id)">View note</button></td>
               <td v-if="item.note !== null && notenum == item.travel_order_id" style="display: flex; justify-content: center;"><button
                   @click="closeNote()">Close View note</button></td>
-              <td v-if="siga1 && item.note !== null" style="display: flex; justify-content: center;"><button
+              <td v-if="(siga1 && item.note !== null) && (item.signature1 !== null && item.division_id !== 5 && item.note !== null)" style="display: flex; justify-content: center;"><button
                   @click="signature2(item.travel_order_id)">Approve</button></td>
               <!-- Add more table data cells as needed -->
             </tr>
@@ -308,15 +308,22 @@ export default {
             this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
             this.siga = false
           } else if (this.bus.name_id == this.sub.name_id) {
-            this.formData = response.data.filter(form => (form.signature2 === null && form.signature1 !== null) || (form.division_id === 5 && form.signature2 == null ) || (form.division_id !== 5 && form.signature1 == null));
-            this.siga1 = true
             if (this.acc.name_id !== 20){
               this.siga = true
+            }else{
+              this.siga = false
             }
+            this.formData = response.data.filter(form => (form.signature2 === null && form.signature1 !== null && form.note !== null) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id));
+            this.siga1 = true
+            
           } else if (this.acc.type_id == 3) {
             const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
-            this.formData = response.data.filter(form => form.division_id == division_id && form.signature1 === null);
+            this.formData = response.data.filter(form => form.division_id == division_id && form.signature1 === null && this.sub.name_id !==20 && form.note !== null);
             this.siga = true
+            if (this.sub.name_id ==20){
+              this.formData = response.data.filter(form => form.name_id == this.acc.name_id && form.note !== null);
+            this.siga = false
+            }
           } 
 
         })
