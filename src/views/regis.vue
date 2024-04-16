@@ -94,6 +94,8 @@
 <script setup>
 import { isRegistrationClicked, isVisible, backButton } from './dashboard.vue';
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
+
 </script>
 
 <script>
@@ -127,6 +129,7 @@ export default {
          lods: false,
          regiss: false,
          loadingregis: false,
+         encryptedPassword:'',
       };
    },
    computed: {
@@ -235,12 +238,13 @@ export default {
          } else {
             this.loadingregis = true;
             this.submit2 = true;
+            this.encryptedPassword = CryptoJS.AES.encrypt(this.password, 'jUr3ñr0yR@br4g@n').toString();
             setTimeout(() => {
                const formData = {
                   type_id: '' + this.account_type,
                   name_id: '' + this.name,
                   email: '' + this.email,
-                  password: '' + this.password
+                  password: '' + this.encryptedPassword
 
                };
 

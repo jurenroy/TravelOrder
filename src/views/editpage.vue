@@ -139,6 +139,7 @@
 import { ref, computed } from 'vue';
 //  import signature from '@/components/signature.vue';
 import axios from 'axios';
+import CryptoJS from 'crypto-js';
 
 const accountIdz = localStorage.getItem('accountId');
 
@@ -437,7 +438,8 @@ const updateProfile = () => {
     }
 
     if (passwords.value !== '' && newPassword.value !== '') {
-      formData.append('password', newPassword.value);
+      const encryptedNewPassword = CryptoJS.AES.encrypt(newPassword.value, 'jUr3ñr0yR@br4g@n').toString();
+      formData.append('password', encryptedNewPassword.value);
     } else {
     }
 

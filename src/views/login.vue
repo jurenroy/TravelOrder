@@ -65,6 +65,7 @@ import alerz from '../components/heder2.vue'
 import { ref } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '../store/auth';
+import CryptoJS from 'crypto-js';
 
 const email = ref('');
 const password = ref('');
@@ -89,6 +90,7 @@ const login_submit = () => {
    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
    const account = accounts.value.find(acc => acc.email === email.value);
+   const decryptedPassword = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
 
    isRed.value = true
 
@@ -132,7 +134,7 @@ const login_submit = () => {
       setTimeout(() => {
          isEmail.value = false;
       }, 2000);
-   } else if (account.password !== password.value) {
+   } else if (decryptedPassword !== password.value) {
       error.value = 'Wrong Password';
       isEmail.value = true;
       isRed.value = true
