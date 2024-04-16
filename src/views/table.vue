@@ -71,7 +71,7 @@
                   @click="openPDF(item.travel_order_id)">PDF</button>
                 <button v-if="selectedTravelOrderId == item.travel_order_id" @click="close">Close</button>
               </td>
-              <td v-if="siga && item.note !== null" style="display: flex; justify-content: center;"><button
+              <td v-if="siga && item.note !== null && item.signature1 == null" style="display: flex; justify-content: center;"><button
                   @click="signature1(item.travel_order_id)">Recommend</button></td>
               <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37 " style="display: flex; justify-content: center;"><button
                   @click="openNote(item.travel_order_id)">Add note</button></td>
@@ -81,7 +81,7 @@
                   @click="viewNotez(item.note,item.travel_order_id)">View note</button></td>
               <td v-if="item.note !== null && notenum == item.travel_order_id" style="display: flex; justify-content: center;"><button
                   @click="closeNote()">Close View note</button></td>
-              <td v-if="siga1" style="display: flex; justify-content: center;"><button
+              <td v-if="siga1 && item.note !== null" style="display: flex; justify-content: center;"><button
                   @click="signature2(item.travel_order_id)">Approve</button></td>
               <!-- Add more table data cells as needed -->
             </tr>
@@ -136,7 +136,9 @@ export default {
       addNote: false,
       viewNote: false,
       notenum: 0,
-      noteText: ''
+      noteText: '',
+      sub: 0,
+      bus: 0,
     };
   },
   created() {
@@ -215,6 +217,7 @@ export default {
         useAuthStore().updateVerifiedOTPs('false');
         localStorage.setItem('verifiedOTPs', 'false');
         this.otp = false;
+        window.location.reload();
       }).catch(error => {
         console.error('Error:', error);
       });
@@ -227,6 +230,9 @@ export default {
 
       const formData = new FormData();
       formData.append('signature2', this.acc.signature);
+      formData.append('sname', this.sub.name_id);
+      formData.append('sdiv', this.sub.division_id);
+
 
       axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
         headers: {
@@ -238,6 +244,7 @@ export default {
         useAuthStore().updateVerifiedOTPs('false');
         localStorage.setItem('verifiedOTPs', 'false');
         this.otp = false;
+        window.location.reload()
       }).catch(error => {
         console.error('Error:', error);
       });
@@ -284,24 +291,33 @@ export default {
           this.mawala = true;
           this.load = false
           console.log(this.acc.name_id)
+          this.sub = this.employees.find(emp => emp.name_id == this.acc.name_id)
+          console.log(this.sub)
+          this.bus = this.employees.find(emp => emp.rd !== null)
+          console.log(this.bus)
+          
+
           if (this.acc.name_id == 37) {
             this.formData = response.data.filter(form => form.note == null);
+            this.siga = false
+          }else if (this.acc.type_id == 1) {
+            this.formData = response.data;
             this.siga = false
           }
           else if (this.acc.type_id == 2) {
             this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
             this.siga = false
-          } else if (this.acc.name_id == 20) {
-            this.formData = response.data.filter(form => form.signature2 === null && form.signature1 !== null || form.division_id === 5);
+          } else if (this.bus.name_id == this.sub.name_id) {
+            this.formData = response.data.filter(form => (form.signature2 === null && form.signature1 !== null) || (form.division_id === 5 && form.signature2 == null ) || (form.division_id !== 5 && form.signature1 == null));
             this.siga1 = true
+            if (this.acc.name_id !== 20){
+              this.siga = true
+            }
           } else if (this.acc.type_id == 3) {
             const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
             this.formData = response.data.filter(form => form.division_id == division_id && form.signature1 === null);
             this.siga = true
-          } else if (this.acc.type_id == 1) {
-            this.formData = response.data;
-            this.siga = false
-          }
+          } 
 
         })
         .catch(error => {

@@ -85,16 +85,22 @@
             </div>
             <div class="inner-container2" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
                 <p>Approved by:</p>
+                <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional Director:</p>
                 <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'"/>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">Rodante B. Felina</p>
-                <p style="margin-top: -10px;">OIC, Regional Director</p>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 4 && sdiv !== null">ALVIN M. VILLANUEVA</p>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 3 && sdiv !== null">OSIN JR. A. SINSUAT</p>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 2 && sdiv !== null">LIBERTY B.DAITIA</p>
+                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 1 && sdiv !== null">JANICE B.FUROG</p>
+                <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
+                <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
             </div>
         </div>
         <p style="letter-spacing: 5px; text-align: center; margin-top: -25px;">AUTHORIZATION</p>
         <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-container" style="align-self: flex-end; margin-right: 6%; ">
-              <img :src="signature3" class="signatiz" v-if="signature3 !== 'http://172.31.10.164:8000/storage/null'" style="margin-top: -60px; margin-bottom: 0px"/>
-                <p class="value" style="font-weight: bold; text-align: center;">{{ name }}</p>
+              <img :src="signature3" class="signatiz" v-if="signature3 !== 'http://172.31.10.164:8000/storage/null'" style="margin-top: -50px; margin-bottom: 0px"/>
+                <p style="font-weight: bold; text-align: center;">{{ name }}</p>
                 <p style="text-align: center;">Official Employee</p>
         </div>
         <p style="text-align: left; margin-top: -30px; margin-left: 6%;">MGB-X-FAD-FO-033</p>
@@ -146,6 +152,9 @@ export default {
       signature2: '',
       signature3: '',
       accounts: [],
+      sname: '',
+      sdiv: '',
+      sdivz: '',
     };
   },
   mounted() {
@@ -287,8 +296,11 @@ export default {
         this.ala = selectedForm.ala;
         this.appropriation = selectedForm.appropriations;
         this.remarks = selectedForm.remarks;
+        this.sname = selectedForm.sname;
+        this.sdiv = selectedForm.sdiv;
         this.signature1 = `http://172.31.10.164:8000/storage/${selectedForm.signature1}`;
         this.signature2 = `http://172.31.10.164:8000/storage/${selectedForm.signature2}`;
+        this.signature3 = 'http://172.31.10.164:8000/storage/null';
 
 
         const nameDetails = this.names[this.name_id-1];
@@ -302,6 +314,8 @@ export default {
         if (selectedPosition) {
           this.position = selectedPosition.position_name;
         }
+
+        this.sdivz = this.divisions.find(division => division.division_id === this.sdiv)
 
         const selectedDivision = this.divisions.find(division => division.division_id === this.division_id);
         if (selectedDivision) {

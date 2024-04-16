@@ -5,7 +5,7 @@
       <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
       <img class="ima" src="../assets/bago.png" alt="Description of the image">
     </div>
-    <div style="display: flex; margin-top: -40px">
+    <div style="display: flex; margin-top: -40px" v-if="setEmployee === name.name_id || name.name_id === 20">
       <h1 style="position: absolute; margin-top: -10px; margin-left: -120px;">Status:</h1>
       <h1 :style="{ position: 'absolute', marginTop: '-10px', marginLeft: '-20px', color: setEmployee == selectedEmployee ? 'black' : 'red' }" v-if="setEmployee === 20">In</h1>
       <h1 :style="{ position: 'absolute', marginTop: '-10px', marginLeft: '-20px', color: setEmployee == selectedEmployee ? 'black' : 'red' }" v-else>Sub</h1>
