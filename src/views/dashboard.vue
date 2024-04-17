@@ -7,19 +7,11 @@
          <registrationform></registrationform>
       </div>
       <div>
-<<<<<<< HEAD
-         <alerz v-if="showHeader1" />
-         <alerz1 v-if="showHeader2" />
-         <div v-if="!isRegistrationClicked">
-            <alerz v-if="showHeader1" />
-            <alerz1 v-if="showHeader2" />
-=======
          <alerz v-if="showHeader1"/>
     <alerz1 v-if="showHeader2"/>
          <div v-if="!isRegistrationClicked">
             <alerz v-if="showHeader1"/>
          <alerz1 v-if="showHeader2"/>
->>>>>>> 768a66090c26311a9ffc731be0505fd0fdaa46a9
             <div class="sig">
                <signature v-if="acc.signature === null" />
                <div v-else>

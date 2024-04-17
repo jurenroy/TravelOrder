@@ -8,7 +8,7 @@
 
     <div
   style="display: flex; margin-top: 2px; margin-left:-100px ; height: inherit; width: 250px; justify-content: center;"
-  v-if="setEmployee === name.name_id || name.name_id === 20">
+  v-if="setEmployee === name.name_id || name.name_id === 76">
   <h1 style="position: fixed; margin-left:-90px ; margin-top: 3px;">Status:</h1>
 
   <div v-if="setEmployee !== null && setEmployee !== ''">
@@ -19,7 +19,7 @@
   </div>
   <button style="position: fixed; margin-top: 9px; margin-left: 280px; height: 30px;"
           v-if="setEmployee !== selectedEmployee" @click="setAccount">Save Changes</button>
-  <select v-model="setEmployee" style="position: fixed; margin-top: 39px; margin-left: -40px;" v-if="setEmployee !== name.name_id || name.name_id === 20">
+  <select v-model="setEmployee" style="position: fixed; margin-top: 39px; margin-left: -40px;" v-if="setEmployee !== name.name_id || name.name_id === 76">
     <option v-for="employee in employees" :key="employee.employee_id" :value="employee.name_id">
       {{ getName(employee.name_id) }}
     </option>
