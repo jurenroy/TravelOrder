@@ -1,7 +1,12 @@
 <template>
    <div class=zero style="display: flex; justify-content: center; margin-top: 250px;">
+      
       <div class="first">
+         <div style="z-index: 999;" v-if="regis_logout">
+            <logout></logout>
+         </div>
          <div class="second">
+            
             <p class="form">Registration Form</p>
 
             <div class="inside">
@@ -93,11 +98,12 @@
 
 <script setup>
 import { isRegistrationClicked, isVisible, backButton } from './dashboard.vue';
+import logout from '@/components/logout.vue';
 import axios from 'axios';
 </script>
 
 <script>
-
+export const regis_logout = false;
 export default {
 
 
@@ -127,6 +133,8 @@ export default {
          lods: false,
          regiss: false,
          loadingregis: false,
+         encryptedPassword:'',
+         
       };
    },
    computed: {

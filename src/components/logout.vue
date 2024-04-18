@@ -15,6 +15,8 @@
 
 <script setup>
 import { noButton, isButssClicked, showHeader1, showHeader2 } from '@/views/dashboard.vue';
+import { showEdit } from './heder.vue';
+import { regis_logout } from '@/views/regis.vue';
 import { useAuthStore } from '../store/auth';
 
 
@@ -42,6 +44,7 @@ export default {
          isButssClicked.value = false;
          showHeader1.value = true;
          showHeader2.value = false
+         
       },
    },
 }

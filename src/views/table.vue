@@ -28,7 +28,7 @@
     <!-- Title and Close Icon -->
     <div class="title-bar">
       <div class="title">View note</div>
-      <div class="close-icon" @click="closeNote">X</div>
+      <!-- <div class="close-icon" @click="closeNote">X</div> -->
     </div>
 
     <!-- Content -->
@@ -79,9 +79,11 @@
                   @click="closeNote()">Close Add note</button></td>
               <td v-if="item.note !== null && notenum !== item.travel_order_id" style="display: flex; justify-content: center;"><button
                   @click="viewNotez(item.note,item.travel_order_id)">View note</button></td>
-              <td v-if="item.note !== null && notenum == item.travel_order_id" style="display: flex; justify-content: center;"><button
-                  @click="closeNote()">Close View note</button></td>
-              <td v-if="siga1" style="display: flex; justify-content: center;"><button
+              <td v-if="item.note !== null && notenum == item.travel_order_id" style="display: flex; justify-content: center;">
+                
+                  <img src="/src/assets/close_note.png" @click="closeNote()" style="width: 40px; height: 40px; cursor: pointer;"/>
+                </td>
+              <td v-if="(siga1 && item.note !== null) && (item.signature1 !== null && item.division_id !== 5 && item.note !== null)" style="display: flex; justify-content: center;"><button
                   @click="signature2(item.travel_order_id)">Approve</button></td>
               <!-- Add more table data cells as needed -->
             </tr>

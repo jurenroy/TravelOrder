@@ -6,12 +6,24 @@
       <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked && !isEdits">
          <registrationform></registrationform>
       </div>
+
+      <div style="flex-direction: column; justify-content: center;" v-if="employeelis && !isEdits">
+         <employeelist></employeelist>
+      </div>
+      
       <div>
-         <alerz v-if="showHeader1"/>
-    <alerz1 v-if="showHeader2"/>
+         <headers v-if="showHeader1"/>
+    <headers1 v-if="showHeader2"/>
+
          <div v-if="!isRegistrationClicked">
-            <alerz v-if="showHeader1"/>
-         <alerz1 v-if="showHeader2"/>
+
+            <headers v-if="showHeader1"/>
+         <headers1 v-if="showHeader2"/>
+
+         <div v-if="!employeelis">
+
+<headers v-if="showHeader1"/>
+<headers1 v-if="showHeader2"/>
             <div class="sig">
                <signature v-if="acc.signature === null" />
                <div v-else>
@@ -20,11 +32,15 @@
                         <div>
                            <p class="travel">Travel Order</p>
                         </div>
+
                         <div>
                            <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
                            <button v-show="!isVisible && acc.type_id == 1" class="reg" @click="toggleRegistration">{{
          'Registration' }}</button>
+            <button v-show="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{
+         'Employee List' }}</button>
                         </div>
+
                      </div>
 
                      <div style="display: flex; justify-content: center;" v-if="isVisible">
@@ -44,18 +60,24 @@
             <div class="logssss" v-if="isButssClicked">
                <logsss></logsss>
             </div>
+
          </div>
+
       </div>
+
+      </div>
+
    </div>
 </template>
 
 <script setup>
-import alerz from '../components/heder.vue'
+import headers from '../components/heder.vue'
 import signature from '../components/signature.vue'
-import alerz1 from '../components/heder2.vue'
+import headers1 from '../components/heder2.vue'
 import addforms from './form.vue';
 import tablez from './table.vue';
 import registrationform from './regis.vue';
+import employeelist from '../views/employeelist.vue'
 import logsss from '../components/logout.vue'
 import editss from '../views/editpage.vue'
 </script>
@@ -67,6 +89,7 @@ import axios from 'axios';
 const accountId = localStorage.getItem('accountId');
 const isVisible = ref(false);
 const isRegistrationClicked = ref(false);
+const employeelis = ref(false);
 const isButssClicked = ref(false);
 const isEdits = ref(false);
 const acc = ref([]);
@@ -87,9 +110,18 @@ const toggleRegistration = () => {
    isRegistrationClicked.value = true;
 };
 
+const employeelst = () => {
+   employeelis.value = true;
+};
+
 //ma back ang registration
 const backButton = () => {
    isRegistrationClicked.value = false;
+   isVisible.value = false;
+};
+
+const backButtonemp = () => {
+   employeelis.value = false;
    isVisible.value = false;
 };
 
@@ -124,7 +156,7 @@ fetchAccounts()
 
 
 
-export { isVisible, isRegistrationClicked, isButssClicked, showHeader1, showHeader2, isEdits, noButton, toggleForm, toggleRegistration, backButton, logButton, showEditss };
+export { isVisible, isRegistrationClicked, isButssClicked, showHeader1, showHeader2, isEdits, employeelis, noButton, toggleForm, toggleRegistration, employeelst ,backButton, backButtonemp, logButton, showEditss };
 </script>
 
 
@@ -167,6 +199,21 @@ export { isVisible, isRegistrationClicked, isButssClicked, showHeader1, showHead
    margin-left: 20px;
    height: auto;
    width: 150px;
+   padding: 5px;
+   border-radius: 10px;
+   font-size: 20px;
+   font-weight: bold;
+   box-shadow: 7px 7px 12px black;
+   /* box-shadow: 7px 7px 12px black, 0px 0px 10px black inset; */
+   cursor: pointer;
+}
+
+.emplo{
+   margin-top: -19px;
+   margin-bottom: 13px;
+   margin-left: 20px;
+   height: auto;
+   width: 160px;
    padding: 5px;
    border-radius: 10px;
    font-size: 20px;

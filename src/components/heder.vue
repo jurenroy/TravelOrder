@@ -25,13 +25,19 @@
     </option>
   </select>
 </div>
-    <div class="imagediv2">
+    <div class="editnames" style="height: 90px;">
       <div>
         <text class="ima2 usew" v-if="Usernames" @click="showEdits" style="user-select: none;">{{ name.first_name }} {{
-        name.middle_init }} {{ name.last_name }}</text>
-        <button class="ima2 editbut imagediv1 tes" v-if="showEdit" @click="backUpdate">Edit</button>
+        name.middle_init }} {{ name.last_name }} <img  src="../assets/down.png" style="position: relative; width: 25px; height: 25px;top: 7px "></text>
+        
+        <div  v-if="showEdit" style="height: auto; width:100px ; position: relative; top: 5px;left: 10px; ">
+          <div style="border:2px solid black; border-radius: 10px; background-color: white; width: 78px; height:55px; position: relative; display: flex; flex-direction: column;" >
+        <button class="editbut"  @click="backUpdate">Edit</button>
+        <button class="logoutbut"  @click="closeAndLog">Logout</button>
       </div>
-      <button class="ima imabut" @click="closeAndLog">Logout</button>
+      </div>
+      </div>
+      
     </div>
 
 
@@ -67,8 +73,11 @@ const setAccount = async () => {
 
 
 const fetchAccounts = async () => {
+  
   try {
+    Usernames.value = false
     const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
+    Usernames.value = true
     accounts.value = response.data;
   } catch (error) {
     console.error('Error fetching accounts:', error);
@@ -138,7 +147,6 @@ import { ref } from 'vue';
 import { isButssClicked, showHeader1, showHeader2, isEdits, isRegistrationClicked, isVisible } from '../views/dashboard.vue';
 
 
-
 export const showEdit = ref(false)
 
 export const Usernames = ref(true)
@@ -152,14 +160,14 @@ export default {
       isButssClicked.value = true;
       showHeader1.value = false;
       showHeader2.value = true
-
-
-
+      showEdit.value = false
+      
     },
     closeAndLog() {
 
       if (typeof this.close === 'function') {
         this.close();
+        
       }
       this.logButtonz();
     },
@@ -219,10 +227,12 @@ export default {
   align-items: center;
 }
 
-.imagediv2 {
-  display: flex;
-  align-items: center;
-  height: inherit;
+.editnames {
+  /* display: flex;
+  align-items: center; */
+  position: relative;
+  top: 30px;
+  left: -30px;
 }
 
 .imagediv3 {
@@ -240,17 +250,13 @@ export default {
 }
 
 .ima2 {
-  height: 20px;
-  width: 50px;
-  margin-top: -5px;
-  margin-left: 10px;
-  margin-bottom: -15px;
+
   cursor: pointer;
 }
 
-.imabut,
-.ima,
-.ima2 {
+.imabut
+
+{
   margin-right: 30px;
 }
 
@@ -260,6 +266,8 @@ export default {
   top: 6px;
   left: 35px;
 }
+
+
 
 .imabut {
   border-radius: 10px;
@@ -271,6 +279,19 @@ export default {
 .editbut {
   border-radius: 5px;
   font-size: 13px;
+  margin-bottom: 4px;
+  width: 60px;
+  position: relative;
+  top: 5px;
+  left: 10px;
+}
+.logoutbut {
+  border-radius: 5px;
+  font-size: 13px;
+  width: 60px;
+  position: relative;
+  left: 10px;
+  top: 5px;
 }
 
 .ims {
@@ -282,18 +303,23 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .imagediv1 {
-    display: flex;
-    align-items: center;
-  }
-
-  .ima {
-    height: 10px;
-    width: 10px;
-    margin-top: -5px;
-    margin-left: 10px;
-    cursor: pointer;
-  }
+   .imabut,.ima,.ima2{
+    margin-right: 0px;
+   }
+   .ims{
+    width: 145.9px; 
+ }
+ .imabut{
+     border-radius:10px;
+     font-size: 13px;
+     width: 50px;
+     height: 30px;
+     margin-right: 1px;
+     
+ }
+ .usew{
+    margin-right: -1px;
+ }
 
 }
 </style>
