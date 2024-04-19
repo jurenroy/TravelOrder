@@ -151,10 +151,8 @@ export default {
     logButtonz() {
       isButssClicked.value = true;
       showHeader1.value = false;
-      showHeader2.value = true
-
-
-
+      showHeader2.value = true;
+      showEdit.value = false;
     },
     closeAndLog() {
 

@@ -1,5 +1,5 @@
 <template>
-   <div class=zerologout style="display: flex; justify-content: center;">
+   <div class=zerologout style="display: flex; justify-content: center; z-index: 999;">
       <div class="firstlogout">
          <div class="secondlogout">
             <p class="logoutform">Are you sure you want to logout?</p>

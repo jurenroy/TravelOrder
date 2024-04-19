@@ -6,9 +6,12 @@
       <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked && !isEdits">
          <registrationform></registrationform>
       </div>
+      <div class="logssss" v-if="isButssClicked">
+               <logsss></logsss>
+            </div>
       <div>
          <alerz v-if="showHeader1"/>
-    <alerz1 v-if="showHeader2"/>
+         <alerz1 v-if="showHeader2"/>
          <div v-if="!isRegistrationClicked">
             <alerz v-if="showHeader1"/>
          <alerz1 v-if="showHeader2"/>
@@ -23,7 +26,7 @@
                         <div>
                            <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
                            <button v-show="!isVisible && acc.type_id == 1" class="reg" @click="toggleRegistration">{{
-         'Registration' }}</button>
+                     'Registration' }}</button>
                         </div>
                      </div>
 
@@ -34,11 +37,6 @@
                         <tablez></tablez>
                      </div>
                   </div>
-
-
-
-
-
                </div>
             </div>
             <div class="logssss" v-if="isButssClicked">
