@@ -75,7 +75,7 @@
                 <input v-model="edited.isChief" type="checkbox">
               </td>
 
-              <td v-if="!employee.isEditing">{{ employee.isActive }}</td>
+              <td v-if="!employee.isEditing" :style="{ backgroundColor: employee.isActive === 'out' ? 'red' : 'green' }"></td>
               <td v-else>
                 <input v-model="edited.isActive" type="checkbox">
               </td>
@@ -100,7 +100,8 @@
 
 <script setup>
 import { employeelis, isVisible, backButtonemp } from './dashboard.vue';
-import addemp from '../components/addemployee.vue'
+import addemp from '../components/addemployee.vue';
+import axios from 'axios';
 
 </script>
 
@@ -150,27 +151,43 @@ export default {
           this.edited.middleName = nem.middle_init.toUpperCase();
           this.edited.position = pus.position_name;
           this.edited.division = dev.division_name;
-          this.edited.isChief = employee.chief;
-          this.edited.isActive = employee.isActive;
+          this.edited.isChief = (employee.chief > 0);
+          this.edited.isActive = (employee.isActive !== 'out');
         } else {
           employee.isEditing = false;
         }
       });
     },
     doneeditEmployeee(employee) {
-      this.selectedEmployee = 0;
-      employee.isEditing = false;
-      // Prepare the data to be sent
-      const data = {
-        last_name: this.edited.lastName,
-        first_name: this.edited.firstName,
-        middle_name: this.edited.middleName,
-        position: this.edited.position,
-        division: this.edited.division,
-        is_chief: this.edited.isChief,
-        is_active: this.edited.isActive
-      };
-    },
+    // Create a new FormData object
+    const formData = new FormData();
+
+    // Append key-value pairs to the FormData object
+    formData.append('employee_id', this.selectedEmployee);
+    formData.append('last_name', this.edited.lastName);
+    formData.append('first_name', this.edited.firstName);
+    formData.append('middle_init', this.edited.middleName);
+    formData.append('position_name', this.edited.position);
+    formData.append('division_name', this.edited.division);
+    formData.append('chief', this.edited.isChief ? 1 : 0);
+    formData.append('isActive', this.edited.isActive ? null : 'out');
+
+    // Send the data using Axios
+    axios.post('http://172.31.10.164:8000/edit_employee', formData)
+        .then(response => {
+            // Handle success
+            console.log('Response:', response);
+            this.selectedEmployee = 0;
+            employee.isEditing = false;
+            this.fetchData();
+        })
+        .catch(error => {
+            // Handle error
+            console.error('Error:', error);
+            this.selectedEmployee = 0;
+            employee.isEditing = false;
+        });
+},
     showaddem (){
     this.addem = !this.addem ;
   },
