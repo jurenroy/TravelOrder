@@ -98,6 +98,7 @@
 
 <script setup>
 import { isRegistrationClicked, isVisible, backButton } from './dashboard.vue';
+import { showEdit } from '@/components/heder.vue';
 import logout from '@/components/logout.vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
@@ -112,6 +113,7 @@ export default {
    backButton() {
       isRegistrationClicked.value = false;
       isVisible.value = false;
+      showEdit.value = false
    },
 
    data() {

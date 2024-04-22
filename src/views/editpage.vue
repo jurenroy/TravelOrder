@@ -141,6 +141,7 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
+
 const accountIdz = localStorage.getItem('accountId');
 
 const uploadedImageUrl = ref('');
@@ -517,7 +518,7 @@ convert();
 
 
 <script>
-import { Usernames, showEdit, } from '@/components/heder.vue';
+import { Usernames, showEdit, hideedit } from '@/components/heder.vue';
 import { isEdits, isRegistrationClicked, isVisible } from '@/views/dashboard.vue';
 
 
@@ -531,6 +532,7 @@ export default {
       Usernames.value = true
       isRegistrationClicked.value = false;
       isVisible.value = false
+      hideedit.value = true
     },
 
 

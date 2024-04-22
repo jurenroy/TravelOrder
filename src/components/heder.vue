@@ -7,37 +7,40 @@
     </div>
 
     <div
-  style="display: flex; margin-top: 2px; margin-left:-100px ; height: inherit; width: 250px; justify-content: center;"
-  v-if="setEmployee === name.name_id || name.name_id === 76">
-  <h1 style="position: fixed; margin-left:-90px ; margin-top: 3px;">Status:</h1>
+      style="display: flex; margin-top: 2px; margin-left:-100px ; height: inherit; width: 250px; justify-content: center;"
+      v-if="setEmployee === name.name_id || name.name_id === 76">
+      <h1 style="position: fixed; margin-left:-90px ; margin-top: 3px;">Status:</h1>
 
-  <div v-if="setEmployee !== null && setEmployee !== ''">
-    <h1 :style="{ position: 'fixed', marginTop: '3px', color: setEmployee == selectedEmployee ? 'black' : 'red' }"
-        v-if="setEmployee === 20">In</h1>
-    <h1 :style="{ position: 'fixed', marginTop: '3px', color: setEmployee == selectedEmployee ? 'black' : 'red' }"
-        v-else>Sub</h1>
-  </div>
-  <button style="position: fixed; margin-top: 9px; margin-left: 280px; height: 30px;"
-          v-if="setEmployee !== selectedEmployee" @click="setAccount">Save Changes</button>
-  <select v-model="setEmployee" style="position: fixed; margin-top: 39px; margin-left: -40px;" v-if="setEmployee !== name.name_id || name.name_id === 76">
-    <option v-for="employee in employees" :key="employee.employee_id" :value="employee.name_id">
-      {{ getName(employee.name_id) }}
-    </option>
-  </select>
-</div>
+      <div v-if="setEmployee !== null && setEmployee !== ''">
+        <h1 :style="{ position: 'fixed', marginTop: '3px', color: setEmployee == selectedEmployee ? 'black' : 'red' }"
+          v-if="setEmployee === 20">In</h1>
+        <h1 :style="{ position: 'fixed', marginTop: '3px', color: setEmployee == selectedEmployee ? 'black' : 'red' }"
+          v-else>Sub</h1>
+      </div>
+      <button style="position: fixed; margin-top: 9px; margin-left: 280px; height: 30px;"
+        v-if="setEmployee !== selectedEmployee" @click="setAccount">Save Changes</button>
+      <select v-model="setEmployee" style="position: fixed; margin-top: 39px; margin-left: -40px;"
+        v-if="setEmployee !== name.name_id || name.name_id === 76">
+        <option v-for="employee in employees" :key="employee.employee_id" :value="employee.name_id">
+          {{ getName(employee.name_id) }}
+        </option>
+      </select>
+    </div>
     <div class="editnames" style="height: 90px;">
       <div>
         <text class="ima2 usew" v-if="Usernames" @click="showEdits" style="user-select: none;">{{ name.first_name }} {{
-        name.middle_init }} {{ name.last_name }} <img  src="../assets/down.png" style="position: relative; width: 25px; height: 25px;top: 7px "></text>
-        
-        <div  v-if="showEdit" style="height: auto; width:100px ; position: relative; top: 5px;left: 10px; ">
-          <div style="border:2px solid black; border-radius: 10px; background-color: white; width: 78px; height:55px; position: relative; display: flex; flex-direction: column;" >
-        <button class="editbut"  @click="backUpdate">Edit</button>
-        <button class="logoutbut"  @click="closeAndLog">Logout</button>
+        name.middle_init }} {{ name.last_name }} <img v-if="Usernames" src="../assets/down.png"
+            style="position: relative; width: 25px; height: 25px;top: 7px "></text>
+
+        <div v-if="showEdit" style="height: auto; width:auto ; position: relative; top: 5px;left: 10px; ">
+          <div
+            style="border:2px solid black; border-radius: 10px; padding:5px;  background-color: white; width: 60px; height:auto; position: relative; display: flex; flex-direction: column;">
+            <button class="editbut" v-if="hideedit" @click="backUpdate">Edit</button>
+            <button class="logoutbut" @click="closeAndLog">Logout</button>
+          </div>
+          
+        </div>
       </div>
-      </div>
-      </div>
-      
     </div>
 
 
@@ -73,12 +76,13 @@ const setAccount = async () => {
 
 
 const fetchAccounts = async () => {
-  
+
   try {
     Usernames.value = false
     const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
-    Usernames.value = true
+
     accounts.value = response.data;
+    Usernames.value = true
   } catch (error) {
     console.error('Error fetching accounts:', error);
   }
@@ -151,6 +155,9 @@ export const showEdit = ref(false)
 
 export const Usernames = ref(true)
 
+export const islogout2 = ref(false)
+export const hideedit = ref (true)
+
 
 
 export default {
@@ -161,13 +168,13 @@ export default {
       showHeader1.value = false;
       showHeader2.value = true
       showEdit.value = false
-      
+
     },
     closeAndLog() {
 
       if (typeof this.close === 'function') {
         this.close();
-        
+
       }
       this.logButtonz();
     },
@@ -181,9 +188,11 @@ export default {
     clickEdit() {
       showEdit.value = false;
       isEdits.value = true
-      Usernames.value = false
+      
       isRegistrationClicked.value = true;
       isVisible.value = false
+      islogout2.value = true;
+      hideedit.value = false
     },
 
     backUpdate() {
@@ -254,11 +263,10 @@ export default {
   cursor: pointer;
 }
 
-.imabut
-
-{
+.imabut {
   margin-right: 30px;
 }
+
 
 .tes {
   justify-content: center;
@@ -282,16 +290,15 @@ export default {
   margin-bottom: 4px;
   width: 60px;
   position: relative;
-  top: 5px;
-  left: 10px;
+  
 }
+
 .logoutbut {
   border-radius: 5px;
   font-size: 13px;
   width: 60px;
   position: relative;
-  left: 10px;
-  top: 5px;
+  
 }
 
 .ims {
@@ -303,23 +310,29 @@ export default {
 }
 
 @media (max-width: 768px) {
-   .imabut,.ima,.ima2{
+
+  .imabut,
+  .ima,
+  .ima2 {
     margin-right: 0px;
-   }
-   .ims{
-    width: 145.9px; 
- }
- .imabut{
-     border-radius:10px;
-     font-size: 13px;
-     width: 50px;
-     height: 30px;
-     margin-right: 1px;
-     
- }
- .usew{
+  }
+
+  .ims {
+    width: 145.9px;
+  }
+
+  .imabut {
+    border-radius: 10px;
+    font-size: 13px;
+    width: 50px;
+    height: 30px;
+    margin-right: 1px;
+
+  }
+
+  .usew {
     margin-right: -1px;
- }
+  }
 
 }
 </style>

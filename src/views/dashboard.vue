@@ -21,13 +21,13 @@
 
          <div v-if="!isRegistrationClicked">
 
-            <headers v-if="showHeader1"/>
-         <headers1 v-if="showHeader2"/>
+            <!-- <headers v-if="showHeader1"/>
+         <headers1 v-if="showHeader2"/> -->
 
          <div v-if="!employeelis">
 
-<headers v-if="showHeader1"/>
-<headers1 v-if="showHeader2"/>
+<!-- <headers v-if="showHeader1"/>
+<headers1 v-if="showHeader2"/> -->
             <div class="sig">
                <signature v-if="acc.signature === null" />
                <div v-else>
@@ -79,6 +79,7 @@ import registrationform from './regis.vue';
 import employeelist from '../views/employeelist.vue'
 import logsss from '../components/logout.vue'
 import editss from '../views/editpage.vue'
+import { showEdit } from '../components/heder.vue';
 </script>
 
 
@@ -102,21 +103,26 @@ const showHeader2 = ref(false)
 // visible sa  Add form
 const toggleForm = () => {
    isVisible.value = !isVisible.value;
+   showEdit.value=false
 };
 
 // makita ang registration
 const toggleRegistration = () => {
    isRegistrationClicked.value = true;
+   showEdit.value = false;
 };
 
 const employeelst = () => {
    employeelis.value = true;
+   showEdit.value = false
 };
 
 //ma back ang registration
 const backButton = () => {
    isRegistrationClicked.value = false;
    isVisible.value = false;
+   showEdit.value = false
+   
 };
 
 const backButtonemp = () => {

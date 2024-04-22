@@ -1,30 +1,42 @@
 <template>
-  <div>
+  <div style="background-color: green; display: flex; justify-content: row;">
     <form @submit.prevent="submitForm">
-      <label for="firstName">First Name:</label>
-      <input type="text" id="firstName" v-model="formData.firstName" required><br>
+      <div>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" v-model="formData.firstName" required><br>
+      </div>
 
-      <label for="middleInit">Middle Initial:</label>
-      <input type="text" id="middleInit" v-model="formData.middleInit"><br>
+      <div>
+        <label for="middleInit">Middle Initial:</label>
+        <input type="text" id="middleInit" v-model="formData.middleInit"><br>
+      </div>
 
-      <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" v-model="formData.lastName" required><br>
+      <div>
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" v-model="formData.lastName" required><br>
+      </div>
 
-      <label for="division">Division:</label>
-      <select id="division" v-model="formData.division" required>
-        <option v-for="division in divisions" :value="division.division_name">{{ division.division_name }}</option>
-      </select><br>
+      <div>
+        <label for="division">Division:</label>
+        <select id="division" v-model="formData.division" required>
+          <option v-for="division in divisions" :value="division.division_name">{{ division.division_name }}</option>
+        </select><br>
+      </div>
 
-      <label for="position">Position:</label>
-      <select id="position" v-model="formData.position" :disabled="customPositionEnabled" required>
-        <option v-for="position in positions" :value="position.position_name">{{ position.position_name }}</option>
-      </select>
-      <input type="checkbox" id="customPosition" v-model="customPositionEnabled">
-      <label for="customPosition">Custom Position</label><br>
+      <div>
+        <label for="position">Position:</label>
+        <select id="position" v-model="formData.position" :disabled="customPositionEnabled" required>
+          <option v-for="position in positions" :value="position.position_name">{{ position.position_name }}</option>
+        </select>
+        <input type="checkbox" id="customPosition" v-model="customPositionEnabled">
+        <label for="customPosition">Custom Position</label>
+      </div>
 
-      <input type="text" id="customPositionInput" v-model="formData.customPosition" :disabled="!customPositionEnabled" placeholder="Enter Custom Position"><br>
-
-      <button type="submit">Submit</button>
+      <input type="text" id="customPositionInput" v-model="formData.customPosition" :disabled="!customPositionEnabled"
+        placeholder="Enter Custom Position"><br>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
     </form>
   </div>
 </template>

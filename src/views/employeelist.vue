@@ -7,8 +7,9 @@
         style="width: 26px; height: 26px; margin-left: 10px; margin-top: 35px; cursor: pointer;" @click="showaddem">
     </div>
     <div
-      style="width: 300px; background-color: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 20px;  position: fixed;  top: 50%;  left: 50%;  transform: translate(-50%, -50%);  z-index: 100;"
+      style="width: 600px; height: 320px;background-color: white; border: 2px solid BLACK; border-radius: 5px; padding: 10px;  position: fixed;  top: 50%;  left: 50%;  transform: translate(-50%, -50%); "
       v-if="addem">
+      <p style="display: flex; justify-content: center; font-weight: bold; font-size: 28px; margin-top: -5px; margin-bottom: 10px;">Add Employee</p>
       <addemp></addemp>
     </div>
 
@@ -115,7 +116,7 @@ export default {
       divisions: [],
       load: true,
       mawala: false,
-      addem: false, 
+      addem: true, 
       selectedEmployee: 0,
       edited: {
         lastName: '',
@@ -130,6 +131,16 @@ export default {
   },
   
   methods: {
+
+exportData(){
+  const datatoExport = {
+  addem:this.addem
+  }
+  return datatoExport;
+},
+
+
+
     backButtonemp() {
     employeelis.value = false;
     isVisible.value = false;
