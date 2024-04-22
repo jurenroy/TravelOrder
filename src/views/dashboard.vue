@@ -79,7 +79,7 @@ import registrationform from './regis.vue';
 import employeelist from '../views/employeelist.vue'
 import logsss from '../components/logout.vue'
 import editss from '../views/editpage.vue'
-import { showEdit } from '../components/heder.vue';
+import { showEdit, showhome } from '../components/heder.vue';
 </script>
 
 
@@ -114,7 +114,8 @@ const toggleRegistration = () => {
 
 const employeelst = () => {
    employeelis.value = true;
-   showEdit.value = false
+   showEdit.value = false;
+   showhome.value = true;
 };
 
 //ma back ang registration

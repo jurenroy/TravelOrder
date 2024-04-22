@@ -4,6 +4,7 @@
       <img class="ima" src="../assets/logo.png" alt="Description of the image">
       <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
       <img class="ima" src="../assets/bago.png" alt="Description of the image">
+      <img v-if="showhome" @click="relod" style="cursor: pointer; height: 40px; width: 40px; position: relative; left: 35px; top: -1px;" src="../assets/home.png" title="Go back to Home">
     </div>
 
     <div
@@ -51,11 +52,15 @@
 import { ref } from 'vue';
 import { useAuthStore } from '../store/auth';
 import { isButssClicked } from '../views/dashboard.vue';
+
 import axios from 'axios';
 
 const authStore = useAuthStore();
 
 const accountIdz = localStorage.getItem('accountId');
+
+
+
 
 const accounts = ref([]);
 const employees = ref([]);
@@ -64,6 +69,11 @@ const name = ref('')
 const nameLoaded = ref(false)
 const selectedEmployee = ref(null); // Store the selected employee ID
 const setEmployee = ref(null); // Store the selected employee ID
+
+
+
+
+
 
 const setAccount = async () => {
   try {
@@ -74,6 +84,10 @@ const setAccount = async () => {
   }
 };
 
+
+const relod = () => {
+  window.location.reload();
+}
 
 const fetchAccounts = async () => {
 
@@ -144,6 +158,8 @@ fetchAccounts();
 fetchEmployee();
 fetchNames();
 
+
+
 </script>
 
 <script>
@@ -157,6 +173,9 @@ export const Usernames = ref(true)
 
 export const islogout2 = ref(false)
 export const hideedit = ref (true)
+
+export const showhome = ref (false)
+
 
 
 
