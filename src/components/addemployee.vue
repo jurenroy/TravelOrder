@@ -56,7 +56,7 @@
 
 
 <script setup>
-import {cancelemplo, addem, chingchang, seemplo} from '@/views/employeelist.vue';
+import {cancelemplo, addem, seemplo} from '@/views/employeelist.vue';
 
 </script>
 
@@ -105,7 +105,6 @@ addem.value = false
       
       axios.post('http://172.31.10.164:8000/add_employees', dataToSend)
         .then(response => {
-          console.log('Response:', response.data);
           // Reset form data
           this.formData = {
             firstName: '',

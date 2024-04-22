@@ -154,21 +154,18 @@ export default {
   methods: {
     viewNotez(nutz, numx) {
       this.viewNote = true,
-        console.log("Note opened");
       this.noteText = nutz
       this.notenum = numx
     },
     openNote(numz) {
       this.addNote = true,
         this.notenum = numz
-      console.log("Note opened");
       this.noteText = ''
     },
     closeNote() {
       this.addNote = false,
         this.viewNote = false,
         this.notenum = 0
-      console.log("Note closed");
     },
     postNote() {
       // Axios POST request logic here
@@ -189,7 +186,6 @@ export default {
         console.error('Error:', error);
       });
 
-      console.log("Note posted:", this.noteText);
       this.closeNote()
     },
     updateVerifiedOTPs(event) {
@@ -199,10 +195,8 @@ export default {
     },
     async signature1(form_id) {
 
-      console.log(this.verifiedOTPs)
       this.otp = true;
 
-      console.log(this.verifiedOTPs)
       await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
       this.otp = false;
 
@@ -292,11 +286,8 @@ export default {
         .then(response => {
           this.mawala = true;
           this.load = false
-          console.log(this.acc.name_id)
           this.sub = this.employees.find(emp => emp.name_id == this.acc.name_id)
-          console.log(this.sub)
           this.bus = this.employees.find(emp => emp.rd !== null)
-          console.log(this.bus)
           
 
           if (this.acc.name_id == 37) {

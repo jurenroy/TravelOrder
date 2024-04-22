@@ -149,7 +149,6 @@ const login_submit = () => {
          isEmail.value = false;
       }, 2000);
       decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
-      console.log(decryptedPassword.value)
    } else {
       email.value = '';
       password.value = '';

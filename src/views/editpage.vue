@@ -349,7 +349,6 @@ const verifyOTP = () => {
       const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
       if (expiryTimeAdjusted > currentTime) {
 
-        console.log('OTP still valid');
         verifydisab.value = false;
         wrongOTPs.value = true
         setTimeout(() => {
@@ -375,7 +374,6 @@ const verifyOTP = () => {
         }
       } else {
 
-        console.log('OTP expired');
         expi.value = true
         resed.value = false
         setTimeout(() => {

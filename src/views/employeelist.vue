@@ -6,7 +6,7 @@
       <img src="../assets/add.png"
         style="width: 26px; height: 26px; margin-left: 10px; margin-top: 35px; cursor: pointer;" @click="showaddem">
     </div>
-    <button @click="fetchData" id="damnit" style="height: 0; width: 0;" hidden></button>
+    <button @click="fetchData" id="refresh" style="height: 0; width: 0;" hidden></button>
     <div v-if="successfulyadd" class="successadd">
                <a class="successadd1">
                  Employee Successfuly Added!!
@@ -125,26 +125,21 @@ import axios from 'axios';
 
 <script>
 const addem = ref (false);
-export const chingchang = ref(0);
 
 const successfulyadd = ref (false)
 
 const showaddem=() => {
     addem.value = true;
-    chingchang.value += 1
   };
 
   const cancelemplo = () => {
     addem.value = false
-    chingchang.value += 1
   }
   const seemplo = () => {
     addem.value = false
-    chingchang.value += 1
-    console.log('suckseesh1')
     // Find the button element
     // Find the button element by ID
-const button = document.getElementById('damnit');
+const button = document.getElementById('refresh');
 
 // Check if the button element is found before dispatching the click event
 if (button) {
@@ -189,23 +184,14 @@ export default {
       input: {
         pospos: false
       },
-      chingchang: 0
     };
   },
-  watch: {
-    chingchang(newValue, oldValue) {
-    if (newValue > oldValue) {
-      this.fetchData();
-      console.log('yawa');
-    }
-  }
-},
+ 
   methods: {
     isPosposDisabled() {
       return !this.edited.position; // Disable if edited.position is empty
     },
     seemplo() {
-      console.log('suckseesh2');
       this.fetchData(); // Access fetchData from this context
     },
 
@@ -216,14 +202,12 @@ export default {
   editEmployeee(employees_id) {
       this.selectedEmployee = employees_id;
       const map = this.employees.find(emp => emp.employee_id == employees_id)
-      console.log(map)
       this.employees.forEach(employee => {
         if (employee.employee_id === employees_id && this.selectedEmployee === employees_id) {
           employee.isEditing = true;
           const nem = this.names.find(name => name.name_id == map.name_id)
           const pus = this.positions.find(name => name.position_id == map.position_id)
           const dev = this.divisions.find(name => name.division_id == map.division_id)
-          console.log(nem)
           this.edited.lastName = nem.last_name.toUpperCase();
           this.edited.firstName = nem.first_name.toUpperCase();
           this.edited.middleName = nem.middle_init.toUpperCase();
@@ -254,7 +238,6 @@ export default {
     axios.post('http://172.31.10.164:8000/edit_employee', formData)
         .then(response => {
             // Handle success
-            console.log('Response:', response);
             this.selectedEmployee = 0;
             employee.isEditing = false;
             this.fetchData();
@@ -303,7 +286,6 @@ export default {
           this.mawala = true;
           this.load = false
           this.names = data;
-          console.log(this.names)
         })
         .catch(error => {
           console.error('Error fetching names:', error);

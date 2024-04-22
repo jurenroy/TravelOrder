@@ -174,7 +174,6 @@ const sendOTP = async () => {
   try {
     OTPsent.value = false;
     verifiedotps.value = false;
-    console.log('sending OTP')
     await axios.post(`http://172.31.10.164:8000/send-otp/${accountId}`);
     sendingOTPS.value = false
     OTPsuccesful.value = true;
@@ -198,18 +197,13 @@ const verifyOTP = () => {
   if (otpData.value.length > 0) {
     const currentTime = getCurrentTimeAdjusted();
     const backendExpiryTime = otpData.value[0].expires_at;
-    console.log(currentTime)
-    console.log(backendExpiryTime)
 
     // Adjust backend expiry time by adding 8 hours
     const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
-    console.log(expiryTimeAdjusted)
     if (expiryTimeAdjusted > currentTime) {
-      console.log('OTP still valid');
       if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
         // OTPverified.value = true;
         verifiedotps.value = true;
-        console.log('sakto ka')
         authStore.updateVerifiedOTPs('true'); // Update state using Pinia store
         localStorage.setItem('verifiedOTPs', 'true');
 
@@ -217,7 +211,6 @@ const verifyOTP = () => {
         //         window.location.reload();
         //         }, 2000);
       } else {
-        console.log('wa jud ta nagkadimao bai')
         wrongOTPs.value = true
         otp1.value = ''
         otp2.value = ''
@@ -230,7 +223,6 @@ const verifyOTP = () => {
         }, 2000);
       }
     } else {
-      console.log('OTP expired');
       otp1.value = ''
       otp2.value = ''
       otp3.value = ''
@@ -272,12 +264,6 @@ const fetchOTPData = async () => {
   try {
     const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountId);
-    console.log(otpData.value[0].id)
-    console.log(otpData.value[0].code)
-    console.log(otpData.value[0].account_id)
-    console.log(otpData.value[0].created_at)
-    console.log(otpData.value[0].expires_at)
-    console.log(getCurrentTimeAdjusted())
   } catch (error) {
     console.error('Error fetching OTP data:', error);
   }
