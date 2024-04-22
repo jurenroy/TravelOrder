@@ -53,12 +53,13 @@
 
               <td v-if="!employee.isEditing">{{ getPositionById(employee.position_id, 'positions') }}</td>
               <td v-else>
-                <select v-model="edited.position">
+                <select v-model="edited.position" :disabled="input.pospos">
         <option v-for="position in positions" :key="position.position_id" :value="position.position_name">
             {{ position.position_name }}
         </option>
     </select>
-                
+          <input type="checkbox" id="pospos" v-model="input.pospos">
+          <input v-model="edited.position" type="text" v-if="input.pospos">
               </td>
 
               <td v-if="!employee.isEditing" style=" text-align: center;">{{ getDivisionById(employee.division_id, 'divisions') }}</td>
@@ -126,11 +127,17 @@ export default {
         division: '',
         isChief: '',
         isActive: ''
-      }
+      },
+      input: {
+        pospos: false
+      },
     };
   },
   
   methods: {
+    isPosposDisabled() {
+      return !this.edited.position; // Disable if edited.position is empty
+    },
     backButtonemp() {
     employeelis.value = false;
     isVisible.value = false;
