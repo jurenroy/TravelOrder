@@ -1,12 +1,14 @@
 <template>
   <div style="display: flex; flex-direction: column; margin-top: 105px; ">
 
-    <div style="display: flex; flex-direction: row; justify-content: center;">
+    <div style="display: flex; flex-direction: row; justify-content: center;" :class="{ 'blur': blurTable }">
       <p style="font-size: 30px; font-weight: bold;">Employee List</p>
       <img src="../assets/add.png"
         style="width: 26px; height: 26px; margin-left: 10px; margin-top: 35px; cursor: pointer;" @click="showaddem">
     </div>
-    <button @click="fetchData" id="damnit" style="height: 0; width: 0;" hidden></button>
+
+    <button @click="fetchData" id="refresh" style="height: 0; width: 0;" hidden></button>
+
     <div v-if="successfulyadd" class="successadd">
       <a class="successadd1">
         Employee Successfuly Added!!
@@ -19,14 +21,10 @@
       <img src='../assets/loading.gif' width="auto" height="100px" />
     </div>
 
-    <div class="outer">
+    <div v-if="!load" class="outer" :class="{ 'blur': blurTable }">
 
       <!-- <div class="outer"> -->
       <div class="scrollable-table">
-
-
-
-
         <table>
           <thead>
             <tr>
@@ -42,37 +40,55 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="employee in employees" :key="employee.id" style="font-size:18px;">
+            <tr v-for="employee in employees.slice().reverse()" :key="employee.id" style="font-size:18px;">
+              <!-- Last Name -->
               <td v-if="!employee.isEditing" style="width: 120px; ">{{ getLastNameById(employee.name_id,
-          'names').toUpperCase() }}</td>
+      'names').toUpperCase() }}</td>
               <td v-else>
                 <input style="width: 120px; " v-model="edited.lastName" type="text">
               </td>
 
+              <!-- First Name  -->
               <td v-if="!employee.isEditing">{{ getNameById(employee.name_id, 'names').toUpperCase() }}</td>
               <td v-else>
                 <input v-model="edited.firstName" type="text">
               </td>
 
+              <!-- Middle Initials -->
               <td v-if="!employee.isEditing" style=" text-align: center;">{{ getMiddleInitById(employee.name_id,
-          'names') }}</td>
+      'names') }}</td>
               <td v-else>
-                <input style="width:30px;" v-model="edited.middleName" type="text">
+                <input style="width:30px;" v-model="edited.middleName" type="text" maxlength="1">
               </td>
 
               <td v-if="!employee.isEditing">{{ getPositionById(employee.position_id, 'positions') }}</td>
-              <td v-else>
+              <td style="width: 550px;" v-else>
+
                 <select v-model="edited.position" :disabled="input.pospos">
                   <option v-for="position in positions" :key="position.position_id" :value="position.position_name">
                     {{ position.position_name }}
                   </option>
                 </select>
-                <input type="checkbox" id="pospos" v-model="input.pospos">
+
+
+                <!-- <input type="checkbox" id="pospos" v-model="input.pospos"> -->
+
+
+                <label class="containerlist">
+                  <input type="checkbox" id="pospos" v-model="input.pospos">
+                  <svg viewBox="0 0 64 64" height="2em" width="2em">
+                    <path
+                      d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                      pathLength="575.0541381835938" class="path"></path>
+                  </svg>
+                </label>
+
+
                 <input v-model="edited.position" type="text" v-if="input.pospos">
               </td>
 
               <td v-if="!employee.isEditing" style=" text-align: center;">{{ getDivisionById(employee.division_id,
-          'divisions') }}</td>
+      'divisions') }}</td>
               <td v-else>
                 <select v-model="edited.division">
                   <option v-for="division in divisions" :key="division.division_id" :value="division.division_name">
@@ -151,15 +167,17 @@ import axios from 'axios';
 
 <script>
 const addem = ref(false);
-
+const blurTable = ref(false);
 const successfulyadd = ref(false)
 
 const showaddem = () => {
   addem.value = true;
+  blurTable.value = true;
 };
 
 const cancelemplo = () => {
   addem.value = false
+  blurTable.value = false;
 }
 const seemplo = () => {
   addem.value = false
@@ -184,7 +202,7 @@ const seemplo = () => {
   }, 3000);
 }
 
-export { cancelemplo, addem, seemplo }
+export { cancelemplo, addem, blurTable, seemplo }
 
 export default {
 
@@ -210,7 +228,7 @@ export default {
       input: {
         pospos: false
       },
-      chingchang: 0
+
     };
   },
 
@@ -251,6 +269,19 @@ export default {
       });
     },
     doneeditEmployeee(employee) {
+      // Remove excess periods and add one if missing
+      let middleName = '';
+      if (this.edited.middleName !== null) {
+        middleName = this.edited.middleName.toUpperCase().replace(/\.{2,}/g, '.');
+        if (!middleName.endsWith('.') && middleName) {
+          middleName += '.';
+        } else if (middleName == '.') {
+          middleName = ''
+        }
+      }
+      this.edited.middleName = middleName;
+
+
       // Create a new FormData object
       const formData = new FormData();
 
@@ -270,6 +301,7 @@ export default {
           // Handle success
           this.selectedEmployee = 0;
           employee.isEditing = false;
+          this.edited.middleName = ''
           this.fetchData();
         })
         .catch(error => {
@@ -369,6 +401,27 @@ export default {
 </script>
 
 <style scoped>
+.containerlist {
+  cursor: pointer;
+  position: relative;
+  left: 3px;
+  top: 2px;
+  margin-right: 10px;
+
+}
+
+.containerlist input {
+  display: none;
+}
+
+.containerlist svg {
+  overflow: visible;
+  height: 15px;
+  width: 15px;
+}
+
+
+
 .containeremployee {
   cursor: pointer;
   position: relative;
@@ -397,7 +450,8 @@ export default {
   stroke-dashoffset: 0;
 }
 
-.containeremployee input:checked~svg .path {
+.containeremployee input:checked~svg .path,
+.containerlist input:checked~svg .path {
   stroke-dasharray: 70.5096664428711 9999999;
   stroke-dashoffset: -262.2723388671875;
 }
@@ -456,10 +510,16 @@ th {
 }
 
 .outer {
+
   border: 1px solid black;
   /* box-shadow: 0px 0px 3px black; */
   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
   border-radius: 5px;
+}
+
+.blur {
+  filter: blur(5px);
+  pointer-events: none;
 }
 
 .loadings {

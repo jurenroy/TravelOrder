@@ -12,13 +12,13 @@
       <div
         style="display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -3px; margin-bottom: 10px;">
         <!-- Fist Name -->
-        <input style="border:1px solid black; width: 160px;" type="text" id="firstName" v-model="formData.firstName"
+        <input style="border:1px solid black; width: 160px; position: relative; left: -20px;" type="text" id="firstName" v-model="formData.firstName"
           required><br>
         <!-- Middle Name -->
-        <input style="border:1px solid black; width: 160px;" type="text" id="middleInit"
-          v-model="formData.middleInit"><br>
+        <input style="border:1px solid black; width: 30px; text-align: center; position: relative; left: -10px; " type="text" id="middleInit"
+          v-model="formData.middleInit" maxlength="1" ><br>
         <!-- Last Name -->
-        <input style="border:1px solid black; width: 160px;" type="text" id="lastName" v-model="formData.lastName"
+        <input style="border:1px solid black; width: 160px; position: relative; left: 38px" type="text" id="lastName" v-model="formData.lastName"
           required><br>
       </div>
 
@@ -26,8 +26,7 @@
         style="font-size: 20px; display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -60px; ">
         <label for="division">Division:</label>
         <label for="position" style="left: 50px; position: relative;">Position:</label>
-        <!-- <input type="checkbox" id="customPosition" v-model="customPositionEnabled" style="left: 98px; position: relative;"> -->
-
+      <!-- custom position -->
         <label class="container">
           <input type="checkbox" id="customPosition" v-model="customPositionEnabled">
           <svg viewBox="0 0 64 64" height="2em" width="2em">
@@ -77,7 +76,7 @@
 
 
 <script setup>
-import { cancelemplo, addem, seemplo } from '@/views/employeelist.vue';
+import { cancelemplo, addem, seemplo,blurTable } from '@/views/employeelist.vue';
 
 </script>
 
@@ -91,6 +90,7 @@ import axios from 'axios';
 export default {
   cancelemplo() {
     addem.value = false
+    blurTable.value = false
   },
   data() {
     return {
@@ -118,11 +118,16 @@ export default {
       // Prepare data to send
       const dataToSend = {
         first_name: this.formData.firstName,
-        middle_init: this.formData.middleInit,
         last_name: this.formData.lastName,
         position_name: positionName,
         division_name: this.formData.division,
       };
+      // Check if middle_init is not empty before adding it to dataToSend
+if (this.formData.middleInit !== '') {
+  // dataToSend.middle_init = this.formData.middleInit + '.';
+  dataToSend.middle_init = this.formData.middleInit.toUpperCase().endsWith('.') ? this.formData.middleInit.toUpperCase() : this.formData.middleInit.toUpperCase() + '.';
+
+}
 
       axios.post('http://172.31.10.164:8000/add_employees', dataToSend)
         .then(response => {
@@ -136,7 +141,9 @@ export default {
             position: '',
             customPosition: '',
           };
+          
           addem.value = false;
+          blurTable.value = false
           seemplo();
           // Emit an event to indicate that an employee has been added
 

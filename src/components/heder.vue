@@ -165,7 +165,7 @@ fetchNames();
 <script>
 import { ref } from 'vue';
 import { isButssClicked, showHeader1, showHeader2, isEdits, isRegistrationClicked, isVisible } from '../views/dashboard.vue';
-
+import { addem, blurTable } from '@/views/employeelist.vue';
 
 export const showEdit = ref(false)
 
@@ -207,11 +207,12 @@ export default {
     clickEdit() {
       showEdit.value = false;
       isEdits.value = true
-      
       isRegistrationClicked.value = true;
       isVisible.value = false
       islogout2.value = true;
       hideedit.value = false
+      addem.value = false;
+      blurTable.value = false
     },
 
     backUpdate() {
