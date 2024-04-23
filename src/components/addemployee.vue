@@ -12,13 +12,13 @@
       <div
         style="display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -3px; margin-bottom: 10px;">
         <!-- Fist Name -->
-        <input style="border:1px solid black; width: 160px; position: relative; left: -20px;" type="text" id="firstName" v-model="formData.firstName"
+        <input style="border:1px solid black; width: 160px;" type="text" id="firstName" v-model="formData.firstName"
           required><br>
         <!-- Middle Name -->
-        <input style="border:1px solid black; width: 30px; text-align: center; position: relative; left: -10px; " type="text" id="middleInit"
-          v-model="formData.middleInit" maxlength="1" ><br>
+        <input style="border:1px solid black; width: 160px;" type="text" id="middleInit"
+          v-model="formData.middleInit"><br>
         <!-- Last Name -->
-        <input style="border:1px solid black; width: 160px; position: relative; left: 38px" type="text" id="lastName" v-model="formData.lastName"
+        <input style="border:1px solid black; width: 160px;" type="text" id="lastName" v-model="formData.lastName"
           required><br>
       </div>
 

@@ -185,12 +185,10 @@ const sendOTP = async () => {
   otp4.value = ''
   otp5.value = ''
   otp6.value = ''
-  console.log('sending OTP')
   try {
     await axios.post(`http://172.31.10.164:8000/send-otp/${accountId}`);
     await fetchOTPData();
     sendingOTPS.value = false;
-    console.log('success OTP')
     OTPsuccesful.value = true;
     setTimeout(() => {
       sendingOTPS2.value = false;
@@ -249,7 +247,6 @@ const verifyOTP = () => {
 
       const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
       if (expiryTimeAdjusted > currentTime) {
-        console.log('OTP still valid');
         verifydisab.value = false
         if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
           // OTPverified.value = true;
@@ -270,7 +267,6 @@ const verifyOTP = () => {
           }, 2000);
         }
       } else {
-        console.log('OTP expired');
         verifyingotp.value = false
         expired.value = true
         resed.value = false

@@ -213,6 +213,7 @@ export default {
       hideedit.value = false
       addem.value = false;
       blurTable.value = false
+      showhome.value = false
     },
 
     backUpdate() {

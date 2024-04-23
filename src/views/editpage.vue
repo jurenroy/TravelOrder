@@ -140,6 +140,7 @@ import { ref, computed } from 'vue';
 //  import signature from '@/components/signature.vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import { showhome } from '@/components/heder.vue';
 
 
 const accountIdz = localStorage.getItem('accountId');
@@ -349,7 +350,6 @@ const verifyOTP = () => {
       const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
       if (expiryTimeAdjusted > currentTime) {
 
-        console.log('OTP still valid');
         verifydisab.value = false;
         wrongOTPs.value = true
         setTimeout(() => {
@@ -375,7 +375,6 @@ const verifyOTP = () => {
         }
       } else {
 
-        console.log('OTP expired');
         expi.value = true
         resed.value = false
         setTimeout(() => {
@@ -533,6 +532,7 @@ export default {
       isRegistrationClicked.value = false;
       isVisible.value = false
       hideedit.value = true
+      showhome.value = true
     },
 
 

@@ -30,7 +30,7 @@
             <tr>
               <th>Last Name</th>
               <th>First Name</th>
-              <th>Middle</th>
+              <th>Middle Initial</th>
               <th>Position</th>
               <th>Division</th>
               <th>Chief</th>
@@ -41,26 +41,28 @@
           </thead>
           <tbody>
             <tr v-for="employee in employees.slice().reverse()" :key="employee.id" style="font-size:18px;">
+
               <!-- Last Name -->
               <td v-if="!employee.isEditing" style="width: 120px; ">{{ getLastNameById(employee.name_id,
       'names').toUpperCase() }}</td>
               <td v-else>
-                <input style="width: 120px; " v-model="edited.lastName" type="text">
+                <input style="width: 95%; " v-model="edited.lastName" type="text">
               </td>
 
               <!-- First Name  -->
               <td v-if="!employee.isEditing">{{ getNameById(employee.name_id, 'names').toUpperCase() }}</td>
               <td v-else>
-                <input v-model="edited.firstName" type="text">
+                <input v-model="edited.firstName" style="width: 95%; " type="text">
               </td>
 
               <!-- Middle Initials -->
               <td v-if="!employee.isEditing" style=" text-align: center;">{{ getMiddleInitById(employee.name_id,
       'names') }}</td>
               <td v-else>
-                <input style="width:30px;" v-model="edited.middleName" type="text" maxlength="1">
+                <input style="width: 95%; " v-model="edited.middleName" type="text" maxlength="1">
               </td>
 
+              <!-- Position -->
               <td v-if="!employee.isEditing">{{ getPositionById(employee.position_id, 'positions') }}</td>
               <td style="width: 550px;" v-else>
 
@@ -69,11 +71,7 @@
                     {{ position.position_name }}
                   </option>
                 </select>
-
-
-                <!-- <input type="checkbox" id="pospos" v-model="input.pospos"> -->
-
-
+                
                 <label class="containerlist">
                   <input type="checkbox" id="pospos" v-model="input.pospos">
                   <svg viewBox="0 0 64 64" height="2em" width="2em">
@@ -82,11 +80,11 @@
                       pathLength="575.0541381835938" class="path"></path>
                   </svg>
                 </label>
-
-
                 <input v-model="edited.position" type="text" v-if="input.pospos">
               </td>
 
+
+              <!-- Divisions -->
               <td v-if="!employee.isEditing" style=" text-align: center;">{{ getDivisionById(employee.division_id,
       'divisions') }}</td>
               <td v-else>
@@ -97,6 +95,8 @@
                 </select>
               </td>
 
+
+              <!-- Chief -->
               <td v-if="!employee.isEditing" style=" text-align: center;">{{ isChief(employee.chief) }}</td>
               <td v-else>
                 <!-- <input v-model="edited.isChief" type="checkbox"> -->
@@ -112,6 +112,8 @@
 
               </td>
 
+
+              <!-- isActive -->
               <td v-if="!employee.isEditing"
                 :style="{ backgroundColor: employee.isActive === 'out' ? 'red' : 'green' }"></td>
               <td v-else>
@@ -127,6 +129,8 @@
 
               </td>
 
+
+              <!-- Actions -->
               <td v-if="!employee.isEditing" style="display: flex; justify-content: center;">
                 <img src="../assets/edit.png" style=" cursor: pointer; width: 30px; height: 30px;"
                   @click="editEmployeee(employee.employee_id)" />
@@ -231,13 +235,19 @@ export default {
 
     };
   },
-
+  watch: {
+    chingchang(newValue, oldValue) {
+      if (newValue > oldValue) {
+        this.fetchData();
+        console.log('yawa');
+      }
+    }
+  },
   methods: {
     isPosposDisabled() {
       return !this.edited.position; // Disable if edited.position is empty
     },
     seemplo() {
-      console.log('suckseesh2');
       this.fetchData(); // Access fetchData from this context
     },
 
@@ -248,14 +258,12 @@ export default {
     editEmployeee(employees_id) {
       this.selectedEmployee = employees_id;
       const map = this.employees.find(emp => emp.employee_id == employees_id)
-      console.log(map)
       this.employees.forEach(employee => {
         if (employee.employee_id === employees_id && this.selectedEmployee === employees_id) {
           employee.isEditing = true;
           const nem = this.names.find(name => name.name_id == map.name_id)
           const pus = this.positions.find(name => name.position_id == map.position_id)
           const dev = this.divisions.find(name => name.division_id == map.division_id)
-          console.log(nem)
           this.edited.lastName = nem.last_name.toUpperCase();
           this.edited.firstName = nem.first_name.toUpperCase();
           this.edited.middleName = nem.middle_init.toUpperCase();
@@ -348,7 +356,6 @@ export default {
           this.mawala = true;
           this.load = false
           this.names = data;
-          console.log(this.names)
         })
         .catch(error => {
           console.error('Error fetching names:', error);
@@ -424,7 +431,8 @@ export default {
 
 .containeremployee {
   cursor: pointer;
-  position: relative;
+  display: flex;
+  justify-content: center;
 
 }
 
@@ -486,11 +494,12 @@ table {
 
 }
 
-th,
+
 td {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 5px;
+
 }
 
 
@@ -501,6 +510,7 @@ th {
   z-index: 0;
   top: -2px;
   text-align: center;
+  padding: 5px;
 }
 
 .scrollable-table {
