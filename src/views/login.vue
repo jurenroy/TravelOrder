@@ -93,6 +93,7 @@ const login_submit = () => {
    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
    const account = accounts.value.find(acc => acc.email === email.value);
+   decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
 
    isRed.value = true
 
@@ -138,8 +139,8 @@ const login_submit = () => {
       }, 2000);
    } else if (decryptedPassword.value !== password.value) {
       if (first.value){
-         error.value = 'Try Again one more time';
          first.value = false
+         login_submit();
       }else{
       error.value = 'Wrong Password';
       }
@@ -148,8 +149,6 @@ const login_submit = () => {
       setTimeout(() => {
          isEmail.value = false;
       }, 2000);
-      decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
-      console.log(decryptedPassword.value)
    } else {
       email.value = '';
       password.value = '';
