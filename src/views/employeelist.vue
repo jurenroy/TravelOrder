@@ -1,25 +1,32 @@
 <template>
   <div style="display: flex; flex-direction: column; margin-top: 105px; ">
 
-    <div style="display: flex; flex-direction: row; justify-content: center; ">
+    <div style="display: flex; flex-direction: row; justify-content: center;" >
       <p style="font-size: 30px; font-weight: bold;">Employee List</p>
       <img src="../assets/add.png"
         style="width: 26px; height: 26px; margin-left: 10px; margin-top: 35px; cursor: pointer;" @click="showaddem">
     </div>
-    <div
-      style="width: 300px; background-color: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 20px;  position: fixed;  top: 50%;  left: 50%;  transform: translate(-50%, -50%);  z-index: 100;"
-      v-if="addem">
-      <addemp></addemp>
-    </div>
+    <button @click="fetchData" id="refresh" style="height: 0; width: 0;" hidden></button>
+    <div v-if="successfulyadd" class="successadd">
+               <a class="successadd1">
+                 Employee Successfuly Added!!
+               </a>
+
+            </div>
+    
 
     <div v-if="load" class="loadings">
         <img src='../assets/loading.gif' width="auto" height="100px" />
       </div>
 
-    <div v-if="mawala" class="outer">
+    <div  class="outer">
 
     <!-- <div class="outer"> -->
       <div class="scrollable-table">
+
+       
+
+
         <table>
           <thead>
             <tr>
@@ -82,10 +89,10 @@
               </td>
 
               <td v-if="!employee.isEditing" style="display: flex; justify-content: center;">
-                <img src="../assets/edit.png" style=" width: 30px; height: 30px;" @click="editEmployeee(employee.employee_id)"/>
+                <img src="../assets/edit.png" style=" cursor: pointer; width: 30px; height: 30px;" @click="editEmployeee(employee.employee_id)"/>
               </td>
 
-              <td v-if="employee.isEditing" style="display: flex; justify-content: center;">
+              <td v-if="employee.isEditing" style=" cursor: pointer; display: flex; justify-content: center;">
                 <img src="../assets/save.png" style="width: 30px; height: 30px;" @click="doneeditEmployeee(employee)"/>
               </td>
             
@@ -95,20 +102,66 @@
       </div>
 
     </div>
-
+    <div
+      style="width: 600px; height: auto; background-color: white; border: 2px solid BLACK; border-radius: 5px; padding: 10px;  position: fixed;  top: 50%;  left: 50%;  transform: translate(-50%, -50%); "
+      v-if="addem">
+      <p style="display: flex; justify-content: center; font-weight: bold; font-size: 28px; margin-top: -5px; margin-bottom: 10px;">Add Employee</p>
+      <addemp @click="fetchData, seemplo, seemplo"></addemp>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { ref} from 'vue';
 import { employeelis, isVisible, backButtonemp } from './dashboard.vue';
 import addemp from '../components/addemployee.vue';
 import axios from 'axios';
 
+
 </script>
 
+
+
+
 <script>
+const addem = ref (false);
+
+const successfulyadd = ref (false)
+
+const showaddem=() => {
+    addem.value = true;
+  };
+
+  const cancelemplo = () => {
+    addem.value = false
+  }
+  const seemplo = () => {
+    addem.value = false
+    // Find the button element
+    // Find the button element by ID
+const button = document.getElementById('refresh');
+
+// Check if the button element is found before dispatching the click event
+if (button) {
+    // Create and dispatch a click event
+    const clickEvent = new Event('click', {
+        bubbles: true,
+        cancelable: true,
+    });
+    button.dispatchEvent(clickEvent);
+} else {
+    console.error('Button element not found');
+}
+successfulyadd.value = true
+setTimeout(() => {
+  successfulyadd.value = false
+}, 3000);
+  }
+  
+  export {cancelemplo, addem, seemplo}
 
 export default {
+
   data() {
     return {
       names: [],
@@ -117,7 +170,7 @@ export default {
       divisions: [],
       load: true,
       mawala: false,
-      addem: false, 
+      // addem: false, 
       selectedEmployee: 0,
       edited: {
         lastName: '',
@@ -133,11 +186,15 @@ export default {
       },
     };
   },
-  
+ 
   methods: {
     isPosposDisabled() {
       return !this.edited.position; // Disable if edited.position is empty
     },
+    seemplo() {
+      this.fetchData(); // Access fetchData from this context
+    },
+
     backButtonemp() {
     employeelis.value = false;
     isVisible.value = false;
@@ -145,14 +202,12 @@ export default {
   editEmployeee(employees_id) {
       this.selectedEmployee = employees_id;
       const map = this.employees.find(emp => emp.employee_id == employees_id)
-      console.log(map)
       this.employees.forEach(employee => {
         if (employee.employee_id === employees_id && this.selectedEmployee === employees_id) {
           employee.isEditing = true;
           const nem = this.names.find(name => name.name_id == map.name_id)
           const pus = this.positions.find(name => name.position_id == map.position_id)
           const dev = this.divisions.find(name => name.division_id == map.division_id)
-          console.log(nem)
           this.edited.lastName = nem.last_name.toUpperCase();
           this.edited.firstName = nem.first_name.toUpperCase();
           this.edited.middleName = nem.middle_init.toUpperCase();
@@ -183,7 +238,6 @@ export default {
     axios.post('http://172.31.10.164:8000/edit_employee', formData)
         .then(response => {
             // Handle success
-            console.log('Response:', response);
             this.selectedEmployee = 0;
             employee.isEditing = false;
             this.fetchData();
@@ -195,9 +249,7 @@ export default {
             employee.isEditing = false;
         });
 },
-    showaddem (){
-    this.addem = !this.addem ;
-  },
+    
 
     isChief(value) {
       return value === 1 ? 'Yes' : 'No';
@@ -234,7 +286,6 @@ export default {
           this.mawala = true;
           this.load = false
           this.names = data;
-          console.log(this.names)
         })
         .catch(error => {
           console.error('Error fetching names:', error);
@@ -279,16 +330,40 @@ export default {
   mounted() {
     this.fetchData();
   },
+  
 
 }
+
 
 </script>
 
 <style scoped>
+.successadd {
+   top: 0;
+   left: 0;
+   width: fit-content;
+   /* Adjust width based on content */
+   justify-self: center;
+   display: flex;
+   flex-direction: column;
+   border: 1px solid #39b259;
+   padding: 10px;
+   margin: 10px auto;
+   border-radius: 10px;
+   box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
+}
+.successadd1{
+height: 20px;
+   width: 100%;
+   text-align: center;
+   color: black;
+   font-weight: bold;
+}
 /* Add CSS styles for table design */
 table {
   width: 100%;
   border-collapse: collapse;
+  
 }
 
 th,
@@ -298,9 +373,12 @@ td {
   padding: 5px;
 }
 
+
+
 th {
   background-color: #f2f2f2;
   position: sticky;
+  z-index:0;
   top: -2px;
   text-align: center;
 }

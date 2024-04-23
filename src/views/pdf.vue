@@ -304,8 +304,6 @@ export default {
 
 
         const nameDetails = this.names[this.name_id-1];
-        console.log(nameDetails)
-        console.log(nameDetails.name_id)
         if (nameDetails) {
           this.name = `${nameDetails.first_name.toUpperCase()} ${nameDetails.middle_init.toUpperCase()} ${nameDetails.last_name.toUpperCase()}`;
         }
@@ -325,14 +323,10 @@ export default {
             this.recommended = this.getName(recommendedEmployee.name_id - 1);
           }
         }
-        console.log(this.accounts)
-        console.log(this.name_id)
         const selectedAccount = this.accounts.find(acc => acc.name_id === nameDetails.name_id);
         if (selectedAccount) {
           this.signature3 = `http://172.31.10.164:8000/storage/${selectedAccount.signature}`;
-          console.log(this.signature3)
         }
-        console.log(selectedAccount)
       } else {
         this.name_id = '';
         this.name = '';

@@ -1,38 +1,76 @@
 <template>
-  <div>
+  <div >
     <form @submit.prevent="submitForm">
-      <label for="firstName">First Name:</label>
-      <input type="text" id="firstName" v-model="formData.firstName" required><br>
+  
+      <div style="font-size: 20px; display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -80px;" >
+        <label for="firstName">First Name:</label>
+        <label for="middleInit" style="left: 7px; position: relative;">Middle Initial:</label>
+        <label for="lastName" style="left: -7px; position: relative;">Last Name:</label>
+      </div>
 
-      <label for="middleInit">Middle Initial:</label>
-      <input type="text" id="middleInit" v-model="formData.middleInit"><br>
+      <div style="display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -3px; margin-bottom: 10px;">
+        <!-- Fist Name -->
+        <input style="border:1px solid black; width: 160px;" type="text" id="firstName" v-model="formData.firstName" required><br>
+        <!-- Middle Name -->
+        <input style="border:1px solid black; width: 160px;"  type="text" id="middleInit" v-model="formData.middleInit"><br>
+        <!-- Last Name -->
+        <input style="border:1px solid black; width: 160px;"  type="text" id="lastName" v-model="formData.lastName" required><br>
+      </div>
 
-      <label for="lastName">Last Name:</label>
-      <input type="text" id="lastName" v-model="formData.lastName" required><br>
+      <div style="font-size: 20px; display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -60px; ">
+        <label for="division">Division:</label>
+        <label for="position" style="left: 50px; position: relative;">Position:</label>
+        <input type="checkbox" id="customPosition" v-model="customPositionEnabled" style="left: 98px; position: relative;">
+        <label for="customPosition" style="left: 25px; position: relative;">Custom Position</label>
+      </div>
 
-      <label for="division">Division:</label>
-      <select id="division" v-model="formData.division" required>
-        <option v-for="division in divisions" :value="division.division_name">{{ division.division_name }}</option>
-      </select><br>
+      <div style="display: flex; flex-direction: row;  margin-left: 15px; margin-bottom: 15px; ">
+        <!-- division -->
+        <select style="border:1px solid black; width: 160px; position: relative; left: -3px"  id="division" v-model="formData.division" required>
+          <option v-for="division in divisions" :key='division.division_id' :value="division.division_name">{{ division.division_name }}</option>
+        </select><br>
+        <!-- Position -->
+        <select style="border:1px solid black; width: 160px; position: relative; left: 34px"  id="position" v-model="formData.position" z required :disabled=" customPositionEnabled">
+          <option v-for="position in positions" :key='position.position_id' :value="position.position_name">{{ position.position_name }}</option>
+        </select>
+        <!-- Custom Position -->
+        <input style="border:1px solid black; width: 160px; position: relative; left: 70px"  type="text" id="customPositionInput" v-model="formData.customPosition"   v-if="customPositionEnabled"
+        placeholder="Enter Custom Position" required><br>
+       
+       
+        
+      </div>
 
-      <label for="position">Position:</label>
-      <select id="position" v-model="formData.position" :disabled="customPositionEnabled" required>
-        <option v-for="position in positions" :value="position.position_name">{{ position.position_name }}</option>
-      </select>
-      <input type="checkbox" id="customPosition" v-model="customPositionEnabled">
-      <label for="customPosition">Custom Position</label><br>
+      <div v-if="loadis" class="loadid">
+          <div class="loader"></div>
+        </div>
 
-      <input type="text" id="customPositionInput" v-model="formData.customPosition" :disabled="!customPositionEnabled" placeholder="Enter Custom Position"><br>
-
-      <button type="submit">Submit</button>
+      <div style="display: flex; justify-content: space-evenly; ">
+        <button type="submit" class="addemployebutton">Submit</button>
+        <button type="button" class="addemployebutton" @click="cancelemplo">Cancel</button>
+      </div>
     </form>
   </div>
+  
 </template>
 
+
+<script setup>
+import {cancelemplo, addem, seemplo} from '@/views/employeelist.vue';
+
+</script>
+
 <script>
+import { ref } from 'vue';
 import axios from 'axios';
 
+
+
+
 export default {
+cancelemplo(){
+addem.value = false
+},
   data() {
     return {
       formData: {
@@ -46,10 +84,13 @@ export default {
       positions: [],
       divisions: [],
       customPositionEnabled: false,
+      loadis: false
     };
   },
   methods: {
+    
     submitForm() {
+      this.loadis = true
       // Set position_name based on customPositionEnabled
       const positionName = this.customPositionEnabled ? this.formData.customPosition : this.formData.position;
 
@@ -61,10 +102,9 @@ export default {
         position_name: positionName,
         division_name: this.formData.division,
       };
-
+      
       axios.post('http://172.31.10.164:8000/add_employees', dataToSend)
         .then(response => {
-          console.log('Response:', response.data);
           // Reset form data
           this.formData = {
             firstName: '',
@@ -74,6 +114,10 @@ export default {
             position: '',
             customPosition: '',
           };
+          addem.value = false;
+          seemplo();
+          // Emit an event to indicate that an employee has been added
+
         })
         .catch(error => {
           console.error('Error submitting form:', error);
@@ -106,3 +150,13 @@ export default {
   },
 };
 </script>
+
+<style >
+.addemployebutton {
+   border-radius: 7px;
+   width: 20%;
+   font-weight: bold;
+   font-size: 20px;
+   cursor: pointer;
+}
+</style>
