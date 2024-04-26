@@ -138,11 +138,11 @@ const login_submit = () => {
          isEmail.value = false;
       }, 2000);
    } else if (decryptedPassword.value !== password.value) {
-      if (first.value){
+      if (first.value) {
          first.value = false
          login_submit();
-      }else{
-      error.value = 'Wrong Password';
+      } else {
+         error.value = 'Wrong Password';
       }
       isEmail.value = true;
       isRed.value = true

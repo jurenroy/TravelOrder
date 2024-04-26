@@ -26,7 +26,7 @@
 
       <div v-if="OTPsent">
         <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-          <label for="otpInput" class="Enterotps">Enter OTP:</label>
+          <label for="otpInput" class="Enterotps">Enter OTP Verification</label>
 
           <div style="display: flex; flex-direction: row;">
 
@@ -417,10 +417,14 @@ const fetchOTPData = async () => {
 }
 
 .otpinput {
-  font-size: 24px;
-  border-radius: 5px;
-  width: 40px;
-  height: 45px;
+  font-size: 12px;
+  border-radius: 1px;
+  border-color: transparent;
+  border-width: 0 0 2px 0;
+  border-color: black;
+  border-style: solid;
+  width: 10%;
+  height: 35px;
   margin-left: 9px;
   margin-bottom: 12px;
   text-align: center;

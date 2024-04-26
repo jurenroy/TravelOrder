@@ -71,7 +71,7 @@
                     {{ position.position_name }}
                   </option>
                 </select>
-                
+
                 <label class="containerlist">
                   <input type="checkbox" id="pospos" v-model="input.pospos">
                   <svg viewBox="0 0 64 64" height="2em" width="2em">

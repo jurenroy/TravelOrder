@@ -71,37 +71,56 @@
       </div>
       <div style="display: flex; flex-direction: column; justify-content: flex-start; ">
         <div style="display: flex; justify-content: flex-start; margin-top: -10px;">
-            <p class="label2" style="margin-top: 35px; margin-left: 6%;">Certifications:</p>
+          <p class="label2" style="margin-top: 35px; margin-left: 6%;">Certifications:</p>
         </div>
         <div style="display: flex; justify-content: flex-start; margin-top: -25px; margin-bottom: -10px;">
-            <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
+          <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel
+            is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
-        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }" >
-            <div class="inner-container2" v-if="division !== 'ORD'" style="margin-left: 50px;">
-                <p>Recommended by:</p>
-                <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'"/>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">{{recommended}}</p>
-                <p style="margin-top: -10px;">Chief, {{ division }}</p>
-            </div>
-            <div class="inner-container2" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
-                <p>Approved by:</p>
-                <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional Director:</p>
-                <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'"/>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 4 && sdiv !== null">ALVIN M. VILLANUEVA</p>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 3 && sdiv !== null">OSIN JR. A. SINSUAT</p>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 2 && sdiv !== null">LIBERTY B.DAITIA</p>
-                <p class="value" :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }" v-if="sdiv == 1 && sdiv !== null">JANICE B.FUROG</p>
-                <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
-                <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
-            </div>
+        <div class="outer-container"
+          :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }">
+          <div class="inner-container2" v-if="division !== 'ORD'" style="margin-left: 50px;">
+            <p>Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              {{ recommended }}</p>
+            <p style="margin-top: -10px;">Chief, {{ division }}</p>
+          </div>
+          <div class="inner-container2" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
+            <p>Approved by:</p>
+            <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
+              Director:</p>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 4 && sdiv !== null">ALVIN M. VILLANUEVA</p>
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 3 && sdiv !== null">OSIN JR. A. SINSUAT</p>
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 2 && sdiv !== null">LIBERTY B.DAITIA</p>
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 1 && sdiv !== null">JANICE B.FUROG</p>
+            <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
+            <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
+          </div>
         </div>
         <p style="letter-spacing: 5px; text-align: center; margin-top: -25px;">AUTHORIZATION</p>
-        <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
+        <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby
+          authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my
+          succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent
+          official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-container" style="align-self: flex-end; margin-right: 6%; ">
-              <img :src="signature3" class="signatiz" v-if="signature3 !== 'http://172.31.10.164:8000/storage/null'" style="margin-top: -50px; margin-bottom: 0px"/>
-                <p style="font-weight: bold; text-align: center;">{{ name }}</p>
-                <p style="text-align: center;">Official Employee</p>
+          <img :src="signature3" class="signatiz" v-if="signature3 !== 'http://172.31.10.164:8000/storage/null'"
+            style="margin-top: -50px; margin-bottom: 0px" />
+          <p style="font-weight: bold; text-align: center;">{{ name }}</p>
+          <p style="text-align: center;">Official Employee</p>
         </div>
         <p style="text-align: left; margin-top: -30px; margin-left: 6%;">MGB-X-FAD-FO-033</p>
       </div>
@@ -216,24 +235,24 @@ export default {
       });
     },
     fetchAccounts() {
-        axios.get('http://172.31.10.164:8000/get_accounts_json')
-          .then(response => {
-            this.accounts = response.data;
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
-      },
+      axios.get('http://172.31.10.164:8000/get_accounts_json')
+        .then(response => {
+          this.accounts = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    },
     fetchData() {
-        axios.get('http://172.31.10.164:8000/get_forms_json')
-          .then(response => {
-            this.formData = response.data;
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
-      },
-      fetchNames() {
+      axios.get('http://172.31.10.164:8000/get_forms_json')
+        .then(response => {
+          this.formData = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    },
+    fetchNames() {
       axios.get('http://172.31.10.164:8000/get_names_json')
         .then(response => {
           this.names = response.data;
@@ -262,15 +281,15 @@ export default {
           console.error('Error fetching divisions:', error);
         });
     },
-    fetchEmployees(){
+    fetchEmployees() {
       fetch('http://172.31.10.164:8000/get_employees_json/')
-      .then(response => response.json())
-      .then(data => {
-        this.employees = data;
-      })
-      .catch(error => {
-        console.error('Error fetching employees:', error);
-      });
+        .then(response => response.json())
+        .then(data => {
+          this.employees = data;
+        })
+        .catch(error => {
+          console.error('Error fetching employees:', error);
+        });
     },
     getName(nameId) {
       const name = this.names[nameId];
@@ -303,7 +322,7 @@ export default {
         this.signature3 = 'http://172.31.10.164:8000/storage/null';
 
 
-        const nameDetails = this.names[this.name_id-1];
+        const nameDetails = this.names[this.name_id - 1];
         if (nameDetails) {
           this.name = `${nameDetails.first_name.toUpperCase()} ${nameDetails.middle_init.toUpperCase()} ${nameDetails.last_name.toUpperCase()}`;
         }
@@ -473,7 +492,8 @@ button {
   padding: 10px 20px;
   margin-right: 10px;
 }
-.signatiz{
+
+.signatiz {
   height: 100px;
   width: auto;
   margin-bottom: -50px;

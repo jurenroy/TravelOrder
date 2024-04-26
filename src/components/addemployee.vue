@@ -12,13 +12,13 @@
       <div
         style="display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -3px; margin-bottom: 10px;">
         <!-- Fist Name -->
-        <input style="border:1px solid black; width: 160px;" type="text" id="firstName" v-model="formData.firstName"
+        <input style="border:1px solid black; width: 160px;" type="text" id="firstName" v-model="formData.firstName" @keydown.enter="submitForm"
           required><br>
         <!-- Middle Name -->
         <input style="border:1px solid black; width: 160px;" type="text" id="middleInit"
-          v-model="formData.middleInit"><br>
+          v-model="formData.middleInit" maxlength="1" @keydown.enter="submitForm"><br>
         <!-- Last Name -->
-        <input style="border:1px solid black; width: 160px;" type="text" id="lastName" v-model="formData.lastName"
+        <input style="border:1px solid black; width: 160px;" type="text" id="lastName" v-model="formData.lastName" @keydown.enter="submitForm"
           required><br>
       </div>
 
@@ -42,20 +42,20 @@
       <div style="display: flex; flex-direction: row;  margin-left: 15px; margin-bottom: 15px; ">
         <!-- division -->
         <select style="border:1px solid black; width: 160px; position: relative; left: -3px" id="division"
-          v-model="formData.division" required>
+          v-model="formData.division" @keydown.enter="submitForm" required>
           <option v-for="division in divisions" :key='division.division_id' :value="division.division_name">{{
       division.division_name }}</option>
         </select><br>
         <!-- Position -->
         <select style="border:1px solid black; width: 160px; position: relative; left: 34px" id="position"
-          v-model="formData.position" z required :disabled="customPositionEnabled">
+          v-model="formData.position" z required :disabled="customPositionEnabled" @keydown.enter="submitForm">
           <option v-for="position in positions" :key='position.position_id' :value="position.position_name">{{
       position.position_name }}</option>
         </select>
         <!-- Custom Position -->
         <input style="border:1px solid black; width: 160px; position: relative; left: 70px" type="text"
           id="customPositionInput" v-model="formData.customPosition" v-if="customPositionEnabled"
-          placeholder="Enter Custom Position" required><br>
+          placeholder="Enter Custom Position" @keydown.enter="submitForm" required><br>
 
 
 

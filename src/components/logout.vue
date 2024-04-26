@@ -44,7 +44,7 @@ export default {
          isButssClicked.value = false;
          showHeader1.value = true;
          showHeader2.value = false
-         
+
       },
    },
 }
