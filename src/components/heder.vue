@@ -354,4 +354,10 @@ export default {
   }
 
 }
+
+@media print {
+  .una {
+    display: none !important;
+  }
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div style="display: flex; flex-direction: column; ">
+  <div style="display: flex; flex-direction: column;">
     
-    <h2 style="display: flex; flex-direction: column; align-items: center;">History</h2>
+    <h2 style="display: flex; flex-direction: column; align-items: center;" class="hist">History</h2>
     <div v-if="load" class="loadings">
       <img src='../assets/loading.gif' width="auto" height="100px" />
     </div>
@@ -504,5 +504,14 @@ button {
 button:hover {
   background-color: black;
   color: white;
+}
+
+@media print {
+  .outer {
+    display: none !important;
+  }
+  .hist{
+    display: none !important;
+  }
 }
 </style>

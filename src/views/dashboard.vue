@@ -33,7 +33,7 @@
                <div v-else>
                   <div v-if="!isRegistrationClicked">
                      <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                        <div>
+                        <div class="tra">
                            <p class="travel">Travel Order</p>
                         </div>
 
@@ -240,5 +240,20 @@ export { isVisible, isRegistrationClicked, isButssClicked, showHeader1, showHead
 .sig {
    margin-top: 100px;
 
+}
+
+@media print {
+  .add {
+    display: none !important;
+  }
+  .reg {
+    display: none !important;
+  }
+  .emplo {
+    display: none !important;
+  }
+  .tra {
+    display: none !important;
+  }
 }
 </style>

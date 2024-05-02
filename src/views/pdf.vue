@@ -1,6 +1,6 @@
 <template>
   <div class="buttons">
-    <button @click="downloadPDF">Download as PDF</button>
+    <button @click="printzz">Download as PDF</button>
     <alerz></alerz>
   </div>
   <div class="a4-container" id="pdf-content">
@@ -195,6 +195,9 @@ export default {
       // Close logic
       travel_order_id = null;
       this.$emit('close');
+    },
+    printzz(){
+      window.print();
     },
     downloadPDF() {
       // Initialize jsPDF with A4 size
@@ -478,5 +481,18 @@ button {
   width: auto;
   margin-bottom: -50px;
   margin-top: -15px;
+}
+@media print {
+  .buttons {
+    display: none !important;
+  }
+  .a4-container{
+    margin-top: -130px;
+    margin-bottom: -1000px;
+    overflow: hidden;
+  }
+  @page {
+    size: A4;
+  }
 }
 </style>
