@@ -54,9 +54,6 @@
           <a class="succesfully1">
             Sending OTP....
           </a>
-
-
-
         </div>
 
 
@@ -529,7 +526,7 @@ export default {
   methods: {
     cli() {
       showEdit.value = false;
-      isEdits.value = false
+      isEdits.value = false 
       Usernames.value = true
       isRegistrationClicked.value = false;
       isVisible.value = false

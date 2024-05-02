@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column;">
-    
+
     <h2 style="display: flex; flex-direction: column; align-items: center;" class="hist">History</h2>
     <div v-if="load" class="loadings">
       <img src='../assets/loading.gif' width="auto" height="100px" />
@@ -41,65 +41,82 @@
       </div>
     </div>
 
-    <div v-if="mawala" class="outer">
-      <div class="scrollable-table">
-        <table>
-          <thead>
-            <tr>
-              <th>TO No.</th>
-              <th>Name</th>
-              <th>Departure Date</th>
-              <th>Destination</th>
-              <th>Purpose</th>
-              <th>Arrival Date</th>
-              <th>Date</th>
-              <th>Action</th>
-              <!-- Add more table headers as needed -->
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in reversedFormData" :key="item.id">
-              <td>{{ padWithZeroes(item.to_num) }} - {{ yearToday }}</td>
-              <td>{{ getName(item.name_id) }}</td>
-              <td>{{ item.departure }}</td>
-              <td>{{ item.destination }}</td>
-              <td>{{ item.purpose }}</td>
-              <td>{{ item.arrival }}</td>
-              <td>{{ item.date }}</td>
-              <td style="display: flex; justify-content: center;">
-                <button v-if="selectedTravelOrderId != item.travel_order_id"
-                  @click="openPDF(item.travel_order_id)">PDF</button>
-                <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
-                  style="width: 40px; height: 40px; cursor: pointer;" />
-              </td>
-              <td v-if="siga && item.note !== null && item.signature1 == null"
-                style="display: flex; justify-content: center;"><button
-                  @click="signature1(item.travel_order_id)">Recommend</button></td>
-              <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37"
-                style="display: flex; justify-content: center;"><button @click="openNote(item.travel_order_id)">Add
-                  note</button></td>
-              <td v-if="addNote == true && item.travel_order_id == notenum && acc.name_id == 37"
-                style="display: flex; justify-content: center;"><button @click="closeNote()">Close Add note</button>
-              </td>
-              <td v-if="item.note !== null && notenum !== item.travel_order_id"
-                style="display: flex; justify-content: center;"><button
-                  @click="viewNotez(item.note, item.travel_order_id)">View note</button></td>
-              <td v-if="item.note !== null && notenum == item.travel_order_id"
-                style="display: flex; justify-content: center;">
 
-                <img src="/src/assets/close_note.png" @click="closeNote()"
-                  style="width: 40px; height: 40px; cursor: pointer;" />
-              </td>
-              <td
-                v-if="(siga1 && item.note !== null) && (item.signature1 !== null && item.division_id !== 5 && item.note !== null)"
-                style="display: flex; justify-content: center;"><button
-                  @click="signature2(item.travel_order_id)">Approve</button></td>
-              <!-- Add more table data cells as needed -->
-            </tr>
-          </tbody>
-        </table>
+
+
+    <div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: -60px;">
+      <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
+
+        <div class="sign">
+          <img style=" height: 40px; width:40px;" src="../assets//download_excel.png">
+        </div>
+
+        <div class="text">Download Summary Reports</div>
+      </button>
+
+
+
+      <div v-if="mawala" class="outer">
+        <div class="scrollable-table">
+          <table>
+            <thead>
+              <tr>
+                <th>TO No.</th>
+                <th>Name</th>
+                <th>Departure Date</th>
+                <th>Destination</th>
+                <th>Purpose</th>
+                <th>Arrival Date</th>
+                <th>Date</th>
+                <th>Action</th>
+                <!-- Add more table headers as needed -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in reversedFormData" :key="item.id">
+                <td>{{ padWithZeroes(item.to_num) }} - {{ yearToday }}</td>
+                <td>{{ getName(item.name_id) }}</td>
+                <td>{{ item.departure }}</td>
+                <td>{{ item.destination }}</td>
+                <td>{{ item.purpose }}</td>
+                <td>{{ item.arrival }}</td>
+                <td>{{ item.date }}</td>
+                <td style="display: flex; justify-content: center;">
+                  <button v-if="selectedTravelOrderId != item.travel_order_id"
+                    @click="openPDF(item.travel_order_id)">PDF</button>
+                  <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
+                    style="width: 40px; height: 40px; cursor: pointer;" />
+                </td>
+                <td v-if="siga && item.note !== null && item.signature1 == null"
+                  style="display: flex; justify-content: center;"><button
+                    @click="signature1(item.travel_order_id)">Recommend</button></td>
+                <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37"
+                  style="display: flex; justify-content: center;"><button @click="openNote(item.travel_order_id)">Add
+                    note</button></td>
+                <td v-if="addNote == true && item.travel_order_id == notenum && acc.name_id == 37"
+                  style="display: flex; justify-content: center;"><button @click="closeNote()">Close Add note</button>
+                </td>
+                <td v-if="item.note !== null && notenum !== item.travel_order_id"
+                  style="display: flex; justify-content: center;"><button
+                    @click="viewNotez(item.note, item.travel_order_id)">View note</button></td>
+                <td v-if="item.note !== null && notenum == item.travel_order_id"
+                  style="display: flex; justify-content: center;">
+
+                  <img src="/src/assets/close_note.png" @click="closeNote()"
+                    style="width: 40px; height: 40px; cursor: pointer;" />
+                </td>
+                <td
+                  v-if="(siga1 && item.note !== null) && (item.signature1 !== null && item.division_id !== 5 && item.note !== null)"
+                  style="display: flex; justify-content: center;"><button
+                    @click="signature2(item.travel_order_id)">Approve</button></td>
+                <!-- Add more table data cells as needed -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
+
     <div v-show="selectedTravelOrderId" style="height: 0px;">
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
     </div>
@@ -161,6 +178,54 @@ export default {
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
+
+    downloadCSV() {
+      const headers = [
+        'TO No.',
+        'Name',
+        'Departure Date',
+        'Destination',
+        'Purpose',
+        'Arrival Date',
+        'Date'
+        // Add more headers as needed
+      ];
+
+      const approvedTOs = this.formData.filter(item => {
+        return item.signature2 !== null && item.signature2 !== '';
+      });
+
+      approvedTOs.sort((a, b) => {
+    return a.to_num - b.to_num;
+  });
+  
+      const csvData = [
+        headers.join(','),
+        ...approvedTOs.map(item => {
+          return [
+            item.to_num + ' - ' + this.yearToday,
+            this.getName(item.name_id),
+            item.departure,
+            item.destination,
+            item.purpose,
+            item.arrival,
+            item.date
+            // Add more data fields as needed
+          ].join(',');
+        })
+      ];
+      const csvContent = csvData.join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'Summary report.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+
     viewNotez(nutz, numx) {
       this.viewNote = true,
         this.noteText = nutz
@@ -390,6 +455,80 @@ export default {
 </script>
 
 <style scoped>
+.Btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition-duration: .3s;
+  border: 2px solid black;
+  margin-bottom: 10px;
+  background-color: white;
+
+}
+
+
+
+.sign {
+  width: 100%;
+  transition-duration: .3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  left: 1px;
+  top: 1px;
+}
+
+
+.text {
+  position: absolute;
+  right: 0%;
+  width: 0%;
+  opacity: 0;
+  color: black;
+  font-size: 1.2em;
+  font-weight: 500;
+  transition-duration: .3s;
+}
+
+.Btn:hover {
+  background-color: white;
+  width: 230px;
+  border: 2px solid black;
+  border-radius: 5px;
+  transition-duration: .3s;
+  position: relative;
+
+}
+
+.Btn:hover .text {
+  opacity: 1;
+  width: 70%;
+  transition-duration: .3s;
+  padding-right: 10px;
+}
+
+
+.Btn:hover .sign {
+  width: 30%;
+  transition-duration: .3s;
+  position: relative;
+  left: -15px;
+}
+
+
+.Btn:active {
+  transform: translate(2px, 2px);
+}
+
+
 /* Add CSS styles for table design */
 table {
   width: 100%;
@@ -417,7 +556,6 @@ th {
 
 .outer {
   border: 1px solid black;
-  /* box-shadow: 0px 0px 3px black; */
   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
   border-radius: 5px;
 }
@@ -519,10 +657,13 @@ button:hover {
   .outer {
     display: none !important;
   }
-  .hist{
+
+  .hist {
     display: none !important;
   }
-  .content,.note{
+
+  .content,
+  .note {
     display: none !important;
   }
 }
