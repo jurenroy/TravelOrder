@@ -4,7 +4,10 @@
       <img class="ima" src="../assets/logo.png" alt="Description of the image">
       <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
       <img class="ima" src="../assets/bago.png" alt="Description of the image">
-      <img v-if="showhome" @click="relod" style="cursor: pointer; height: 40px; width: 40px; position: relative; left: 35px; top: -1px;" src="../assets/home.png" title="Go back to Home">
+      <img v-if="showhome" @click="relod"
+        style="cursor: pointer; height: 30px; width: 30px; position: relative; left: 60px; top: -1px;"
+        src="../assets/home.png" title="Go back to Home">
+        <label v-if="showhome" @click="relod" style="position: relative; top: 20px; cursor: pointer;">Return to Home</label>
     </div>
 
     <div
@@ -39,7 +42,7 @@
             <button class="editbut" v-if="hideedit" @click="backUpdate">Edit</button>
             <button class="logoutbut" @click="closeAndLog">Logout</button>
           </div>
-          
+
         </div>
       </div>
     </div>
@@ -165,16 +168,16 @@ fetchNames();
 <script>
 import { ref } from 'vue';
 import { isButssClicked, showHeader1, showHeader2, isEdits, isRegistrationClicked, isVisible } from '../views/dashboard.vue';
-
+import { addem, blurTable } from '@/views/employeelist.vue';
 
 export const showEdit = ref(false)
 
 export const Usernames = ref(true)
 
 export const islogout2 = ref(false)
-export const hideedit = ref (true)
+export const hideedit = ref(true)
 
-export const showhome = ref (false)
+export const showhome = ref(false)
 
 
 
@@ -207,11 +210,13 @@ export default {
     clickEdit() {
       showEdit.value = false;
       isEdits.value = true
-      
       isRegistrationClicked.value = true;
       isVisible.value = false
       islogout2.value = true;
       hideedit.value = false
+      addem.value = false;
+      blurTable.value = false
+      showhome.value = false
     },
 
     backUpdate() {
@@ -309,7 +314,7 @@ export default {
   margin-bottom: 4px;
   width: 60px;
   position: relative;
-  
+
 }
 
 .logoutbut {
@@ -317,7 +322,7 @@ export default {
   font-size: 13px;
   width: 60px;
   position: relative;
-  
+
 }
 
 .ims {

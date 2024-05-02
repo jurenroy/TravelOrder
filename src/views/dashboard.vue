@@ -10,23 +10,23 @@
          <employeelist></employeelist>
       </div>
       <div class="logssss" v-if="isButssClicked">
-               <logsss></logsss>
-            </div>
+         <logsss></logsss>
+      </div>
 
-      
-      
+
+
       <div>
-         <headers v-if="showHeader1"/>
-    <headers1 v-if="showHeader2"/>
+         <headers v-if="showHeader1" />
+         <headers1 v-if="showHeader2" />
 
          <div v-if="!isRegistrationClicked">
 
             <!-- <headers v-if="showHeader1"/>
          <headers1 v-if="showHeader2"/> -->
 
-         <div v-if="!employeelis">
+            <div v-if="!employeelis">
 
-<!-- <headers v-if="showHeader1"/>
+               <!-- <headers v-if="showHeader1"/>
 <headers1 v-if="showHeader2"/> -->
             <div class="sig">
                <signature v-if="acc.signature === null" />
@@ -37,32 +37,33 @@
                            <p class="travel">Travel Order</p>
                         </div>
 
-                        <div>
-                           <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form' }}</button>
-                           <button v-show="!isVisible && acc.type_id == 1" class="reg" @click="toggleRegistration">{{
+                           <div>
+                              <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form'
+                                 }}</button>
+                              <button v-show="!isVisible && acc.type_id == 1" class="reg" @click="toggleRegistration">{{
          'Registration' }}</button>
-            <button v-show="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{
+                              <button v-show="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{
          'Employee List' }}</button>
+                           </div>
+
                         </div>
 
-                     </div>
-
-                     <div style="display: flex; justify-content: center;" v-if="isVisible">
-                        <addforms></addforms>
-                     </div>
-                     <div style="display: flex; justify-content: center;" v-if="!isVisible">
-                        <tablez></tablez>
+                        <div style="display: flex; justify-content: center;" v-if="isVisible">
+                           <addforms></addforms>
+                        </div>
+                        <div style="display: flex; justify-content: center;" v-if="!isVisible">
+                           <tablez></tablez>
+                        </div>
                      </div>
                   </div>
                </div>
-            </div>
-            <div class="logssss" v-if="isButssClicked">
-               <logsss></logsss>
+               <div class="logssss" v-if="isButssClicked">
+                  <logsss></logsss>
+               </div>
+
             </div>
 
          </div>
-
-      </div>
 
       </div>
 
@@ -103,7 +104,7 @@ const showHeader2 = ref(false)
 // visible sa  Add form
 const toggleForm = () => {
    isVisible.value = !isVisible.value;
-   showEdit.value=false
+   showEdit.value = false
 };
 
 // makita ang registration
@@ -123,7 +124,7 @@ const backButton = () => {
    isRegistrationClicked.value = false;
    isVisible.value = false;
    showEdit.value = false
-   
+
 };
 
 const backButtonemp = () => {
@@ -162,7 +163,7 @@ fetchAccounts()
 
 
 
-export { isVisible, isRegistrationClicked, isButssClicked, showHeader1, showHeader2, isEdits, employeelis, noButton, toggleForm, toggleRegistration, employeelst ,backButton, backButtonemp, logButton, showEditss };
+export { isVisible, isRegistrationClicked, isButssClicked, showHeader1, showHeader2, isEdits, employeelis, noButton, toggleForm, toggleRegistration, employeelst, backButton, backButtonemp, logButton, showEditss };
 </script>
 
 
@@ -214,7 +215,7 @@ export { isVisible, isRegistrationClicked, isButssClicked, showHeader1, showHead
    cursor: pointer;
 }
 
-.emplo{
+.emplo {
    margin-top: -19px;
    margin-bottom: 13px;
    margin-left: 20px;

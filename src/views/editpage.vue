@@ -5,8 +5,8 @@
         <p class="updateform">{{ name.first_name }} {{ name.middle_init }} {{ name.last_name }}</p>
 
         <div class="updateinside">
-          <div style="display: flex; flex-direction: column;  width: 100%;">
-            <label class="updatelabel old">Old Email:</label>
+          <div style="display: flex; flex-direction: column;  width: 100%; ">
+            <label class="updatelabel old" >Old Email:</label>
             <input @keydown.enter='sendOTP' type="email" v-model="email" class='updateinput' id='oldemail' required
               readonly>
 
@@ -62,8 +62,10 @@
 
 
         <div class="verifyOTPS">
-          <label for="otpInput1" class="Enterotp" v-if="showotp">Enter OTP: </label>
+          <label for="otpInput1" class="Enterotp" v-if="showotp">Enter OTP Verification</label>
           <div style="display: flex; flex-direction: row; justify-content: center;">
+
+
             <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 1, 0)"
               @input="moveToNextField($event, 2)" class="otpedit" type="text" id="otpInput1" v-model="otp1"
               v-if="showotp" maxlength="1" autofocus>
@@ -140,6 +142,7 @@ import { ref, computed } from 'vue';
 //  import signature from '@/components/signature.vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import { showhome } from '@/components/heder.vue';
 
 
 const accountIdz = localStorage.getItem('accountId');
@@ -531,6 +534,7 @@ export default {
       isRegistrationClicked.value = false;
       isVisible.value = false
       hideedit.value = true
+      showhome.value = true
     },
 
 
@@ -762,13 +766,18 @@ export default {
 
 .otpedit {
   font-size: 12px;
-  border-radius: 5px;
+  border-radius: 1px;
+  border-color: transparent;
+  border-width: 0 0 2px 0;
+  border-color: black;
+  border-style: solid;
   width: 10%;
   height: 35px;
   margin-left: 9px;
   margin-bottom: 12px;
   text-align: center;
   font-size: 24px;
+
 }
 
 .editwronge {

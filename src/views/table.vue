@@ -6,40 +6,40 @@
       <img src='../assets/loading.gif' width="auto" height="100px" />
     </div>
     <div style="display: flex; flex-direction: column; align-items: center;" v-if="otp">
-      <otpz/>
+      <otpz />
     </div>
     <div class="note" v-if="addNote">
-    <!-- Title and Close Icon -->
-    <div class="title-bar">
-      <div class="title">Add note</div>
-      <div class="close-icon" @click="closeNote">X</div>
-    </div>
+      <!-- Title and Close Icon -->
+      <div class="title-bar">
+        <div class="title">Add note</div>
+        <div class="close-icon" @click="closeNote">X</div>
+      </div>
 
-    <!-- Content -->
-    <div class="content">
-      <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
-      <div class="butokz">
-      <button @click="postNote">Save</button>
-      <button @click="postNote">Cancel</button>
+      <!-- Content -->
+      <div class="content">
+        <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
+        <div class="butokz">
+          <button @click="postNote">Save</button>
+          <button @click="postNote">Cancel</button>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="note" v-if="viewNote">
-    <!-- Title and Close Icon -->
-    <div class="title-bar">
-      <div class="title">View note</div>
-      <!-- <div class="close-icon" @click="closeNote">X</div> -->
-    </div>
+    <div class="note" v-if="viewNote">
+      <!-- Title and Close Icon -->
+      <div class="title-bar">
+        <div class="title">View note</div>
+        <!-- <div class="close-icon" @click="closeNote">X</div> -->
+      </div>
 
-    <!-- Content -->
-    <div class="content">
-      <textarea v-model="noteText" rows="3" ></textarea>
-      <div class="butokz">
-      <button @click="postNote" v-if="siga || siga1">Save</button>
-      <button @click="closeNote">Close</button>
+      <!-- Content -->
+      <div class="content">
+        <textarea v-model="noteText" rows="3"></textarea>
+        <div class="butokz">
+          <button @click="postNote" v-if="siga || siga1">Save</button>
+          <button @click="closeNote">Close</button>
+        </div>
       </div>
     </div>
-  </div>
 
     <div v-if="mawala" class="outer">
       <div class="scrollable-table">
@@ -69,21 +69,30 @@
               <td style="display: flex; justify-content: center;">
                 <button v-if="selectedTravelOrderId != item.travel_order_id"
                   @click="openPDF(item.travel_order_id)">PDF</button>
-                <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close" style="width: 40px; height: 40px; cursor: pointer;"/>
+                <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
+                  style="width: 40px; height: 40px; cursor: pointer;" />
               </td>
-              <td v-if="siga && item.note !== null && item.signature1 == null" style="display: flex; justify-content: center;"><button
+              <td v-if="siga && item.note !== null && item.signature1 == null"
+                style="display: flex; justify-content: center;"><button
                   @click="signature1(item.travel_order_id)">Recommend</button></td>
-              <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37 " style="display: flex; justify-content: center;"><button
-                  @click="openNote(item.travel_order_id)">Add note</button></td>
-                  <td v-if="addNote == true && item.travel_order_id == notenum && acc.name_id == 37 " style="display: flex; justify-content: center;"><button
-                  @click="closeNote()">Close Add note</button></td>
-              <td v-if="item.note !== null && notenum !== item.travel_order_id" style="display: flex; justify-content: center;"><button
-                  @click="viewNotez(item.note,item.travel_order_id)">View note</button></td>
-              <td v-if="item.note !== null && notenum == item.travel_order_id" style="display: flex; justify-content: center;">
-                
-                  <img src="/src/assets/close_note.png" @click="closeNote()" style="width: 40px; height: 40px; cursor: pointer;"/>
-                </td>
-              <td v-if="(siga1 && item.note !== null) && (item.signature1 !== null && item.division_id !== 5 && item.note !== null)" style="display: flex; justify-content: center;"><button
+              <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37"
+                style="display: flex; justify-content: center;"><button @click="openNote(item.travel_order_id)">Add
+                  note</button></td>
+              <td v-if="addNote == true && item.travel_order_id == notenum && acc.name_id == 37"
+                style="display: flex; justify-content: center;"><button @click="closeNote()">Close Add note</button>
+              </td>
+              <td v-if="item.note !== null && notenum !== item.travel_order_id"
+                style="display: flex; justify-content: center;"><button
+                  @click="viewNotez(item.note, item.travel_order_id)">View note</button></td>
+              <td v-if="item.note !== null && notenum == item.travel_order_id"
+                style="display: flex; justify-content: center;">
+
+                <img src="/src/assets/close_note.png" @click="closeNote()"
+                  style="width: 40px; height: 40px; cursor: pointer;" />
+              </td>
+              <td
+                v-if="(siga1 && item.note !== null) && (item.signature1 !== null && item.division_id !== 5 && item.note !== null)"
+                style="display: flex; justify-content: center;"><button
                   @click="signature2(item.travel_order_id)">Approve</button></td>
               <!-- Add more table data cells as needed -->
             </tr>
@@ -154,7 +163,7 @@ export default {
   methods: {
     viewNotez(nutz, numx) {
       this.viewNote = true,
-      this.noteText = nutz
+        this.noteText = nutz
       this.notenum = numx
     },
     openNote(numz) {
@@ -271,9 +280,9 @@ export default {
           this.fetchData()
           if (this.acc) {
             this.imageUrl = `http://172.31.10.164:8000/storage/${this.acc.signature}`;
-        }
-        useAuthStore().updateVerifiedOTPs('false');
-        localStorage.setItem('verifiedOTPs', 'false');
+          }
+          useAuthStore().updateVerifiedOTPs('false');
+          localStorage.setItem('verifiedOTPs', 'false');
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -288,12 +297,12 @@ export default {
           this.load = false
           this.sub = this.employees.find(emp => emp.name_id == this.acc.name_id)
           this.bus = this.employees.find(emp => emp.rd !== null)
-          
+
 
           if (this.acc.name_id == 37) {
             this.formData = response.data.filter(form => form.note == null);
             this.siga = false
-          }else if (this.acc.type_id == 1) {
+          } else if (this.acc.type_id == 1) {
             this.formData = response.data;
             this.siga = false
           }
@@ -301,23 +310,23 @@ export default {
             this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
             this.siga = false
           } else if (this.bus.name_id == this.sub.name_id) {
-            if (this.acc.name_id !== 20){
+            if (this.acc.name_id !== 20) {
               this.siga = true
-            }else{
+            } else {
               this.siga = false
             }
             this.formData = response.data.filter(form => (form.signature2 === null && form.signature1 !== null && form.note !== null) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id));
             this.siga1 = true
-            
+
           } else if (this.acc.type_id == 3) {
             const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
-            this.formData = response.data.filter(form => form.division_id == division_id && form.signature1 === null && this.sub.name_id !==20 && form.note !== null);
+            this.formData = response.data.filter(form => form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null);
             this.siga = true
-            if (this.sub.name_id ==20){
+            if (this.sub.name_id == 20) {
               this.formData = response.data.filter(form => form.name_id == this.acc.name_id && form.note !== null);
-            this.siga = false
+              this.siga = false
             }
-          } 
+          }
 
         })
         .catch(error => {
@@ -511,6 +520,9 @@ button:hover {
     display: none !important;
   }
   .hist{
+    display: none !important;
+  }
+  .content,.note{
     display: none !important;
   }
 }

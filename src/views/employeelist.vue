@@ -1,38 +1,36 @@
 <template>
   <div style="display: flex; flex-direction: column; margin-top: 105px; ">
 
-    <div style="display: flex; flex-direction: row; justify-content: center;" >
+    <div style="display: flex; flex-direction: row; justify-content: center;" :class="{ 'blur': blurTable }">
       <p style="font-size: 30px; font-weight: bold;">Employee List</p>
       <img src="../assets/add.png"
         style="width: 26px; height: 26px; margin-left: 10px; margin-top: 35px; cursor: pointer;" @click="showaddem">
     </div>
-    <button @click="fetchData" id="refresh" style="height: 0; width: 0;" hidden></button>
-    <div v-if="successfulyadd" class="successadd">
-               <a class="successadd1">
-                 Employee Successfuly Added!!
-               </a>
 
-            </div>
-    
+    <button @click="fetchData" id="refresh" style="height: 0; width: 0;" hidden></button>
+
+    <div v-if="successfulyadd" class="successadd">
+      <a class="successadd1">
+        Employee Successfuly Added!!
+      </a>
+
+    </div>
+
 
     <div v-if="load" class="loadings">
-        <img src='../assets/loading.gif' width="auto" height="100px" />
-      </div>
+      <img src='../assets/loading.gif' width="auto" height="100px" />
+    </div>
 
-    <div  class="outer">
+    <div v-if="!load" class="outer" :class="{ 'blur': blurTable }">
 
-    <!-- <div class="outer"> -->
+      <!-- <div class="outer"> -->
       <div class="scrollable-table">
-
-       
-
-
         <table>
           <thead>
             <tr>
               <th>Last Name</th>
               <th>First Name</th>
-              <th>Middle</th>
+              <th>Middle Initial</th>
               <th>Position</th>
               <th>Division</th>
               <th>Chief</th>
@@ -42,60 +40,106 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="employee in employees" :key="employee.id" style="font-size:18px;">
-              <td v-if="!employee.isEditing" style="width: 120px; ">{{ getLastNameById(employee.name_id, 'names').toUpperCase() }}</td>
+            <tr v-for="employee in employees.slice().reverse()" :key="employee.id" style="font-size:18px;">
+
+              <!-- Last Name -->
+              <td v-if="!employee.isEditing" style="width: 120px; ">{{ getLastNameById(employee.name_id,
+      'names').toUpperCase() }}</td>
               <td v-else>
-                <input style="width: 120px; " v-model="edited.lastName" type="text">
+                <input style="width: 95%; " v-model="edited.lastName" type="text">
               </td>
 
+              <!-- First Name  -->
               <td v-if="!employee.isEditing">{{ getNameById(employee.name_id, 'names').toUpperCase() }}</td>
               <td v-else>
-                <input v-model="edited.firstName" type="text">
+                <input v-model="edited.firstName" style="width: 95%; " type="text">
               </td>
 
-              <td v-if="!employee.isEditing" style=" text-align: center;">{{ getMiddleInitById(employee.name_id, 'names') }}</td>
+              <!-- Middle Initials -->
+              <td v-if="!employee.isEditing" style=" text-align: center;">{{ getMiddleInitById(employee.name_id,
+      'names') }}</td>
               <td v-else>
-                <input style="width:30px;" v-model="edited.middleName" type="text">
+                <input style="width: 95%; " v-model="edited.middleName" type="text" maxlength="1">
               </td>
 
+              <!-- Position -->
               <td v-if="!employee.isEditing">{{ getPositionById(employee.position_id, 'positions') }}</td>
-              <td v-else>
+              <td style="width: 550px;" v-else>
+
                 <select v-model="edited.position" :disabled="input.pospos">
-        <option v-for="position in positions" :key="position.position_id" :value="position.position_name">
-            {{ position.position_name }}
-        </option>
-    </select>
-          <input type="checkbox" id="pospos" v-model="input.pospos">
-          <input v-model="edited.position" type="text" v-if="input.pospos">
+                  <option v-for="position in positions" :key="position.position_id" :value="position.position_name">
+                    {{ position.position_name }}
+                  </option>
+                </select>
+
+                <label class="containerlist">
+                  <input type="checkbox" id="pospos" v-model="input.pospos">
+                  <svg viewBox="0 0 64 64" height="2em" width="2em">
+                    <path
+                      d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                      pathLength="575.0541381835938" class="path"></path>
+                  </svg>
+                </label>
+                <input v-model="edited.position" type="text" v-if="input.pospos">
               </td>
 
-              <td v-if="!employee.isEditing" style=" text-align: center;">{{ getDivisionById(employee.division_id, 'divisions') }}</td>
+
+              <!-- Divisions -->
+              <td v-if="!employee.isEditing" style=" text-align: center;">{{ getDivisionById(employee.division_id,
+      'divisions') }}</td>
               <td v-else>
                 <select v-model="edited.division">
-        <option v-for="division in divisions" :key="division.division_id" :value="division.division_name">
-            {{ division.division_name }}
-        </option>
-    </select>
+                  <option v-for="division in divisions" :key="division.division_id" :value="division.division_name">
+                    {{ division.division_name }}
+                  </option>
+                </select>
               </td>
 
+
+              <!-- Chief -->
               <td v-if="!employee.isEditing" style=" text-align: center;">{{ isChief(employee.chief) }}</td>
               <td v-else>
-                <input v-model="edited.isChief" type="checkbox">
+                <!-- <input v-model="edited.isChief" type="checkbox"> -->
+
+                <label class="containeremployee">
+                  <input type="checkbox" v-model="edited.isChief">
+                  <svg viewBox="0 0 64 64" height="2em" width="2em">
+                    <path
+                      d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                      pathLength="575.0541381835938" class="path"></path>
+                  </svg>
+                </label>
+
               </td>
 
-              <td v-if="!employee.isEditing" :style="{ backgroundColor: employee.isActive === 'out' ? 'red' : 'green' }"></td>
+
+              <!-- isActive -->
+              <td v-if="!employee.isEditing"
+                :style="{ backgroundColor: employee.isActive === 'out' ? 'red' : 'green' }"></td>
               <td v-else>
-                <input v-model="edited.isActive" type="checkbox">
+                <!-- <input v-model="edited.isActive" type="checkbox"> -->
+                <label class="containeremployee">
+                  <input type="checkbox" v-model="edited.isActive">
+                  <svg viewBox="0 0 64 64" height="2em" width="2em">
+                    <path
+                      d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                      pathLength="575.0541381835938" class="path"></path>
+                  </svg>
+                </label>
+
               </td>
 
+
+              <!-- Actions -->
               <td v-if="!employee.isEditing" style="display: flex; justify-content: center;">
-                <img src="../assets/edit.png" style=" cursor: pointer; width: 30px; height: 30px;" @click="editEmployeee(employee.employee_id)"/>
+                <img src="../assets/edit.png" style=" cursor: pointer; width: 30px; height: 30px;"
+                  @click="editEmployeee(employee.employee_id)" />
               </td>
 
               <td v-if="employee.isEditing" style=" cursor: pointer; display: flex; justify-content: center;">
-                <img src="../assets/save.png" style="width: 30px; height: 30px;" @click="doneeditEmployeee(employee)"/>
+                <img src="../assets/save.png" style="width: 30px; height: 30px;" @click="doneeditEmployeee(employee)" />
               </td>
-            
+
             </tr>
           </tbody>
         </table>
@@ -105,14 +149,16 @@
     <div
       style="width: 600px; height: auto; background-color: white; border: 2px solid BLACK; border-radius: 5px; padding: 10px;  position: fixed;  top: 50%;  left: 50%;  transform: translate(-50%, -50%); "
       v-if="addem">
-      <p style="display: flex; justify-content: center; font-weight: bold; font-size: 28px; margin-top: -5px; margin-bottom: 10px;">Add Employee</p>
+      <p
+        style="display: flex; justify-content: center; font-weight: bold; font-size: 28px; margin-top: -5px; margin-bottom: 10px;">
+        Add Employee</p>
       <addemp @click="fetchData, seemplo, seemplo"></addemp>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref} from 'vue';
+import { ref } from 'vue';
 import { employeelis, isVisible, backButtonemp } from './dashboard.vue';
 import addemp from '../components/addemployee.vue';
 import axios from 'axios';
@@ -124,41 +170,43 @@ import axios from 'axios';
 
 
 <script>
-const addem = ref (false);
+const addem = ref(false);
+const blurTable = ref(false);
+const successfulyadd = ref(false)
 
-const successfulyadd = ref (false)
+const showaddem = () => {
+  addem.value = true;
+  blurTable.value = true;
+};
 
-const showaddem=() => {
-    addem.value = true;
-  };
+const cancelemplo = () => {
+  addem.value = false
+  blurTable.value = false;
+}
+const seemplo = () => {
+  addem.value = false
+  // Find the button element
+  // Find the button element by ID
+  const button = document.getElementById('refresh');
 
-  const cancelemplo = () => {
-    addem.value = false
-  }
-  const seemplo = () => {
-    addem.value = false
-    // Find the button element
-    // Find the button element by ID
-const button = document.getElementById('refresh');
-
-// Check if the button element is found before dispatching the click event
-if (button) {
+  // Check if the button element is found before dispatching the click event
+  if (button) {
     // Create and dispatch a click event
     const clickEvent = new Event('click', {
-        bubbles: true,
-        cancelable: true,
+      bubbles: true,
+      cancelable: true,
     });
     button.dispatchEvent(clickEvent);
-} else {
+  } else {
     console.error('Button element not found');
-}
-successfulyadd.value = true
-setTimeout(() => {
-  successfulyadd.value = false
-}, 3000);
   }
-  
-  export {cancelemplo, addem, seemplo}
+  successfulyadd.value = true
+  setTimeout(() => {
+    successfulyadd.value = false
+  }, 3000);
+}
+
+export { cancelemplo, addem, blurTable, seemplo }
 
 export default {
 
@@ -184,9 +232,17 @@ export default {
       input: {
         pospos: false
       },
+
     };
   },
- 
+  watch: {
+    chingchang(newValue, oldValue) {
+      if (newValue > oldValue) {
+        this.fetchData();
+        console.log('yawa');
+      }
+    }
+  },
   methods: {
     isPosposDisabled() {
       return !this.edited.position; // Disable if edited.position is empty
@@ -196,10 +252,10 @@ export default {
     },
 
     backButtonemp() {
-    employeelis.value = false;
-    isVisible.value = false;
-  },
-  editEmployeee(employees_id) {
+      employeelis.value = false;
+      isVisible.value = false;
+    },
+    editEmployeee(employees_id) {
       this.selectedEmployee = employees_id;
       const map = this.employees.find(emp => emp.employee_id == employees_id)
       this.employees.forEach(employee => {
@@ -221,35 +277,49 @@ export default {
       });
     },
     doneeditEmployeee(employee) {
-    // Create a new FormData object
-    const formData = new FormData();
+      // Remove excess periods and add one if missing
+      let middleName = '';
+      if (this.edited.middleName !== null) {
+        middleName = this.edited.middleName.toUpperCase().replace(/\.{2,}/g, '.');
+        if (!middleName.endsWith('.') && middleName) {
+          middleName += '.';
+        } else if (middleName == '.') {
+          middleName = ''
+        }
+      }
+      this.edited.middleName = middleName;
 
-    // Append key-value pairs to the FormData object
-    formData.append('employee_id', this.selectedEmployee);
-    formData.append('last_name', this.edited.lastName);
-    formData.append('first_name', this.edited.firstName);
-    formData.append('middle_init', this.edited.middleName);
-    formData.append('position_name', this.edited.position);
-    formData.append('division_name', this.edited.division);
-    formData.append('chief', this.edited.isChief ? 1 : 0);
-    formData.append('isActive', this.edited.isActive ? null : 'out');
 
-    // Send the data using Axios
-    axios.post('http://172.31.10.164:8000/edit_employee', formData)
+      // Create a new FormData object
+      const formData = new FormData();
+
+      // Append key-value pairs to the FormData object
+      formData.append('employee_id', this.selectedEmployee);
+      formData.append('last_name', this.edited.lastName);
+      formData.append('first_name', this.edited.firstName);
+      formData.append('middle_init', this.edited.middleName);
+      formData.append('position_name', this.edited.position);
+      formData.append('division_name', this.edited.division);
+      formData.append('chief', this.edited.isChief ? 1 : 0);
+      formData.append('isActive', this.edited.isActive ? null : 'out');
+
+      // Send the data using Axios
+      axios.post('http://172.31.10.164:8000/edit_employee', formData)
         .then(response => {
-            // Handle success
-            this.selectedEmployee = 0;
-            employee.isEditing = false;
-            this.fetchData();
+          // Handle success
+          this.selectedEmployee = 0;
+          employee.isEditing = false;
+          this.edited.middleName = ''
+          this.fetchData();
         })
         .catch(error => {
-            // Handle error
-            console.error('Error:', error);
-            this.selectedEmployee = 0;
-            employee.isEditing = false;
+          // Handle error
+          console.error('Error:', error);
+          this.selectedEmployee = 0;
+          employee.isEditing = false;
         });
-},
-    
+    },
+
 
     isChief(value) {
       return value === 1 ? 'Yes' : 'No';
@@ -330,7 +400,7 @@ export default {
   mounted() {
     this.fetchData();
   },
-  
+
 
 }
 
@@ -338,39 +408,98 @@ export default {
 </script>
 
 <style scoped>
+.containerlist {
+  cursor: pointer;
+  position: relative;
+  left: 3px;
+  top: 2px;
+  margin-right: 10px;
+
+}
+
+.containerlist input {
+  display: none;
+}
+
+.containerlist svg {
+  overflow: visible;
+  height: 15px;
+  width: 15px;
+}
+
+
+
+.containeremployee {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+
+}
+
+.containeremployee input {
+  display: none;
+}
+
+.containeremployee svg {
+  overflow: visible;
+  height: 15px;
+  width: 15px;
+}
+
+.path {
+
+  fill: none;
+  stroke: black;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+  stroke-dasharray: 241 9999999;
+  stroke-dashoffset: 0;
+}
+
+.containeremployee input:checked~svg .path,
+.containerlist input:checked~svg .path {
+  stroke-dasharray: 70.5096664428711 9999999;
+  stroke-dashoffset: -262.2723388671875;
+}
+
 .successadd {
-   top: 0;
-   left: 0;
-   width: fit-content;
-   /* Adjust width based on content */
-   justify-self: center;
-   display: flex;
-   flex-direction: column;
-   border: 1px solid #39b259;
-   padding: 10px;
-   margin: 10px auto;
-   border-radius: 10px;
-   box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
+  top: 0;
+  left: 0;
+  width: fit-content;
+  /* Adjust width based on content */
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #39b259;
+  padding: 10px;
+  margin: 10px auto;
+  border-radius: 10px;
+  box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
 }
-.successadd1{
-height: 20px;
-   width: 100%;
-   text-align: center;
-   color: black;
-   font-weight: bold;
+
+.successadd1 {
+  height: 20px;
+  width: 100%;
+  text-align: center;
+  color: black;
+  font-weight: bold;
 }
+
 /* Add CSS styles for table design */
 table {
   width: 100%;
   border-collapse: collapse;
-  
+
 }
 
-th,
+
 td {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 5px;
+
 }
 
 
@@ -378,9 +507,10 @@ td {
 th {
   background-color: #f2f2f2;
   position: sticky;
-  z-index:0;
+  z-index: 0;
   top: -2px;
   text-align: center;
+  padding: 5px;
 }
 
 .scrollable-table {
@@ -390,10 +520,16 @@ th {
 }
 
 .outer {
+
   border: 1px solid black;
   /* box-shadow: 0px 0px 3px black; */
   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
   border-radius: 5px;
+}
+
+.blur {
+  filter: blur(5px);
+  pointer-events: none;
 }
 
 .loadings {

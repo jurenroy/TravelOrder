@@ -1,12 +1,12 @@
 <template>
    <div class=zero style="display: flex; justify-content: center; margin-top: 250px;">
-      
+
       <div class="first">
          <div style="z-index: 999;" v-if="regis_logout">
             <logout></logout>
          </div>
          <div class="second">
-            
+
             <p class="form">Registration Form</p>
 
             <div class="inside">
@@ -25,7 +25,7 @@
                      style="height: 35px; border: 2px solid black; width: 93%;" required :disabled='disablename'
                      @keydown.enter='regis_submit'>
                      <option v-for="name in namez" :key="name.name_id" :value="name.name_id">{{ name.last_name }}, {{
-                     name.first_name }} {{ name.middle_init }}</option>
+            name.first_name }} {{ name.middle_init }}</option>
                   </select>
 
                   <label class="n">Email:</label>
@@ -137,8 +137,8 @@ export default {
          lods: false,
          regiss: false,
          loadingregis: false,
-         encryptedPassword:'',
-         
+         encryptedPassword: '',
+
       };
    },
    computed: {

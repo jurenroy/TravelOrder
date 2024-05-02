@@ -70,6 +70,7 @@ import CryptoJS from 'crypto-js';
 const email = ref('');
 const password = ref('');
 const accounts = ref([]);
+const employees = ref([]);
 const isValid = ref(false);
 const isEmail = ref(false);
 const pleaseWait = ref(false);
@@ -93,6 +94,7 @@ const login_submit = () => {
    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
    const account = accounts.value.find(acc => acc.email === email.value);
+   const empi = employees.value.find(emp => emp.name_id === account.name_id);
    decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
 
    isRed.value = true
@@ -138,12 +140,19 @@ const login_submit = () => {
          isEmail.value = false;
       }, 2000);
    } else if (decryptedPassword.value !== password.value) {
-      if (first.value){
+      if (first.value) {
          first.value = false
          login_submit();
-      }else{
-      error.value = 'Wrong Password';
+      } else {
+         error.value = 'Wrong Password';
       }
+      isEmail.value = true;
+      isRed.value = true
+      setTimeout(() => {
+         isEmail.value = false;
+      }, 2000);
+   } else if (empi.isActive == 'out') {
+      error.value = 'Account inactive';
       isEmail.value = true;
       isRed.value = true
       setTimeout(() => {
@@ -169,7 +178,10 @@ const fetchAccounts = () => {
    axios.get('http://172.31.10.164:8000/get_accounts_json')
       .then(response => {
          accounts.value = response.data;
-
+         axios.get('http://172.31.10.164:8000/get_employees_json')
+            .then(response => {
+         employees.value = response.data; 
+         })
       })
       .catch(error => {
          console.error('Error fetching accounts:', error);

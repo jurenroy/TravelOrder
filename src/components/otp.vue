@@ -426,7 +426,7 @@ sendOTP()
 }
 
 .otprecomen {
-  font-size: 12px;
+  /* font-size: 12px;
   border-radius: 5px;
   width: 10%;
   height: 35px;
@@ -434,6 +434,20 @@ sendOTP()
   margin-left: 10px;
   margin-bottom: 15px;
   text-align: center;
+  font-size: 24px; */
+ 
+  font-size: 12px;
+  border-radius: 1px;
+  border-color: transparent;
+  border-width: 0 0 2px 0;
+  border-color: black;
+  border-style: solid;
+  width: 11.5%;
+  height: 35px;
+  margin-left: 10px;
+  margin-bottom: 12px;
+  text-align: center;
   font-size: 24px;
+
 }
 </style>
