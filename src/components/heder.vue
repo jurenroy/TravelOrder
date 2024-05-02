@@ -63,8 +63,6 @@ const authStore = useAuthStore();
 const accountIdz = localStorage.getItem('accountId');
 
 
-
-
 const accounts = ref([]);
 const employees = ref([]);
 const names = ref([]);

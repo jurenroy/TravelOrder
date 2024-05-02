@@ -9,7 +9,7 @@
       <img src="@/components/assets/hnf.jpg" alt="A4-sized photo" class="a4-photo">
       <p class="a4-to" style="text-align: center;">TRAVEL ORDER</p>
       <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span
-          style="text-decoration: underline; text-align: center;">{{ padWithZeroes(travel_order_id) }}-{{ yearToday
+          style="text-decoration: underline; text-align: center;">{{ padWithZeroes(to_num) }}-{{ yearToday
           }}</span></p>
       <div class="outer-container">
         <div class="inner-container">
@@ -174,6 +174,7 @@ export default {
       sname: '',
       sdiv: '',
       sdivz: '',
+      to_num: ''
     };
   },
   mounted() {
@@ -320,6 +321,7 @@ export default {
         this.remarks = selectedForm.remarks;
         this.sname = selectedForm.sname;
         this.sdiv = selectedForm.sdiv;
+        this.to_num = selectedForm.to_num;
         this.signature1 = `http://172.31.10.164:8000/storage/${selectedForm.signature1}`;
         this.signature2 = `http://172.31.10.164:8000/storage/${selectedForm.signature2}`;
         this.signature3 = 'http://172.31.10.164:8000/storage/null';

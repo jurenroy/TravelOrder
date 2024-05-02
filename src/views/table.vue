@@ -59,7 +59,7 @@
           </thead>
           <tbody>
             <tr v-for="item in reversedFormData" :key="item.id">
-              <td>{{ padWithZeroes(item.travel_order_id) }} - {{ yearToday }}</td>
+              <td>{{ padWithZeroes(item.to_num) }} - {{ yearToday }}</td>
               <td>{{ getName(item.name_id) }}</td>
               <td>{{ item.departure }}</td>
               <td>{{ item.destination }}</td>

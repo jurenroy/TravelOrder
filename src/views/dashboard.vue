@@ -16,7 +16,7 @@
 
 
       <div>
-         <headers v-if="showHeader1" />
+         <headers v-if="showHeader1"/>
          <headers1 v-if="showHeader2" />
 
          <div v-if="!isRegistrationClicked">
@@ -40,7 +40,7 @@
                            <div>
                               <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form'
                                  }}</button>
-                              <button v-show="!isVisible && acc.type_id == 1" class="reg" @click="toggleRegistration">{{
+                              <button v-show="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="reg" @click="toggleRegistration">{{
          'Registration' }}</button>
                               <button v-show="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{
          'Employee List' }}</button>
