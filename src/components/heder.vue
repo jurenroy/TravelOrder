@@ -4,10 +4,7 @@
       <img class="ima" src="../assets/logo.png" alt="Description of the image">
       <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
       <img class="ima" src="../assets/bago.png" alt="Description of the image">
-      <img v-if="showhome" @click="relod"
-        style="cursor: pointer; height: 30px; width: 30px; position: relative; left: 60px; top: -1px;"
-        src="../assets/home.png" title="Go back to Home">
-        <label v-if="showhome" @click="relod" style="position: relative; top: 20px; cursor: pointer;">Return to Home</label>
+
     </div>
 
     <div
@@ -86,9 +83,7 @@ const setAccount = async () => {
 };
 
 
-const relod = () => {
-  window.location.reload();
-}
+
 
 const fetchAccounts = async () => {
 
@@ -175,7 +170,6 @@ export const Usernames = ref(true)
 export const islogout2 = ref(false)
 export const hideedit = ref(true)
 
-export const showhome = ref(false)
 
 
 
@@ -214,7 +208,6 @@ export default {
       hideedit.value = false
       addem.value = false;
       blurTable.value = false
-      showhome.value = false
     },
 
     backUpdate() {

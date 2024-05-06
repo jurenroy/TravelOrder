@@ -87,24 +87,29 @@
                   <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
+
                 <td v-if="siga && item.note !== null && item.signature1 == null"
                   style="display: flex; justify-content: center;"><button
                     @click="signature1(item.travel_order_id)">Recommend</button></td>
+
                 <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37"
                   style="display: flex; justify-content: center;"><button @click="openNote(item.travel_order_id)">Add
                     note</button></td>
+
                 <td v-if="addNote == true && item.travel_order_id == notenum && acc.name_id == 37"
                   style="display: flex; justify-content: center;"><button @click="closeNote()">Close Add note</button>
                 </td>
+
                 <td v-if="item.note !== null && notenum !== item.travel_order_id"
                   style="display: flex; justify-content: center;"><button
                     @click="viewNotez(item.note, item.travel_order_id)">View note</button></td>
+
                 <td v-if="item.note !== null && notenum == item.travel_order_id"
                   style="display: flex; justify-content: center;">
-
                   <img src="/src/assets/close_note.png" @click="closeNote()"
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
+
                 <td
                   v-if="(siga1 && item.note !== null) && (item.signature1 !== null && item.division_id !== 5 && item.note !== null)"
                   style="display: flex; justify-content: center;"><button
@@ -179,15 +184,61 @@ export default {
   },
   methods: {
 
+    //   downloadCSV() {
+    //     const headers = [
+    //       'TO No.',
+    //       'Name',
+    //       'Date',
+    //       'Departure Date',
+    //       'Destination',
+    //       'Purpose',
+    //       'Arrival Date',
+    //       // Add more headers as needed
+    //     ];
+
+    //     const approvedTOs = this.formData.filter(item => {
+    //       return item.signature2 !== null && item.signature2 !== '';
+    //     });
+
+    //     approvedTOs.sort((a, b) => {
+    //   return a.to_num - b.to_num;
+    // });
+
+    //     const csvData = [
+    //       headers.join(','),
+    //       ...approvedTOs.map(item => {
+    //         return [
+    //           item.to_num + ' - ' + this.yearToday,
+    //           this.getName(item.name_id),
+    //           item.date,
+    //           item.departure,
+    //           item.destination,
+    //           item.purpose,
+    //           item.arrival,
+    //           // Add more data fields as needed
+    //         ].join(',');
+    //       })
+    //     ];
+    //     const csvContent = csvData.join('\n');
+    //     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    //     const url = URL.createObjectURL(blob);
+    //     const link = document.createElement('a');
+    //     link.setAttribute('href', url);
+    //     link.setAttribute('download', 'Summary report.csv');
+    //     link.style.visibility = 'hidden';
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    //   },
     downloadCSV() {
       const headers = [
         'TO No.',
         'Name',
+        'Date',
         'Departure Date',
         'Destination',
         'Purpose',
         'Arrival Date',
-        'Date'
         // Add more headers as needed
       ];
 
@@ -196,25 +247,47 @@ export default {
       });
 
       approvedTOs.sort((a, b) => {
-    return a.to_num - b.to_num;
-  });
-  
-      const csvData = [
-        headers.join(','),
-        ...approvedTOs.map(item => {
-          return [
+        return a.to_num - b.to_num;
+      });
+
+      const groupedByMonth = {};
+      approvedTOs.forEach(item => {
+        const yearMonthKey = new Date(item.date).toISOString().slice(0, 7); // Get YYYY-MM part of the date
+        if (!groupedByMonth[yearMonthKey]) {
+          groupedByMonth[yearMonthKey] = [];
+        }
+        groupedByMonth[yearMonthKey].push(item);
+      });
+
+      const csvData = Object.keys(groupedByMonth).flatMap(yearMonthKey => {
+        const yearMonthDate = new Date(yearMonthKey + '-01');
+        const year = yearMonthDate.getFullYear();
+        const month = yearMonthDate.toLocaleString('default', { month: 'long' });
+        const yearMonthSection = [
+          [`Month: ${month} `],
+          headers,
+          ...groupedByMonth[yearMonthKey].map(item => [
             item.to_num + ' - ' + this.yearToday,
             this.getName(item.name_id),
-            item.departure,
+            `${new Date(item.date).toLocaleDateString('en-US')}`, // Date format based on locale
+            `${new Date(item.departure).toLocaleDateString('en-US')}`, // Departure date format based on locale
             item.destination,
             item.purpose,
-            item.arrival,
-            item.date
+            `${new Date(item.arrival).toLocaleDateString('en-US')}`, // Arrival date format based on locale
             // Add more data fields as needed
-          ].join(',');
-        })
-      ];
-      const csvContent = csvData.join('\n');
+          ])
+        ];
+        return yearMonthSection;
+      });
+
+      const csvContent = csvData.flatMap(section => {
+        if (typeof section === 'string') {
+          return section;
+        } else {
+          return [section.join(',')];
+        }
+      }).join('\n');
+
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -225,6 +298,9 @@ export default {
       link.click();
       document.body.removeChild(link);
     },
+
+
+
 
     viewNotez(nutz, numx) {
       this.viewNote = true,

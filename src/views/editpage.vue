@@ -6,7 +6,7 @@
 
         <div class="updateinside">
           <div style="display: flex; flex-direction: column;  width: 100%; ">
-            <label class="updatelabel old" >Old Email:</label>
+            <label class="updatelabel old">Old Email:</label>
             <input @keydown.enter='sendOTP' type="email" v-model="email" class='updateinput' id='oldemail' required
               readonly>
 
@@ -139,7 +139,6 @@ import { ref, computed } from 'vue';
 //  import signature from '@/components/signature.vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
-import { showhome } from '@/components/heder.vue';
 
 
 const accountIdz = localStorage.getItem('accountId');
@@ -526,12 +525,11 @@ export default {
   methods: {
     cli() {
       showEdit.value = false;
-      isEdits.value = false 
+      isEdits.value = false
       Usernames.value = true
       isRegistrationClicked.value = false;
       isVisible.value = false
       hideedit.value = true
-      showhome.value = true
     },
 
 

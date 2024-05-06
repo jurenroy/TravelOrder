@@ -13,10 +13,8 @@
          <logsss></logsss>
       </div>
 
-
-
       <div>
-         <headers v-if="showHeader1"/>
+         <headers v-if="showHeader1" />
          <headers1 v-if="showHeader2" />
 
          <div v-if="!isRegistrationClicked">
@@ -28,19 +26,21 @@
 
                <!-- <headers v-if="showHeader1"/>
 <headers1 v-if="showHeader2"/> -->
-            <div class="sig">
-               <signature v-if="acc.signature === null" />
-               <div v-else>
-                  <div v-if="!isRegistrationClicked">
-                     <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                        <div class="tra">
-                           <p class="travel">Travel Order</p>
-                        </div>
+               <div class="sig">
+                  <signature v-if="acc.signature === null" />
+                  <div v-else>
+                     <div v-if="!isRegistrationClicked">
+                        <div
+                           style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                           <div class="tra">
+                              <p class="travel">Travel Order</p>
+                           </div>
 
                            <div>
                               <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form'
                                  }}</button>
-                              <button v-show="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="reg" @click="toggleRegistration">{{
+                              <button v-show="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="reg"
+                                 @click="toggleRegistration">{{
          'Registration' }}</button>
                               <button v-show="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{
          'Employee List' }}</button>
@@ -80,7 +80,7 @@ import registrationform from './regis.vue';
 import employeelist from '../views/employeelist.vue'
 import logsss from '../components/logout.vue'
 import editss from '../views/editpage.vue'
-import { showEdit, showhome } from '../components/heder.vue';
+import { showEdit } from '../components/heder.vue';
 </script>
 
 
@@ -116,7 +116,6 @@ const toggleRegistration = () => {
 const employeelst = () => {
    employeelis.value = true;
    showEdit.value = false;
-   showhome.value = true;
 };
 
 //ma back ang registration
@@ -244,17 +243,20 @@ export { isVisible, isRegistrationClicked, isButssClicked, showHeader1, showHead
 }
 
 @media print {
-  .add {
-    display: none !important;
-  }
-  .reg {
-    display: none !important;
-  }
-  .emplo {
-    display: none !important;
-  }
-  .tra {
-    display: none !important;
-  }
+   .add {
+      display: none !important;
+   }
+
+   .reg {
+      display: none !important;
+   }
+
+   .emplo {
+      display: none !important;
+   }
+
+   .tra {
+      display: none !important;
+   }
 }
 </style>

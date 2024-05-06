@@ -1,6 +1,12 @@
 <template>
   <div style="display: flex; flex-direction: column; margin-top: 105px; ">
 
+    <img v-if="showhome" @click="relod" :class="{ 'blur': blurTable }"
+      style="cursor: pointer; height: 30px; width: 30px; position: relative; left: 45px; top: -30px;"
+      src="../assets/home.png" title="Go back to Home">
+    <label v-if="showhome" :class="{ 'blur': blurTable }" @click="relod"
+      style="position: relative; top: -25px; cursor: pointer;">Return to Dashboard</label>
+
     <div style="display: flex; flex-direction: row; justify-content: center;" :class="{ 'blur': blurTable }">
       <p style="font-size: 30px; font-weight: bold;">Employee List</p>
       <img src="../assets/add.png"
@@ -40,7 +46,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="employee in employees.slice().reverse()" :key="employee.id" style="font-size:18px;">
+            <tr v-for="employee in sortedEmployees" :key="employee.id" style="font-size:18px;">
 
               <!-- Last Name -->
               <td v-if="!employee.isEditing" style="width: 120px; ">{{ getLastNameById(employee.name_id,
@@ -173,6 +179,11 @@ import axios from 'axios';
 const addem = ref(false);
 const blurTable = ref(false);
 const successfulyadd = ref(false)
+const showhome = ref(true)
+
+const relod = () => {
+  window.location.reload();
+}
 
 const showaddem = () => {
   addem.value = true;
@@ -235,6 +246,22 @@ export default {
 
     };
   },
+  computed: {
+    sortedEmployees() {
+      return this.employees.slice().sort((a, b) => {
+        const lastNameA = this.getLastNameById(a.name_id, 'names').toUpperCase();
+        const lastNameB = this.getLastNameById(b.name_id, 'names').toUpperCase();
+        if (lastNameA < lastNameB) {
+          return -1;
+        }
+        if (lastNameA > lastNameB) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+  },
+
   watch: {
     chingchang(newValue, oldValue) {
       if (newValue > oldValue) {
