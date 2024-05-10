@@ -219,7 +219,8 @@ export default {
     printzz(){
       window.print();
     },
-    downloadPDF() {
+
+     downloadPDF() {
       // Initialize jsPDF with A4 size
       const pdf = new jsPDF('p', 'mm', 'a4');
 
@@ -509,7 +510,7 @@ button {
     display: none !important;
   }
   .a4-container{
-    margin-top: -130px;
+    margin-top: -70px;
     margin-bottom: -1000px;
     overflow: hidden;
   }

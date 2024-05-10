@@ -231,73 +231,79 @@ export default {
     //     document.body.removeChild(link);
     //   },
     downloadCSV() {
-      const headers = [
-        'TO No.',
-        'Name',
-        'Date',
-        'Departure Date',
-        'Destination',
-        'Purpose',
-        'Arrival Date',
-        // Add more headers as needed
+  const eds = ['Summary Report of Travel Order ']; // Placeholder for whatever 'eds' is supposed to be
+
+  const headers = [
+    'TO No.',
+    'Name',
+    'Date',
+    'Departure Date',
+    'Destination',
+    'Purpose',
+    'Arrival Date',
+    // Add more headers as needed
+  ];
+
+  const approvedTOs = this.formData.filter(item => item.signature2 !== null && item.signature2 !== '');
+
+  approvedTOs.sort((a, b) => a.to_num - b.to_num);
+
+  const groupedByMonth = {};
+  approvedTOs.forEach(item => {
+    const yearMonthKey = new Date(item.date).toISOString().slice(0, 7); // Get YYYY-MM part of the date
+    const yearKey = new Date(item.date).getFullYear().toString(); // Get YYYY part of the date
+    if (!groupedByMonth[yearMonthKey]) {
+      groupedByMonth[yearMonthKey] = {};
+    }
+    if (!groupedByMonth[yearMonthKey][yearKey]) {
+      groupedByMonth[yearMonthKey][yearKey] = [];
+    }
+    groupedByMonth[yearMonthKey][yearKey].push(item);
+  });
+
+  const csvData = Object.keys(groupedByMonth).flatMap(yearMonthKey => {
+    const monthSections = [];
+    const yearData = groupedByMonth[yearMonthKey];
+    Object.keys(yearData).forEach(yearKey => {
+      const yearMonthDate = new Date(yearMonthKey + '-01');
+      const month = yearMonthDate.toLocaleString('default', { month: 'long' });
+
+      const yearMonthSection = [
+        [`\n ${month} ${yearKey}`], // Display year and month
+        headers.join(','), // Join headers into a single comma-separated string
+        ...yearData[yearKey].map(item => [
+          item.to_num + ' - ' + this.yearToday,
+          this.getName(item.name_id),
+          `${new Date(item.date).toLocaleDateString('en-US')}`,
+          `${new Date(item.departure).toLocaleDateString('en-US')}`,
+          item.destination,
+          item.purpose,
+          `${new Date(item.arrival).toLocaleDateString('en-US')}`
+        ].join(','))
       ];
 
-      const approvedTOs = this.formData.filter(item => {
-        return item.signature2 !== null && item.signature2 !== '';
-      });
+      monthSections.push(yearMonthSection.join('\n')); // Join section rows into a single string
+    });
+    
+    return monthSections;
+  });
 
-      approvedTOs.sort((a, b) => {
-        return a.to_num - b.to_num;
-      });
+  csvData.unshift(eds);
 
-      const groupedByMonth = {};
-      approvedTOs.forEach(item => {
-        const yearMonthKey = new Date(item.date).toISOString().slice(0, 7); // Get YYYY-MM part of the date
-        if (!groupedByMonth[yearMonthKey]) {
-          groupedByMonth[yearMonthKey] = [];
-        }
-        groupedByMonth[yearMonthKey].push(item);
-      });
+  const csvContent = csvData.join('\n'); // Join sections into a single string
 
-      const csvData = Object.keys(groupedByMonth).flatMap(yearMonthKey => {
-        const yearMonthDate = new Date(yearMonthKey + '-01');
-        const year = yearMonthDate.getFullYear();
-        const month = yearMonthDate.toLocaleString('default', { month: 'long' });
-        const yearMonthSection = [
-          [`Month: ${month} `],
-          headers,
-          ...groupedByMonth[yearMonthKey].map(item => [
-            item.to_num + ' - ' + this.yearToday,
-            this.getName(item.name_id),
-            `${new Date(item.date).toLocaleDateString('en-US')}`, // Date format based on locale
-            `${new Date(item.departure).toLocaleDateString('en-US')}`, // Departure date format based on locale
-            item.destination,
-            item.purpose,
-            `${new Date(item.arrival).toLocaleDateString('en-US')}`, // Arrival date format based on locale
-            // Add more data fields as needed
-          ])
-        ];
-        return yearMonthSection;
-      });
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', 'Summary report.csv');
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+},
 
-      const csvContent = csvData.flatMap(section => {
-        if (typeof section === 'string') {
-          return section;
-        } else {
-          return [section.join(',')];
-        }
-      }).join('\n');
-
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', 'Summary report.csv');
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    },
+    
 
 
 
@@ -739,7 +745,9 @@ button:hover {
   }
 
   .content,
-  .note {
+  .note,
+  .sign,
+  .Btn {
     display: none !important;
   }
 }
