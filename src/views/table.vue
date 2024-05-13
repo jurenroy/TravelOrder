@@ -20,7 +20,7 @@
         <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
         <div class="butokz">
           <button @click="postNote">Save</button>
-          <button @click="postNote">Cancel</button>
+          <button @click="closeNote">Cancel</button>
         </div>
       </div>
     </div>
