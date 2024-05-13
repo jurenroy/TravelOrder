@@ -155,13 +155,13 @@ const login_submit = () => {
       setTimeout(() => {
          isEmail.value = false;
       }, 2000);
-   // } else if (empi.isActive == 'out') {
-   //    error.value = 'Account inactive';
-   //    isEmail.value = true;
-   //    isRed.value = true
-   //    setTimeout(() => {
-   //       isEmail.value = false;
-   //    }, 2000);
+   } else if (empi.isActive == 'out') {
+      error.value = 'Account inactive';
+      isEmail.value = true;
+      isRed.value = true
+      setTimeout(() => {
+         isEmail.value = false;
+      }, 2000);
    } else {
       email.value = '';
       password.value = '';
