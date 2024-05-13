@@ -96,7 +96,7 @@ const login_submit = () => {
    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
    const account = accounts.value.find(acc => acc.email === email.value);
    if (account){
-      empi.value = employees.value.find(emp => emp.name_id === account.name_id);
+      empi.value = employees.value.find(emp => emp.name_id === account.name_id).isActive;
    decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
    }
    
@@ -155,7 +155,7 @@ const login_submit = () => {
       setTimeout(() => {
          isEmail.value = false;
       }, 2000);
-   } else if (empi.isActive == 'out') {
+   } else if (empi.value == 'out') {
       error.value = 'Account inactive';
       isEmail.value = true;
       isRed.value = true
