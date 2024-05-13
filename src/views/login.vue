@@ -78,7 +78,8 @@ const submitting = ref(false);
 const first = ref(true);
 const error = ref('');
 const authStore = useAuthStore();
-const decryptedPassword = ref('')
+const decryptedPassword = ref('');
+const empi = ref('');
 
 
 const isRed = ref(false);
@@ -94,8 +95,11 @@ const login_submit = () => {
    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
    const account = accounts.value.find(acc => acc.email === email.value);
-   const empi = employees.value.find(emp => emp.name_id === account.name_id);
+   if (account){
+      empi.value = employees.value.find(emp => emp.name_id === account.name_id);
    decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
+   }
+   
 
    isRed.value = true
 
@@ -151,13 +155,13 @@ const login_submit = () => {
       setTimeout(() => {
          isEmail.value = false;
       }, 2000);
-   } else if (empi.isActive == 'out') {
-      error.value = 'Account inactive';
-      isEmail.value = true;
-      isRed.value = true
-      setTimeout(() => {
-         isEmail.value = false;
-      }, 2000);
+   // } else if (empi.isActive == 'out') {
+   //    error.value = 'Account inactive';
+   //    isEmail.value = true;
+   //    isRed.value = true
+   //    setTimeout(() => {
+   //       isEmail.value = false;
+   //    }, 2000);
    } else {
       email.value = '';
       password.value = '';
