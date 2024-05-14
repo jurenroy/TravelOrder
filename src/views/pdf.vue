@@ -9,8 +9,7 @@
       <img src="@/components/assets/hnf.jpg" alt="A4-sized photo" class="a4-photo">
       <p class="a4-to" style="text-align: center;">TRAVEL ORDER</p>
       <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span
-          style="text-decoration: underline; text-align: center;">{{ padWithZeroes(to_num) }}-{{ yearToday
-          }}</span></p>
+          style="text-decoration: underline; text-align: center;">{{ padWithZeroes(to_num) }}-{{ yearToday}}</span></p>
       <div class="outer-container">
         <div class="inner-container">
           <div class="label-value-row">
@@ -122,7 +121,9 @@
           <p style="font-weight: bold; text-align: center;">{{ name }}</p>
           <p style="text-align: center;">Official Employee</p>
         </div>
-        <p style="text-align: left; margin-top: -30px; margin-left: 6%;">MGB-X-FAD-FO-033</p>
+        <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" style="height: 100px; width: 100px; position: absolute; margin-top: 510px;" >
+        <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" style="height: 50px; width: 50px; position: absolute; margin-top: 535px; margin-left: 26px" >
+        <p style="text-align: left; margin-top: -40px; margin-left: 6%;">MGB-X-FAD-FO-033</p>
       </div>
     </div>
   </div>
@@ -131,12 +132,14 @@
 
 <script setup>
 import alerz from '../components/heder.vue'
+import QRCode from 'qrcode'
 </script>
 
 <script>
 // Import the necessary libraries
 import jsPDF from 'jspdf';
 import axios from 'axios';
+import mgbx from '../assets/mgbx.png'
 export default {
   props: {
     travel_order_id: String
@@ -174,7 +177,9 @@ export default {
       sname: '',
       sdiv: '',
       sdivz: '',
-      to_num: ''
+      to_num: '',
+      qrCodeUrl: '',
+      imageSrc: mgbx,
     };
   },
   mounted() {
@@ -199,6 +204,21 @@ export default {
     }
   },
   methods: {
+    async generateQRCode() {
+      console.log(this.to_num)
+      console.log(this.name)
+      const textToEncode = `
+      MGBX TRAVEL ORDER
+      TRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}
+      ${this.name}
+      `;
+    
+      try {
+        this.qrCodeUrl = await QRCode.toDataURL(textToEncode);
+      } catch (err) {
+        console.error(err);
+      }
+    },
     padWithZeroes(travel_order_id) {
       // Convert travel_order_id to string
       const idString = travel_order_id.toString();
@@ -352,6 +372,7 @@ export default {
         if (selectedAccount) {
           this.signature3 = `http://172.31.10.164:8000/storage/${selectedAccount.signature}`;
         }
+        this.generateQRCode();
       } else {
         this.name_id = '';
         this.name = '';

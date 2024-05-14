@@ -97,7 +97,7 @@ const login_submit = () => {
    const account = accounts.value.find(acc => acc.email === email.value);
    if (account){
       empi.value = employees.value.find(emp => emp.name_id === account.name_id);
-   decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
+      decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
    }
    
 
