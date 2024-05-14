@@ -1,6 +1,8 @@
 <template>
   <div class=update1 style="display: flex; justify-content: center; margin-top: 90px;">
+    
     <div class="update2">
+      <label style="margin-bottom: 10px; font-weight: bold; font-size: 40px;">Edit Page</label>
       <div class="update3">
         <p class="updateform">{{ name.first_name }} {{ name.middle_init }} {{ name.last_name }}</p>
 

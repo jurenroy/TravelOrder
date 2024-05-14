@@ -162,7 +162,23 @@ fetchAccounts()
 
 
 
-export { isVisible, isRegistrationClicked, isButssClicked, showHeader1, showHeader2, isEdits, employeelis, noButton, toggleForm, toggleRegistration, employeelst, backButton, backButtonemp, logButton, showEditss };
+export {
+   isVisible,
+   isRegistrationClicked,
+   isButssClicked,
+   showHeader1,
+   showHeader2,
+   isEdits,
+   employeelis,
+   noButton,
+   toggleForm,
+   toggleRegistration,
+   employeelst,
+   backButton,
+   backButtonemp,
+   logButton,
+   showEditss
+};
 </script>
 
 

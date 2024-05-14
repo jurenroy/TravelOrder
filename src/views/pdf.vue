@@ -116,7 +116,7 @@
           succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent
           official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-container" style="align-self: flex-end; margin-right: 6%; ">
-          <img :src="signature3" class="signatiz" v-if="signature3 !== 'http://172.31.10.164:8000/storage/null'"
+          <img :src="signature3" class="signatizz" v-if="signature3 !== 'http://172.31.10.164:8000/storage/null'"
             style="margin-top: -50px; margin-bottom: 0px" />
           <p style="font-weight: bold; text-align: center;">{{ name }}</p>
           <p style="text-align: center;">Official Employee</p>
@@ -525,6 +525,13 @@ button {
   width: auto;
   margin-bottom: -50px;
   margin-top: -15px;
+}
+.signatizz {
+  height: auto;
+  width: 100px;
+  margin-bottom: -50px;
+  margin-top: -15px;
+  margin: auto;
 }
 @media print {
   .buttons {
