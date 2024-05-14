@@ -60,15 +60,16 @@
         <div class="scrollable-table">
           <table>
             <thead>
-              <tr>
-                <th>TO No.</th>
-                <th>Name</th>
-                <th>Departure Date</th>
-                <th>Destination</th>
-                <th>Purpose</th>
-                <th>Arrival Date</th>
-                <th>Date</th>
-                <th>Action</th>
+              <tr >
+                <th style="text-align: center;">TO No.</th>
+                <th style="text-align: center;">Name</th>
+                <th style="text-align: center;">Departure Date</th>
+                <th style="text-align: center;">Destination</th>
+                <th style="text-align: center;">Purpose</th>
+                <th style="text-align: center;">Arrival Date</th>
+                <th style="text-align: center;">Date</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;">Action</th>
                 <!-- Add more table headers as needed -->
               </tr>
             </thead>
@@ -81,12 +82,51 @@
                 <td>{{ item.purpose }}</td>
                 <td>{{ item.arrival }}</td>
                 <td>{{ item.date }}</td>
+                <td v-if="item.initial === null" style="color: red;">
+                  <img src="../assets/close.png" style="height: 10px; width: 10px;">
+                  To be Initialize
+                </td>
+                <td v-else style="color: green; ">
+                  <img src="../assets/check.png" style="height: 10px; width: 10px;">
+                  {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}
+
+                  <p v-if="item.note === null" style="color: red; margin-top: 1px">
+                    <img src="../assets/close.png" style="height: 10px; width: 10px;">
+                    To be Noted
+                  </p>
+                  <p v-else style="color: green; margin-top: 2px; margin-bottom: -15px;">
+                    <img src="../assets/check.png" style="height: 10px; width: 10px;">
+                    Noted
+                  </p>
+                  <p v-if="item.signature1 === null && item.note !== null" style="color: red;">
+                    <img src="../assets/close.png" style="height: 10px; width: 10px;">
+                    To be Recommend
+                  </p>
+                  <p v-if="item.note !== null && item.signature1 !== null" style="color: green; margin-bottom: -15px;">
+                    <img src="../assets/check.png" style="height: 10px; width: 10px;">
+                    Recommended
+                  </p>
+                  <p v-if="item.signature2 === null && item.signature1 !== null" style="color: red;">
+                    <img src="../assets/close.png" style="height: 10px; width: 10px;">
+                    To be Approve
+                  </p>
+                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null"
+                    style="color: green;">
+                    <img src="../assets/check.png" style="height: 10px; width: 10px;">
+                    Approved
+                  </p>
+                </td>
+
                 <td style="display: flex; justify-content: center;">
                   <button v-if="selectedTravelOrderId != item.travel_order_id"
                     @click="openPDF(item.travel_order_id)">PDF</button>
                   <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
+
+
+
+
 
                 <td v-if="siga && item.note !== null && item.signature1 == null"
                   style="display: flex; justify-content: center;"><button
@@ -114,6 +154,15 @@
                   v-if="(siga1 && item.note !== null) && (item.signature1 !== null && item.division_id !== 5 && item.note !== null)"
                   style="display: flex; justify-content: center;"><button
                     @click="signature2(item.travel_order_id)">Approve</button></td>
+
+
+                    <td  v-if="isSectionChief(acc.name_id) && selectedTravelOrderId != item.travel_order_id && item.initial === null" style="display: flex; justify-content: center;">
+                  <button @click="initialize(item.travel_order_id)">
+                    Initial
+                  </button>
+                  <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
+                    style="width: 40px; height: 40px; cursor: pointer;" />
+                </td>
                 <!-- Add more table data cells as needed -->
               </tr>
             </tbody>
@@ -152,6 +201,20 @@ export default {
   },
   data() {
     return {
+      sectionChiefIds: [39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47],
+      members: [
+        [23, 25, 35, 70, 64],
+        [30, 7, 26, 18, 67, 49, 24],
+        [43, 40],
+        [32, 50, 71],
+        [33, 6],
+        [41, 46, 1, 28],
+        [38, 9, 65],
+        [44, 22, 61, 27],
+        [31, 11],
+        [16, 63, 19],
+        [12, 14, 72, 73]
+      ],
       yearToday: new Date().getFullYear(),
       formData: [],
       names: {},
@@ -169,6 +232,7 @@ export default {
       addNote: false,
       viewNote: false,
       notenum: 0,
+      initnum: 0,
       noteText: '',
       sub: 0,
       bus: 0,
@@ -183,6 +247,10 @@ export default {
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
+
+    isSectionChief(name_id) {
+      return this.sectionChiefIds.includes(name_id);
+    },
 
     //   downloadCSV() {
     //     const headers = [
@@ -231,79 +299,79 @@ export default {
     //     document.body.removeChild(link);
     //   },
     downloadCSV() {
-  const eds = ['Summary Report of Travel Order ']; // Placeholder for whatever 'eds' is supposed to be
+      const eds = ['Summary Report of Travel Order ']; // Placeholder for whatever 'eds' is supposed to be
 
-  const headers = [
-    'TO No.',
-    'Name',
-    'Date',
-    'Departure Date',
-    'Destination',
-    'Purpose',
-    'Arrival Date',
-    // Add more headers as needed
-  ];
-
-  const approvedTOs = this.formData.filter(item => item.signature2 !== null && item.signature2 !== '');
-
-  approvedTOs.sort((a, b) => a.to_num - b.to_num);
-
-  const groupedByMonth = {};
-  approvedTOs.forEach(item => {
-    const yearMonthKey = new Date(item.date).toISOString().slice(0, 7); // Get YYYY-MM part of the date
-    const yearKey = new Date(item.date).getFullYear().toString(); // Get YYYY part of the date
-    if (!groupedByMonth[yearMonthKey]) {
-      groupedByMonth[yearMonthKey] = {};
-    }
-    if (!groupedByMonth[yearMonthKey][yearKey]) {
-      groupedByMonth[yearMonthKey][yearKey] = [];
-    }
-    groupedByMonth[yearMonthKey][yearKey].push(item);
-  });
-
-  const csvData = Object.keys(groupedByMonth).flatMap(yearMonthKey => {
-    const monthSections = [];
-    const yearData = groupedByMonth[yearMonthKey];
-    Object.keys(yearData).forEach(yearKey => {
-      const yearMonthDate = new Date(yearMonthKey + '-01');
-      const month = yearMonthDate.toLocaleString('default', { month: 'long' });
-
-      const yearMonthSection = [
-        [`\n ${month} ${yearKey}`], // Display year and month
-        headers.join(','), // Join headers into a single comma-separated string
-        ...yearData[yearKey].map(item => [
-          item.to_num + ' - ' + this.yearToday,
-          this.getName(item.name_id),
-          `${new Date(item.date).toLocaleDateString('en-US')}`,
-          `${new Date(item.departure).toLocaleDateString('en-US')}`,
-          item.destination,
-          item.purpose,
-          `${new Date(item.arrival).toLocaleDateString('en-US')}`
-        ].join(','))
+      const headers = [
+        'TO No.',
+        'Name',
+        'Date',
+        'Departure Date',
+        'Destination',
+        'Purpose',
+        'Arrival Date',
+        // Add more headers as needed
       ];
 
-      monthSections.push(yearMonthSection.join('\n')); // Join section rows into a single string
-    });
-    
-    return monthSections;
-  });
+      const approvedTOs = this.formData.filter(item => item.signature2 !== null && item.signature2 !== '');
 
-  csvData.unshift(eds);
+      approvedTOs.sort((a, b) => a.to_num - b.to_num);
 
-  const csvContent = csvData.join('\n'); // Join sections into a single string
+      const groupedByMonth = {};
+      approvedTOs.forEach(item => {
+        const yearMonthKey = new Date(item.date).toISOString().slice(0, 7); // Get YYYY-MM part of the date
+        const yearKey = new Date(item.date).getFullYear().toString(); // Get YYYY part of the date
+        if (!groupedByMonth[yearMonthKey]) {
+          groupedByMonth[yearMonthKey] = {};
+        }
+        if (!groupedByMonth[yearMonthKey][yearKey]) {
+          groupedByMonth[yearMonthKey][yearKey] = [];
+        }
+        groupedByMonth[yearMonthKey][yearKey].push(item);
+      });
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', 'Summary report.csv');
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-},
+      const csvData = Object.keys(groupedByMonth).flatMap(yearMonthKey => {
+        const monthSections = [];
+        const yearData = groupedByMonth[yearMonthKey];
+        Object.keys(yearData).forEach(yearKey => {
+          const yearMonthDate = new Date(yearMonthKey + '-01');
+          const month = yearMonthDate.toLocaleString('default', { month: 'long' });
 
-    
+          const yearMonthSection = [
+            [`\n ${month} ${yearKey}`], // Display year and month
+            headers.join(','), // Join headers into a single comma-separated string
+            ...yearData[yearKey].map(item => [
+              item.to_num + ' - ' + this.yearToday,
+              this.getName(item.name_id),
+              `${new Date(item.date).toLocaleDateString('en-US')}`,
+              `${new Date(item.departure).toLocaleDateString('en-US')}`,
+              item.destination,
+              item.purpose,
+              `${new Date(item.arrival).toLocaleDateString('en-US')}`
+            ].join(','))
+          ];
+
+          monthSections.push(yearMonthSection.join('\n')); // Join section rows into a single string
+        });
+
+        return monthSections;
+      });
+
+      csvData.unshift(eds);
+
+      const csvContent = csvData.join('\n'); // Join sections into a single string
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'Summary report.csv');
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+
+
 
 
 
@@ -343,6 +411,22 @@ export default {
       });
 
       this.closeNote()
+    },
+    initialize(numz) {
+      this.initnum = numz
+      // Axios POST request logic here
+      const formData = new FormData();
+      formData.append('initial', 'initialized');
+
+      axios.post(`http://172.31.10.164:8000/update_form/${this.initnum}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(() => {
+        this.fetchData();
+      }).catch(error => {
+        console.error('Error:', error);
+      });
     },
     updateVerifiedOTPs(event) {
       if (event.key === 'verifiedOTPs') {
@@ -445,9 +529,19 @@ export default {
           this.sub = this.employees.find(emp => emp.name_id == this.acc.name_id)
           this.bus = this.employees.find(emp => emp.rd !== null)
 
+          if (this.sectionChiefIds.includes(this.acc.name_id)) {
+            console.log(this.acc.name_id)
+            const index = this.sectionChiefIds.indexOf(this.acc.name_id);
+            console.log(index)
+            const members = this.members[index];
+            console.log(this.members[index])
+            this.formData = response.data.filter(form => form.name_id == this.acc.name_id ||
+              members.includes(form.name_id) && form.initial === null
+            );
 
-          if (this.acc.name_id == 37) {
-            this.formData = response.data.filter(form => form.note == null);
+          }
+          else if (this.acc.name_id == 37) {
+            this.formData = response.data.filter(form => form.name_id == this.acc.name_id || form.note == null && form.initial !== null);
             this.siga = false
           } else if (this.acc.type_id == 1) {
             this.formData = response.data;
@@ -474,7 +568,6 @@ export default {
               this.siga = false
             }
           }
-
         })
         .catch(error => {
           console.error('Error fetching data:', error);
