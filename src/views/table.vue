@@ -87,10 +87,13 @@
                   To be Initialize
                 </td>
                 <td v-else style="color: green; ">
-                  <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                  {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}
+                  
+                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20].includes(item.name_id)" style="color: green; margin-top: -8px;margin-bottom: -1px">
+                    <img src="../assets/check.png" style="height: 10px; width: 10px;">
+                  {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}</p>
+                  
 
-                  <p v-if="item.note === null" style="color: red; margin-top: 1px">
+                  <p v-if="item.note === null" style="color: red; margin-top: 1px; margin-bottom: -15px">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     To be Noted
                   </p>
@@ -98,19 +101,24 @@
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Noted
                   </p>
-                  <p v-if="item.signature1 === null && item.note !== null" style="color: red;">
+                  <p v-if="item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48].includes(item.name_id)" style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     To be Recommend
                   </p>
-                  <p v-if="item.note !== null && item.signature1 !== null" style="color: green; margin-bottom: -15px;">
+                  <p v-if="item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48].includes(item.name_id)" style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Recommended
                   </p>
-                  <p v-if="item.signature2 === null && item.signature1 !== null" style="color: red;">
+
+
+
+                 
+
+                  <p v-if="item.signature2 === null && item.signature1 !== null || ([15, 20, 21, 45, 48].includes(item.name_id) && item.signature2 === null && item.note !== null)" style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     To be Approve
                   </p>
-                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null"
+                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48].includes(item.name_id) && item.signature2 !== null)"
                     style="color: green;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Approved
@@ -128,7 +136,7 @@
 
 
 
-                <td v-if="siga && item.note !== null && item.signature1 == null"
+                <td v-if="siga && item.note !== null && item.signature1 == null "
                   style="display: flex; justify-content: center;"><button
                     @click="signature1(item.travel_order_id)">Recommend</button></td>
 
@@ -247,57 +255,12 @@ export default {
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
+   
 
     isSectionChief(name_id) {
       return this.sectionChiefIds.includes(name_id);
     },
 
-    //   downloadCSV() {
-    //     const headers = [
-    //       'TO No.',
-    //       'Name',
-    //       'Date',
-    //       'Departure Date',
-    //       'Destination',
-    //       'Purpose',
-    //       'Arrival Date',
-    //       // Add more headers as needed
-    //     ];
-
-    //     const approvedTOs = this.formData.filter(item => {
-    //       return item.signature2 !== null && item.signature2 !== '';
-    //     });
-
-    //     approvedTOs.sort((a, b) => {
-    //   return a.to_num - b.to_num;
-    // });
-
-    //     const csvData = [
-    //       headers.join(','),
-    //       ...approvedTOs.map(item => {
-    //         return [
-    //           item.to_num + ' - ' + this.yearToday,
-    //           this.getName(item.name_id),
-    //           item.date,
-    //           item.departure,
-    //           item.destination,
-    //           item.purpose,
-    //           item.arrival,
-    //           // Add more data fields as needed
-    //         ].join(',');
-    //       })
-    //     ];
-    //     const csvContent = csvData.join('\n');
-    //     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    //     const url = URL.createObjectURL(blob);
-    //     const link = document.createElement('a');
-    //     link.setAttribute('href', url);
-    //     link.setAttribute('download', 'Summary report.csv');
-    //     link.style.visibility = 'hidden';
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    //   },
     downloadCSV() {
       const eds = ['Summary Report of Travel Order ']; // Placeholder for whatever 'eds' is supposed to be
 
@@ -611,7 +574,6 @@ export default {
 
     updateVisibleItems() {
       this.visibleItems = this.formData.slice(0, 20);
-      // this.visibleItems = this.formData.slice(-20).reverse();
     },
 
 

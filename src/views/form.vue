@@ -30,6 +30,8 @@
               type="text" v-model="destination" class='inputsss' id='destinationin' required>
 
 
+
+
           </div>
           <div style="display: flex; flex-direction: column;  width: 100%;">
             <label class="da"> Date: </label>
@@ -52,8 +54,22 @@
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; justify-content: center; ">
-          <label class="pt"> Purpose of Travel: </label>
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+          <div>
+          <label class="container">
+          <input type="checkbox" id="customPosition" v-model="aor">
+          <svg viewBox="0 0 64 64" height="2em" width="2em">
+            <path
+              d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+              pathLength="575.0541381835938" class="path"></path>
+          </svg>
+          
+        </label>
+        <label for="customPosition" style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">AOR (Area of Responsibility)</label>
+      </div>
+
+        
+          <label class="pt" style="margin-top: 10px;"> Purpose of Travel: </label>
           <input @keydown.enter="form_submit" type="text" v-model="purpose"
             :class="{ 'red-border': isRed && purpose === '' }" @input="resetRed" class='inputss' id='purposein'
             required>
@@ -354,6 +370,44 @@ export default {
 
 
 <style scoped>
+.container {
+  cursor: pointer;
+  top: 7px;
+  left: 7px;
+  position: relative;
+
+}
+
+.container input {
+
+  display: none;
+}
+
+.container svg {
+  overflow: visible;
+  height: 20px;
+  width: 20px;
+}
+
+.path {
+
+  fill: none;
+  stroke: black;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+  stroke-dasharray: 241 9999999;
+  stroke-dashoffset: 0;
+}
+
+.container input:checked~svg .path {
+  stroke-dasharray: 70.5096664428711 9999999;
+  stroke-dashoffset: -262.2723388671875;
+}
+
+
+
 .red-border {
   border: 2px solid red;
 }
