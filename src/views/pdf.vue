@@ -180,7 +180,6 @@ export default {
       to_num: '',
       qrCodeUrl: '',
       imageSrc: mgbx,
-      qrCodeText: ''
     };
   },
   mounted() {
@@ -206,10 +205,7 @@ export default {
   },
   methods: {
     async generateQRCode() {
-      
       const textToEncode = `MGBX TRAVEL ORDER \nTRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}\n${this.name}`;
-      // this.qrCodeText = `<p>MGBX TRAVEL ORDER</p><p>TRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}</p><p>${this.name}</p>`;
-    
       try {
         this.qrCodeUrl = await QRCode.toDataURL(textToEncode);
       } catch (err) {
