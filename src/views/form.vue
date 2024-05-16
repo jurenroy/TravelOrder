@@ -57,7 +57,7 @@
         <div style="display: flex; flex-direction: column; justify-content: center;">
           <div>
           <label class="container">
-          <input type="checkbox" id="customPosition" v-model="aor">
+          <input type="checkbox" id="areaofres" v-model="aor">
           <svg viewBox="0 0 64 64" height="2em" width="2em">
             <path
               d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -65,9 +65,9 @@
           </svg>
           
         </label>
-        <label for="customPosition" style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">AOR (Area of Responsibility)</label>
+        <label for="areaofres" style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">AOR (Area of Responsibility)</label>
       </div>
-
+      
         
           <label class="pt" style="margin-top: 10px;"> Purpose of Travel: </label>
           <input @keydown.enter="form_submit" type="text" v-model="purpose"
@@ -156,10 +156,24 @@ export default {
       accounts: [],
       accountz: [],
       accountIdz: localStorage.getItem('accountId'),
-      loadis: false
+      loadis: false,
+      aor:false,
     };
   },
   computed: {
+    
+
+    travelDuration() {
+      if (this.departure && this.arrival) {
+        const departureDate = new Date(this.departure);
+        const arrivalDate = new Date(this.arrival);
+        const timeDifference = arrivalDate - departureDate;
+        const dayDifference = timeDifference / (1000 * 3600 * 24);
+        return dayDifference >= 8 ? 1 : 0;
+      }
+      return 0;
+    },
+  
     nem() {
       return this.selectedName;
     },
@@ -259,6 +273,8 @@ export default {
           ala: this.ala,
           appropriations: this.appropriation,
           remarks: this.remarks,
+          aor: this.aor ? '1' : '0', 
+          intervals: this.travelDuration ? '1' : '0',
         };
         this.submitting = true;
         this.loadis = true
