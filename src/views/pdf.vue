@@ -224,14 +224,7 @@ export default {
   },
   methods: {
     async generateQRCode() {
-      console.log(this.to_num)
-      console.log(this.name)
-      const textToEncode = `
-      MGBX TRAVEL ORDER
-      TRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}
-      ${this.name}
-      `;
-    
+      const textToEncode = `MGBX TRAVEL ORDER \nTRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}\n${this.name}`;
       try {
         this.qrCodeUrl = await QRCode.toDataURL(textToEncode);
       } catch (err) {
