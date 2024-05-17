@@ -101,11 +101,11 @@
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Noted
                   </p>
-                  <p v-if="item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48].includes(item.name_id)" style="color: red;">
+                  <p v-if="item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48,13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id)" style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     To be Recommend
                   </p>
-                  <p v-if="item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48].includes(item.name_id)" style="color: green; margin-bottom: -15px;">
+                  <p v-if="item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id)" style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Recommended
                   </p>
@@ -114,11 +114,11 @@
 
                  
 
-                  <p v-if="item.signature2 === null && item.signature1 !== null || ([15, 20, 21, 45, 48].includes(item.name_id) && item.signature2 === null && item.note !== null)" style="color: red;">
+                  <p v-if="item.signature2 === null && item.signature1 !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)" style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     To be Approve
                   </p>
-                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48].includes(item.name_id) && item.signature2 !== null)"
+                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
                     style="color: green;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Approved
@@ -159,7 +159,7 @@
                 </td>
 
                 <td
-                  v-if="(siga1 && item.note !== null) && (item.signature1 !== null && item.division_id !== 5 && item.note !== null)"
+                  v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null))) "
                   style="display: flex; justify-content: center;"><button
                     @click="signature2(item.travel_order_id)">Approve</button></td>
 
@@ -524,7 +524,7 @@ export default {
 
           } else if (this.acc.type_id == 3) {
             const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
-            this.formData = response.data.filter(form => form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null);
+            this.formData = response.data.filter(form => (form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null) || form.name_id === this.acc.name_id);
             this.siga = true
             if (this.sub.name_id == 20) {
               this.formData = response.data.filter(form => form.name_id == this.acc.name_id && form.note !== null);
