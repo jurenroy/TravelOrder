@@ -262,7 +262,7 @@ export default {
     },
 
     downloadCSV() {
-      const eds = ['Summary Report of Travel Order ']; // Placeholder for whatever 'eds' is supposed to be
+      const summary = ['Summary Report of Travel Order ']; // Placeholder for whatever 'summary' is supposed to be
 
       const headers = [
         'TO No.',
@@ -319,7 +319,7 @@ export default {
         return monthSections;
       });
 
-      csvData.unshift(eds);
+      csvData.unshift(summary);
 
       const csvContent = csvData.join('\n'); // Join sections into a single string
 
