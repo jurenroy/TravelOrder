@@ -136,7 +136,7 @@
 
 
 
-                <td v-if="siga && item.note !== null && item.signature1 == null "
+                <td v-if="(siga && item.note !== null && item.signature1 == null) "
                   style="display: flex; justify-content: center;"><button
                     @click="signature1(item.travel_order_id)">Recommend</button></td>
 
@@ -145,7 +145,9 @@
                     note</button></td>
 
                 <td v-if="addNote == true && item.travel_order_id == notenum && acc.name_id == 37"
-                  style="display: flex; justify-content: center;"><button @click="closeNote()">Close Add note</button>
+                  style="display: flex; justify-content: center;">
+                  <img src="/src/assets/close_note.png" @click="closeNote()"
+                    style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
 
                 <td v-if="item.note !== null && notenum !== item.travel_order_id"
@@ -262,7 +264,7 @@ export default {
     },
 
     downloadCSV() {
-      const eds = ['Summary Report of Travel Order ']; // Placeholder for whatever 'eds' is supposed to be
+      const summary = ['Summary Report of Travel Order ']; // Placeholder for whatever 'eds' is supposed to be
 
       const headers = [
         'TO No.',
@@ -319,7 +321,7 @@ export default {
         return monthSections;
       });
 
-      csvData.unshift(eds);
+      csvData.unshift(summary);
 
       const csvContent = csvData.join('\n'); // Join sections into a single string
 
@@ -334,11 +336,7 @@ export default {
       document.body.removeChild(link);
     },
 
-
-
-
-
-
+ 
     viewNotez(nutz, numx) {
       this.viewNote = true,
         this.noteText = nutz
