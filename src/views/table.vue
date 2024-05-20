@@ -101,11 +101,11 @@
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Noted
                   </p>
-                  <p v-if="item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48,13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id)" style="color: red;">
+                  <p v-if="(item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48,13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1)" style="color: red; margin-bottom: -15px;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     To be Recommend
                   </p>
-                  <p v-if="item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id)" style="color: green; margin-bottom: -15px;">
+                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1) " style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Recommended
                   </p>
@@ -114,7 +114,7 @@
 
                  
 
-                  <p v-if="item.signature2 === null && item.signature1 !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)" style="color: red;">
+                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null) && (item.signature1 !== null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1)))" style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     To be Approve
                   </p>
@@ -132,13 +132,13 @@
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
 
-
-
-
-
-                <td v-if="siga && item.note !== null && item.signature1 == null "
+                <td v-if="siga && item.note !== null && item.signature1 == null && item.name_id !== acc.name_id"
                   style="display: flex; justify-content: center;"><button
                     @click="signature1(item.travel_order_id)">Recommend</button></td>
+
+                <td v-if="acc.name_id==20 && item.note !== null && item.signature1 == null && item.aor == 1 && [15,21,45,48].includes(item.name_id)"
+                  style="display: flex; justify-content: center;"><button
+                    @click="signature11(item.travel_order_id,item.name_id)">Recommend</button></td>
 
                 <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37"
                   style="display: flex; justify-content: center;"><button @click="openNote(item.travel_order_id)">Add
@@ -159,7 +159,7 @@
                 </td>
 
                 <td
-                  v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null))) "
+                  v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null)) && item.name_id !== acc.name_id ) "
                   style="display: flex; justify-content: center;"><button
                     @click="signature2(item.travel_order_id)">Approve</button></td>
 
@@ -396,6 +396,32 @@ export default {
         this.verifiedOTPs = event.newValue;
       }
     },
+    async signature11(form_id,name_id) {
+
+    this.otp = true;
+
+    await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
+    this.otp = false;
+
+    const formData = new FormData();
+    formData.append('signature1', this.acc.signature);
+    formData.append('name_id', name_id);
+
+    axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then(() => {
+      this.fetchData();
+      this.selectedTravelOrderId = 0;
+      useAuthStore().updateVerifiedOTPs('false');
+      localStorage.setItem('verifiedOTPs', 'false');
+      this.otp = false;
+      window.location.reload();
+    }).catch(error => {
+      console.error('Error:', error);
+    });
+    },
     async signature1(form_id) {
 
       this.otp = true;
@@ -519,7 +545,7 @@ export default {
             } else {
               this.siga = false
             }
-            this.formData = response.data.filter(form => (form.signature2 === null && form.signature1 !== null && form.note !== null) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id));
+            this.formData = response.data.filter(form => ((form.signature2 === null && form.signature1 !== null && form.note !== null && !(form.aor == 1 && [15,21,45,48].includes(form.name_id))) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id)|| form.name_id == 20) || ([15,21,45,48].includes(form.name_id) && form.aor == 1 && form.signature1 == null) );
             this.siga1 = true
 
           } else if (this.acc.type_id == 3) {
