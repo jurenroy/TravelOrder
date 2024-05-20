@@ -189,8 +189,6 @@ const isDisabled = computed(() => {
   return newEmail.value === '' && newPassword.value === '' && signature.value === '' && !uploadedImageUrl.value;
 });
 
-
-
 const decr = computed(() => {
   const decrypted = CryptoJS.AES.decrypt(oldPass.value, 'jUr3ñr0yR@br4g@n');
   return decrypted.toString(CryptoJS.enc.Utf8);

@@ -329,7 +329,9 @@ export default {
                   this.accounts = data;
                   this.accountz = this.accounts.find(acc => parseInt(acc.account_id) === parseInt(this.accountIdz));
                   if (this.accountz.type_id == 1) {
-                  } else {
+                    console.log(this.accountz.type_id)
+                  } else if (this.accountz.type_id !== 1){
+                    console.log(this.accountz.type_id)
                     this.names = this.names.filter(nem => parseInt(nem.name_id) === parseInt(this.accountz.name_id))
                   }
                 } else {

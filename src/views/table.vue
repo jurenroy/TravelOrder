@@ -264,7 +264,7 @@ export default {
     },
 
     downloadCSV() {
-      const summary = ['Summary Report of Travel Order ']; // Placeholder for whatever 'eds' is supposed to be
+      const summary = ['Summary Report of Travel Order ']; // Placeholder for whatever 'summary' is supposed to be
 
       const headers = [
         'TO No.',
