@@ -150,9 +150,15 @@ const getName = (nameId) => {
 };
 
 
+const setOTPv = () => {
+  localStorage.setItem('verifiedOTPs', false)
+}
+
+setOTPv();
 fetchAccounts();
 fetchEmployee();
 fetchNames();
+
 
 
 
