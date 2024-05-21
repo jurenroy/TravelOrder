@@ -277,7 +277,7 @@ export default {
         // Add more headers as needed
       ];
 
-      const approvedTOs = this.formData.filter(item => item.signature2 !== null && item.signature2 !== '');
+      const approvedTOs = this.formData.filter(item => item.to_num > 0);
 
       approvedTOs.sort((a, b) => a.to_num - b.to_num);
 
