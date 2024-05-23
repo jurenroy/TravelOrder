@@ -65,7 +65,10 @@
           </svg>
           
         </label>
-        <label for="areaofres" style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">AOR (Area of Responsibility)</label>
+        <label for="areaofres" style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">
+          {{ aor ? 'Outside' : 'Inside' }} Area of Responsibility (AOR) 
+          <span v-if="travelDurationz >7">{{ travelDurationz }} Days</span>
+        </label>
       </div>
       
         
@@ -158,6 +161,7 @@ export default {
       accountIdz: localStorage.getItem('accountId'),
       loadis: false,
       aor:false,
+      errorDate: ''
     };
   },
   computed: {
@@ -170,6 +174,26 @@ export default {
         const timeDifference = arrivalDate - departureDate;
         const dayDifference = timeDifference / (1000 * 3600 * 24);
         return dayDifference >= 8 ? 1 : 0;
+      }
+      return 0;
+    },
+    travelDurationz() {
+      if (this.departure && this.arrival) {
+        const departureDate = new Date(this.departure);
+        const arrivalDate = new Date(this.arrival);
+        const currentDate = new Date();
+        const timeDifference = arrivalDate - departureDate;
+        const dayDifference = timeDifference / (1000 * 3600 * 24);
+        
+
+        if (dayDifference < 0 ) {
+          this.departure = null;
+          this.arrival = null;
+          return 0;
+      }
+
+      this.errorDate = ''; // Clear any existing error messages
+        return Math.ceil(dayDifference);
       }
       return 0;
     },

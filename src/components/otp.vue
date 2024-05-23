@@ -1,6 +1,7 @@
 <template>
   <div
     style="justify-content: center;  background-color: white; display: flex; margin-top: 100px; position: absolute;  width: 300px; height: auto; ">
+    
     <div v-if="sendingOTPS" class="verifieds">
       <a class="verifieds1">
         Sending OTP....
@@ -19,7 +20,7 @@
     </div>
     <div v-if="OTPsent" style="border: 2px solid black; border-radius: 10px;">
       <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
-        <label for="otpInput1" class="Enterotps">Enter OTP: </label>
+        <label for="otpInput1" class="Enterotps">Enter OTP: {{ otppp }}</label>
         <div style="display: flex; flex-direction: row;">
 
           <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 1, 0)" @input="moveToNextField($event, 2)"
@@ -97,6 +98,8 @@ const otp3 = ref('');
 const otp4 = ref('');
 const otp5 = ref('');
 const otp6 = ref('');
+
+const otppp = ref('');
 
 const isVerify = computed(() => {
   return otp1.value === '' || otp2.value === '' || otp3.value === '' || otp4.value === '' || otp5.value === '' || otp6.value === '';
@@ -264,6 +267,7 @@ const fetchOTPData = async () => {
   try {
     const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountId);
+    otppp.value = otpData.value[0].code
   } catch (error) {
     console.error('Error fetching OTP data:', error);
   }

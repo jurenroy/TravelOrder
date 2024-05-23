@@ -84,11 +84,11 @@
                 <td>{{ item.date }}</td>
                 <td v-if="item.initial === null" style="color: red;">
                   <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                  To be Initialize
+                  For Initial
                 </td>
                 <td v-else style="color: green; ">
                   
-                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20].includes(item.name_id)" style="color: green; margin-top: -8px;margin-bottom: -1px">
+                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20].includes(item.name_id) && item.initial !== null" style="color: green; margin-top: -8px;margin-bottom: -1px">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                   {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}</p>
                   
@@ -101,22 +101,20 @@
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Noted
                   </p>
-                  <p v-if="(item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48,13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1)" style="color: red; margin-bottom: -15px;">
+
+                  <p v-if="(item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48,13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)" style="color: red; margin-bottom: -15px;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                    To be Recommend
+                    For Recommendation
                   </p>
-                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1) " style="color: green; margin-bottom: -15px;">
+                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1) " style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Recommended
                   </p>
 
-
-
-                 
-
-                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null) && (item.signature1 !== null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1)))" style="color: red;">
+                      
+                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))" style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                    To be Approve
+                    For Approval
                   </p>
                   <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
                     style="color: green;">
@@ -305,7 +303,7 @@ export default {
             [`\n ${month} ${yearKey}`], // Display year and month
             headers.join(','), // Join headers into a single comma-separated string
             ...yearData[yearKey].map(item => [
-              item.to_num + ' - ' + this.yearToday,
+              `${this.padWithZeroes(item.to_num)}  -  ${this.yearToday}`,
               this.getName(item.name_id),
               `${new Date(item.date).toLocaleDateString('en-US')}`,
               `${new Date(item.departure).toLocaleDateString('en-US')}`,
