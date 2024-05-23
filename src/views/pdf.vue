@@ -313,13 +313,17 @@ export default {
   },
   methods: {
     async generateQRCode() {
-      const textToEncode = `MGBX TRAVEL ORDER \nTRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}\n${this.name}`;
-      try {
-        this.qrCodeUrl = await QRCode.toDataURL(textToEncode);
-      } catch (err) {
-        console.error(err);
-      }
-    },
+  const textToEncode = `
+    MGBX TRAVEL ORDER
+    TRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}
+    ${this.name}
+  `;
+  try {
+    this.qrCodeUrl = await QRCode.toDataURL(textToEncode.trim());
+  } catch (err) {
+    console.error('Error generating QR code:', err);
+  }
+},
     padWithZeroes(travel_order_id) {
       // Convert travel_order_id to string
       const idString = travel_order_id.toString();

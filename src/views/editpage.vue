@@ -61,7 +61,7 @@
 
 
         <div class="verifyOTPS">
-          <label for="otpInput1" class="Enterotp" v-if="showotp">Enter OTP Verification</label>
+          <label for="otpInput1" class="Enterotp" v-if="showotp">Enter OTP Verification: {{ otppp }}</label>
           <div style="display: flex; flex-direction: row; justify-content: center;">
 
 
@@ -180,6 +180,7 @@ const otp3 = ref('');
 const otp4 = ref('');
 const otp5 = ref('');
 const otp6 = ref('');
+const otppp = ref('');
 
 
 const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -351,6 +352,7 @@ const verifyOTP = () => {
     if (otpData.value.length > 0) {
       const currentTime = getCurrentTimeAdjusted();
       const backendExpiryTime = otpData.value[0].expires_at;
+      
 
 
       const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
@@ -510,6 +512,7 @@ const fetchOTPData = async () => {
   try {
     const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountIdz);
+    otppp.value = otpData.value[0].code
   } catch (error) {
     console.error('Error fetching OTP data:', error);
   }

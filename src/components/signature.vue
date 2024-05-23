@@ -25,8 +25,8 @@
 
 
       <div v-if="OTPsent">
-        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;  width: 120%;">
-          <label for="otpInput" class="Enterotps">Enter OTP Verification</label>
+        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;  width: 170%;">
+          <label for="otpInput" class="Enterotps">Enter OTP Verification: {{ otppp }}</label>
 
           <div style="display: flex; flex-direction: row;">
 
@@ -128,6 +128,7 @@ const otp3 = ref('');
 const otp4 = ref('');
 const otp5 = ref('');
 const otp6 = ref('');
+const otppp = ref('');
 
 
 const moveToPrevField = (event, currentField, prevField) => {
@@ -323,6 +324,7 @@ const fetchOTPData = async () => {
   try {
     const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountId);
+    otppp.value = otpData.value[0].code
   } catch (error) {
     console.error('Error fetching OTP data:', error);
   }
