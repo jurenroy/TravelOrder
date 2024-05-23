@@ -76,51 +76,34 @@
           <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel
             is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
-        <div class="outer-container"
-          :style="{ marginTop: '-30px', justifyContent: (division == 'ORD') ? 'flex-end' : 'space-around' }">
+        <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || name == 'LIBERTY B. DAITIA') ? 'flex-end' : 'space-around' }" v-if="aor == 0">
           
-          <div class="inner-container2" v-if="division == 'ORD' && aor == 1 && name == 'RODANTE B. FELINA'" style="margin-left: -50px;">
-            <p style="margin-left: -250px;">Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
-            <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px', marginLeft: '-250px' }">
-              HENRY A. ADORNADO, PhD</p>
-            <p style="margin-top: -10px;margin-left: -250px;">Regional Executive Director</p>
-            <p style="margin-top: -10px; color: transparent; margin-bottom: -10px;">Regional Executive Director</p>
-          </div>
-          <div class="inner-container2" v-if="(( name == 'LIBERTY B. DAITIA'|| name == 'OSIN JR. A. SINSUAT'||name == 'JANICE B. FUROG'|| name == 'ALVIN M. VILLANUEVA') && aor == 1)" >
-            <p style="margin-left: 50px;">Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
-            <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px', marginLeft: '50px' }">
-              RODANTE B. FELINA</p>
-            <p style="margin-top: -10px;margin-left: 50px;">OIC, Regional Director</p>
-            <p style="margin-top: -10px; color: transparent; margin-bottom: -10px;">OIC, Regional Director</p>
-          </div>
-          <div class="inner-container2" v-if="division !== 'ORD' && (name !== 'RODANTE B. FELINA' && name !== 'LIBERTY B. DAITIA'&& name !== 'OSIN JR. A. SINSUAT'&&name !== 'JANICE B. FUROG'&& name !== 'ALVIN M. VILLANUEVA' && name !== 'RODANTE B. FELINA') && aor == 0" style="margin-left: 50px;">
-            <p>Recommendedz by:</p>
+          <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD'">
+            <p>Recommended by:</p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
               {{ recommended }}</p>
             <p style="margin-top: -10px;">Chief, {{ division }}</p>
           </div>
-          <div class="inner-container2" v-if="division !== 'ORD' && (name !== 'LIBERTY B. DAITIA'&& name !== 'OSIN JR. A. SINSUAT'&&name !== 'JANICE B. FUROG'&& name !== 'ALVIN M. VILLANUEVA' && name !== 'RODANTE B. FELINA') && aor == 1" style="margin-left: 50px;">
-            <p>Recommendedx by:</p>
+
+          <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
+            <p>Recommended by:</p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
-              {{ recommended }}</p>
-            <p style="margin-top: -10px;">Chief, {{ division }}</p>
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              LIBERTY B. DAITIA</p>
+            <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
-          <div class="inner-container2" :style="{ marginRight: (division == 'ORD') ? '120px' : '0px' }">
+
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' || name == 'LIBERTY B. DAITIA' ? '120px' : '0px' }" v-if="name !== 'RODANTE B. FELINA'">
             <p>Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
             <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="(sdiv == 5 || sdiv == null)  && (!(name == 'RODANTE B. FELINA' || name == 'LIBERTY B. DAITIA'|| name == 'OSIN JR A. SINSUAT'||name == 'JANICE B. FUROG'|| name == 'ALVIN M. VILLANUEVA'))">RODANTE B. FELINA</p>
+              v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
@@ -133,22 +116,92 @@
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
-              <p class="value"
+            <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
+            <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
+          </div>
+
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA'">
+            <p>Approved by:</p>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="name == 'RODANTE B. FELINA' && aor == 1">Atty. DANILO U. UYKIENG</p>
-              <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="name == 'RODANTE B. FELINA' && aor == 0">HENRY A. ADORNADO, PhD</p>
-              <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="(name == 'LIBERTY B. DAITIA'|| name == 'OSIN JR. A. SINSUAT'||name == 'JANICE B. FUROG'|| name == 'ALVIN M. VILLANUEVA') && aor == 1">HENRY A. ADORNADO, PhD</p>
-            <p style="margin-top: -10px;" v-if="(sdiv == 5 || sdiv == null)  && (!(name == 'RODANTE B. FELINA' || name == 'LIBERTY B. DAITIA'|| name == 'OSIN JR A. SINSUAT'||name == 'JANICE B. FUROG'|| name == 'ALVIN M. VILLANUEVA'))">OIC, Regional Director</p>
-            <p style="margin-top: -10px;" v-if="(sdiv == 5 || sdiv == null) && aor == 1 && name == 'RODANTE B. FELINA'">OIC, Bureau Director</p>
-            <p style="margin-top: -10px;" v-if="(sdiv == 5 || sdiv == null) && aor == 0 && name == 'RODANTE B. FELINA'">Regional Executive Director</p>
-            <p style="margin-top: -10px;" v-if="(sdiv == 5 || sdiv == null)  && (name == 'LIBERTY B. DAITIA'|| name == 'OSIN JR. A. SINSUAT'||name == 'JANICE B. FUROG'|| name == 'ALVIN M. VILLANUEVA') && aor == 1 && name !== 'RODANTE B. FELINA'">Regional Executive Director</p>
-            <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null && aor == 0">Chief, {{ sdivz.division_name }}</p>
+            >HENRY A. ADORNADO, PhD</p>
+            <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
         </div>
+        <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (name=='RODANTE B. FELINA' && intervals == 0) || (name=='LIBERTY B. DAITIA' && intervals == 0)) && !(name=='RODANTE B. FELINA' && intervals == 1) ? 'flex-end' : 'space-around' }" v-if="aor == 1">
+
+          <div class="inner-container2" v-if="divisionChiefs.includes(name) && intervals == 1">
+            <p>Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              HENRY A. ADORNADO, PhD</p>
+            <p style="margin-top: -10px;">Regional Executive Director</p>
+          </div>
+
+          <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD'">
+            <p>Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              {{ recommended }}</p>
+            <p style="margin-top: -10px;">Chief, {{ division }}</p>
+          </div>
+
+          <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
+            <p>Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              LIBERTY B. DAITIA</p>
+            <p style="margin-top: -10px;">CHEIF AO</p>
+          </div>
+
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' || name == 'LIBERTY B. DAITIA' ? '120px' : '0px' }" v-if="((divisionChiefs.includes(name) && intervals == 0) || !divisionChiefs.includes(name)) && name != 'RODANTE B. FELINA'">
+            <p>Approved by:</p>
+            <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
+              Director:</p>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 3 && sdiv !== null ">OSIN JR. A. SINSUAT</p>
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 2 && sdiv !== null ">LIBERTY B.DAITIA</p>
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
+            <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
+            <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
+          </div>
+
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '-10px' : '0px' }" v-if="divisionChiefs.includes(name) && intervals == 1">
+            <p>Approved by:</p>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+            >Atty. DANILO U. UYKIENG</p>
+            <p style="margin-top: -10px;">OIC, Bureau Director</p>
+          </div>
+
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA' && intervals == 0">
+            <p>Approved by:</p>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+            >HENRY A. ADORNADO, PhD</p>
+            <p style="margin-top: -10px;">Regional Executive Director</p>
+          </div>
+
+        </div>
+
         <p style="letter-spacing: 5px; text-align: center; margin-top: -25px;">AUTHORIZATION</p>
         <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby
           authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my
@@ -220,7 +273,14 @@ export default {
       qrCodeUrl: '',
       imageSrc: mgbx,
       intervals: '',
-      aor: ''
+      aor: '',
+      divisionChiefs:[
+        'LIBERTY B. DAITIA',
+        'OSIN JR. A. SINSUAT',
+        'JANICE B. FUROG',
+        'ALVIN M. VILLANUEVA',
+        'RODANTE B. FELINA'
+      ]
     };
   },
   mounted() {

@@ -101,11 +101,11 @@
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Noted
                   </p>
-                  <p v-if="(item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48,13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1)" style="color: red; margin-bottom: -15px;">
+                  <p v-if="(item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48,13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1)" style="color: red; margin-bottom: -15px;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     To be Recommend
                   </p>
-                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1) " style="color: green; margin-bottom: -15px;">
+                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.aor == 1) " style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Recommended
                   </p>
