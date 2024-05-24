@@ -66,7 +66,7 @@
           
         </label>
         <label for="areaofres" style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">
-          {{ aor ? 'Outside' : 'Inside' }} Area of Responsibility (AOR) 
+          Outside Area of Responsibility (AOR) 
           <span v-if="travelDurationz >7">{{ travelDurationz }} Days</span>
         </label>
       </div>

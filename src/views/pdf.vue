@@ -96,6 +96,15 @@
             <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
 
+          <div class="inner-container2" v-if="divisionChiefs.includes(name) && intervals == 1 && name !== 'LIBERTY B. DAITIA'">
+            <p>Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              LIBERTY B. DAITIA</p>
+            <p style="margin-top: -10px;">CHEIF AO</p>
+          </div>
+
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' || name == 'LIBERTY B. DAITIA' ? '120px' : '0px' }" v-if="name !== 'RODANTE B. FELINA'">
             <p>Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
@@ -149,13 +158,13 @@
             <p style="margin-top: -10px;">Chief, {{ division }}</p>
           </div>
 
-          <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
+          <div class="inner-container2" v-if="!(divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD')">
             <p>Recommended by:</p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
               LIBERTY B. DAITIA</p>
-            <p style="margin-top: -10px;">CHEIF AO</p>
+            <p style="margin-top: -10px;">CHEIF AOz</p>
           </div>
 
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' || name == 'LIBERTY B. DAITIA' ? '120px' : '0px' }" v-if="((divisionChiefs.includes(name) && intervals == 0) || !divisionChiefs.includes(name)) && name != 'RODANTE B. FELINA'">
@@ -195,16 +204,8 @@
             <p>Approved by:</p>
             <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="name == 'RODANTE B. FELINA' && aor == 0">HENRY A. ADORNADO, PhD</p>
-              <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="(name == 'LIBERTY B. DAITIA'|| name == 'OSIN JR. A. SINSUAT'||name == 'JANICE B. FUROG'|| name == 'ALVIN M. VILLANUEVA') && aor == 1">HENRY A. ADORNADO, PhD</p>
-            <p style="margin-top: -10px;" v-if="(sdiv == 5 || sdiv == null)  && (!(name == 'RODANTE B. FELINA' || name == 'LIBERTY B. DAITIA'|| name == 'OSIN JR A. SINSUAT'||name == 'JANICE B. FUROG'|| name == 'ALVIN M. VILLANUEVA'))">OIC, Regional Director</p>
-            <p style="margin-top: -10px;" v-if="(sdiv == 5 || sdiv == null) && aor == 1 && name == 'RODANTE B. FELINA'">OIC, Bureau Director</p>
-            <p style="margin-top: -10px;" v-if="(sdiv == 5 || sdiv == null) && aor == 0 && name == 'RODANTE B. FELINA'">Regional Executive Director</p>
-            <p style="margin-top: -10px;" v-if="(sdiv == 5 || sdiv == null)  && (name == 'LIBERTY B. DAITIA'|| name == 'OSIN JR. A. SINSUAT'||name == 'JANICE B. FUROG'|| name == 'ALVIN M. VILLANUEVA') && aor == 1 && name !== 'RODANTE B. FELINA'">Regional Executive Director</p>
-            <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null && aor == 0">Chief, {{ sdivz.division_name }}</p>
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">HENRY A. ADORNADO, PhD</p>
+            <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
 
         </div>

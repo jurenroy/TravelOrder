@@ -35,7 +35,7 @@
       <div class="content">
         <textarea v-model="noteText" rows="3"></textarea>
         <div class="butokz">
-          <button @click="postNote" v-if="siga || siga1">Save</button>
+          <button @click="postNote" v-if="siga || siga1 || acc.name_id == 76">Save</button>
           <button @click="closeNote">Close</button>
         </div>
       </div>
@@ -45,6 +45,7 @@
 
 
     <div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: -60px;">
+      <input type="text" v-model="searchQuery" placeholder="Search TO number or Name">
       <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
 
         <div class="sign">
@@ -55,13 +56,12 @@
       </button>
 
 
-
       <div v-if="mawala" class="outer">
         <div class="scrollable-table">
           <table>
             <thead>
               <tr >
-                <th style="text-align: center;">TO No.</th>
+                <th style="text-align: center; cursor: pointer;" @click="sortBy('to_num')">TO No.</th>
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Departure Date</th>
                 <th style="text-align: center;">Destination</th>
@@ -244,6 +244,9 @@ export default {
       noteText: '',
       sub: 0,
       bus: 0,
+      searchQuery: '', // Holds the search query
+      sortColumn: '', // Holds the column to sort by
+      sortOrder: 'desc', // Holds the sort order ('asc' or 'desc')
     };
   },
   created() {
@@ -597,18 +600,78 @@ export default {
     updateVisibleItems() {
       this.visibleItems = this.formData.slice(0, 20);
     },
+    // Method to sort data based on column
+    sortBy(column) {
+      console.log(column)
+      console.log(this.sortColumn)
+      if (this.sortColumn === column) {
+        this.sortOrder = (this.sortOrder === 'asc') ? 'desc' : 'asc'; // Toggle sort order
+      } else {
+        this.sortColumn = column;
+        this.sortOrder = 'asc';
+      }
+    },
 
 
   },
 
   computed: {
+    // reversedFormData() {
+    //   if (this.searchQuery !== ''){
+    //     return this.formData.filter(item => {
+    //     // Filter based on TO number or Name
+    //     return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
+    //   });
+    //   }else{
+    //     return this.formData.slice().reverse();
+    //   }
+
+    //   // Apply sorting if sortColumn and sortOrder are set
+    //   if (this.sortColumn && this.sortOrder) {
+    //   data.sort((a, b) => {
+    //     const fieldA = (this.sortColumn === 'to_num') ? String(a.to_num) : this.getName(a.name_id).toLowerCase();
+    //     const fieldB = (this.sortColumn === 'to_num') ? String(b.to_num) : this.getName(b.name_id).toLowerCase();
+    //     let comparison = 0;
+    //     if (fieldA > fieldB) {
+    //       comparison = 1;
+    //     } else if (fieldA < fieldB) {
+    //       comparison = -1;
+    //     }
+    //     return (this.sortOrder === 'asc') ? comparison : -comparison;
+    //   });
+    // }
+
+    // return data;
+    // },
     reversedFormData() {
-      return this.formData.slice().reverse();
-    }
-    
-  }
+      let data = this.formData.slice().reverse(); // Make a copy of the original data
 
+      // Filter based on searchQuery
+      if (this.searchQuery !== '') {
+        data = data.filter(item => {
+          // Filter based on TO number or Name
+          return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
+        });
+      }
 
+      // Apply sorting if sortColumn and sortOrder are set
+      if (this.sortColumn && this.sortOrder) {
+        data.sort((a, b) => {
+          const fieldA = (this.sortColumn === 'to_num') ? String(a.to_num) : this.getName(a.name_id).toLowerCase();
+          const fieldB = (this.sortColumn === 'to_num') ? String(b.to_num) : this.getName(b.name_id).toLowerCase();
+          let comparison = 0;
+          if (fieldA > fieldB) {
+            comparison = 1;
+          } else if (fieldA < fieldB) {
+            comparison = -1;
+          }
+          return (this.sortOrder === 'asc') ? comparison : -comparison;
+        });
+      }
+
+      return data;
+    },
+  },
 }
 
 
