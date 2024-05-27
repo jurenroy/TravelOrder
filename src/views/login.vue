@@ -95,11 +95,11 @@ const login_submit = () => {
    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
    const account = accounts.value.find(acc => acc.email === email.value);
-   if (account){
+   if (account) {
       empi.value = employees.value.find(emp => emp.name_id === account.name_id).isActive;
-   decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
+      decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
    }
-   
+
 
    isRed.value = true
 
@@ -184,8 +184,8 @@ const fetchAccounts = () => {
          accounts.value = response.data;
          axios.get('http://172.31.10.164:8000/get_employees_json')
             .then(response => {
-         employees.value = response.data; 
-         })
+               employees.value = response.data;
+            })
       })
       .catch(error => {
          console.error('Error fetching accounts:', error);
@@ -230,11 +230,8 @@ const pas = () => {
    border-radius: 25px;
    background-color: white;
    width: 80vw;
-   /* Set width to a percentage of the viewport width */
    max-width: 500px;
-   /* Set a maximum width */
    height: auto;
-   /* Let the height adjust based on content */
    padding: 20px;
    color: #212121;
    border: 2px solid black;
@@ -243,7 +240,6 @@ const pas = () => {
 
 .second.zoomed {
    transform: scale(2);
-   /* Zoom in by a factor of 2 */
 }
 
 .form {
@@ -310,7 +306,6 @@ const pas = () => {
 
 .error {
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;
@@ -325,7 +320,6 @@ const pas = () => {
    top: 0;
    left: 0;
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;
@@ -358,7 +352,6 @@ const pas = () => {
 
 .wronge {
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;

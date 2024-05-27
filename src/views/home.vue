@@ -7,7 +7,6 @@
          <div style="display: flex; justify-content: center;" v-if="isVisible">
             <formzz></formzz>
          </div>
-         <!-- <Login v-if="isVisible" /> -->
       </div>
 
    </div>

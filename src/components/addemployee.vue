@@ -112,19 +112,15 @@ export default {
 
     submitForm() {
       this.loadis = true
-      // Set position_name based on customPositionEnabled
       const positionName = this.customPositionEnabled ? this.formData.customPosition : this.formData.position;
 
-      // Prepare data to send
       const dataToSend = {
         first_name: this.formData.firstName,
         last_name: this.formData.lastName,
         position_name: positionName,
         division_name: this.formData.division,
       };
-      // Check if middle_init is not empty before adding it to dataToSend
       if (this.formData.middleInit !== '') {
-        // dataToSend.middle_init = this.formData.middleInit + '.';
         dataToSend.middle_init = this.formData.middleInit.toUpperCase().endsWith('.') ? this.formData.middleInit.toUpperCase() : this.formData.middleInit.toUpperCase() + '.';
 
       }
@@ -132,7 +128,6 @@ export default {
       axios.post('http://172.31.10.164:8000/add_employees', dataToSend)
         .then(response => {
           console.log('Response:', response.data);
-          // Reset form data
           this.formData = {
             firstName: '',
             middleInit: '',
@@ -145,7 +140,6 @@ export default {
           addem.value = false;
           blurTable.value = false
           seemplo();
-          // Emit an event to indicate that an employee has been added
 
         })
         .catch(error => {

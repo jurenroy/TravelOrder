@@ -1,4 +1,3 @@
-// src/store/auth.js
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore({
@@ -6,7 +5,7 @@ export const useAuthStore = defineStore({
   state: () => ({
     isLoggedIn: 'false',
     accountId: '',
-    verifiedOTPs: 'false', // Define your state variables here
+    verifiedOTPs: 'false', 
   }),
   actions: {
     login(accountId) {

@@ -9,13 +9,11 @@
       <otpz />
     </div>
     <div class="note" v-if="addNote">
-      <!-- Title and Close Icon -->
       <div class="title-bar">
         <div class="title">Add note</div>
         <div class="close-icon" @click="closeNote">X</div>
       </div>
 
-      <!-- Content -->
       <div class="content">
         <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
         <div class="butokz">
@@ -25,10 +23,8 @@
       </div>
     </div>
     <div class="note" v-if="viewNote">
-      <!-- Title and Close Icon -->
       <div class="title-bar">
         <div class="title">View note</div>
-        <!-- <div class="close-icon" @click="closeNote">X</div> -->
       </div>
 
       <!-- Content -->
@@ -44,26 +40,27 @@
 
     <div style="display: flex; flex-direction: column; margin-top: -60px;">
       <div style="display: flex; flex-direction: row; justify-content: space-between; ">
-        <div v-if="mawala" style="display: flex; border: 2px solid black;  align-items: center; height: 30px;  position: relative; top: 17px;"> 
-      <img style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png"> 
-      <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name" > 
-    </div>
-      <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
-
-        <div class="sign">
-          <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
+        <div v-if="mawala"
+          style="display: flex; border: 2px solid black;  align-items: center; height: 30px;  position: relative; top: 17px;">
+          <img style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png">
+          <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name">
         </div>
+        <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
 
-        <div class="text">Download Summary Reports</div>
-      </button>
-    </div>
+          <div class="sign">
+            <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
+          </div>
+
+          <div class="text">Download Summary Reports</div>
+        </button>
+      </div>
 
 
       <div v-if="mawala" class="outer">
         <div class="scrollable-table">
           <table>
             <thead>
-              <tr >
+              <tr>
                 <th style="text-align: center; ">TO No.</th>
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Departure Date</th>
@@ -73,7 +70,6 @@
                 <th style="text-align: center;">Date</th>
                 <th style="text-align: center;">Status</th>
                 <th style="text-align: center;">Action</th>
-                <!-- Add more table headers as needed -->
               </tr>
             </thead>
             <tbody>
@@ -90,11 +86,13 @@
                   For Initial
                 </td>
                 <td v-else style="color: green; ">
-                  
-                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20].includes(item.name_id) && item.initial !== null" style="color: green; margin-top: -8px;margin-bottom: -1px">
+
+                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20].includes(item.name_id) && item.initial !== null"
+                    style="color: green; margin-top: -8px;margin-bottom: -1px">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                  {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}</p>
-                  
+                    {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}
+                  </p>
+
 
                   <p v-if="item.note === null" style="color: red; margin-top: 1px; margin-bottom: -15px">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
@@ -105,17 +103,20 @@
                     Noted
                   </p>
 
-                  <p v-if="(item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48,13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)" style="color: red; margin-bottom: -15px;">
+                  <p v-if="(item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
+                    style="color: red; margin-bottom: -15px;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Recommendation
                   </p>
-                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1) " style="color: green; margin-bottom: -15px;">
+                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
+                    style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Recommended
                   </p>
 
-                      
-                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))" style="color: red;">
+
+                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
+                    style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Approval
                   </p>
@@ -137,9 +138,10 @@
                   style="display: flex; justify-content: center;"><button
                     @click="signature1(item.travel_order_id)">Recommend</button></td>
 
-                <td v-if="acc.name_id==20 && item.note !== null && item.signature1 == null && item.aor == 1 && [15,21,45,48].includes(item.name_id)"
+                <td
+                  v-if="acc.name_id == 20 && item.note !== null && item.signature1 == null && item.aor == 1 && [15, 21, 45, 48].includes(item.name_id)"
                   style="display: flex; justify-content: center;"><button
-                    @click="signature11(item.travel_order_id,item.name_id)">Recommend</button></td>
+                    @click="signature11(item.travel_order_id, item.name_id)">Recommend</button></td>
 
                 <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37"
                   style="display: flex; justify-content: center;"><button @click="openNote(item.travel_order_id)">Add
@@ -162,19 +164,20 @@
                 </td>
 
                 <td
-                  v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null)) && item.name_id !== acc.name_id ) "
+                  v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null)) && item.name_id !== acc.name_id)"
                   style="display: flex; justify-content: center;"><button
                     @click="signature2(item.travel_order_id)">Approve</button></td>
 
 
-                    <td  v-if="isSectionChief(acc.name_id) && selectedTravelOrderId != item.travel_order_id && item.initial === null" style="display: flex; justify-content: center;">
+                <td
+                  v-if="isSectionChief(acc.name_id) && selectedTravelOrderId != item.travel_order_id && item.initial === null"
+                  style="display: flex; justify-content: center;">
                   <button @click="initialize(item.travel_order_id)">
                     Initial
                   </button>
                   <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
-                <!-- Add more table data cells as needed -->
               </tr>
             </tbody>
           </table>
@@ -247,28 +250,25 @@ export default {
       noteText: '',
       sub: 0,
       bus: 0,
-      searchQuery: '', // Holds the search query
-      
+      searchQuery: '',
+
     };
   },
   created() {
-    // Watch for changes in localStorage and update verifiedOTPs accordingly
     window.addEventListener('storage', this.updateVerifiedOTPs);
   },
   destroyed() {
-    // Cleanup the event listener when the component is destroyed
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
-   
+
 
     isSectionChief(name_id) {
       return this.sectionChiefIds.includes(name_id);
     },
 
     downloadCSV() {
-      const summary = ['Summary Report of Travel Order ']; // Placeholder for whatever 'summary' is supposed to be
-
+      const summary = ['Summary Report of Travel Order '];
       const headers = [
         'TO No.',
         'Name',
@@ -277,7 +277,6 @@ export default {
         'Destination',
         'Purpose',
         'Arrival Date',
-        // Add more headers as needed
       ];
 
       const approvedTOs = this.formData.filter(item => item.to_num > 0);
@@ -305,8 +304,8 @@ export default {
           const month = yearMonthDate.toLocaleString('default', { month: 'long' });
 
           const yearMonthSection = [
-            [`\n ${month} ${yearKey}`], // Display year and month
-            headers.join(','), // Join headers into a single comma-separated string
+            [`\n ${month} ${yearKey}`],
+            headers.join(','),
             ...yearData[yearKey].map(item => [
               `${this.padWithZeroes(item.to_num)}  -  ${this.yearToday}`,
               this.getName(item.name_id),
@@ -318,7 +317,7 @@ export default {
             ].join(','))
           ];
 
-          monthSections.push(yearMonthSection.join('\n')); // Join section rows into a single string
+          monthSections.push(yearMonthSection.join('\n'));
         });
 
         return monthSections;
@@ -326,7 +325,7 @@ export default {
 
       csvData.unshift(summary);
 
-      const csvContent = csvData.join('\n'); // Join sections into a single string
+      const csvContent = csvData.join('\n');
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -339,7 +338,7 @@ export default {
       document.body.removeChild(link);
     },
 
- 
+
     viewNotez(nutz, numx) {
       this.viewNote = true,
         this.noteText = nutz
@@ -356,7 +355,6 @@ export default {
         this.notenum = 0
     },
     postNote() {
-      // Axios POST request logic here
       const formData = new FormData();
       formData.append('note', this.noteText);
 
@@ -378,7 +376,6 @@ export default {
     },
     initialize(numz) {
       this.initnum = numz
-      // Axios POST request logic here
       const formData = new FormData();
       formData.append('initial', 'initialized');
 
@@ -397,37 +394,37 @@ export default {
         this.verifiedOTPs = event.newValue;
       }
     },
-    async signature11(form_id,name_id) {
+    async signature11(form_id, name_id) {
 
-    this.otp = true;
+      this.otp = true;
 
-    await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
-    this.otp = false;
-
-    const formData = new FormData();
-    formData.append('signature1', this.acc.signature);
-    formData.append('name_id', name_id);
-
-    axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).then(() => {
-      this.fetchData();
-      this.selectedTravelOrderId = 0;
-      useAuthStore().updateVerifiedOTPs('false');
-      localStorage.setItem('verifiedOTPs', 'false');
+      await this.waitForVerifiedOTPs();
       this.otp = false;
-      window.location.reload();
-    }).catch(error => {
-      console.error('Error:', error);
-    });
+
+      const formData = new FormData();
+      formData.append('signature1', this.acc.signature);
+      formData.append('name_id', name_id);
+
+      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(() => {
+        this.fetchData();
+        this.selectedTravelOrderId = 0;
+        useAuthStore().updateVerifiedOTPs('false');
+        localStorage.setItem('verifiedOTPs', 'false');
+        this.otp = false;
+        window.location.reload();
+      }).catch(error => {
+        console.error('Error:', error);
+      });
     },
     async signature1(form_id) {
 
       this.otp = true;
 
-      await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
+      await this.waitForVerifiedOTPs();
       this.otp = false;
 
       const formData = new FormData();
@@ -451,7 +448,7 @@ export default {
 
     async signature2(form_id) {
       this.otp = true;
-      await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
+      await this.waitForVerifiedOTPs();
       this.otp = false;
 
       const formData = new FormData();
@@ -478,19 +475,15 @@ export default {
 
     async waitForVerifiedOTPs() {
       while (this.verifiedOTPs == 'false') {
-        await new Promise(resolve => setTimeout(resolve, 1000), this.verifiedOTPs = localStorage.getItem('verifiedOTPs')); // Wait for 10 seconds
+        await new Promise(resolve => setTimeout(resolve, 1000), this.verifiedOTPs = localStorage.getItem('verifiedOTPs'));
       }
     },
 
     padWithZeroes(travel_order_id) {
-      // Convert travel_order_id to string
       const idString = travel_order_id.toString();
-      // Check if the length is less than 4
       if (idString.length < 4) {
-        // Pad with zeroes to make it four digits
         return '0'.repeat(4 - idString.length) + idString;
       } else {
-        // If already four digits, return as is
         return idString;
       }
     },
@@ -546,7 +539,7 @@ export default {
             } else {
               this.siga = false
             }
-            this.formData = response.data.filter(form => ((form.signature2 === null && form.signature1 !== null && form.note !== null && !(form.aor == 1 && [15,21,45,48].includes(form.name_id))) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id)|| form.name_id == 20) || ([15,21,45,48].includes(form.name_id) && form.aor == 1 && form.signature1 == null) );
+            this.formData = response.data.filter(form => ((form.signature2 === null && form.signature1 !== null && form.note !== null && !(form.aor == 1 && [15, 21, 45, 48].includes(form.name_id))) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id) || form.name_id == 20) || ([15, 21, 45, 48].includes(form.name_id) && form.aor == 1 && form.signature1 == null));
             this.siga1 = true
 
           } else if (this.acc.type_id == 3) {
@@ -590,7 +583,6 @@ export default {
       return 'Unknown';
     },
     openPDF(travelOrderId) {
-      // Set the selected travel order ID
       this.selectedTravelOrderId = travelOrderId;
       useAuthStore().updateVerifiedOTPs('false');
       localStorage.setItem('verifiedOTPs', 'false');
@@ -602,75 +594,20 @@ export default {
     updateVisibleItems() {
       this.visibleItems = this.formData.slice(0, 20);
     },
-    // Method to sort data based on column
-    // sortBy(column) {
-    //   console.log(column)
-    //   console.log(this.sortColumn)
-    //   if (this.sortColumn === column) {
-    //     this.sortOrder = (this.sortOrder === 'asc') ? 'desc' : 'asc'; // Toggle sort order
-    //   } else {
-    //     this.sortColumn = column;
-    //     this.sortOrder = 'asc';
-    //   }
-    // },
-
 
   },
 
   computed: {
-    // reversedFormData() {
-    //   if (this.searchQuery !== ''){
-    //     return this.formData.filter(item => {
-    //     // Filter based on TO number or Name
-    //     return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
-    //   });
-    //   }else{
-    //     return this.formData.slice().reverse();
-    //   }
 
-    //   // Apply sorting if sortColumn and sortOrder are set
-    //   if (this.sortColumn && this.sortOrder) {
-    //   data.sort((a, b) => {
-    //     const fieldA = (this.sortColumn === 'to_num') ? String(a.to_num) : this.getName(a.name_id).toLowerCase();
-    //     const fieldB = (this.sortColumn === 'to_num') ? String(b.to_num) : this.getName(b.name_id).toLowerCase();
-    //     let comparison = 0;
-    //     if (fieldA > fieldB) {
-    //       comparison = 1;
-    //     } else if (fieldA < fieldB) {
-    //       comparison = -1;
-    //     }
-    //     return (this.sortOrder === 'asc') ? comparison : -comparison;
-    //   });
-    // }
-
-    // return data;
-    // },
     reversedFormData() {
       let data = this.formData.slice().reverse(); // Make a copy of the original data
 
-      // Filter based on searchQuery
       if (this.searchQuery !== '') {
         data = data.filter(item => {
           // Filter based on TO number or Name
           return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
         });
       }
-
-      // Apply sorting if sortColumn and sortOrder are set
-      // if (this.sortColumn && this.sortOrder) {
-      //   data.sort((a, b) => {
-      //     const fieldA = (this.sortColumn === 'to_num') ? String(a.to_num) : this.getName(a.name_id).toLowerCase();
-      //     const fieldB = (this.sortColumn === 'to_num') ? String(b.to_num) : this.getName(b.name_id).toLowerCase();
-      //     let comparison = 0;
-      //     if (fieldA > fieldB) {
-      //       comparison = 1;
-      //     } else if (fieldA < fieldB) {
-      //       comparison = -1;
-      //     }
-      //     return (this.sortOrder === 'asc') ? comparison : -comparison;
-      //   });
-      // }
-
       return data;
     },
   },
@@ -680,12 +617,11 @@ export default {
 </script>
 
 <style scoped>
-.pholder{
+.pholder {
   padding: 5px;
-  border-radius: none; 
+  border-radius: none;
   border: none;
   outline: none;
-  /* background-color: red; */
 }
 
 
@@ -764,7 +700,6 @@ export default {
 }
 
 
-/* Add CSS styles for table design */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -802,11 +737,9 @@ th {
   justify-self: center;
   display: flex;
   flex-direction: column;
-  /* border: 1px solid #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  /* box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset; */
 }
 
 .loadings1 {

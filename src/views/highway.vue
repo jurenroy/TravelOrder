@@ -1,7 +1,6 @@
 <template>
     <login v-if="!isLoggedIn" />
     <frontpage v-else />
-    <!-- <dashboard v-else /> -->
 </template>
 
 <script setup>

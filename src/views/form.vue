@@ -56,22 +56,23 @@
 
         <div style="display: flex; flex-direction: column; justify-content: center;">
           <div>
-          <label class="container">
-          <input type="checkbox" id="areaofres" v-model="aor">
-          <svg viewBox="0 0 64 64" height="2em" width="2em">
-            <path
-              d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-              pathLength="575.0541381835938" class="path"></path>
-          </svg>
-          
-        </label>
-        <label for="areaofres" style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">
-          Outside Area of Responsibility (AOR) 
-          <span v-if="travelDurationz >7">{{ travelDurationz }} Days</span>
-        </label>
-      </div>
-      
-        
+            <label class="container">
+              <input type="checkbox" id="areaofres" v-model="aor">
+              <svg viewBox="0 0 64 64" height="2em" width="2em">
+                <path
+                  d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                  pathLength="575.0541381835938" class="path"></path>
+              </svg>
+
+            </label>
+            <label for="areaofres"
+              style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">
+              Outside Area of Responsibility (AOR)
+              <span v-if="travelDurationz > 7">{{ travelDurationz }} Days</span>
+            </label>
+          </div>
+
+
           <label class="pt" style="margin-top: 10px;"> Purpose of Travel: </label>
           <input @keydown.enter="form_submit" type="text" v-model="purpose"
             :class="{ 'red-border': isRed && purpose === '' }" @input="resetRed" class='inputss' id='purposein'
@@ -160,12 +161,12 @@ export default {
       accountz: [],
       accountIdz: localStorage.getItem('accountId'),
       loadis: false,
-      aor:false,
+      aor: false,
       errorDate: ''
     };
   },
   computed: {
-    
+
 
     travelDuration() {
       if (this.departure && this.arrival) {
@@ -184,20 +185,20 @@ export default {
         const currentDate = new Date();
         const timeDifference = arrivalDate - departureDate;
         const dayDifference = timeDifference / (1000 * 3600 * 24);
-        
 
-        if (dayDifference < 0 ) {
+
+        if (dayDifference < 0) {
           this.departure = null;
           this.arrival = null;
           return 0;
-      }
+        }
 
-      this.errorDate = ''; // Clear any existing error messages
+        this.errorDate = '';
         return Math.ceil(dayDifference);
       }
       return 0;
     },
-  
+
     nem() {
       return this.selectedName;
     },
@@ -217,9 +218,8 @@ export default {
   },
   methods: {
     resetRed() {
-      this.isRed = false; // Reset the isRed flag when typing in the input
+      this.isRed = false;
     },
-    // Function to fetch the selected employee based on selectedName
     fetchSelectedEmployee() {
       if (this.selectedName) {
         const selectedEmployee = this.employees.find(employee => employee.name_id === this.selectedName);
@@ -231,12 +231,10 @@ export default {
         }
       }
     },
-    // Function to find the employee's position name based on their position_id
     findPositionName(positionId) {
       const matchedPosition = this.positions.find(position => position.position_id === positionId);
       return matchedPosition ? matchedPosition.position_name : '';
     },
-    // Function to find the employee's division name based on their division_id
     findDivisionName(divisionId) {
       const matchedDivision = this.divisions.find(division => division.division_id === divisionId);
       return matchedDivision ? matchedDivision.division_name : '';
@@ -250,7 +248,7 @@ export default {
     getCurrentDate() {
       const today = new Date();
       let dd = today.getDate();
-      let mm = today.getMonth() + 1; // January is 0!
+      let mm = today.getMonth() + 1;
       const yyyy = today.getFullYear();
       if (dd < 10) {
         dd = `0${dd}`;
@@ -261,7 +259,6 @@ export default {
       return `${yyyy}-${mm}-${dd}`;
     },
     form_submit() {
-      // this.isRed = true
 
       if (
 
@@ -276,7 +273,6 @@ export default {
         this.purpose === ''
 
       ) {
-        // this.isRed = false;
         this.isRed = true
         this.isValid = true;
 
@@ -297,7 +293,7 @@ export default {
           ala: this.ala,
           appropriations: this.appropriation,
           remarks: this.remarks,
-          aor: this.aor ? '1' : '0', 
+          aor: this.aor ? '1' : '0',
           intervals: this.travelDuration ? '1' : '0',
         };
         this.submitting = true;
@@ -310,7 +306,7 @@ export default {
               this.resetForm();
               setTimeout(() => {
                 window.location.reload();
-                this.submitting = false; // Set submitting back to false after timeout
+                this.submitting = false;
               }, 3000);
             } else {
               throw new Error('Failed to submit form');
@@ -354,7 +350,7 @@ export default {
                   this.accountz = this.accounts.find(acc => parseInt(acc.account_id) === parseInt(this.accountIdz));
                   if (this.accountz.type_id == 1) {
                     console.log(this.accountz.type_id)
-                  } else if (this.accountz.type_id !== 1){
+                  } else if (this.accountz.type_id !== 1) {
                     console.log(this.accountz.type_id)
                     this.names = this.names.filter(nem => parseInt(nem.name_id) === parseInt(this.accountz.name_id))
                   }
@@ -400,7 +396,7 @@ export default {
     },
   },
   watch: {
-    selectedName: 'fetchSelectedEmployee', // Watch for changes in selectedName
+    selectedName: 'fetchSelectedEmployee',
   },
   mounted() {
     this.fetchData();
@@ -549,7 +545,6 @@ export default {
 
 .error {
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
@@ -564,7 +559,6 @@ export default {
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;

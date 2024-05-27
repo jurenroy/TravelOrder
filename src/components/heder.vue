@@ -65,8 +65,8 @@ const employees = ref([]);
 const names = ref([]);
 const name = ref('')
 const nameLoaded = ref(false)
-const selectedEmployee = ref(null); // Store the selected employee ID
-const setEmployee = ref(null); // Store the selected employee ID
+const selectedEmployee = ref(null);
+const setEmployee = ref(null);
 
 
 
@@ -102,13 +102,12 @@ const fetchEmployee = async () => {
   try {
     const response = await axios.get('http://172.31.10.164:8000/get_employees_json');
     employees.value = response.data.filter(emp => emp.chief > 0)
-    // Find the first employee with a non-null 'rd' property and set its 'name_id' as selectedEmployee
     const selectedEmp = response.data.find(emp => emp.rd !== null);
     if (selectedEmp) {
       setEmployee.value = selectedEmp.name_id;
       selectedEmployee.value = selectedEmp.name_id;
     } else {
-      setEmployee.value = null; // Set selectedEmployee to null if no employee meets the condition
+      setEmployee.value = null;
       selectedEmployee.value = null;
     }
   } catch (error) {
@@ -129,7 +128,7 @@ const fetchNames = async () => {
       const foundName = names.value.find(name => name.name_id === nameId);
       if (foundName) {
         name.value = foundName;
-        nameLoaded.value = true; // Set the flag to true when the name is found
+        nameLoaded.value = true;
       } else {
       }
     } else {
@@ -139,7 +138,6 @@ const fetchNames = async () => {
   }
 };
 
-// Define the function to get the formatted name
 const getName = (nameId) => {
   const namec = names.value.find(name => name.name_id === nameId);
   if (namec) {
@@ -258,8 +256,7 @@ export default {
 }
 
 .editnames {
-  /* display: flex;
-  align-items: center; */
+
   position: relative;
   top: 30px;
   left: -30px;

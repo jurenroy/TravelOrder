@@ -29,9 +29,9 @@ const accountIdz = localStorage.getItem('accountId');
 
 
 const logout = () => {
-   authStore.logout(); // Call the logout method from your authentication store
-   localStorage.setItem('isLoggedIn', 'false'); // Update the isLoggedIn key in localStorage
-   localStorage.removeItem('accountId'); // Remove any other relevant data from localStorage
+   authStore.logout();
+   localStorage.setItem('isLoggedIn', 'false');
+   localStorage.removeItem('accountId');
    router.push("/")
 }
 
@@ -56,13 +56,12 @@ export default {
 .firstlogout {
    top: 0px;
    position: absolute;
-   width:100%;
+   width: 100%;
    height: 103vh;
    display: flex;
    flex-direction: column;
    justify-content: center;
    align-items: center;
-   /* background-color: black; */
    backdrop-filter: blur(10px);
 }
 
@@ -74,21 +73,16 @@ export default {
    border-radius: 25px;
    background-color: white;
    width: 75w;
-   /* Set width to a percentage of the viewport width */
    max-width: 500px;
-   /* Set a maximum width */
    height: auto;
-   /* Let the height adjust based on content */
    padding: 20px;
    color: #212121;
    border: 2px solid black;
-   /* box-shadow: 0px 0px 35px -2px black; */
    box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
 }
 
 .secondlogout.zoomed {
    transform: scale(2);
-   /* Zoom in by a factor of 2 */
 }
 
 .logoutform {

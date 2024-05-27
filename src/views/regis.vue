@@ -81,12 +81,6 @@
 
             <div class="buttonss">
                <button class="button re" :disabled="submit2" @click="regis_submit">Register</button>
-               <!-- <button class="button re"></button> -->
-               <!-- <div :disabled="submit2"
-                  style="padding: 5px; border: 2px solid black; border-radius: 10px; width: 200px; display: flex; justify-content: center;"
-                  v-if="lods">
-                  <img src="../assets/loading.gif" width="auto" height="25px">
-               </div> -->
                <button class="button bax" :disabled="submit2" @click="backButton">Back</button>
 
             </div>
@@ -168,13 +162,13 @@ export default {
          return this.password !== ''
       },
       resetRed() {
-         this.isRed = false; // Reset the isRed flag when typing in the input
+         this.isRed = false; 
       },
       disablenames() {
          this.disablename = false;
       },
       resetRed() {
-         this.isRed = false; // Reset the isRed flag when typing in the input
+         this.isRed = false; 
       },
 
       regis_submit() {
@@ -220,10 +214,10 @@ export default {
             this.isRed = true
             this.loadingregis = false;
             this.isEmail = true;
-            this.valid = 'Email'; // Set isEmail to true to show the error message
+            this.valid = 'Email'; 
             this.valid3 = '';
             setTimeout(() => {
-               this.isEmail = false; // Reset isValid to false after 3 seconds
+               this.isEmail = false; 
             }, 3000);
 
          } else if (this.password === '') {
@@ -239,7 +233,6 @@ export default {
             this.loadingregis = false;
             this.isEmail = true;
             this.valid = 'Password';
-            // this.valid3 = 'Must contain A-a letters & numbers with 8 characters...'
             setTimeout(() => {
                this.isEmail = false;
                this.lods = true
@@ -270,7 +263,6 @@ export default {
                         this.password = '';
                         this.regiss = true;
 
-                        // Set a 3-second timer before reloading the page
                         setTimeout(() => {
                            window.location.reload();
 
@@ -394,11 +386,8 @@ export default {
    border-radius: 25px;
    background-color: white;
    width: 80vw;
-   /* Set width to a percentage of the viewport width */
    max-width: 500px;
-   /* Set a maximum width */
    height: auto;
-   /* Let the height adjust based on content */
    padding: 20px;
    color: #212121;
    border: 2px solid black;
@@ -407,7 +396,6 @@ export default {
 
 .second.zoomed {
    transform: scale(2);
-   /* Zoom in by a factor of 2 */
 }
 
 .form {
@@ -487,7 +475,6 @@ export default {
    top: 0;
    left: 0;
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;
@@ -502,7 +489,6 @@ export default {
    top: 0;
    left: 0;
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;
@@ -536,7 +522,6 @@ export default {
    top: 0;
    left: 0;
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;

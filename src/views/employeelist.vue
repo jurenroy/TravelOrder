@@ -29,7 +29,6 @@
 
     <div v-if="!load" class="outer" :class="{ 'blur': blurTable }">
 
-      <!-- <div class="outer"> -->
       <div class="scrollable-table">
         <table>
           <thead>
@@ -42,7 +41,6 @@
               <th>Chief</th>
               <th>isActive</th>
               <th>Action</th>
-              <!-- Add more table headers as needed -->
             </tr>
           </thead>
           <tbody>
@@ -105,7 +103,6 @@
               <!-- Chief -->
               <td v-if="!employee.isEditing" style=" text-align: center;">{{ isChief(employee.chief) }}</td>
               <td v-else>
-                <!-- <input v-model="edited.isChief" type="checkbox"> -->
 
                 <label class="containeremployee">
                   <input type="checkbox" v-model="edited.isChief">
@@ -123,7 +120,6 @@
               <td v-if="!employee.isEditing"
                 :style="{ backgroundColor: employee.isActive === 'out' ? 'red' : 'green' }"></td>
               <td v-else>
-                <!-- <input v-model="edited.isActive" type="checkbox"> -->
                 <label class="containeremployee">
                   <input type="checkbox" v-model="edited.isActive">
                   <svg viewBox="0 0 64 64" height="2em" width="2em">
@@ -196,13 +192,9 @@ const cancelemplo = () => {
 }
 const seemplo = () => {
   addem.value = false
-  // Find the button element
-  // Find the button element by ID
   const button = document.getElementById('refresh');
 
-  // Check if the button element is found before dispatching the click event
   if (button) {
-    // Create and dispatch a click event
     const clickEvent = new Event('click', {
       bubbles: true,
       cancelable: true,
@@ -229,7 +221,6 @@ export default {
       divisions: [],
       load: true,
       mawala: false,
-      // addem: false, 
       selectedEmployee: 0,
       edited: {
         lastName: '',
@@ -272,10 +263,10 @@ export default {
   },
   methods: {
     isPosposDisabled() {
-      return !this.edited.position; // Disable if edited.position is empty
+      return !this.edited.position;
     },
     seemplo() {
-      this.fetchData(); // Access fetchData from this context
+      this.fetchData();
     },
 
     backButtonemp() {
@@ -304,7 +295,7 @@ export default {
       });
     },
     doneeditEmployeee(employee) {
-      // Remove excess periods and add one if missing
+
       let middleName = '';
       if (this.edited.middleName !== null) {
         middleName = this.edited.middleName.toUpperCase().replace(/\.{2,}/g, '.');
@@ -317,10 +308,9 @@ export default {
       this.edited.middleName = middleName;
 
 
-      // Create a new FormData object
+
       const formData = new FormData();
 
-      // Append key-value pairs to the FormData object
       formData.append('employee_id', this.selectedEmployee);
       formData.append('last_name', this.edited.lastName);
       formData.append('first_name', this.edited.firstName);
@@ -330,7 +320,6 @@ export default {
       formData.append('chief', this.edited.isChief ? 1 : 0);
       formData.append('isActive', this.edited.isActive ? null : 'out');
 
-      // Send the data using Axios
       axios.post('http://172.31.10.164:8000/edit_employee', formData)
         .then(response => {
           // Handle success
@@ -495,7 +484,6 @@ export default {
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
@@ -514,7 +502,6 @@ export default {
   font-weight: bold;
 }
 
-/* Add CSS styles for table design */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -549,7 +536,6 @@ th {
 .outer {
 
   border: 1px solid black;
-  /* box-shadow: 0px 0px 3px black; */
   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
   border-radius: 5px;
 }
@@ -566,11 +552,9 @@ th {
   justify-self: center;
   display: flex;
   flex-direction: column;
-  /* border: 1px solid #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  /* box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset; */
 }
 
 .loadings1 {

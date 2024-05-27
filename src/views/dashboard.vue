@@ -16,16 +16,8 @@
       <div>
          <headers v-if="showHeader1" />
          <headers1 v-if="showHeader2" />
-
          <div v-if="!isRegistrationClicked">
-
-            <!-- <headers v-if="showHeader1"/>
-         <headers1 v-if="showHeader2"/> -->
-
             <div v-if="!employeelis">
-
-               <!-- <headers v-if="showHeader1"/>
-<headers1 v-if="showHeader2"/> -->
                <div class="sig">
                   <signature v-if="acc.signature === null" />
                   <div v-else>
@@ -154,7 +146,6 @@ const showEditss = () => {
 const fetchAccounts = async () => {
    try {
       const response = await axios.get('http://172.31.10.164:8000/get_accounts_json/');
-      // Filter the fetched OTP data based on the accountId
       acc.value = response.data.find(result => result.account_id == accountId);
    } catch (error) {
       console.error('Error fetching OTP data:', error);
@@ -201,7 +192,6 @@ export {
    font-size: 20px;
    font-weight: bold;
    box-shadow: 7px 7px 12px black;
-   /* box-shadow: 7px 7px 12px black, 0px 0px 10px black inset; */
    cursor: pointer;
 }
 
@@ -228,7 +218,6 @@ export {
    font-size: 20px;
    font-weight: bold;
    box-shadow: 7px 7px 12px black;
-   /* box-shadow: 7px 7px 12px black, 0px 0px 10px black inset; */
    cursor: pointer;
 }
 
@@ -243,14 +232,12 @@ export {
    font-size: 20px;
    font-weight: bold;
    box-shadow: 7px 7px 12px black;
-   /* box-shadow: 7px 7px 12px black, 0px 0px 10px black inset; */
    cursor: pointer;
 }
 
 .logssss {
    flex-direction: column;
    justify-content: center;
-   /* align-items: center; */
    top: 0px;
    width: auto
 }

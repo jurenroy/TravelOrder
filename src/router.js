@@ -1,33 +1,11 @@
-//  import { createRouter, createWebHistory } from 'vue-router'
-// import highway from './views/highway.vue'
-// import frontpage from './views/frontpage.vue'
-// import dashboard from './views/dashboard.vue'
-// export default createRouter({
-//   history: createWebHistory(),
-//   routes: [
-//     {
-//       path: '/',
-//       component: highway,
-//     },
-    
-//   ],
-  
-// })
-
-
-
-
-
 import { createRouter, createWebHistory } from 'vue-router';
 
-// Import views and components
 import highway from './views/highway.vue';
 import frontpage from './views/frontpage.vue';
 import dashboard from './views/dashboard.vue';
 import leaveform from './views/leaveform.vue'
 
 
-// Define all routes
 const routes = [
   {
     path: '/',
@@ -53,7 +31,6 @@ const routes = [
   },
 ];
 
-// Create and export the router
 const router = createRouter({
   history: createWebHistory(),
   routes,
@@ -61,16 +38,14 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.name === 'TravelOrder') {
-    document.title = 'MGB Travel Order';
+    document.title = 'MGB Travel Order Form';
   } else if (to.name === 'LeaveForm') {
     document.title = 'MGB Leave Form';
   } else {
     document.title = 'MGB Application Form';
   }  
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    // Check if user is authenticated
     if (localStorage.getItem('isLoggedIn') === 'false') {
-      // Redirect to login page if not authenticated
       next({
         path: '/',
         query: { redirect: to.fullPath }

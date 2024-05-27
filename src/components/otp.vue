@@ -1,7 +1,7 @@
 <template>
   <div
     style="justify-content: center;  background-color: white; display: flex; margin-top: 100px; position: absolute;  width: 300px; height: auto; ">
-    
+
     <div v-if="sendingOTPS" class="verifieds">
       <a class="verifieds1">
         Sending OTP....
@@ -78,10 +78,9 @@ const authStore = useAuthStore();
 
 const uploadedImageUrl = ref('');
 const accountId = localStorage.getItem('accountId');
-const otp = ref('');//ge type
-// const OTPverified = ref(false);
+const otp = ref('');
 const OTPsent = ref(false);
-const otpData = ref([]);//confirm
+const otpData = ref([]);
 const hideUpload = ref(false);
 const OTPsuccesful = ref(false)
 const verifiedotps = ref(false)
@@ -105,7 +104,6 @@ const isVerify = computed(() => {
   return otp1.value === '' || otp2.value === '' || otp3.value === '' || otp4.value === '' || otp5.value === '' || otp6.value === '';
 });
 
-// Function to update the value of verifiedotps and emit the event
 const updateVerifiedOTPs = (value) => {
   verifiedotps.value = value;
   emits('update:verifiedotps', value);
@@ -137,12 +135,11 @@ const moveToNextField = (event, nextField) => {
 
 const getCurrentTimeAdjusted = () => {
   const today = new Date();
-  today.setHours(today.getHours() - 8); // Add 8 hours
+  today.setHours(today.getHours() - 8);
   let hr = today.getHours();
   let mn = today.getMinutes();
   let sc = today.getSeconds();
 
-  // Ensure leading zero for single digit values
   hr = (hr < 10) ? '0' + hr : hr;
   mn = (mn < 10) ? '0' + mn : mn;
   sc = (sc < 10) ? '0' + sc : sc;
@@ -201,18 +198,13 @@ const verifyOTP = () => {
     const currentTime = getCurrentTimeAdjusted();
     const backendExpiryTime = otpData.value[0].expires_at;
 
-    // Adjust backend expiry time by adding 8 hours
     const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
     if (expiryTimeAdjusted > currentTime) {
       if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
-        // OTPverified.value = true;
         verifiedotps.value = true;
-        authStore.updateVerifiedOTPs('true'); // Update state using Pinia store
+        authStore.updateVerifiedOTPs('true');
         localStorage.setItem('verifiedOTPs', 'true');
 
-        //   setTimeout(() => {
-        //         window.location.reload();
-        //         }, 2000);
       } else {
         wrongOTPs.value = true
         otp1.value = ''
@@ -251,10 +243,8 @@ const adjustExpiryTime = (expiryTime) => {
   let minutes = parseInt(expiryTimeParts[1]);
   let seconds = parseInt(expiryTimeParts[2]);
 
-  // Ensure 24-hour format
   hours = hours % 24;
 
-  // Format hours, minutes, seconds
   hours = (hours < 10) ? '0' + hours : hours;
   minutes = (minutes < 10) ? '0' + minutes : minutes;
   seconds = (seconds < 10) ? '0' + seconds : seconds;
@@ -282,12 +272,10 @@ sendOTP()
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
   border: 1px solid #39b259;
-  /* background-color: #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
@@ -298,12 +286,10 @@ sendOTP()
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
   border: 1px solid #d23636;
-  /* background-color: #d23636; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
@@ -401,12 +387,10 @@ sendOTP()
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
   border: 1px solid #39b259;
-  /* background-color: #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
@@ -417,12 +401,10 @@ sendOTP()
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
   border: 1px solid #cf4545;
-  /* background-color: #d12727; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
@@ -430,16 +412,6 @@ sendOTP()
 }
 
 .otprecomen {
-  /* font-size: 12px;
-  border-radius: 5px;
-  width: 10%;
-  height: 35px;
-  margin-top: 15px;
-  margin-left: 10px;
-  margin-bottom: 15px;
-  text-align: center;
-  font-size: 24px; */
- 
   font-size: 12px;
   border-radius: 1px;
   border-color: transparent;
