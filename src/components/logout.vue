@@ -18,7 +18,9 @@ import { noButton, isButssClicked, showHeader1, showHeader2 } from '@/views/dash
 import { showEdit } from './heder.vue';
 import { regis_logout } from '@/views/regis.vue';
 import { useAuthStore } from '../store/auth';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 
 
 const authStore = useAuthStore();
@@ -30,7 +32,7 @@ const logout = () => {
    authStore.logout(); // Call the logout method from your authentication store
    localStorage.setItem('isLoggedIn', 'false'); // Update the isLoggedIn key in localStorage
    localStorage.removeItem('accountId'); // Remove any other relevant data from localStorage
-   window.location.reload();
+   router.push("/")
 }
 
 

@@ -71,6 +71,8 @@
 </template>
 
 <script setup>
+
+
 import headers from '../components/heder.vue'
 import signature from '../components/signature.vue'
 import headers1 from '../components/heder2.vue'
@@ -85,8 +87,10 @@ import { showEdit } from '../components/heder.vue';
 
 
 <script>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import axios from 'axios';
+
+
 const accountId = localStorage.getItem('accountId');
 const isVisible = ref(false);
 const isRegistrationClicked = ref(false);
@@ -159,8 +163,9 @@ const fetchAccounts = async () => {
 
 fetchAccounts()
 
-
-
+onMounted(() => {
+  document.title = 'MGB Travel Order';
+});
 
 export {
    isVisible,

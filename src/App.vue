@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <nav>
   </nav>
   <main>
@@ -7,4 +7,13 @@
 </template>
 
 
-<style scoped></style>
+<style scoped></style> -->
+
+<!-- App.vue -->
+<template>
+  <router-view />
+</template>
+
+<style>
+/* Add any global styles here */
+</style>
