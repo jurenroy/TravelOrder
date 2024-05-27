@@ -42,18 +42,21 @@
     </div>
 
 
-
-
-    <div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: -60px;">
-      <input type="text" v-model="searchQuery" placeholder="Search TO number or Name">
+    <div style="display: flex; flex-direction: column; margin-top: -60px;">
+      <div style="display: flex; flex-direction: row; justify-content: space-between; ">
+        <div style="display: flex; border: 2px solid black;  align-items: center; height: 30px;  position: relative; top: 17px;"> 
+      <img style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png"> 
+      <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name" > 
+    </div>
       <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
 
         <div class="sign">
-          <img style=" height: 40px; width:40px;" src="../assets//download_excel.png">
+          <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
         </div>
 
         <div class="text">Download Summary Reports</div>
       </button>
+    </div>
 
 
       <div v-if="mawala" class="outer">
@@ -61,7 +64,7 @@
           <table>
             <thead>
               <tr >
-                <th style="text-align: center; cursor: pointer;" @click="sortBy('to_num')">TO No.</th>
+                <th style="text-align: center; ">TO No.</th>
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Departure Date</th>
                 <th style="text-align: center;">Destination</th>
@@ -245,8 +248,7 @@ export default {
       sub: 0,
       bus: 0,
       searchQuery: '', // Holds the search query
-      sortColumn: '', // Holds the column to sort by
-      sortOrder: 'desc', // Holds the sort order ('asc' or 'desc')
+      
     };
   },
   created() {
@@ -601,16 +603,16 @@ export default {
       this.visibleItems = this.formData.slice(0, 20);
     },
     // Method to sort data based on column
-    sortBy(column) {
-      console.log(column)
-      console.log(this.sortColumn)
-      if (this.sortColumn === column) {
-        this.sortOrder = (this.sortOrder === 'asc') ? 'desc' : 'asc'; // Toggle sort order
-      } else {
-        this.sortColumn = column;
-        this.sortOrder = 'asc';
-      }
-    },
+    // sortBy(column) {
+    //   console.log(column)
+    //   console.log(this.sortColumn)
+    //   if (this.sortColumn === column) {
+    //     this.sortOrder = (this.sortOrder === 'asc') ? 'desc' : 'asc'; // Toggle sort order
+    //   } else {
+    //     this.sortColumn = column;
+    //     this.sortOrder = 'asc';
+    //   }
+    // },
 
 
   },
@@ -655,19 +657,19 @@ export default {
       }
 
       // Apply sorting if sortColumn and sortOrder are set
-      if (this.sortColumn && this.sortOrder) {
-        data.sort((a, b) => {
-          const fieldA = (this.sortColumn === 'to_num') ? String(a.to_num) : this.getName(a.name_id).toLowerCase();
-          const fieldB = (this.sortColumn === 'to_num') ? String(b.to_num) : this.getName(b.name_id).toLowerCase();
-          let comparison = 0;
-          if (fieldA > fieldB) {
-            comparison = 1;
-          } else if (fieldA < fieldB) {
-            comparison = -1;
-          }
-          return (this.sortOrder === 'asc') ? comparison : -comparison;
-        });
-      }
+      // if (this.sortColumn && this.sortOrder) {
+      //   data.sort((a, b) => {
+      //     const fieldA = (this.sortColumn === 'to_num') ? String(a.to_num) : this.getName(a.name_id).toLowerCase();
+      //     const fieldB = (this.sortColumn === 'to_num') ? String(b.to_num) : this.getName(b.name_id).toLowerCase();
+      //     let comparison = 0;
+      //     if (fieldA > fieldB) {
+      //       comparison = 1;
+      //     } else if (fieldA < fieldB) {
+      //       comparison = -1;
+      //     }
+      //     return (this.sortOrder === 'asc') ? comparison : -comparison;
+      //   });
+      // }
 
       return data;
     },
@@ -678,6 +680,16 @@ export default {
 </script>
 
 <style scoped>
+.pholder{
+  padding: 5px;
+  border-radius: none; 
+  border: none;
+  outline: none;
+  /* background-color: red; */
+}
+
+
+
 .Btn {
   display: flex;
   align-items: center;
