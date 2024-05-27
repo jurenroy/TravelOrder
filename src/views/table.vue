@@ -44,7 +44,7 @@
 
     <div style="display: flex; flex-direction: column; margin-top: -60px;">
       <div style="display: flex; flex-direction: row; justify-content: space-between; ">
-        <div style="display: flex; border: 2px solid black;  align-items: center; height: 30px;  position: relative; top: 17px;"> 
+        <div v-if="mawala" style="display: flex; border: 2px solid black;  align-items: center; height: 30px;  position: relative; top: 17px;"> 
       <img style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png"> 
       <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name" > 
     </div>
