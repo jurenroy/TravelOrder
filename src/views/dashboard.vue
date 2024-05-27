@@ -87,7 +87,7 @@ import { showEdit } from '../components/heder.vue';
 
 
 <script>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import axios from 'axios';
 
 
@@ -163,9 +163,6 @@ const fetchAccounts = async () => {
 
 fetchAccounts()
 
-onMounted(() => {
-  document.title = 'MGB Travel Order';
-});
 
 export {
    isVisible,

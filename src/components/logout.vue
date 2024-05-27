@@ -56,8 +56,8 @@ export default {
 .firstlogout {
    top: 0px;
    position: absolute;
-   width: 200vh;
-   height: 100vh;
+   width:100%;
+   height: 103vh;
    display: flex;
    flex-direction: column;
    justify-content: center;
