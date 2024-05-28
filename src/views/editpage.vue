@@ -520,6 +520,7 @@ convert();
 <script>
 import { Usernames, showEdit, hideedit } from '@/components/heder.vue';
 import { isEdits, isRegistrationClicked, isVisible } from '@/views/dashboard.vue';
+import { leaveedit } from './leaveform.vue';
 
 
 export default {
@@ -527,6 +528,7 @@ export default {
 
   methods: {
     cli() {
+      leaveedit.value = false
       showEdit.value = false;
       isEdits.value = false
       Usernames.value = true

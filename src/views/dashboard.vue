@@ -75,6 +75,7 @@ import employeelist from '../views/employeelist.vue'
 import logsss from '../components/logout.vue'
 import editss from '../views/editpage.vue'
 import { showEdit } from '../components/heder.vue';
+import { isleavelogoutClicked } from './leaveform.vue';
 </script>
 
 
@@ -134,8 +135,10 @@ const logButton = () => {
 
 const noButton = () => {
    isButssClicked.value = false;
+   isleavelogoutClicked.value = false;
    showHeader1.value = true;
    showHeader2.value = false
+
 };
 
 const showEditss = () => {

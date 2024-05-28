@@ -37,9 +37,9 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name === 'TravelOrder') {
+  if (to.name === 'TravelOrder' ) {
     document.title = 'MGB Travel Order Form';
-  } else if (to.name === 'LeaveForm') {
+  } else if (to.name === 'LeaveForm' ) {
     document.title = 'MGB Leave Form';
   } else {
     document.title = 'MGB Application Form';

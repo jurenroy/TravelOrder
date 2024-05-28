@@ -9,7 +9,7 @@
 
     <div
       style="display: flex; margin-top: 2px; margin-left:-100px ; height: inherit; width: 250px; justify-content: center;"
-      v-if="setEmployee === name.name_id || name.name_id === 76">
+      v-if="routerzz == 'TravelOrder' && (setEmployee === name.name_id || name.name_id === 76)">
       <h1 style="position: fixed; margin-left:-90px ; margin-top: 3px;">Status:</h1>
 
       <div v-if="setEmployee !== null && setEmployee !== ''">
@@ -67,6 +67,7 @@ const name = ref('')
 const nameLoaded = ref(false)
 const selectedEmployee = ref(null);
 const setEmployee = ref(null);
+const routerzz = localStorage.getItem('routerz')
 
 
 
@@ -164,7 +165,8 @@ fetchNames();
 
 <script>
 import { ref } from 'vue';
-import { isButssClicked, showHeader1, showHeader2, isEdits, isRegistrationClicked, isVisible } from '../views/dashboard.vue';
+import { isButssClicked,showHeader1, showHeader2, isEdits, isRegistrationClicked, isVisible } from '../views/dashboard.vue';
+import { isleavelogoutClicked, leaveedit } from '@/views/leaveform.vue';
 import { addem, blurTable } from '@/views/employeelist.vue';
 
 export const showEdit = ref(false)
@@ -174,6 +176,7 @@ export const Usernames = ref(true)
 export const islogout2 = ref(false)
 export const hideedit = ref(true)
 
+export const showstatus = ref(true)
 
 
 
@@ -183,6 +186,7 @@ export default {
   methods: {
     logButtonz() {
       isButssClicked.value = true;
+      isleavelogoutClicked.value = true;
       showHeader1.value = false;
       showHeader2.value = true
       showEdit.value = false
@@ -204,6 +208,7 @@ export default {
     },
 
     clickEdit() {
+      leaveedit.value = true
       showEdit.value = false;
       isEdits.value = true
       isRegistrationClicked.value = true;
@@ -224,6 +229,7 @@ export default {
 
     clickOut() {
       showEdit.value = true;
+      leaveedit.value = false
       isEdits.value = false
       Usernames.value = true
     }

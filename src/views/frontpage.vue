@@ -1,10 +1,11 @@
 <template>
   <div class="frontcontainer">
-    <div class="frontpic">
-      <img src="../assets/logo.png" class="frontpic" />
-    </div>
-    <div style="margin-top: 20px; font-size: 24px; font-weight: bold;">
-      <p>Republic of the Philipines<br>
+    <div class="frontpic"> 
+    <img src="../assets/background_image.png">
+  </div>
+    
+    <div style="margin-top: 20px; font-size: 24px; font-weight: bold; ">
+      <p >Republic of the Philipines<br>
         Department of Environment and Natural Resources<br>
         Mines and Geosciences Bureau<br>
         Regional Office No.X</p>
@@ -17,14 +18,28 @@
       <button class="frontbutton" @click="navigateTo('TravelOrder')">Travel Order Form</button>
       <button class="frontbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
     </div>
+  
   </div>
 </template>
 
 <script>
+import { showstatus } from '@/components/heder.vue';
+
 export default {
+  data(){
+    return {
+      showstatus: true,
+    }
+  },
   methods: {
     navigateTo(routeName) {
-      this.$router.push({ name: routeName });
+      if (routeName === 'LeaveForm') {
+        showstatus.value = false
+      } else {
+        showstatus.value = true;
+      }
+      this.$router.push({ name: routeName});
+      localStorage.setItem('routerz', routeName);
     },
   },
 };
@@ -32,6 +47,7 @@ export default {
 
 <style>
 .frontcontainer {
+  
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -52,11 +68,12 @@ export default {
   margin-top: 5px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   flex-direction: row;
 }
 
 .frontpic {
-  height: 400px;
+  margin-top: 30px;
 }
 
 @media (max-width: 768px) {
@@ -67,7 +84,9 @@ export default {
   }
 
   .frontpic {
+    margin-top: -15px;
     height: 200px;
+    margin-bottom: 150px;
   }
 
 }
