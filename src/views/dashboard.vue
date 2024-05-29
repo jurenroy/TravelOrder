@@ -75,7 +75,8 @@ import employeelist from '../views/employeelist.vue'
 import logsss from '../components/logout.vue'
 import editss from '../views/editpage.vue'
 import { showEdit } from '../components/heder.vue';
-import { isleavelogoutClicked } from './leaveform.vue';
+import { isleavelogoutClicked , isregisclick} from './leaveform.vue';
+
 </script>
 
 
@@ -120,6 +121,7 @@ const backButton = () => {
    isRegistrationClicked.value = false;
    isVisible.value = false;
    showEdit.value = false
+   isregisclick.value = false;
 
 };
 
@@ -154,7 +156,14 @@ const fetchAccounts = async () => {
       console.error('Error fetching OTP data:', error);
    }
 };
+const loginstate = () =>{
+  const state = localStorage.getItem('isLoggedIn');
+  if (!state){
+    localStorage.setItem('isLoggedIn',false);
+  }
+}
 
+loginstate()
 fetchAccounts()
 
 

@@ -82,6 +82,7 @@
             <div class="buttonss">
                <button class="button re" :disabled="submit2" @click="regis_submit">Register</button>
                <button class="button bax" :disabled="submit2" @click="backButton">Back</button>
+               
 
             </div>
 
@@ -92,6 +93,7 @@
 
 <script setup>
 import { isRegistrationClicked, isVisible, backButton } from './dashboard.vue';
+import {  isregisclick} from './leaveform.vue';
 import { showEdit } from '@/components/heder.vue';
 import logout from '@/components/logout.vue';
 import axios from 'axios';
@@ -101,6 +103,7 @@ import CryptoJS from 'crypto-js';
 
 <script>
 export const regis_logout = false;
+const routers = localStorage.getItem('routerz')
 export default {
 
 
@@ -108,10 +111,14 @@ export default {
       isRegistrationClicked.value = false;
       isVisible.value = false;
       showEdit.value = false
+  isregisclick.value = false;
+
    },
+
 
    data() {
       return {
+        
          isRed: false,
          types: [],
          names: {},

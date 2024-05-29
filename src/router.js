@@ -13,18 +13,13 @@ const routes = [
     meta: { requiresAuth: false }
   },
   {
-    path: '/frontpage',
-    component: frontpage,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/leaveform/dashboard',
+    path: '/leaveform',
     name: 'LeaveForm',
     component: leaveform,
     meta: { requiresAuth: true }
   },
   {
-    path: '/travelorder/dashboard',
+    path: '/travelorder',
     name: 'TravelOrder',
     component: dashboard,
     meta: { requiresAuth: true }
@@ -50,6 +45,7 @@ router.beforeEach((to, from, next) => {
         path: '/',
         query: { redirect: to.fullPath }
       })
+      
     } else {
       next()
     }

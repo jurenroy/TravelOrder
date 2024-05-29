@@ -37,6 +37,7 @@ export default {
         showstatus.value = false
       } else {
         showstatus.value = true;
+        
       }
       this.$router.push({ name: routeName});
       localStorage.setItem('routerz', routeName);
@@ -62,6 +63,7 @@ export default {
   font-weight: bold;
   border-radius: 10px;
   margin: 10px;
+  cursor: pointer;
 }
 
 .hakdogzzz {

@@ -1,9 +1,9 @@
 <template>
   <div class="una">
     <div class="imagediv1">
-      <img class="ima" src="../assets/logo.png" alt="Description of the image">
-      <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
-      <img class="ima" src="../assets/bago.png" alt="Description of the image">
+      <img class="ima" src="../assets/logo.png" alt="Description of the image" @click="navigatefront">
+      <img class="ima ims" src="../assets/republic.png" alt="Description of the image" @click="navigatefront">
+      <img class="ima" src="../assets/bago.png" alt="Description of the image" @click="navigatefront">
 
     </div>
 
@@ -184,6 +184,10 @@ export const showstatus = ref(true)
 export default {
   inject: ['close'],
   methods: {
+    navigatefront() {
+      this.$router.push('/');
+    },
+
     logButtonz() {
       isButssClicked.value = true;
       isleavelogoutClicked.value = true;
