@@ -181,6 +181,7 @@
               </tr>
             </tbody>
           </table>
+          <h1 style="text-align: center; margin-bottom: 0px;" v-if="reversedFormData.length == 0">NO MATCH FOUND</h1>
         </div>
       </div>
     </div>
@@ -621,58 +622,14 @@ export default {
   },
 
   computed: {
-    // reversedFormData() {
-    //   if (this.searchQuery !== ''){
-    //     return this.formData.filter(item => {
-    //     // Filter based on TO number or Name
-    //     return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
-    //   });
-    //   }else{
-    //     return this.formData.slice().reverse();
-    //   }
-
-    //   // Apply sorting if sortColumn and sortOrder are set
-    //   if (this.sortColumn && this.sortOrder) {
-    //   data.sort((a, b) => {
-    //     const fieldA = (this.sortColumn === 'to_num') ? String(a.to_num) : this.getName(a.name_id).toLowerCase();
-    //     const fieldB = (this.sortColumn === 'to_num') ? String(b.to_num) : this.getName(b.name_id).toLowerCase();
-    //     let comparison = 0;
-    //     if (fieldA > fieldB) {
-    //       comparison = 1;
-    //     } else if (fieldA < fieldB) {
-    //       comparison = -1;
-    //     }
-    //     return (this.sortOrder === 'asc') ? comparison : -comparison;
-    //   });
-    // }
-
-    // return data;
-    // },
     reversedFormData() {
-      let data = this.formData.slice().reverse(); // Make a copy of the original data
-
-      // Filter based on searchQuery
+      let data = this.formData.slice().reverse(); 
+      
       if (this.searchQuery !== '') {
         data = data.filter(item => {
-          // Filter based on TO number or Name
           return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
         });
       }
-
-      // Apply sorting if sortColumn and sortOrder are set
-      // if (this.sortColumn && this.sortOrder) {
-      //   data.sort((a, b) => {
-      //     const fieldA = (this.sortColumn === 'to_num') ? String(a.to_num) : this.getName(a.name_id).toLowerCase();
-      //     const fieldB = (this.sortColumn === 'to_num') ? String(b.to_num) : this.getName(b.name_id).toLowerCase();
-      //     let comparison = 0;
-      //     if (fieldA > fieldB) {
-      //       comparison = 1;
-      //     } else if (fieldA < fieldB) {
-      //       comparison = -1;
-      //     }
-      //     return (this.sortOrder === 'asc') ? comparison : -comparison;
-      //   });
-      // }
 
       return data;
     },
