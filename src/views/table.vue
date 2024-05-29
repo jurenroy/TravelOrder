@@ -42,21 +42,24 @@
     </div>
 
 
-    <div style="display: flex; flex-direction: column; margin-top: -60px;">
-      <div style="display: flex; flex-direction: row; justify-content: space-between; ">
-        <div v-if="mawala" style="display: flex; border: 2px solid black;  align-items: center; height: 30px;  position: relative; top: 17px;"> 
-      <img style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png"> 
-      <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name" > 
-    </div>
-      <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
+    <div style="display: flex; flex-direction: column; margin-top: -50px;">
 
-        <div class="sign">
-          <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
-        </div>
+<div style="display: flex; flex-direction: row; justify-content: space-between; align-items: end; margin-top: 15px; margin-bottom: 10px; height: 35px; ">
+  <div v-if="mawala "
+    style="display: flex; border: 2px solid black;  align-items: center; height: 30px;position: relative;">
+    <img style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png">
+    <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name">
+  </div>
 
-        <div class="text">Download Summary Reports</div>
-      </button>
+  <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
+
+    <div class="sign">
+      <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
     </div>
+
+    <div class="text">Download Summary Reports</div>
+  </button>
+</div>
 
 
       <div v-if="mawala" class="outer">
@@ -546,7 +549,7 @@ export default {
             } else {
               this.siga = false
             }
-            this.formData = response.data.filter(form => ((form.signature2 === null && form.signature1 !== null && form.note !== null && !(form.aor == 1 && [15,21,45,48].includes(form.name_id))) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id)|| form.name_id == 20) || ([15,21,45,48].includes(form.name_id) && form.aor == 1 && form.signature1 == null) );
+            this.formData = response.data.filter(form => ((form.signature2 === null && form.signature1 !== null && form.note !== null && !(form.aor == 1 && [15,21,45,48].includes(form.name_id))) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id)|| form.name_id == 20) || ([15,21,45,48].includes(form.name_id) && form.aor == 1 && form.signature1 == null && form.intervals === 0));
             this.siga1 = true
 
           } else if (this.acc.type_id == 3) {
@@ -703,10 +706,11 @@ export default {
   overflow: hidden;
   transition-duration: .3s;
   border: 2px solid black;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
   background-color: white;
 
 }
+
 
 
 
