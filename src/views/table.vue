@@ -183,6 +183,7 @@
               </tr>
             </tbody>
           </table>
+          <h1 style="text-align: center; margin-bottom: 0px;" v-if="reversedFormData.length == 0">NO MATCH FOUND</h1>
         </div>
       </div>
     </div>
