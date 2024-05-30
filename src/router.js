@@ -4,6 +4,7 @@ import highway from './views/highway.vue';
 import frontpage from './views/frontpage.vue';
 import dashboard from './views/dashboard.vue';
 import leaveform from './views/leaveform.vue'
+import leavepdf from './views/leavepdf.vue';
 
 
 const routes = [
@@ -23,6 +24,12 @@ const routes = [
     name: 'TravelOrder',
     component: dashboard,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/pdf',
+    name: 'PDF',
+    component: leavepdf,
+    meta: { requiresAuth: false }
   },
 ];
 
