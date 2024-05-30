@@ -1,9 +1,9 @@
 <template>
   <div class="una">
-    <div class="imagediv1">
-      <img class="ima" src="../assets/logo.png" alt="Description of the image" @click="navigatefront">
-      <img class="ima ims" src="../assets/republic.png" alt="Description of the image" @click="navigatefront">
-      <img class="ima" src="../assets/bago.png" alt="Description of the image" @click="navigatefront">
+    <div class="imagediv1" @click="navigatefront">
+      <img class="ima" src="../assets/logo.png" alt="Description of the image" >
+      <img class="ima ims" src="../assets/republic.png" alt="Description of the image" >
+      <img class="ima" src="../assets/bago.png" alt="Description of the image" >
 
     </div>
 

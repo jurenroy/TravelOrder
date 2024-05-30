@@ -24,7 +24,9 @@
 
 <script>
 import { showstatus } from '@/components/heder.vue';
-
+import { isRegistrationClicked, isEdits, employeelis, isButssClicked, isVisible} from './dashboard.vue';
+import { showEdit } from '@/components/heder.vue';
+import { isregisclick, leaveedit, employeelisleave, isaddleave, isleavelogoutClicked } from './leaveform.vue';
 export default {
   data(){
     return {
@@ -35,9 +37,25 @@ export default {
     navigateTo(routeName) {
       if (routeName === 'LeaveForm') {
         showstatus.value = false
+        isButssClicked.value = false
+        isaddleave.value = false
+        isEdits.value = false
+        isRegistrationClicked.value =false
+        employeelisleave.value = false
+        isregisclick.value = false
+        leaveedit.value = false
+        showEdit.value = false
+        isleavelogoutClicked.value = false
       } else {
         showstatus.value = true;
-        
+        isVisible.value = false
+        isButssClicked.value = false
+        isEdits.value = false
+        isRegistrationClicked.value =false
+        employeelis.value = false
+        isregisclick.value = false
+        leaveedit.value = false
+        showEdit.value = false
       }
       this.$router.push({ name: routeName});
       localStorage.setItem('routerz', routeName);

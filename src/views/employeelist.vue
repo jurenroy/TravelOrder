@@ -2,10 +2,10 @@
   <div style="display: flex; flex-direction: column; margin-top: 105px; ">
 
     <img v-if="showhome" @click="relod" :class="{ 'blur': blurTable }"
-      style="cursor: pointer; height: 30px; width: 30px; position: relative; left: 45px; top: -30px;"
-      src="../assets/home.png" title="Go back to Home">
+      style="cursor: pointer; height: 30px; width: 30px; position: relative; top: -25px;"
+      src="../assets/dashboard.png" title="Back to Dashboard">
     <label v-if="showhome" :class="{ 'blur': blurTable }" @click="relod"
-      style="position: relative; top: -25px; cursor: pointer;">Return to Dashboard</label>
+      style="position: relative; top: -47px; left: 40px; cursor: pointer;">Back to Dashboard</label>
 
     <div style="display: flex; flex-direction: row; justify-content: center;" :class="{ 'blur': blurTable }">
       <p style="font-size: 30px; font-weight: bold;">Employee List</p>

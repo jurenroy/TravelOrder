@@ -6,7 +6,7 @@
       <div style="flex-direction: column; justify-content: center;" v-if="isregisclick && !isEdits">
          <regis></regis>
       </div>
-      <div style="flex-direction: column; justify-content: center;" v-if="employeelis && !isEdits">
+      <div style="flex-direction: column; justify-content: center;" v-if="employeelisleave && !isEdits">
          <employeelist></employeelist>
       </div>
     <div style="flex-direction: column; justify-content: center;" v-if="leaveedit">
@@ -16,25 +16,27 @@
       <headers v-if="showHeader1" />
       <headers1 v-if="showHeader2" />
       <div v-if="!isregisclick">
-        <div v-if="!employeelis">
+        <div v-if="!employeelisleave">
           <div class="sigleave">
             <signature v-if="acc.signature === null" />
             <div v-else>
               <div v-if="!isregisclick">
-                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div v-show="!isaddleave" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                   <div class="tra">
                     <p class="travel">Leave Form</p>
                   </div>
                   <div>
-                    <button class="addleave" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form'
-                      }}</button>
-                      <button v-show="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="regleave"
+                    <button v-show="!isaddleave" class="addleave" @click="toggleForm">Add form</button>
+                      <button v-show="!isaddleave && acc.type_id == 1 && acc.name_id == 76" class="regleave"
                                  @click="toggleRegistration">{{
          'Registration' }}</button>
-                              <button v-show="!isVisible && acc.type_id == 1" class="emploleave" @click="employeelst">{{
+                              <button v-show="!isaddleave && acc.type_id == 1" class="emploleave" @click="employeelst">{{
          'Employee List' }}</button>
                   </div>
                 </div>
+                <div style="display: flex; justify-content: center;" v-if="isaddleave">
+                           <leavepdf></leavepdf>
+                        </div>
               </div>
             </div>
           </div>
@@ -56,16 +58,19 @@ import signature from '../components/signature.vue'
 import headers1 from '../components/heder2.vue'
 import leavelogout from '../components/logout.vue'
 import { showEdit } from '../components/heder.vue';
+import addleaveform from '../views/addleaveform.vue'
+import leavepdf from './leavepdf.vue';
 </script>
 
 
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
+import addleaveformVue from './addleaveform.vue';
 const accountId = localStorage.getItem('accountId');
-const isVisible = ref(false);
+const isaddleave = ref(false);
 const isregisclick = ref(false);
-const employeelis = ref(false);
+const employeelisleave = ref(false);
 const isleavelogoutClicked = ref(false);
 const leaveedit = ref(false);
 const acc = ref([]);
@@ -78,8 +83,15 @@ const showHeader2 = ref(false)
 
 // visible sa  Add form
 const toggleForm = () => {
-  isVisible.value = !isVisible.value;
+  isaddleave.value = true
   showEdit.value = false
+};
+
+const formback = () => {
+      isaddleave.value = false;
+      showEdit.value = false
+  isregisclick.value = false;
+  leaveedit.value = false
 };
 
 // makita ang registration
@@ -89,21 +101,21 @@ const toggleRegistration = () => {
 };
 
 const employeelst = () => {
-  employeelis.value = true;
+  employeelisleave.value = true;
   showEdit.value = false;
 };
 
 //ma back ang registration
 const backButton = () => {
   isRegistrationClicked.value = false;
-      isVisible.value = false;
+      isaddleave.value = false;
       showEdit.value = false
   isregisclick.value = false;
   };
 
 const backButtonemp = () => {
-  employeelis.value = false;
-  isVisible.value = false;
+  employeelisleave.value = false;
+  isaddleave.value = false;
 };
 
 //makita ang logout
@@ -142,13 +154,13 @@ fetchAccounts()
 
 
 export {
-  isVisible,
+  isaddleave,
   isleavelogoutClicked,
   showHeader1,
   showHeader2,
   leaveedit,
   isregisclick,
-  employeelis,
+  employeelisleave,
   noleaveButton,
   toggleForm,
   toggleRegistration,
@@ -156,7 +168,8 @@ export {
   backButtonemp,
   backButton,
   logButton,
-  showEditss
+  showEditss,
+  formback
 };
 </script>
 

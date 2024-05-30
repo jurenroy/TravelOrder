@@ -43,59 +43,59 @@
                         <p style="margin-left: 10px">6.A TYPE OF LEAVE TO BE AVAILED OF</p>
                         <div style="margin-left: 20px;">
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Vacation Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Mandatory/Forced Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Sick Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Maternity Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Paternity Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Special Privilege Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Solo Parent Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Study Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>10-Day VAWC Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Rehabilitation Privilege</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Special Leave Benefits for Women</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Special Emergency(Calamity) Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Adoption Leave</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Others:</p>
                             </div>
                             <input style="height: 10px; width: 350px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
@@ -108,7 +108,7 @@
                             <p style="margin-left: 5px; margin-top: -5px;font-style: italic;">In case of Vacation/Special Privilege Leave:</p>
                             <div style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <input type="checkbox"></input>
+                                    <input type="checkbox">
                                     <p>Within the Philippines</p>
                                 </div>
                                 <div>
@@ -117,7 +117,7 @@
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <input type="checkbox"></input>
+                                    <input type="checkbox">
                                     <p>Abroad(Specify)</p>
                                 </div>
                                 <div>
@@ -127,7 +127,7 @@
                             <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">In case of Sick Leave:</p>
                             <div style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <input type="checkbox"></input>
+                                    <input type="checkbox">
                                     <p>In Hospital (Specify Illness)</p>
                                 </div>
                                 <div>
@@ -136,7 +136,7 @@
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <input type="checkbox"></input>
+                                    <input type="checkbox">
                                     <p>Out Patient (Specify Illness)</p>
                                 </div>
                                 <div>
@@ -150,11 +150,11 @@
                             </div>
                             <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">In case of Study Leave:</p>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Completion of Master's Degree</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>BAR/Board Examination Review Other</p>
                             </div>
                             <div style="display: flex; flex-direction: row; justify-content: space-between">
@@ -162,11 +162,11 @@
                                 <input style="height: 10px; width: 150px; margin-top: -3px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -5px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Monetization of Leave Credits</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Terminal Leave</p>
                             </div>
                         </div>
@@ -175,21 +175,49 @@
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
                     <div style="border: 2px solid black;margin-top: -2px;font-size: 10px;">
                         <p style="margin-left: 10px; margin-bottom: 5px">6.C Number OF WORKING DAYS APPLIED FOR</p>
-                        <div style="margin-left: 20px;">
+                        <!-- <div style="margin-left: 20px;">
                             <input style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
                             <p style=" margin-bottom: 5px">INCLUSIVE DATES</p>
                             <input style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
+                        </div> -->
+                        <div style="margin-left: 20px;">
+                            <p v-if="!isSingleDate" style="position: relative; left:10px;  margin-bottom: -20px; font-size: 10px;"> {{ weekdaysCount }} {{ weekdaysCount === 1 ? 'Day' : 'Days' }}</p>
+                            <p  style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px;"></p>
+                          
+                          <p style=" margin-bottom: 5px">INCLUSIVE DATES</p>
+                          
+                          <p v-if="!isSingleDate && startDate && !endDate && selectedDate" style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px; ">{{ formattedStartDate }}</p>
+                          <p v-if="!isSingleDate && startDate && !endDate && selectedDate" style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"></p>
+                          
+                          <p v-if= "!selectedDate" style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"></p>
+
+
+                          <p v-if="!isSingleDate && startDate && endDate" style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px; ">
+                            {{ formattedStartDate }}
+                            <template v-if="startDate.getMonth() !== endDate.getMonth() || startDate.getFullYear() !== endDate.getFullYear()">
+                              - {{ formattedEndDate }}
+                            </template>
+                          </p>
+                          <p v-if="!isSingleDate && startDate && endDate" style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"></p>
+
+
+
+
+
+                          <div>
+                            <input type="date" id="date-input" v-model="selectedDate" @change="handleDateChange" style="width: 16px; height: 20px; outline: none; border: none; position: relative; top: -32px; left:330px;"/>
+                          </div>
                         </div>
                     </div>
                     <div style="border: 2px solid black;margin-top: -2px;font-size: 10px;margin-left: -2px;">
                         <p style="margin-left: 10px;">6.D COMMUTATION</p>
                         <div style="margin-left: 20px;">
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Not Requested</p>
                             </div>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <input type="checkbox"></input>
+                                <input type="checkbox">
                                 <p>Requested</p>
                             </div>
                         </div>
@@ -231,11 +259,11 @@
                     <div style="border: 2px solid black;margin-top: 2px;font-size: 10px;margin-left: -2px;">
                         <p style="margin-left: 10px;">7.B RECOMMENDATION</p>
                         <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
-                            <input type="checkbox"></input>
+                            <input type="checkbox">
                             <p>For approval</p>
                         </div>
                         <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
-                            <input type="checkbox"></input>
+                            <input type="checkbox">
                             <p>For disapproval due to:</p>
                         </div>
                         <textarea @keydown.enter.prevent v-model="text" id="myTextarea" :rows="rows" style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 350px; margin-left: 20px; font-size: 10px; text-decoration: underline;"></textarea>
@@ -305,6 +333,11 @@
         rows: 1,
         text2: '',
         rows2: 1,
+        isSingleDate: true,
+        selectedDate: '',
+        startDate: null,
+        endDate: null,
+        weekdaysCount: 1,
       };
     },
     watch: {
@@ -322,7 +355,70 @@
       updateRows2() {
         this.rows2 = this.text2.length / 63 +1 
       },
-    }
+      handleDateChange() {
+      const selectedDate = new Date(this.selectedDate);
+      if (!this.startDate) {
+        this.startDate = selectedDate;
+        this.isSingleDate = false; // Switch to date range mode
+      } else if (this.isSingleDate) {
+        this.startDate = selectedDate;
+        this.endDate = null;
+      } else {
+        if (selectedDate < this.startDate) {
+          this.startDate = selectedDate;
+          this.endDate = null;
+        } else if (selectedDate > this.startDate) {
+          this.endDate = selectedDate;
+          this.weekdaysCount = this.calculateWeekdays(this.startDate, this.endDate);
+        } else {
+          this.startDate = selectedDate;
+          this.endDate = null;
+          this.weekdaysCount = 0;
+        }
+      }
+      if (this.startDate && this.endDate) {
+        this.weekdaysCount = this.calculateWeekdays(this.startDate, this.endDate);
+      } else {
+        this.weekdaysCount = 1; // Reset to 1 for a single date or incomplete range
+      }
+    },
+    calculateWeekdays(startDate, endDate) {
+      let count = 0;
+      let currentDate = new Date(startDate);
+      endDate = new Date(endDate);
+      while (currentDate <= endDate) {
+        const dayOfWeek = currentDate.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+          count++;
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+      return count;
+    },
+    },
+    computed: {
+    formattedDate() {
+      if (!this.selectedDate) return '';
+      const date = new Date(this.selectedDate);
+      return `${date.toLocaleString('en-US', { month: 'long' })} ${date.getDate()}, ${date.getFullYear()}`;
+    },
+    formattedStartDate() {
+      if (!this.startDate) return '';
+      const startDate = new Date(this.startDate);
+      const endDate = this.endDate ? new Date(this.endDate) : null;
+
+      if (endDate && startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
+        return `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}-${endDate.getDate()}, ${startDate.getFullYear()}`;
+      } else {
+        return `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}, ${startDate.getFullYear()}`;
+      }
+    },
+    formattedEndDate() {
+      if (!this.endDate) return '';
+      const endDate = new Date(this.endDate);
+      return `${endDate.toLocaleString('en-US', { month: 'long' })} ${endDate.getDate()}, ${endDate.getFullYear()}`;
+    },
+  },
   };
   </script>
   

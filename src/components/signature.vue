@@ -425,7 +425,7 @@ const fetchOTPData = async () => {
   margin-bottom: 12px;
   text-align: center;
   font-size: 24px;
-
+  outline: none;
 }
 
 .Enterotps {

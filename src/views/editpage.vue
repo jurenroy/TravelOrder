@@ -520,7 +520,7 @@ convert();
 <script>
 import { Usernames, showEdit, hideedit } from '@/components/heder.vue';
 import { isEdits, isRegistrationClicked, isVisible } from '@/views/dashboard.vue';
-import { leaveedit } from './leaveform.vue';
+import { leaveedit, isaddleave } from './leaveform.vue';
 
 
 export default {
@@ -535,6 +535,7 @@ export default {
       isRegistrationClicked.value = false;
       isVisible.value = false
       hideedit.value = true
+      isaddleave.value = false
     },
 
 
@@ -766,7 +767,7 @@ export default {
   margin-bottom: 12px;
   text-align: center;
   font-size: 24px;
-
+  outline: none;
 }
 
 .editwronge {
