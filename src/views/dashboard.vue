@@ -29,7 +29,7 @@
                            </div>
 
                            <div>
-                              <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form'
+                              <button class="add" @click="toggleForm">{{ isVisible ? 'Close Form' : 'Add Form'
                                  }}</button>
                               <button v-show="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="reg"
                                  @click="toggleRegistration">{{

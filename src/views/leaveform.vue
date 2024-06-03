@@ -26,7 +26,7 @@
                     <p class="travel">Leave Form</p>
                   </div>
                   <div>
-                    <button v-show="!isaddleave" class="addleave" @click="toggleForm">Add form</button>
+                    <button v-show="!isaddleave" class="addleave" @click="toggleForm">Add Form</button>
                       <button v-show="!isaddleave && acc.type_id == 1 && acc.name_id == 76" class="regleave"
                                  @click="toggleRegistration">{{
          'Registration' }}</button>
@@ -34,7 +34,7 @@
          'Employee List' }}</button>
                   </div>
                 </div>
-                <div style="display: flex; justify-content: center;" v-if="isaddleave">
+                <div style="display: flex; justify-content: center;" v-if="(isaddleave && !leaveedit)">
                            <leavepdf></leavepdf>
                         </div>
               </div>
@@ -91,7 +91,7 @@ const formback = () => {
       isaddleave.value = false;
       showEdit.value = false
   isregisclick.value = false;
-  leaveedit.value = false
+  leaveedit.value = false;
 };
 
 // makita ang registration

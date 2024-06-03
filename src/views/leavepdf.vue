@@ -1,6 +1,11 @@
 <template>
-    <div class="a4-container">
-        <div class="a4-content">
+    <div>
+        <button @click="closeaddleave"> Back to Dashboard
+        </button>
+    </div>
+    
+    <div class="a4-container" >
+        <div class="a4-content" >
             <div style="display: flex; flex-direction: row; justify-content: center;">
                 <img :src="image1" alt="Background Image" class="pic1">
                 <div style="text-align: center;">
@@ -43,7 +48,11 @@
 
                     <p style="margin-right: 5px">5. SALARY:
                         <input
-                            style="height: 10px; width: 100px; outline: none; border: none; border-bottom: 1px solid black; font-size: 10px; " />
+                            style="height: 10px; width: 100px; outline: none; border: none; border-bottom: 1px solid black; font-size: 10px; "
+                            v-model="salary"
+                            @input="formatCurrency"
+                            
+                            />
                     </p>
                 </div>
             </div>
@@ -59,7 +68,7 @@
                             <!-- vacation -->
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
                                 <label class="containerlist">
-                                    <input type="checkbox" v-model="selectedLeavetype" :value="leavetype[0]">
+                                    <input type="checkbox" v-model="selectedLeavetype" :value="leavetype[0]" >
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -214,20 +223,12 @@
                             </div>
 
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <label class="containerlist">
-                                    <input type="checkbox" v-model="selectedLeavetype" :value="leavetype[13]">
-                                    <svg viewBox="0 0 64 64" height="2em" width="2em">
-                                        <path
-                                            d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-                                            pathLength="575.0541381835938" class="path"></path>
-                                    </svg>
-                                </label>
-                                <p>Others:</p>
+                                <p style="margin-left: 15px; margin-top: 15px;font-style: italic;">Others:</p>
                             </div>
 
-                            <input
-                                style="height: 10px; width: 350px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                v-model="LeaveType" :disabled="!selectedLeavetype.includes(13)">
+                            <input :disabled="selectedLeavetype != ''"
+                                style="height: 10px; width: 300px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-left: 10px; margin-right: 33px; font-size: 10px"
+                                v-model="LeaveType"  >
                         </div>
 
                     </div>
@@ -239,8 +240,8 @@
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist">
-                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(0)">
+                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(0)}">
+                                        <input type="checkbox"  :disabled="!selectedLeavetype.includes(0)"  v-model="vacationleavedetails" :value="vacationdetails[0]"   >
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
                                                 d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -253,14 +254,14 @@
                                 <div>
                                     <input
                                         style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                        :disabled="!selectedLeavetype.includes(0)">
+                                        :disabled="!selectedLeavetype.includes(0) || !vacationleavedetails.includes(1)" v-model="vacation1" :class="{ 'not': !selectedLeavetype.includes(0) || !vacationleavedetails.includes(1)}">
                                 </div>
                             </div>
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist">
-                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(0)">
+                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(0)}">
+                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(0)" v-model="vacationleavedetails" :value="vacationdetails[1]">
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
                                                 d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -273,15 +274,15 @@
                                 <div>
                                     <input
                                         style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                        :disabled="!selectedLeavetype.includes(0)">
+                                        :disabled="!selectedLeavetype.includes(0) || !vacationleavedetails.includes(2)" v-model="vacation2" :class="{ 'not': !selectedLeavetype.includes(0) || !vacationleavedetails.includes(2)}">
                                 </div>
                             </div>
                             <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">In case of Sick Leave:</p>
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist">
-                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(2)">
+                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(2)}">
+                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(2)"  v-model="sickleavedetails" :value="sickdetails[0]">
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
                                                 d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -294,14 +295,14 @@
                                 <div>
                                     <input
                                         style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                        :disabled="!selectedLeavetype.includes(2)">
+                                        :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(1)" v-model="sick1" :class="{ 'not': !selectedLeavetype.includes(2) || !sickleavedetails.includes(1)}">
                                 </div>
                             </div>
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist">
-                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(2)">
+                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(2)}">
+                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(2)" v-model="sickleavedetails" :value="sickdetails[1]">
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
                                                 d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -314,7 +315,7 @@
                                 <div>
                                     <input
                                         style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                        :disabled="!selectedLeavetype.includes(2)">
+                                        :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(2)" v-model="sick2" :class="{ 'not': !selectedLeavetype.includes(2) || !sickleavedetails.includes(2)}">
                                 </div>
                             </div>
 
@@ -324,14 +325,14 @@
                                 <p style="margin-left: 5px; margin-top: -0px">(Specify Illness)</p>
                                 <input
                                     style="height: 10px; width: 150px; margin-top: -3px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                    :disabled="!selectedLeavetype.includes(2)">
+                                    :disabled="!selectedLeavetype.includes(10)" v-model="leaveforwoman" :class="{ 'not': !selectedLeavetype.includes(10)}">
                             </div>
 
                             <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">In case of Study Leave:
                             </p>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <label class="containerlist">
-                                    <input type="checkbox" :disabled="!selectedLeavetype.includes(7)">
+                                <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(7)}">
+                                    <input type="checkbox" :disabled="!selectedLeavetype.includes(7)"  v-model="studyleavedetails" :value="studydetails[0]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -342,8 +343,8 @@
                             </div>
 
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <label class="containerlist" >
-                                    <input type="checkbox" :disabled="!selectedLeavetype.includes(7)">
+                                <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(7)}" >
+                                    <input type="checkbox" :disabled="!selectedLeavetype.includes(7)"  v-model="studyleavedetails" :value="studydetails[1]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -357,11 +358,12 @@
                                 <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">Other purpose:</p>
                                 <input
                                     style="height: 10px; width: 150px; margin-top: -3px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                    :disabled="!selectedLeavetype.includes(7)">
+                                    :disabled="!selectedLeavetype.includes(7)" v-model="study1" :class="{ 'not': !selectedLeavetype.includes(7)}">
                             </div>
+
                             <div style="display: flex; flex-direction: row; margin-top: -5px">
                                 <label class="containerlist">
-                                    <input type="checkbox">
+                                    <input type="checkbox" v-model="monetization" :value="terminalleave[0]" >
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -373,7 +375,7 @@
 
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
                                 <label class="containerlist">
-                                    <input type="checkbox" >
+                                    <input type="checkbox" v-model="monetization" :value="terminalleave[1]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -390,46 +392,51 @@
                     <div style="border: 2px solid black;margin-top: -2px;font-size: 10px;">
                         <p style="margin-left: 10px; margin-bottom: 5px">6.C Number OF WORKING DAYS APPLIED FOR</p>
                         <div style="margin-left: 20px;">
+                            <!-- pag naay value pero isa ra kabuok -->
                             <p v-if="!isSingleDate"
-                                style="position: relative; left:10px;  margin-bottom: -20px; font-size: 10px;"> {{
+                                style="position: relative; left:24px;  margin-bottom: -20px; font-size: 10px;"> {{
                     weekdaysCount }} {{ weekdaysCount === 1 ? 'Day' : 'Days' }}</p>
                             <p
-                                style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px;">
+                                style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px">
                             </p>
 
                             <p style=" margin-bottom: 5px">INCLUSIVE DATES</p>
 
                             <p v-if="!isSingleDate && startDate && !endDate && selectedDate"
-                                style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px; ">
-                                {{ formattedStartDate }}</p>
+                                style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px;">
+                            <input  v-model="formattedStartDate" style="border:none; background-color: transparent; font-size: 10px; margin-bottom: -20px; position: relative; left: 10px "/>
+                        </p>
+                                 
+
+                                <!-- pag naa nay value -->
                             <p v-if="!isSingleDate && startDate && !endDate && selectedDate"
-                                style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
+                                style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px">
                             </p>
 
+
+                        <!-- naa ra ka yawaa ka -->
                             <p v-if="!selectedDate"
-                                style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
+                                style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px;">
                             </p>
 
 
                             <p v-if="!isSingleDate && startDate && endDate"
-                                style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px; ">
-                                {{ formattedStartDate }}
+                                style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px;  ">
+                               <input v-model="formattedStartDate" style="border:none; background-color: transparent; font-size: 10px; margin-bottom: -20px; position: relative; left: 10px "/>
                                 <template
                                     v-if="startDate.getMonth() !== endDate.getMonth() || startDate.getFullYear() !== endDate.getFullYear()">
-                                    - {{ formattedEndDate }}
+                                    - <input v-model="formattedEndDate"/>
                                 </template>
                             </p>
+
                             <p v-if="!isSingleDate && startDate && endDate"
-                                style="height: 10px; width: 350px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
+                                style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left: 10px">
                             </p>
-
-
-
 
 
                             <div>
                                 <input type="date" id="date-input" v-model="selectedDate" @change="handleDateChange"
-                                    style="width: 16px; height: 20px; outline: none; border: none; position: relative; top: -32px; left:330px;" />
+                                    style="width: 16px; height: 20px; outline: none; border: none; position: relative; top: -32px; left:290px;" />
                             </div>
                         </div>
                     </div>
@@ -438,7 +445,7 @@
                         <div style="margin-left: 20px;">
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
                                 <label class="containerlist">
-                                    <input type="checkbox">
+                                    <input type="checkbox" v-model="commutationLeavetype" :value="commutationtype[0]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -450,7 +457,7 @@
 
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
                                 <label class="containerlist">
-                                    <input type="checkbox">
+                                    <input type="checkbox"  v-model="commutationLeavetype" :value="commutationtype[1]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -461,6 +468,7 @@
                             </div>
 
                         </div>
+                        <input style="border:1px solid black; border:none; outline:none; border-bottom:1.5px solid black; width:330px; position: relative; left:35px;"/>
                         <p style="text-align: center;">(Signature of Applicant)</p>
                     </div>
                 </div>
@@ -512,13 +520,13 @@
                         <p
                             style="height: 10px; width: 350px; margin-top: -19px; z-index: 1; border: none; border-bottom: 1px solid black;outline: none; margin-left: 20px; font-size: 10px">
                         </p>
-                        <p style="text-align: center">{{ secchpos }}</p>
+                        <p style="text-align: center; position: relative; top:-6px; font-size:9px;">{{ secchpos }}</p>
                     </div>
                     <div style="border: 2px solid black;margin-top: 2px;font-size: 10px;margin-left: -2px;">
                         <p style="margin-left: 10px;">7.B RECOMMENDATION</p>
                         <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
                             <label class="containerlist">
-                                <input type="checkbox">
+                                <input type="checkbox" v-model="recommendationLeavetype" :value="recommendationtype[0]">
                                 <svg viewBox="0 0 64 64" height="2em" width="2em">
                                     <path
                                         d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -530,7 +538,7 @@
 
                         <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
                             <label class="containerlist">
-                                <input type="checkbox">
+                                <input type="checkbox" v-model="recommendationLeavetype" :value="recommendationtype[1]">
                                 <svg viewBox="0 0 64 64" height="2em" width="2em">
                                     <path
                                         d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -591,9 +599,14 @@
 </template>
 
 <script>
+import modeCtrGladman from 'crypto-js/mode-ctr-gladman';
 import image1 from '../assets/background_image.png'
 import image2 from '../assets/bago.png'
 import axios from 'axios';
+import { isaddleave } from './leaveform.vue';
+
+
+
 
 export default {
     data() {
@@ -621,9 +634,37 @@ export default {
             startDate: null,
             endDate: null,
             weekdaysCount: 1,
+
             selectedLeavetype: [],
+            vacationleavedetails: [],
+            sickleavedetails:[],
+            studyleavedetails:[],
+            commutationLeavetype:[],
+            recommendationLeavetype:[],
+            monetization:[],
+
             LeaveType: '',
             leavetype: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+
+            vacationdetails: [1,2],
+            vacation1: '',
+            vacation2: '',
+
+            sickdetails:[1,2],
+            sick1: '',
+            sick2:'',
+            studydetails: [1,2],
+            study1: '',
+            study2: '',
+
+            leaveforwoman: '',
+
+            commutationtype:[1,2],
+
+            recommendationtype:[1,2],
+
+            terminalleave:[1,2],
+
             accounts: [],
             accountIdz: localStorage.getItem('accountId'),
             name: [],
@@ -632,6 +673,7 @@ export default {
             positions: [],
             employees: [],
             name_id: '',
+            salary: '',
         };
     },
     watch: {
@@ -642,8 +684,60 @@ export default {
             this.updateRows2();
         },
         selectedLeavetype(newValue, oldValue) {
+            this.LeaveType = '';
             if (newValue.length > 1) {
                 this.selectedLeavetype = [newValue[newValue.length - 1]]
+                this.vacationleavedetails = [];
+                this.sickleavedetails = [];
+                this.monetization = [];
+                this.vacation1 = '';
+                this.vacation2 = '';
+                this.sick1 = '';
+                this.sick2 = '';
+                this.leaveforwoman = '';
+                
+            }
+        },
+        vacationleavedetails(newValue, oldValue) {
+            if (newValue.length > 1) {
+                this.vacationleavedetails = [newValue[newValue.length - 1]]
+                this.vacation1 = '';
+                this.vacation2 = '';
+            }
+        },
+
+        sickleavedetails(newValue, oldValue) {
+            if (newValue.length > 1) {
+                this.sickleavedetails = [newValue[newValue.length - 1]]
+                this.sick1 = '';
+                this.sick2 = '';
+                
+            }
+        },
+
+        studyleavedetails(newValue, oldValue) {
+            if (newValue.length > 1) {
+                this.studyleavedetails = [newValue[newValue.length - 1]]
+                this.study1 = '';
+                
+            }
+        },
+        commutationLeavetype(newValue, oldValue) {
+            if (newValue.length > 1) {
+                this.commutationLeavetype = [newValue[newValue.length - 1]]
+            }
+        },
+
+        recommendationLeavetype(newValue, oldValue) {
+            if (newValue.length > 1) {
+                this.recommendationLeavetype = [newValue[newValue.length - 1]]
+            }
+        },
+        
+        monetization(newValue, oldValue) {
+            if (newValue.length > 1) {
+                this.monetization = [newValue[newValue.length - 1]]
+                this.selectedLeavetype = [];
             }
         },
     },
@@ -656,6 +750,26 @@ export default {
     },
 
     methods: {
+
+        closeaddleave() {
+            isaddleave.value = false;
+        },
+     
+    formatCurrency(event) {
+      let value = event.target.value.replace(/[^\d.]/g, ''); 
+      let parts = value.split('.'); 
+      let wholePart = parts[0].replace(/\D/g, ''); 
+      let formattedWholePart = Number(wholePart).toLocaleString();
+      let formattedValue = '₱' + ' ' + formattedWholePart; 
+      
+     
+      if (parts.length > 1) {
+        let decimalPart = parts[1].slice(0, 2); 
+        formattedValue += '.' + decimalPart; 
+      }
+
+      event.target.value = formattedValue; 
+    },
 
 
         async fetchAccounts() {
@@ -785,6 +899,7 @@ export default {
     },
 
     computed: {
+     
 
         formattedDate() {
             if (!this.selectedDate) return '';
@@ -809,6 +924,8 @@ export default {
         },
     },
 };
+
+
 </script>
 
 <style>
@@ -915,5 +1032,9 @@ export default {
     outline: none;
     position: relative;
     top: 2px;
+}
+
+.not{
+    cursor: not-allowed;
 }
 </style>
