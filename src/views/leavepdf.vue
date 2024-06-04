@@ -674,6 +674,21 @@ export default {
             employees: [],
             name_id: '',
             salary: '',
+            division: '',
+            signatories: [
+            "JANICE B. FUROG",
+            "LIBERTY B. DAITIA",
+            "OSIN A. SINSUAT JR.",
+            "ALVIN M. VILLANUEVA",
+            "RODANTE B. FELINA",
+            ],
+            designations: [
+                "Chief, MMD",
+                "Chief, FAD",
+                "Chief, GD",
+                "Chief, MSESDD",
+                "OIC, Regional Director",
+            ]
         };
     },
     watch: {
@@ -821,6 +836,39 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.employees = data.filter(det => det.name_id == this.name_id);
+          this.division = this.employees[0].division_id
+          if (this.division == 1){{
+            this.reco = this.signatories[0]
+            this.recopost = this.designations[0]
+          }} else if (this.division == 2){{
+            this.reco = this.signatories[1]
+            this.recopost = this.designations[1]
+          }} else if (this.division == 3){{
+            this.reco = this.signatories[2]
+            this.recopost = this.designations[2]
+          }} else if (this.division == 4){{
+            this.reco = this.signatories[3]
+            this.recopost = this.designations[3]
+          }} else if (this.division == 5){{
+            this.reco = ''
+            this.recopost = ''
+          }} else  {
+            this.reco = ''
+            this.recopost = ''
+            this.rd = ''
+            this.rdpos = ''
+          }
+          if ([15,21,45,48].includes(this.name_id)){
+            this.reco = this.signatories[4]
+            this.recopost = this.designations[4]
+            this.rd = ''
+            this.rdpos = ''
+          }else if (this.name_id == 20){
+            this.reco = ''
+            this.recopost = ''
+            this.rd = ''
+            this.rdpos = ''
+          }
         })
         .catch(error => {
           console.error('Error fetching employees:', error);

@@ -124,7 +124,7 @@
               v-if="sdiv == 4 && sdiv !== null">ALVIN M. VILLANUEVA</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 3 && sdiv !== null">OSIN JR. A. SINSUAT</p>
+              v-if="sdiv == 3 && sdiv !== null">OSIN A. SINSUAT JR.</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 2 && sdiv !== null">LIBERTY B.DAITIA</p>
@@ -193,7 +193,7 @@
               v-if="sdiv == 4 && sdiv !== null">ALVIN M. VILLANUEVA</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 3 && sdiv !== null">OSIN JR. A. SINSUAT</p>
+              v-if="sdiv == 3 && sdiv !== null">OSIN A. SINSUAT JR.</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 2 && sdiv !== null">LIBERTY B.DAITIA</p>
@@ -301,11 +301,12 @@ export default {
       aor: '',
       divisionChiefs: [
         'LIBERTY B. DAITIA',
-        'OSIN JR. A. SINSUAT',
+        'OSIN A. SINSUAT JR.',
         'JANICE B. FUROG',
         'ALVIN M. VILLANUEVA',
         'RODANTE B. FELINA'
-      ]
+      ],
+
     };
   },
   mounted() {
