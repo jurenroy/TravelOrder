@@ -2,10 +2,13 @@
     <div>
         <button @click="closeaddleave"> Back to Dashboard
         </button>
+
+        <button @click="submit"> submit
+        </button>
     </div>
-    
-    <div class="a4-container" >
-        <div class="a4-content" >
+
+    <div class="a4-container">
+        <div class="a4-content">
             <div style="display: flex; flex-direction: row; justify-content: center;">
                 <img :src="image1" alt="Background Image" class="pic1">
                 <div style="text-align: center;">
@@ -17,7 +20,7 @@
                 </div>
                 <img :src="image2" alt="Bago Image" class="pic2">
             </div>
-            <h3 style="text-align: center">APPLICATION FOR LEAVE</h3>
+            <h3 style="text-align: center">APPLICATION FOR LEAVE </h3>
             <div>
                 <div style="border: 2px solid black; padding: 5px;">
                     <div
@@ -33,8 +36,8 @@
                         <text style="margin-left: auto; font-size: 12px; font-weight: bold">{{ name.last_name }}</text>
                         <text style="margin-left: auto; font-size: 12px; font-weight: bold">{{ name.first_name }}</text>
                         <text style="margin-left: auto; margin-right: 5%; font-size: 12px; font-weight: bold">{{
-                    name.middle_init
-                }}</text>
+            name.middle_init
+        }}</text>
                     </div>
                 </div>
                 <div
@@ -49,10 +52,7 @@
                     <p style="margin-right: 5px">5. SALARY:
                         <input
                             style="height: 10px; width: 100px; outline: none; border: none; border-bottom: 1px solid black; font-size: 10px; "
-                            v-model="salary"
-                            @input="formatCurrency"
-                            
-                            />
+                            v-model="salary" @input="formatCurrency" />
                     </p>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                             <!-- vacation -->
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
                                 <label class="containerlist">
-                                    <input type="checkbox" v-model="selectedLeavetype" :value="leavetype[0]" >
+                                    <input type="checkbox" v-model="selectedLeavetype" :value="leavetype[0]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -228,7 +228,7 @@
 
                             <input :disabled="selectedLeavetype != ''"
                                 style="height: 10px; width: 300px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-left: 10px; margin-right: 33px; font-size: 10px"
-                                v-model="LeaveType"  >
+                                v-model="LeaveType">
                         </div>
 
                     </div>
@@ -240,8 +240,9 @@
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(0)}">
-                                        <input type="checkbox"  :disabled="!selectedLeavetype.includes(0)"  v-model="vacationleavedetails" :value="vacationdetails[0]"   >
+                                    <label class="containerlist" :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value)) }">
+                                        <input type="checkbox" :disabled="![0, 5].some(value => selectedLeavetype.includes(value))"
+                                            v-model="vacationleavedetails" :value="vacationdetails[0]">
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
                                                 d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -254,14 +255,17 @@
                                 <div>
                                     <input
                                         style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                        :disabled="!selectedLeavetype.includes(0) || !vacationleavedetails.includes(1)" v-model="vacation1" :class="{ 'not': !selectedLeavetype.includes(0) || !vacationleavedetails.includes(1)}">
+                                        :disabled="![0, 5].some(value => selectedLeavetype.includes(value))  || !vacationleavedetails.includes(1)"
+                                        v-model="vacation1"
+                                        :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value))  || !vacationleavedetails.includes(1) }">
                                 </div>
                             </div>
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(0)}">
-                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(0)" v-model="vacationleavedetails" :value="vacationdetails[1]">
+                                    <label class="containerlist" :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value)) }">
+                                        <input type="checkbox" :disabled="![0, 5].some(value => selectedLeavetype.includes(value))"
+                                            v-model="vacationleavedetails" :value="vacationdetails[1]">
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
                                                 d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -274,15 +278,18 @@
                                 <div>
                                     <input
                                         style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                        :disabled="!selectedLeavetype.includes(0) || !vacationleavedetails.includes(2)" v-model="vacation2" :class="{ 'not': !selectedLeavetype.includes(0) || !vacationleavedetails.includes(2)}">
+                                        :disabled="![0, 5].some(value => selectedLeavetype.includes(value)) || !vacationleavedetails.includes(2)"
+                                        v-model="vacation2"
+                                        :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value)) || !vacationleavedetails.includes(2) }">
                                 </div>
                             </div>
                             <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">In case of Sick Leave:</p>
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(2)}">
-                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(2)"  v-model="sickleavedetails" :value="sickdetails[0]">
+                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(2) }">
+                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(2)"
+                                            v-model="sickleavedetails" :value="sickdetails[0]">
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
                                                 d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -295,14 +302,17 @@
                                 <div>
                                     <input
                                         style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                        :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(1)" v-model="sick1" :class="{ 'not': !selectedLeavetype.includes(2) || !sickleavedetails.includes(1)}">
+                                        :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(1)"
+                                        v-model="sick1"
+                                        :class="{ 'not': !selectedLeavetype.includes(2) || !sickleavedetails.includes(1) }">
                                 </div>
                             </div>
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(2)}">
-                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(2)" v-model="sickleavedetails" :value="sickdetails[1]">
+                                    <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(2) }">
+                                        <input type="checkbox" :disabled="!selectedLeavetype.includes(2)"
+                                            v-model="sickleavedetails" :value="sickdetails[1]">
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
                                                 d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -315,7 +325,9 @@
                                 <div>
                                     <input
                                         style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                        :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(2)" v-model="sick2" :class="{ 'not': !selectedLeavetype.includes(2) || !sickleavedetails.includes(2)}">
+                                        :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(2)"
+                                        v-model="sick2"
+                                        :class="{ 'not': !selectedLeavetype.includes(2) || !sickleavedetails.includes(2) }">
                                 </div>
                             </div>
 
@@ -325,14 +337,16 @@
                                 <p style="margin-left: 5px; margin-top: -0px">(Specify Illness)</p>
                                 <input
                                     style="height: 10px; width: 150px; margin-top: -3px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                    :disabled="!selectedLeavetype.includes(10)" v-model="leaveforwoman" :class="{ 'not': !selectedLeavetype.includes(10)}">
+                                    :disabled="!selectedLeavetype.includes(10)" v-model="leaveforwoman"
+                                    :class="{ 'not': !selectedLeavetype.includes(10) }">
                             </div>
 
                             <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">In case of Study Leave:
                             </p>
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(7)}">
-                                    <input type="checkbox" :disabled="!selectedLeavetype.includes(7)"  v-model="studyleavedetails" :value="studydetails[0]">
+                                <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(7) }">
+                                    <input type="checkbox" :disabled="!selectedLeavetype.includes(7)"
+                                        v-model="studyleavedetails" :value="studydetails[0]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -343,8 +357,9 @@
                             </div>
 
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
-                                <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(7)}" >
-                                    <input type="checkbox" :disabled="!selectedLeavetype.includes(7)"  v-model="studyleavedetails" :value="studydetails[1]">
+                                <label class="containerlist" :class="{ 'not': !selectedLeavetype.includes(7) }">
+                                    <input type="checkbox" :disabled="!selectedLeavetype.includes(7)"
+                                        v-model="studyleavedetails" :value="studydetails[1]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -356,14 +371,15 @@
 
                             <div style="display: flex; flex-direction: row; justify-content: space-between">
                                 <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">Other purpose:</p>
+
                                 <input
                                     style="height: 10px; width: 150px; margin-top: -3px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                    :disabled="!selectedLeavetype.includes(7)" v-model="study1" :class="{ 'not': !selectedLeavetype.includes(7)}">
+                                     v-model="otherPurpose">
                             </div>
 
                             <div style="display: flex; flex-direction: row; margin-top: -5px">
                                 <label class="containerlist">
-                                    <input type="checkbox" v-model="monetization" :value="terminalleave[0]" >
+                                    <input type="checkbox" v-model="monetization" :value="terminalleave[0]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -393,40 +409,36 @@
                         <p style="margin-left: 10px; margin-bottom: 5px">6.C Number OF WORKING DAYS APPLIED FOR</p>
                         <div style="margin-left: 20px;">
                             <!-- pag naay value pero isa ra kabuok -->
-                            <p v-if="!isSingleDate"
-                                style="position: relative; left:24px;  margin-bottom: -20px; font-size: 10px;"> {{
-                    weekdaysCount }} {{ weekdaysCount === 1 ? 'Day' : 'Days' }}</p>
+                            <p style="margin-top: 25px;"></p>
+                            <input v-if="!isSingleDate" v-model="weekdaysCountWithSuffix" readonly
+                                style="position: relative; left:24px;top: -10px; margin-bottom: -20px; font-size: 10px; border:none; outline: none ">
                             <p
-                                style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px">
+                                style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black; outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px; margin-top: -15px;">
                             </p>
+
 
                             <p style=" margin-bottom: 5px">INCLUSIVE DATES</p>
 
                             <p v-if="!isSingleDate && startDate && !endDate && selectedDate"
                                 style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px;">
-                            <input  v-model="formattedStartDate" style="border:none; background-color: transparent; font-size: 10px; margin-bottom: -20px; position: relative; left: 10px "/>
-                        </p>
-                                 
+                                <input v-model="formattedDateRange"
+                                    style="border:none; background-color: transparent; font-size: 10px; margin-bottom: -20px; position: relative; left: 10px " />
+                            </p>
 
-                                <!-- pag naa nay value -->
+
+                            <!-- pag naa nay value -->
                             <p v-if="!isSingleDate && startDate && !endDate && selectedDate"
                                 style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px">
                             </p>
 
-
-                        <!-- naa ra ka yawaa ka -->
                             <p v-if="!selectedDate"
                                 style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px;">
                             </p>
 
-
                             <p v-if="!isSingleDate && startDate && endDate"
                                 style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px;  ">
-                               <input v-model="formattedStartDate" style="border:none; background-color: transparent; font-size: 10px; margin-bottom: -20px; position: relative; left: 10px "/>
-                                <template
-                                    v-if="startDate.getMonth() !== endDate.getMonth() || startDate.getFullYear() !== endDate.getFullYear()">
-                                    - <input v-model="formattedEndDate"/>
-                                </template>
+                                <input v-model="formattedDateRange"
+                                    style="border:none; background-color: transparent; font-size: 10px; margin-bottom: -20px; position: relative; left: 10px " />
                             </p>
 
                             <p v-if="!isSingleDate && startDate && endDate"
@@ -457,7 +469,7 @@
 
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
                                 <label class="containerlist">
-                                    <input type="checkbox"  v-model="commutationLeavetype" :value="commutationtype[1]">
+                                    <input type="checkbox" v-model="commutationLeavetype" :value="commutationtype[1]">
                                     <svg viewBox="0 0 64 64" height="2em" width="2em">
                                         <path
                                             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -468,7 +480,8 @@
                             </div>
 
                         </div>
-                        <input style="border:1px solid black; border:none; outline:none; border-bottom:1.5px solid black; width:330px; position: relative; left:35px;"/>
+                        <input
+                            style="border:1px solid black; border:none; outline:none; border-bottom:1.5px solid black; width:330px; position: relative; left:35px;" />
                         <p style="text-align: center;">(Signature of Applicant)</p>
                     </div>
                 </div>
@@ -483,7 +496,7 @@
                         <div style="display: flex;flex-direction: row; justify-content: center; margin-left: 90px">
                             <p>As of</p>
                             <input
-                                style="height: 10px; width: 230px; border: none; border-bottom: 1.5px solid black;outline: none; font-size: 10px; margin-top: 7px; margin-left: 3px">
+                                style="height: 10px; width: 230px; border: none; border-bottom: 1.5px solid black;outline: none; font-size: 10px; margin-top: 7px; margin-left: 3px" v-model="leavecredits">
                         </div>
                         <div>
                             <div class="grid-container">
@@ -492,24 +505,24 @@
                                 <div class="grid-item">Sick Leave</div>
                                 <div class="grid-item">Total Earned</div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits">
+                                    <input type="text" class="leavecredits" v-model="totalvacation">
                                 </div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits">
+                                    <input type="text" class="leavecredits" v-model="totalsick">
                                 </div>
                                 <div class="grid-item">Less this Application</div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits">
+                                    <input type="text" class="leavecredits" v-model="lessvacation">
                                 </div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits">
+                                    <input type="text" class="leavecredits" v-model="lesssick">
                                 </div>
                                 <div class="grid-item">Balance</div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits">
+                                    <input type="text" class="leavecredits" v-model="balancevacation">
                                 </div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits">
+                                    <input type="text" class="leavecredits" v-model="balancesick">
                                 </div>
                             </div>
                         </div>
@@ -549,6 +562,8 @@
                         </div>
 
                         <textarea @keydown.enter.prevent v-model="text" id="myTextarea" :rows="rows"
+                            :class="{ 'not': !recommendationLeavetype.includes(2) }"
+                            :disabled="!recommendationLeavetype.includes(2)"
                             style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 350px; margin-left: 20px; font-size: 10px; text-decoration: underline;"></textarea>
                         <p style="text-align: center;margin-bottom: -20px;z-index: 9;">{{ reco }}</p>
 
@@ -567,17 +582,20 @@
                             <div style="margin-left: 20px;">
                                 <div style="display: flex; flex-direction: row; margin-top: -5px;">
                                     <input
-                                        style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
+                                        style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                        v-model="withpay">
                                     <p style="font-size: 10px;">days with pay</p>
                                 </div>
                                 <div style="display: flex; flex-direction: row; margin-top: -5px;">
                                     <input
-                                        style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
+                                        style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                        v-model="withoutpay">
                                     <p>days without pay</p>
                                 </div>
                                 <div style="display: flex; flex-direction: row; margin-top: -5px;">
                                     <input
-                                        style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px">
+                                        style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                        v-model="othersSpecify">
                                     <p>others (Specify)</p>
                                 </div>
                             </div>
@@ -613,12 +631,7 @@ export default {
         return {
             image1: image1,
             image2: image2,
-            lastname: 'ABRAGAN',
-            firstname: 'JUREN ROY',
-            middleinit: 'R.',
             datetoday: '',
-            position: 'Administrative Assistant II',
-            salary: '30,000',
             secch: 'JOANNE ROSE O. ALVAREZ',
             secchpos: 'Administrative Officer V (HRMO)',
             reco: 'LIBERTY B. DAITIA',
@@ -637,33 +650,44 @@ export default {
 
             selectedLeavetype: [],
             vacationleavedetails: [],
-            sickleavedetails:[],
-            studyleavedetails:[],
-            commutationLeavetype:[],
-            recommendationLeavetype:[],
-            monetization:[],
+            sickleavedetails: [],
+            studyleavedetails: [],
+            commutationLeavetype: [],
+            recommendationLeavetype: [],
+            monetization: [],
 
             LeaveType: '',
-            leavetype: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+            leavetype: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
 
-            vacationdetails: [1,2],
+            vacationdetails: [1, 2],
             vacation1: '',
             vacation2: '',
 
-            sickdetails:[1,2],
+            sickdetails: [1, 2],
             sick1: '',
-            sick2:'',
-            studydetails: [1,2],
-            study1: '',
-            study2: '',
+            sick2: '',
+            studydetails: [1, 2],
+            otherPurpose: '',
 
             leaveforwoman: '',
 
-            commutationtype:[1,2],
+            commutationtype: [1, 2],
 
-            recommendationtype:[1,2],
+            recommendationtype: [1, 2],
 
-            terminalleave:[1,2],
+            terminalleave: [1, 2],
+
+            totalvacation: '',
+            totalsick: '',
+            lessvacation: '',
+            lesssick: '',
+            balancevacation: '',
+            balancesick: '',
+            withpay: '',
+            withoutpay: '',
+            othersSpecify: '',
+            leavecredits:'',
+
 
             accounts: [],
             accountIdz: localStorage.getItem('accountId'),
@@ -676,11 +700,11 @@ export default {
             salary: '',
             division: '',
             signatories: [
-            "JANICE B. FUROG",
-            "LIBERTY B. DAITIA",
-            "OSIN A. SINSUAT JR.",
-            "ALVIN M. VILLANUEVA",
-            "RODANTE B. FELINA",
+                "JANICE B. FUROG",
+                "LIBERTY B. DAITIA",
+                "OSIN A. SINSUAT JR.",
+                "ALVIN M. VILLANUEVA",
+                "RODANTE B. FELINA",
             ],
             designations: [
                 "Chief, MMD",
@@ -710,7 +734,8 @@ export default {
                 this.sick1 = '';
                 this.sick2 = '';
                 this.leaveforwoman = '';
-                
+                this.otherPurpose = ''
+
             }
         },
         vacationleavedetails(newValue, oldValue) {
@@ -726,7 +751,7 @@ export default {
                 this.sickleavedetails = [newValue[newValue.length - 1]]
                 this.sick1 = '';
                 this.sick2 = '';
-                
+
             }
         },
 
@@ -734,7 +759,7 @@ export default {
             if (newValue.length > 1) {
                 this.studyleavedetails = [newValue[newValue.length - 1]]
                 this.study1 = '';
-                
+
             }
         },
         commutationLeavetype(newValue, oldValue) {
@@ -746,9 +771,10 @@ export default {
         recommendationLeavetype(newValue, oldValue) {
             if (newValue.length > 1) {
                 this.recommendationLeavetype = [newValue[newValue.length - 1]]
+                this.text = '';
             }
         },
-        
+
         monetization(newValue, oldValue) {
             if (newValue.length > 1) {
                 this.monetization = [newValue[newValue.length - 1]]
@@ -766,25 +792,161 @@ export default {
 
     methods: {
 
+        submit(){
+            console.log('lastname: ' + this.name.last_name)
+            console.log('firstname: '+ this.name.first_name)
+            console.log('middlename: '+ this.name.middle_init)
+            console.log('date to day: ' + this.datetoday)
+            console.log('position: ' + this.position)
+            console.log('salary: ' + this.salary)
+            
+
+            // 6.A TYPE OF LEAVE TO BE AVAILED OF
+            if (this.selectedLeavetype.includes(0)){
+                console.log('Leave Type:  Vacation Leave ')
+                // 6.B TYPE OF LEAVE TO BE AVAILED OF
+                if (this.vacationleavedetails.includes(1)){
+                    console.log('Within the Philippines, '+this.vacation1)
+
+                }else if (this.vacationleavedetails.includes(2))(
+                    console.log('Abroad(Specify), '+this.vacation2)
+                )
+
+            }else if (this.selectedLeavetype.includes(1)){
+                console.log('Leave Type: Mandatory/Forced Leave')
+               
+            }else if (this.selectedLeavetype.includes(2)){
+                console.log('Leave Type: Sick Leave')
+          
+                if (this.vacationleavedetails.includes(1)){
+                    console.log('In Hospital (Specify Illness), '+this.sick1)
+
+                }else if (this.vacationleavedetails.includes(2))(
+                    console.log('Out Patient (Specify Illness), '+this.sick2)
+                )
+
+            }else if (this.selectedLeavetype.includes(3)){
+                console.log('Leave Type: Maternity Leave')
+            }else if (this.selectedLeavetype.includes(4)){
+                console.log('Leave Type: Paternity Leave')
+            }else if (this.selectedLeavetype.includes(5)){
+
+                // 6.B TYPE OF LEAVE TO BE AVAILED OF
+                console.log('Leave Type: Special Privilege Leave')
+                if (this.vacationleavedetails.includes(1)){
+                    console.log('Within the Philippines, '+this.vacation1)
+
+                }else if (this.vacationleavedetails.includes(2))(
+                    console.log('Abroad(Specify), '+this.vacation2)
+                )
+
+
+
+            }else if (this.selectedLeavetype.includes(6)){
+                console.log('Leave Type: Solo Parent Leave')
+            }else if (this.selectedLeavetype.includes(7)){
+                console.log('Leave Type: Study Leave')
+                if (this.studyleavedetails.includes(1)){
+                    console.log(`Completion of Master's Degree`)
+
+                }else if (this.studyleavedetails.includes(2))(
+                    console.log('BAR/Board Examination Review Other')
+                    
+                )
+            }else if (this.selectedLeavetype.includes(8)){
+                console.log('Leave Type: 10-Day VAWC Leave')
+            }else if (this.selectedLeavetype.includes(9)){
+                console.log('Leave Type: Rehabilitation Privilege')
+            }else if (this.selectedLeavetype.includes(10)){
+                console.log('Leave Type: Special Leave Benefits for Women')
+                console.log(this.leaveforwoman)
+            }else if (this.selectedLeavetype.includes(11)){
+                console.log('Leave Type: Special Emergency(Calamity) Leave')
+            }else if (this.selectedLeavetype.includes(12)){
+                console.log('Leave Type: Adoption Leave')
+            }else{
+            console.log('Others: ' + this.LeaveType)
+            }
+
+            // 6.B TYPE OF LEAVE TO BE AVAILED OF
+            console.log('other purpose: '+this.otherPurpose)
+            if (this.monetization.includes(1)){
+                console.log('Monetization of Leave Credits')
+            }else if (this.monetization.includes(2)){
+                console.log('Terminal Leave')
+            }
+
+            // 6.C Number OF WORKING DAYS APPLIED FOR
+            console.log("working days applied for: "+ this.weekdaysCountWithSuffix )
+            console.log('inclusive dates: ' + this.formattedDateRange)
+
+
+            // 6.D COMMUTATION
+            if(this.commutationLeavetype.includes(1)){
+                console.log('COMMUTATION: Not Requested')
+            }else if(this.commutationLeavetype.includes(2)){
+                console.log('COMMUTATION: Requested')
+            }
+
+
+            // 7.A CERTIFICATION OF LEAVE CREDITS
+
+            console.log('As of: ' + this.leavecredits)
+            console.log("Total Earned: Vacation Leave: "+this.totalvacation)
+            console.log('Total Earned: Sick Leave: ' +this.totalsick)
+            console.log('Less this Application: Vacation Leave: '+this.lessvacation)
+            console.log('Less this Application: Sick Leave: '+this.lesssick)
+            console.log('Balance: Vacation Leave: '+this.balancevacation)
+            console.log('Balance: Sick Leave: '+this.balancesick)
+
+
+            // 7.B RECOMMENDATION
+           if (this.recommendationLeavetype.includes(1)){
+            console.log('For approval')
+           }else if (this.recommendationLeavetype.includes(2)){
+            console.log('For disapproval due to: '+this.text)
+           }
+
+        //    7.C APPROVED FOR
+           console.log(this.withpay+' days with pay')
+           console.log(this.withoutpay+' days without pay')
+           console.log(this.othersSpecify+' others (Specify)')
+
+
+
+        //  7.D DISAPPROVED DUE TO
+
+           console.log('Disapproved due to: '+ this.text2)
+
+
+           
+
+
+
+            console.log('')
+
+           window.location.reload();
+        },
+
         closeaddleave() {
             isaddleave.value = false;
         },
-     
-    formatCurrency(event) {
-      let value = event.target.value.replace(/[^\d.]/g, ''); 
-      let parts = value.split('.'); 
-      let wholePart = parts[0].replace(/\D/g, ''); 
-      let formattedWholePart = Number(wholePart).toLocaleString();
-      let formattedValue = '₱' + ' ' + formattedWholePart; 
-      
-     
-      if (parts.length > 1) {
-        let decimalPart = parts[1].slice(0, 2); 
-        formattedValue += '.' + decimalPart; 
-      }
 
-      event.target.value = formattedValue; 
-    },
+        formatCurrency(event) {
+            let value = event.target.value.replace(/[^\d.]/g, '');
+            let parts = value.split('.');
+            let wholePart = parts[0].replace(/\D/g, '');
+            let formattedWholePart = Number(wholePart).toLocaleString();
+            let formattedValue = '₱' + ' ' + formattedWholePart;
+
+
+            if (parts.length > 1) {
+                let decimalPart = parts[1].slice(0, 2);
+                formattedValue += '.' + decimalPart;
+            }
+
+            event.target.value = formattedValue;
+        },
 
 
         async fetchAccounts() {
@@ -823,80 +985,90 @@ export default {
                 console.error('Error fetching names:', error);
             }
         },
-    getPositionById(id, arrayName) {
-      const array = this[arrayName];
-      if (!array) {
-        return ''; // Return an empty string if the array is not found
-      }
-      const item = array.find(item => item.position_id === id);
-      return item ? item.position_name : '';
-    },
-    fetchemployee(){
-        fetch('http://172.31.10.164:8000/get_employees_json/')
-        .then(response => response.json())
-        .then(data => {
-          this.employees = data.filter(det => det.name_id == this.name_id);
-          this.division = this.employees[0].division_id
-          if (this.division == 1){{
-            this.reco = this.signatories[0]
-            this.recopost = this.designations[0]
-          }} else if (this.division == 2){{
-            this.reco = this.signatories[1]
-            this.recopost = this.designations[1]
-          }} else if (this.division == 3){{
-            this.reco = this.signatories[2]
-            this.recopost = this.designations[2]
-          }} else if (this.division == 4){{
-            this.reco = this.signatories[3]
-            this.recopost = this.designations[3]
-          }} else if (this.division == 5){{
-            this.reco = ''
-            this.recopost = ''
-          }} else  {
-            this.reco = ''
-            this.recopost = ''
-            this.rd = ''
-            this.rdpos = ''
-          }
-          if ([15,21,45,48].includes(this.name_id)){
-            this.reco = this.signatories[4]
-            this.recopost = this.designations[4]
-            this.rd = ''
-            this.rdpos = ''
-          }else if (this.name_id == 20){
-            this.reco = ''
-            this.recopost = ''
-            this.rd = ''
-            this.rdpos = ''
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching employees:', error);
-        });
-      // Fetch positions data
-      fetch('http://172.31.10.164:8000/get_positions_json/')
-        .then(response => response.json())
-        .then(data => {
-          this.positions = data.filter(detz => detz.position_id == this.employees[0].position_id);
-          this.position = this.positions[0].position_name
-        })
-        .catch(error => {
-          console.error('Error fetching positions:', error);
-        });
-    },
+        getPositionById(id, arrayName) {
+            const array = this[arrayName];
+            if (!array) {
+                return ''; // Return an empty string if the array is not found
+            }
+            const item = array.find(item => item.position_id === id);
+            return item ? item.position_name : '';
+        },
+        fetchemployee() {
+            fetch('http://172.31.10.164:8000/get_employees_json/')
+                .then(response => response.json())
+                .then(data => {
+                    this.employees = data.filter(det => det.name_id == this.name_id);
+                    this.division = this.employees[0].division_id
+                    if (this.division == 1) {
+                        {
+                            this.reco = this.signatories[0]
+                            this.recopost = this.designations[0]
+                        }
+                    } else if (this.division == 2) {
+                        {
+                            this.reco = this.signatories[1]
+                            this.recopost = this.designations[1]
+                        }
+                    } else if (this.division == 3) {
+                        {
+                            this.reco = this.signatories[2]
+                            this.recopost = this.designations[2]
+                        }
+                    } else if (this.division == 4) {
+                        {
+                            this.reco = this.signatories[3]
+                            this.recopost = this.designations[3]
+                        }
+                    } else if (this.division == 5) {
+                        {
+                            this.reco = ''
+                            this.recopost = ''
+                        }
+                    } else {
+                        this.reco = ''
+                        this.recopost = ''
+                        this.rd = ''
+                        this.rdpos = ''
+                    }
+                    if ([15, 21, 45, 48].includes(this.name_id)) {
+                        this.reco = this.signatories[4]
+                        this.recopost = this.designations[4]
+                        this.rd = ''
+                        this.rdpos = ''
+                    } else if (this.name_id == 20) {
+                        this.reco = ''
+                        this.recopost = ''
+                        this.rd = ''
+                        this.rdpos = ''
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching employees:', error);
+                });
+            // Fetch positions data
+            fetch('http://172.31.10.164:8000/get_positions_json/')
+                .then(response => response.json())
+                .then(data => {
+                    this.positions = data.filter(detz => detz.position_id == this.employees[0].position_id);
+                    this.position = this.positions[0].position_name
+                })
+                .catch(error => {
+                    console.error('Error fetching positions:', error);
+                });
+        },
         getTodayDate() {
             const now = new Date();
             const options = { month: 'long', day: 'numeric', year: 'numeric' };
             this.datetoday = now.toLocaleDateString('en-US', options);
         },
         getPositionById(id, arrayName) {
-      const array = this[arrayName];
-      if (!array) {
-        return ''; // Return an empty string if the array is not found
-      }
-      const item = array.find(item => item.position_id === id);
-      return item ? item.position_name : '';
-    },
+            const array = this[arrayName];
+            if (!array) {
+                return ''; // Return an empty string if the array is not found
+            }
+            const item = array.find(item => item.position_id === id);
+            return item ? item.position_name : '';
+        },
 
         updateRows() {
             this.rows = this.text.length / 63 + 1
@@ -947,7 +1119,19 @@ export default {
     },
 
     computed: {
-     
+
+        weekdaysCountWithSuffix: {
+            get() {
+                return `${this.weekdaysCount} ${this.weekdaysCount === 1 ? 'Day' : 'Days'}`;
+            },
+            set(value) {
+                const count = parseInt(value, 10);
+                if (!isNaN(count)) {
+                    this.weekdaysCount = count;
+                }
+            }
+        },
+
 
         formattedDate() {
             if (!this.selectedDate) return '';
@@ -965,11 +1149,31 @@ export default {
                 return `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}, ${startDate.getFullYear()}`;
             }
         },
-        formattedEndDate() {
-            if (!this.endDate) return '';
-            const endDate = new Date(this.endDate);
-            return `${endDate.toLocaleString('en-US', { month: 'long' })} ${endDate.getDate()}, ${endDate.getFullYear()}`;
-        },
+        // formattedEndDate() {
+        //     if (!this.endDate) return '';
+        //     const endDate = new Date(this.endDate);
+        //     return `${endDate.toLocaleString('en-US', { month: 'long' })} ${endDate.getDate()}, ${endDate.getFullYear()}`;
+        // },
+
+        formattedDateRange() {
+            if (!this.startDate) return '';
+
+            const startDate = new Date(this.startDate);
+            const endDate = this.endDate ? new Date(this.endDate) : null;
+
+            const formattedStart = `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}, ${startDate.getFullYear()}`;
+
+            if (endDate) {
+                if (startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
+                    return `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}-${endDate.getDate()}, ${startDate.getFullYear()}`;
+                } else {
+                    const formattedEnd = `${endDate.toLocaleString('en-US', { month: 'long' })} ${endDate.getDate()}, ${endDate.getFullYear()}`;
+                    return `${formattedStart} - ${formattedEnd}`;
+                }
+            } else {
+                return formattedStart;
+            }
+        }
     },
 };
 
@@ -1082,7 +1286,7 @@ export default {
     top: 2px;
 }
 
-.not{
+.not {
     cursor: not-allowed;
 }
 </style>

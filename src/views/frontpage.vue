@@ -1,11 +1,11 @@
 <template>
   <div class="frontcontainer">
-    <div class="frontpic"> 
-    <img src="../assets/background_image.png">
-  </div>
-    
+    <div class="frontpic">
+      <img src="../assets/background_image.png">
+    </div>
+
     <div style="margin-top: 20px; font-size: 24px; font-weight: bold; ">
-      <p >Republic of the Philipines<br>
+      <p>Republic of the Philipines<br>
         Department of Environment and Natural Resources<br>
         Mines and Geosciences Bureau<br>
         Regional Office No.X</p>
@@ -18,17 +18,17 @@
       <button class="frontbutton" @click="navigateTo('TravelOrder')">Travel Order Form</button>
       <button class="frontbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
     </div>
-  
+
   </div>
 </template>
 
 <script>
 import { showstatus } from '@/components/heder.vue';
-import { isRegistrationClicked, isEdits, employeelis, isButssClicked, isVisible} from './dashboard.vue';
+import { isRegistrationClicked, isEdits, employeelis, isButssClicked, isVisible } from './dashboard.vue';
 import { showEdit } from '@/components/heder.vue';
 import { isregisclick, leaveedit, employeelisleave, isaddleave, isleavelogoutClicked } from './leaveform.vue';
 export default {
-  data(){
+  data() {
     return {
       showstatus: true,
     }
@@ -40,7 +40,7 @@ export default {
         isButssClicked.value = false
         isaddleave.value = false
         isEdits.value = false
-        isRegistrationClicked.value =false
+        isRegistrationClicked.value = false
         employeelisleave.value = false
         isregisclick.value = false
         leaveedit.value = false
@@ -51,13 +51,13 @@ export default {
         isVisible.value = false
         isButssClicked.value = false
         isEdits.value = false
-        isRegistrationClicked.value =false
+        isRegistrationClicked.value = false
         employeelis.value = false
         isregisclick.value = false
         leaveedit.value = false
         showEdit.value = false
       }
-      this.$router.push({ name: routeName});
+      this.$router.push({ name: routeName });
       localStorage.setItem('routerz', routeName);
     },
   },
@@ -66,7 +66,7 @@ export default {
 
 <style>
 .frontcontainer {
-  
+
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -76,7 +76,7 @@
           <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel
             is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
-        <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (divisionChiefs.includes(name) && name != 'RODANTE B. FELINA')) ? 'flex-end' : 'space-around' }" v-if="aor == 0">
+        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (divisionChiefs.includes(name) && name != 'RODANTE B. FELINA')) ? 'flex-end' : 'space-around' }" v-if="aor == 0">
           
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD'">
             <p>Recommended by:</p>
@@ -129,7 +129,7 @@
             <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
         </div>
-        <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (name=='RODANTE B. FELINA' && intervals == 0) || (name=='LIBERTY B. DAITIA' && intervals == 0)) && !(name=='RODANTE B. FELINA' && intervals == 1) ? 'flex-end' : 'space-around' }" v-if="aor == 1">
+        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (name=='RODANTE B. FELINA' && intervals == 0) || (name=='LIBERTY B. DAITIA' && intervals == 0)) && !(name=='RODANTE B. FELINA' && intervals == 1) ? 'flex-end' : 'space-around' }" v-if="aor == 1">
 
           <div class="inner-container2" v-if="divisionChiefs.includes(name) && intervals == 1">
             <p>Recommended by:</p>
@@ -633,9 +633,8 @@ button {
   .buttons {
     display: none !important;
   }
-  .a4-container{
-    margin-top: -70px;
-    margin-bottom: -1000px;
+  .a4-container {
+    margin-top: -135px;
     overflow: hidden;
   }
   @page {

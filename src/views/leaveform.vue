@@ -1,14 +1,14 @@
 <template>
   <div>
     <div style="flex-direction: column; justify-content: center;" v-if="isEdits && isregisclick">
-         <editss></editss>
-      </div>
-      <div style="flex-direction: column; justify-content: center;" v-if="isregisclick && !isEdits">
-         <regis></regis>
-      </div>
-      <div style="flex-direction: column; justify-content: center;" v-if="employeelisleave && !isEdits">
-         <employeelist></employeelist>
-      </div>
+      <editss></editss>
+    </div>
+    <div style="flex-direction: column; justify-content: center;" v-if="isregisclick && !isEdits">
+      <regis></regis>
+    </div>
+    <div style="flex-direction: column; justify-content: center;" v-if="employeelisleave && !isEdits">
+      <employeelist></employeelist>
+    </div>
     <div style="flex-direction: column; justify-content: center;" v-if="leaveedit">
       <editpage></editpage>
     </div>
@@ -21,22 +21,23 @@
             <signature v-if="acc.signature === null" />
             <div v-else>
               <div v-if="!isregisclick">
-                <div v-show="!isaddleave" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div v-show="!isaddleave"
+                  style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
                   <div class="tra">
                     <p class="travel">Leave Form</p>
                   </div>
                   <div>
                     <button v-show="!isaddleave" class="addleave" @click="toggleForm">Add Form</button>
-                      <button v-show="!isaddleave && acc.type_id == 1 && acc.name_id == 76" class="regleave"
-                                 @click="toggleRegistration">{{
-         'Registration' }}</button>
-                              <button v-show="!isaddleave && acc.type_id == 1" class="emploleave" @click="employeelst">{{
-         'Employee List' }}</button>
+                    <button v-show="!isaddleave && acc.type_id == 1 && acc.name_id == 76" class="regleave"
+                      @click="toggleRegistration">{{
+      'Registration' }}</button>
+                    <button v-show="!isaddleave && acc.type_id == 1" class="emploleave" @click="employeelst">{{
+      'Employee List' }}</button>
                   </div>
                 </div>
                 <div style="display: flex; justify-content: center;" v-if="(isaddleave && !leaveedit)">
-                           <leavepdf></leavepdf>
-                        </div>
+                  <leavepdf></leavepdf>
+                </div>
               </div>
             </div>
           </div>
@@ -50,7 +51,7 @@
 </template>
 
 <script setup>
-import employeelist from './employeelist.vue';  
+import employeelist from './employeelist.vue';
 import regis from './regis.vue';
 import editpage from './editpage.vue';
 import headers from '../components/heder.vue'
@@ -88,8 +89,8 @@ const toggleForm = () => {
 };
 
 const formback = () => {
-      isaddleave.value = false;
-      showEdit.value = false
+  isaddleave.value = false;
+  showEdit.value = false
   isregisclick.value = false;
   leaveedit.value = false;
 };
@@ -108,10 +109,10 @@ const employeelst = () => {
 //ma back ang registration
 const backButton = () => {
   isRegistrationClicked.value = false;
-      isaddleave.value = false;
-      showEdit.value = false
+  isaddleave.value = false;
+  showEdit.value = false
   isregisclick.value = false;
-  };
+};
 
 const backButtonemp = () => {
   employeelisleave.value = false;
@@ -142,10 +143,10 @@ const fetchAccounts = async () => {
     console.error('Error fetching OTP data:', error);
   }
 };
-const loginstate = () =>{
+const loginstate = () => {
   const state = localStorage.getItem('isLoggedIn');
-  if (!state){
-    localStorage.setItem('isLoggedIn',false);
+  if (!state) {
+    localStorage.setItem('isLoggedIn', false);
   }
 }
 

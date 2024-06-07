@@ -4,16 +4,20 @@
     <div style="">
       <label for="date-input">Select Date: </label>
       <input type="date" id="date-input" v-model="selectedDate" @change="handleDateChange" />
-      <p v-if="!isSingleDate && startDate && !endDate && selectedDate">Inclusive for Single Dates: {{ formattedStartDate }}</p>
+      <p v-if="!isSingleDate && startDate && !endDate && selectedDate">Inclusive for Single Dates: {{ formattedStartDate
+        }}</p>
       <p v-if="isSingleDate && selectedDate">Selected Date: {{ formattedDate }}</p>
       <p v-if="!isSingleDate && startDate && endDate">
         Inclusive Dates:
         {{ formattedStartDate }}
-        <template v-if="startDate.getMonth() !== endDate.getMonth() || startDate.getFullYear() !== endDate.getFullYear()">
+        <template
+          v-if="startDate.getMonth() !== endDate.getMonth() || startDate.getFullYear() !== endDate.getFullYear()">
           - {{ formattedEndDate }}
         </template>
       </p>
-      <p v-if="!isSingleDate">Number of Working Days Applied For: {{ weekdaysCount }} {{ weekdaysCount === 1 ? 'Day' : 'Days' }}</p>
+      <p v-if="!isSingleDate">Number of Working Days Applied For: {{ weekdaysCount }} {{ weekdaysCount === 1 ? 'Day' :
+        'Days'
+        }}</p>
     </div>
     <button @click="addleave">Back</button>
   </div>
