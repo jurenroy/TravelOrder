@@ -5,10 +5,11 @@
   </div>
   <div class="a4-container" id="pdf-content">
     <div ref="content" class="a4-content">
+      <!-- Your content goes here -->
       <img src="@/components/assets/hnf.jpg" alt="A4-sized photo" class="a4-photo">
       <p class="a4-to" style="text-align: center;">TRAVEL ORDER</p>
       <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span
-          style="text-decoration: underline; text-align: center;">{{ padWithZeroes(to_num) }}-{{ yearToday }}</span></p>
+          style="text-decoration: underline; text-align: center;">{{ padWithZeroes(to_num) }}-{{ yearToday}}</span></p>
       <div class="outer-container">
         <div class="inner-container">
           <div class="label-value-row">
@@ -75,10 +76,8 @@
           <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel
             is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
-        <div class="outer-container"
-          :style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || name == 'LIBERTY B. DAITIA') ? 'flex-end' : 'space-around' }"
-          v-if="aor == 0">
-
+        <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (divisionChiefs.includes(name) && name != 'RODANTE B. FELINA')) ? 'flex-end' : 'space-around' }" v-if="aor == 0">
+          
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD'">
             <p>Recommended by:</p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
@@ -88,73 +87,55 @@
             <p style="margin-top: -10px;">Chief, {{ division }}</p>
           </div>
 
-          <div class="inner-container2"
-            v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
+          <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
             <p>Recommended by:</p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
               LIBERTY B. DAITIA</p>
             <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
 
-          <div class="inner-container2"
-            v-if="divisionChiefs.includes(name) && intervals == 1 && name !== 'LIBERTY B. DAITIA'">
-            <p>Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
-            <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
-              LIBERTY B. DAITIA</p>
-            <p style="margin-top: -10px;">CHEIF AO</p>
-          </div>
-
-          <div class="inner-container2"
-            :style="{ marginRight: division == 'ORD' || name == 'LIBERTY B. DAITIA' ? '120px' : '0px' }"
-            v-if="name !== 'RODANTE B. FELINA'">
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' || divisionChiefs.includes(name) ? '120px' : '0px' }" v-if="name !== 'RODANTE B. FELINA'">
             <p>Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
-            <img :src="signature2" class="signatiz"
-              v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 4 && sdiv !== null">ALVIN M. VILLANUEVA</p>
+              v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 3 && sdiv !== null">OSIN A. SINSUAT JR.</p>
+              v-if="sdiv == 3 && sdiv !== null ">OSIN JR. A. SINSUAT</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 2 && sdiv !== null">LIBERTY B.DAITIA</p>
+              v-if="sdiv == 2 && sdiv !== null ">LIBERTY B.DAITIA</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 1 && sdiv !== null">JANICE B.FUROG</p>
+              v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
             <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
             <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
           </div>
 
-          <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }"
-            v-if="name == 'RODANTE B. FELINA'">
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA'">
             <p>Approved by:</p>
-            <img :src="signature2" class="signatiz"
-              v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
-              HENRY A. ADORNADO, PhD</p>
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+            >HENRY A. ADORNADO, PhD</p>
             <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
         </div>
-        <div class="outer-container"
-          :style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (name == 'RODANTE B. FELINA' && intervals == 0) || (name == 'LIBERTY B. DAITIA' && intervals == 0)) && !(name == 'RODANTE B. FELINA' && intervals == 1) ? 'flex-end' : 'space-around' }"
-          v-if="aor == 1">
+        <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (name=='RODANTE B. FELINA' && intervals == 0) || (name=='LIBERTY B. DAITIA' && intervals == 0)) && !(name=='RODANTE B. FELINA' && intervals == 1) ? 'flex-end' : 'space-around' }" v-if="aor == 1">
 
           <div class="inner-container2" v-if="divisionChiefs.includes(name) && intervals == 1">
             <p>Recommended by:</p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
               HENRY A. ADORNADO, PhD</p>
             <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
@@ -168,59 +149,54 @@
             <p style="margin-top: -10px;">Chief, {{ division }}</p>
           </div>
 
-          <div class="inner-container2" v-if="!(divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD')">
+          <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
             <p>Recommended by:</p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
               LIBERTY B. DAITIA</p>
-            <p style="margin-top: -10px;">CHEIF AOz</p>
+            <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
 
-          <div class="inner-container2"
-            :style="{ marginRight: division == 'ORD' || name == 'LIBERTY B. DAITIA' ? '120px' : '0px' }"
-            v-if="((divisionChiefs.includes(name) && intervals == 0) || !divisionChiefs.includes(name)) && name != 'RODANTE B. FELINA'">
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' || name == 'LIBERTY B. DAITIA' ? '120px' : '0px' }" v-if="((divisionChiefs.includes(name) && intervals == 0) || !divisionChiefs.includes(name)) && name != 'RODANTE B. FELINA'">
             <p>Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
-            <img :src="signature2" class="signatiz"
-              v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 4 && sdiv !== null">ALVIN M. VILLANUEVA</p>
+              v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 3 && sdiv !== null">OSIN A. SINSUAT JR.</p>
+              v-if="sdiv == 3 && sdiv !== null ">OSIN JR. A. SINSUAT</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 2 && sdiv !== null">LIBERTY B.DAITIA</p>
+              v-if="sdiv == 2 && sdiv !== null ">LIBERTY B.DAITIA</p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
-              v-if="sdiv == 1 && sdiv !== null">JANICE B.FUROG</p>
+              v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
             <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
             <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
           </div>
 
-          <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '-10px' : '0px' }"
-            v-if="divisionChiefs.includes(name) && intervals == 1">
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '-10px' : '0px' }" v-if="divisionChiefs.includes(name) && intervals == 1">
             <p>Approved by:</p>
             <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
-              Atty. DANILO U. UYKIENG</p>
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+            >Atty. DANILO U. UYKIENG</p>
             <p style="margin-top: -10px;">OIC, Bureau Director</p>
           </div>
 
-          <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }"
-            v-if="name == 'RODANTE B. FELINA' && intervals == 0">
+          <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA' && intervals == 0">
             <p>Approved by:</p>
             <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
-              HENRY A. ADORNADO, PhD</p>
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+            >HENRY A. ADORNADO, PhD</p>
             <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
 
@@ -237,10 +213,8 @@
           <p style="font-weight: bold; text-align: center;">{{ name }}</p>
           <p style="text-align: center;">Official Employee</p>
         </div>
-        <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl"
-          style="height: 100px; width: 100px; position: absolute; margin-top: 510px;">
-        <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl"
-          style="height: 50px; width: 50px; position: absolute; margin-top: 535px; margin-left: 26px">
+        <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" style="height: 100px; width: 100px; position: absolute; margin-top: 510px;" >
+        <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" style="height: 50px; width: 50px; position: absolute; margin-top: 535px; margin-left: 26px" >
         <p style="text-align: left; margin-top: -60px; margin-left: 6%;">MGB-X-FAD-FO-033</p>
       </div>
     </div>
@@ -254,6 +228,7 @@ import QRCode from 'qrcode'
 </script>
 
 <script>
+// Import the necessary libraries
 import jsPDF from 'jspdf';
 import axios from 'axios';
 import mgbx from '../assets/mgbx.png'
@@ -263,7 +238,7 @@ export default {
   },
   data() {
     return {
-      yearToday: new Date().getFullYear(),
+      yearToday: new Date().getFullYear(), // Get the current year
       name: '',
       position: '',
       departure: '',
@@ -299,20 +274,21 @@ export default {
       imageSrc: mgbx,
       intervals: '',
       aor: '',
-      divisionChiefs: [
+      divisionChiefs:[
         'LIBERTY B. DAITIA',
-        'OSIN A. SINSUAT JR.',
+        'OSIN JR. A. SINSUAT',
         'JANICE B. FUROG',
         'ALVIN M. VILLANUEVA',
         'RODANTE B. FELINA'
-      ],
-
+      ]
     };
   },
   mounted() {
+    // Populate fields when the component is mounted
     if (this.travel_order_id !== null) {
       this.populateFields(this.travel_order_id);
     }
+    // Fetch additional data
     this.fetchData();
     this.fetchNames();
     this.fetchPositions();
@@ -322,6 +298,7 @@ export default {
   },
   watch: {
     travel_order_id(newVal) {
+      // Check if the new value is not null, then populate fields
       if (newVal !== null) {
         this.populateFields(newVal);
       }
@@ -337,31 +314,41 @@ export default {
       }
     },
     padWithZeroes(travel_order_id) {
+      // Convert travel_order_id to string
       const idString = travel_order_id.toString();
+      // Check if the length is less than 4
       if (idString.length < 4) {
+        // Pad with zeroes to make it four digits
         return '0'.repeat(4 - idString.length) + idString;
       } else {
+        // If already four digits, return as is
         return idString;
       }
     },
     close() {
+      // Close logic
       travel_order_id = null;
       this.$emit('close');
     },
-    printzz() {
+    printzz(){
       window.print();
     },
 
-    downloadPDF() {
+     downloadPDF() {
+      // Initialize jsPDF with A4 size
       const pdf = new jsPDF('p', 'mm', 'a4');
 
+      // Get the HTML content
       const content = document.getElementById('pdf-content');
 
+      // Add HTML content to PDF
       pdf.html(content, {
-        html2canvas: { scale: 0.26 },
+        // Set width and height of PDF to A4 size
+        html2canvas: { scale: 0.26 }, // Adjust scale as needed to fit content
         x: 0,
         y: 0,
         callback: () => {
+          // Download the PDF file
           pdf.save('travel_order.pdf');
         }
       });
@@ -507,14 +494,18 @@ export default {
 .a4-container {
   position: relative;
   width: 210mm;
+  /* A4 width */
   height: 296mm;
+  /* A4 height */
   margin: 0 auto;
   padding: 10px;
   border: 1px solid #ccc;
 }
 
 .a4-content {
+  /* Adjust this height based on your content */
   height: 295mm;
+  /* A4 height minus padding and border */
 }
 
 .a4-photo {
@@ -524,6 +515,7 @@ export default {
   width: 100%;
   height: 98%;
   z-index: -1;
+  /* Place the photo behind other content */
 }
 
 .a4-to {
@@ -552,6 +544,7 @@ export default {
   flex-direction: column;
   padding: 10px;
   margin: 10px;
+  /* Adding margin for spacing between inner containers */
   margin-left: -20px;
 }
 
@@ -560,6 +553,7 @@ export default {
   flex-direction: column;
   padding: 10px;
   margin: 10px;
+  /* Adding margin for spacing between inner containers */
   margin-left: -20px;
   justify-content: center;
   align-items: center;
@@ -580,6 +574,7 @@ export default {
 .label {
   font-weight: bold;
   width: 180px;
+  /* Adjust the width as needed */
 }
 
 .value {
@@ -600,6 +595,7 @@ export default {
 .label2 {
   font-weight: bold;
   width: auto;
+  /* Adjust the width as needed */
 }
 
 .value2 {
@@ -626,7 +622,6 @@ button {
   margin-bottom: -50px;
   margin-top: -15px;
 }
-
 .signatizz {
   height: auto;
   width: 100px;
@@ -634,18 +629,15 @@ button {
   margin-top: -15px;
   margin: auto;
 }
-
 @media print {
   .buttons {
     display: none !important;
   }
-
-  .a4-container {
+  .a4-container{
     margin-top: -70px;
     margin-bottom: -1000px;
     overflow: hidden;
   }
-
   @page {
     size: A4;
   }
