@@ -1,12 +1,12 @@
 <template>
-  <div style="display: flex; flex-direction: column; margin-top: 105px; ">
-
+  <div style="display: flex; flex-direction: column; margin-top: 105px;">
+    <div style="display: flex; flex-direction: row;">
     <img v-if="showhome" @click="relod" :class="{ 'blur': blurTable }"
-      style="cursor: pointer; height: 30px; width: 30px; position: relative; top: -25px;"
+      style="cursor: pointer; height: 30px; width: 30px; margin-top: -6px; margin-right: 5px;"
       src="../assets/dashboard.png" title="Back to Dashboard">
     <label v-if="showhome" :class="{ 'blur': blurTable }" @click="relod"
-      style="position: relative; top: -47px; left: 40px; cursor: pointer;">Back to Dashboard</label>
-
+      style="cursor: pointer;">Back to Dashboard</label>
+    </div>
     <div style="display: flex; flex-direction: row; justify-content: center;" :class="{ 'blur': blurTable }">
       <p style="font-size: 30px; font-weight: bold;">Employee List</p>
       <img src="../assets/add.png"
@@ -149,11 +149,9 @@
 
     </div>
     <div
-      style="width: 600px; height: auto; background-color: white; border: 2px solid BLACK; border-radius: 5px; padding: 10px;  position: fixed;  top: 50%;  left: 50%;  transform: translate(-50%, -50%); "
+      style="width: fit-content; height: auto; background-color: white; border: 2px solid BLACK; border-radius: 5px; padding: 10px;  position: fixed;  top: 50%;  left: 50%;  transform: translate(-50%, -50%); "
       v-if="addem">
-      <p
-        style="display: flex; justify-content: center; font-weight: bold; font-size: 28px; margin-top: -5px; margin-bottom: 10px;">
-        Add Employee</p>
+      
       <addemp @click="fetchData, seemplo, seemplo"></addemp>
     </div>
   </div>
@@ -320,7 +318,7 @@ export default {
       formData.append('chief', this.edited.isChief ? 1 : 0);
       formData.append('isActive', this.edited.isActive ? null : 'out');
 
-      axios.post('http://172.31.10.164:8000/edit_employee', formData)
+      axios.post('http://192.168.239.35:8000/edit_employee', formData)
         .then(response => {
           // Handle success
           this.selectedEmployee = 0;
@@ -366,7 +364,7 @@ export default {
       return item ? item.division_name : '';
     },
     fetchData() {
-      fetch('http://172.31.10.164:8000/get_names_json/')
+      fetch('http://192.168.239.35:8000/get_names_json/')
         .then(response => response.json())
         .then(data => {
           this.mawala = true;
@@ -377,7 +375,7 @@ export default {
           console.error('Error fetching names:', error);
         });
 
-      fetch('http://172.31.10.164:8000/get_employees_json/')
+      fetch('http://192.168.239.35:8000/get_employees_json/')
         .then(response => response.json())
         .then(data => {
           this.mawala = true;
@@ -388,7 +386,7 @@ export default {
           console.error('Error fetching employees:', error);
         });
       // Fetch positions data
-      fetch('http://172.31.10.164:8000/get_positions_json/')
+      fetch('http://192.168.239.35:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.mawala = true;
@@ -400,7 +398,7 @@ export default {
         });
 
       // Fetch divisions data
-      fetch('http://172.31.10.164:8000/get_divisions_json/')
+      fetch('http://192.168.239.35:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.mawala = true;
@@ -534,7 +532,6 @@ th {
 }
 
 .outer {
-
   border: 1px solid black;
   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
   border-radius: 5px;

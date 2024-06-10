@@ -1,14 +1,5 @@
 <template>
-  <div style="display: flex; flex-direction: column;">
-
-    <h2 style="display: flex; flex-direction: column; align-items: center;" class="hist">History</h2>
-    <div v-if="load" class="loadings">
-      <img src='../assets/loading.gif' width="auto" height="100px" />
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center;" v-if="otp">
-      <otpz />
-    </div>
-    <div class="note" v-if="addNote">
+  <div class="note" v-if="addNote">
       <div class="title-bar">
         <div class="title">Add note</div>
         <div class="close-icon" @click="closeNote">X</div>
@@ -38,9 +29,18 @@
     </div>
 
 
-    <div style="display: flex; flex-direction: column; margin-top: -50px;">
+  <div style="display: flex; flex-direction: column;">
 
-      <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: end; margin-top: 15px; margin-bottom: 10px; height: 35px; ">
+    <h2 style="display: flex; flex-direction: column; align-items: center;" class="hist">History</h2>
+    <div v-if="load" class="loadings">
+      <img src='../assets/loading.gif' width="auto" height="100px" />
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center;" v-if="otp">
+      <otpz />
+    </div>
+    <div style="display: flex; flex-direction: column; margin-top: 0px;">
+
+      <div class="search" style="display: flex; flex-direction: row; justify-content: space-between; align-items: end; margin-top: 15px; margin-bottom: 10px; height: 35px; ">
         <div v-if="mawala "
           style="display: flex; border: 2px solid black; border-radius: 5px; align-items: center; height: 30px;position: relative;">
           <img style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png">
@@ -48,17 +48,16 @@
         </div>
 
         <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
-
           <div class="sign">
             <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
           </div>
-
           <div class="text">Download Summary Reports</div>
         </button>
+
       </div>
-
-
-      <div v-if="mawala" class="outer">
+    </div>
+    
+    <div v-if="mawala" class="outer">
         <div class="scrollable-table">
           <table>
             <thead>
@@ -105,10 +104,10 @@
                     Noted
                   </p>
 
-                  <p v-if="(item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
+                  <p v-if="(item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1 && aor == 1)"
                     style="color: red; margin-bottom: -15px;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                    For Recommendation
+                    For Recommendation {{ item.aor }}
                   </p>
                   <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
                     style="color: green; margin-bottom: -15px;">
@@ -117,12 +116,12 @@
                   </p>
 
 
-                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
+                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
                     style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Approval
                   </p>
-                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
+                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
                     style="color: green;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Approved
@@ -186,12 +185,14 @@
           <h1 style="text-align: center; margin-bottom: 0px;" v-if="reversedFormData.length == 0">NO MATCH FOUND</h1>
         </div>
       </div>
+  </div>
+  <div v-show="selectedTravelOrderId" class="prent full-screen">
+    <div class="buttons">
+      <button @click="printzz">Download as PDF</button>
+      <button @click="close">Close PDF</button>
     </div>
-
-    <div v-show="selectedTravelOrderId" style="height: 0px;">
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
     </div>
-  </div>
 </template>
 
 <script>
@@ -264,8 +265,9 @@ export default {
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
-
-
+    printzz(){
+      window.print();
+    },
     isSectionChief(name_id) {
       return this.sectionChiefIds.includes(name_id);
     },
@@ -361,7 +363,7 @@ export default {
       const formData = new FormData();
       formData.append('note', this.noteText);
 
-      axios.post(`http://172.31.10.164:8000/update_form/${this.notenum}`, formData, {
+      axios.post(`http://192.168.239.35:8000/update_form/${this.notenum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -382,7 +384,7 @@ export default {
       const formData = new FormData();
       formData.append('initial', 'initialized');
 
-      axios.post(`http://172.31.10.164:8000/update_form/${this.initnum}`, formData, {
+      axios.post(`http://192.168.239.35:8000/update_form/${this.initnum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -408,7 +410,7 @@ export default {
       formData.append('signature1', this.acc.signature);
       formData.append('name_id', name_id);
 
-      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://192.168.239.35:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -433,7 +435,7 @@ export default {
       const formData = new FormData();
       formData.append('signature1', this.acc.signature);
 
-      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://192.168.239.35:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -460,7 +462,7 @@ export default {
       formData.append('sdiv', this.sub.division_id);
 
 
-      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://192.168.239.35:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -491,12 +493,12 @@ export default {
       }
     },
     fetchAccounts() {
-      axios.get('http://172.31.10.164:8000/get_accounts_json')
+      axios.get('http://192.168.239.35:8000/get_accounts_json')
         .then(response => {
           this.acc = response.data.find(result => result.account_id == this.accountId);
           this.fetchData()
           if (this.acc) {
-            this.imageUrl = `http://172.31.10.164:8000/storage/${this.acc.signature}`;
+            this.imageUrl = `http://192.168.239.35:8000/storage/${this.acc.signature}`;
           }
           useAuthStore().updateVerifiedOTPs('false');
           localStorage.setItem('verifiedOTPs', 'false');
@@ -508,7 +510,7 @@ export default {
 
     fetchData() {
       this.load = true
-      axios.get('http://172.31.10.164:8000/get_forms_json')
+      axios.get('http://192.168.239.35:8000/get_forms_json')
         .then(response => {
           this.mawala = true;
           this.load = false
@@ -560,7 +562,7 @@ export default {
         });
     },
     fetchNames() {
-      axios.get('http://172.31.10.164:8000/get_names_json')
+      axios.get('http://192.168.239.35:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -569,7 +571,7 @@ export default {
         });
     },
     fetchEmployees() {
-      axios.get('http://172.31.10.164:8000/get_employees_json')
+      axios.get('http://192.168.239.35:8000/get_employees_json')
         .then(response => {
           this.employees = response.data;
         })
@@ -657,7 +659,6 @@ export default {
   justify-content: center;
   position: relative;
   left: 1px;
- 
 }
 
 
@@ -731,6 +732,7 @@ th {
   border: 1px solid black;
   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
   border-radius: 5px;
+  width: 100%;
 }
 
 .loadings {
@@ -824,6 +826,32 @@ button:hover {
   color: white;
 }
 
+@media screen and (max-width: 768px) {
+  .Btn{
+    margin-right: 20px;
+  }
+ /* Adjust the media query to target a specific screen size */
+ .prent {
+    /* Apply styles to takeover the screen */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; /* Set height to 50% of the viewport height */
+    max-height: 1000px; /* Set maximum height for smaller screens */
+    z-index: 9999; /* Ensure it's above other content */
+    height: 100vh;
+    background-color: white;
+  }
+  .prent .buttons{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 70px;
+    margin-bottom: 10px;
+  }
+
+}
+
 @media print {
   .outer {
     display: none !important;
@@ -834,10 +862,15 @@ button:hover {
   }
 
   .content,
+  .search,
   .note,
   .sign,
   .Btn {
     display: none !important;
   }
+  .buttons{
+    display: none !important;
+  }
+
 }
 </style>

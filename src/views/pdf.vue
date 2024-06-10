@@ -1,31 +1,31 @@
 <template>
-  <div class="buttons">
+  <!-- <div class="buttons">
     <button @click="printzz">Download as PDF</button>
-    <alerz></alerz>
-  </div>
+    <button @click="close">Close PDF</button>
+  </div> -->
   <div class="a4-container" id="pdf-content">
     <div ref="content" class="a4-content">
       <!-- Your content goes here -->
       <img src="@/components/assets/hnf.jpg" alt="A4-sized photo" class="a4-photo">
       <p class="a4-to" style="text-align: center;">TRAVEL ORDER</p>
-      <p class="a4-textBold" style="margin-top: -15px; text-align: center;">No. <span
+      <p class="a4-textBold">No. <span class="a4-textspank"
           style="text-decoration: underline; text-align: center;">{{ padWithZeroes(to_num) }}-{{ yearToday}}</span></p>
       <div class="outer-container">
         <div class="inner-container">
           <div class="label-value-row">
-            <p class="label" style="margin-left: 50px;">Name:</p>
+            <p class="label">Name:</p>
             <p class="value" style="font-weight: bold;">{{ name }}</p>
           </div>
           <div class="label-value-row">
-            <p class="label" style="margin-left: 50px;">Position: </p>
+            <p class="label">Position: </p>
             <p class="value">{{ position }}</p>
           </div>
           <div class="label-value-row">
-            <p class="label" style="margin-left: 50px;">Departure:</p>
+            <p class="label">Departure:</p>
             <p class="value">{{ departure }}</p>
           </div>
           <div class="label-value-row">
-            <p class="label" style="margin-left: 50px;">Destination:</p>
+            <p class="label">Destination:</p>
             <p class="value">{{ destination }}</p>
           </div>
         </div>
@@ -48,6 +48,7 @@
           </div>
         </div>
       </div>
+      <div class="lowclass">
       <div class="label-value-row2" style="margin-top: -20px;">
         <p class="label2">Purpose of Travel:</p>
         <p class="value2">{{ purpose }}</p>
@@ -68,6 +69,8 @@
         <p class="label2">Remarks or Special instructions:</p>
         <p class="value2">{{ remarks }}</p>
       </div>
+      </div>
+      <div class="certz">
       <div style="display: flex; flex-direction: column; justify-content: flex-start; ">
         <div style="display: flex; justify-content: flex-start; margin-top: -10px;">
           <p class="label2" style="margin-top: 35px; margin-left: 6%;">Certifications:</p>
@@ -76,55 +79,56 @@
           <p class="label2" style="margin-left: 6%; text-align: justify; width: 88%;">This is to certify that the travel
             is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
+      </div>
         <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (divisionChiefs.includes(name) && name != 'RODANTE B. FELINA')) ? 'flex-end' : 'space-around' }" v-if="aor == 0">
           
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD'">
-            <p>Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="recoz">Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://192.168.239.35:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }">
               {{ recommended }}</p>
             <p style="margin-top: -10px;">Chief, {{ division }}</p>
           </div>
 
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
-            <p>Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="recoz">Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://192.168.239.35:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px'}">
               LIBERTY B. DAITIA</p>
             <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
 
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' || divisionChiefs.includes(name) ? '120px' : '0px' }" v-if="name !== 'RODANTE B. FELINA'">
-            <p>Approved by:</p>
+            <p class="aproz">Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://192.168.239.35:8000/storage/null' && aor == 0" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 3 && sdiv !== null ">OSIN JR. A. SINSUAT</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 2 && sdiv !== null ">LIBERTY B.DAITIA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
             <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
             <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
           </div>
 
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA'">
-            <p>Approved by:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <p class="aproz">Approved by:</p>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://192.168.239.35:8000/storage/null' && aor == 0" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
             >HENRY A. ADORNADO, PhD</p>
             <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
@@ -132,70 +136,70 @@
         <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (name=='RODANTE B. FELINA' && intervals == 0) || (name=='LIBERTY B. DAITIA' && intervals == 0)) && !(name=='RODANTE B. FELINA' && intervals == 1) ? 'flex-end' : 'space-around' }" v-if="aor == 1">
 
           <div class="inner-container2" v-if="divisionChiefs.includes(name) && intervals == 1">
-            <p>Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="recoz">Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://192.168.239.35:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px'}">
               HENRY A. ADORNADO, PhD</p>
             <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
 
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD'">
-            <p>Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="recoz">Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://192.168.239.35:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }">
               {{ recommended }}</p>
             <p style="margin-top: -10px;">Chief, {{ division }}</p>
           </div>
 
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
-            <p>Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="recoz">Recommended by:</p>
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://192.168.239.35:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px'}">
               LIBERTY B. DAITIA</p>
             <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
 
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' || name == 'LIBERTY B. DAITIA' ? '120px' : '0px' }" v-if="((divisionChiefs.includes(name) && intervals == 0) || !divisionChiefs.includes(name)) && name != 'RODANTE B. FELINA'">
-            <p>Approved by:</p>
+            <p class="aproz">Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://192.168.239.35:8000/storage/null' && aor == 0" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 3 && sdiv !== null ">OSIN JR. A. SINSUAT</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 2 && sdiv !== null ">LIBERTY B.DAITIA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
             <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
             <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
           </div>
 
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '-10px' : '0px' }" v-if="divisionChiefs.includes(name) && intervals == 1">
-            <p>Approved by:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="aproz">Approved by:</p>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://192.168.239.35:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.35:8000/storage/null') ? '50px' : '50px' }"
             >Atty. DANILO U. UYKIENG</p>
             <p style="margin-top: -10px;">OIC, Bureau Director</p>
           </div>
 
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA' && intervals == 0">
-            <p>Approved by:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
+            <p class="aproz">Approved by:</p>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://192.168.239.35:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.3555:8000/storage/null') ? '50px' : '50px' }"
             >HENRY A. ADORNADO, PhD</p>
             <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
@@ -204,22 +208,23 @@
 
         <p style="letter-spacing: 5px; text-align: center; margin-top: -25px;">AUTHORIZATION</p>
         <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby
-          authorize the Accountant top deduct the corresponing amount of the unliquidated cash advance from my
+          authorize the Accountant top deduct the corresponding amount of the unliquidated cash advance from my
           succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent
           official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
-        <div class="inner-container" style="align-self: flex-end; margin-right: 6%; ">
-          <img :src="signature3" class="signatizz" v-if="signature3 !== 'http://172.31.10.164:8000/storage/null'"
+        <div class="inner-containerz" style="align-self: flex-end; margin-right: 6%; ">
+          <img :src="signature3" class="signatizz" v-if="signature3 !== 'http://192.168.239.35:8000/storage/null'"
             style="margin-top: -50px; margin-bottom: 0px" />
           <p style="font-weight: bold; text-align: center;">{{ name }}</p>
           <p style="text-align: center;">Official Employee</p>
         </div>
-        <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" style="height: 100px; width: 100px; position: absolute; margin-top: 510px;" >
-        <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" style="height: 50px; width: 50px; position: absolute; margin-top: 535px; margin-left: 26px" >
-        <p style="text-align: left; margin-top: -60px; margin-left: 6%;">MGB-X-FAD-FO-033</p>
+        <div class="cueare">
+        <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" class="bigz" >
+        <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" class="centz" >
+        </div>
+        <p class="footerz">MGB-X-FAD-FO-033</p>
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup>
@@ -354,7 +359,7 @@ export default {
       });
     },
     fetchAccounts() {
-      axios.get('http://172.31.10.164:8000/get_accounts_json')
+      axios.get('http://192.168.239.35:8000/get_accounts_json')
         .then(response => {
           this.accounts = response.data;
         })
@@ -363,7 +368,7 @@ export default {
         });
     },
     fetchData() {
-      axios.get('http://172.31.10.164:8000/get_forms_json')
+      axios.get('http://192.168.239.35:8000/get_forms_json')
         .then(response => {
           this.formData = response.data;
         })
@@ -372,7 +377,7 @@ export default {
         });
     },
     fetchNames() {
-      axios.get('http://172.31.10.164:8000/get_names_json')
+      axios.get('http://192.168.239.35:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -381,7 +386,7 @@ export default {
         });
     },
     fetchPositions() {
-      fetch('http://172.31.10.164:8000/get_positions_json/')
+      fetch('http://192.168.239.35:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -391,7 +396,7 @@ export default {
         });
     },
     fetchDivisions() {
-      fetch('http://172.31.10.164:8000/get_divisions_json/')
+      fetch('http://192.168.239.35:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
@@ -401,7 +406,7 @@ export default {
         });
     },
     fetchEmployees() {
-      fetch('http://172.31.10.164:8000/get_employees_json/')
+      fetch('http://192.168.239.35:8000/get_employees_json/')
         .then(response => response.json())
         .then(data => {
           this.employees = data;
@@ -439,9 +444,9 @@ export default {
         this.to_num = selectedForm.to_num;
         this.intervals = selectedForm.intervals;
         this.aor = selectedForm.aor;
-        this.signature1 = `http://172.31.10.164:8000/storage/${selectedForm.signature1}`;
-        this.signature2 = `http://172.31.10.164:8000/storage/${selectedForm.signature2}`;
-        this.signature3 = 'http://172.31.10.164:8000/storage/null';
+        this.signature1 = `http://192.168.239.35:8000/storage/${selectedForm.signature1}`;
+        this.signature2 = `http://192.168.239.35:8000/storage/${selectedForm.signature2}`;
+        this.signature3 = 'http://192.168.239.35:8000/storage/null';
 
 
         const nameDetails = this.names[this.name_id - 1];
@@ -466,7 +471,7 @@ export default {
         }
         const selectedAccount = this.accounts.find(acc => acc.name_id === nameDetails.name_id);
         if (selectedAccount) {
-          this.signature3 = `http://172.31.10.164:8000/storage/${selectedAccount.signature}`;
+          this.signature3 = `http://192.168.239.35:8000/storage/${selectedAccount.signature}`;
         }
         this.generateQRCode();
       } else {
@@ -492,7 +497,6 @@ export default {
 
 <style scoped>
 .a4-container {
-  position: relative;
   width: 210mm;
   /* A4 width */
   height: 296mm;
@@ -500,6 +504,7 @@ export default {
   margin: 0 auto;
   padding: 10px;
   border: 1px solid #ccc;
+  margin-bottom: -10000px;
 }
 
 .a4-content {
@@ -531,6 +536,8 @@ export default {
   font-size: 20px;
   color: #000000;
   margin-bottom: -10px;
+  margin-top: -15px; 
+  text-align: center;
 }
 
 .outer-container {
@@ -545,7 +552,7 @@ export default {
   padding: 10px;
   margin: 10px;
   /* Adding margin for spacing between inner containers */
-  margin-left: -20px;
+  margin-left: 35px;
 }
 
 .inner-container2 {
@@ -565,8 +572,7 @@ export default {
 }
 
 .inner-container p {
-  margin: 5px 0;
-  display: flex;
+  margin: 5px 1px;
   font-size: 18px;
   text-align: left;
 }
@@ -591,11 +597,15 @@ export default {
   margin-top: -10px;
   margin-bottom: -20px;
 }
+.label-value-row2 p{
+  margin: 13px;
+}
 
 .label2 {
   font-weight: bold;
   width: auto;
   /* Adjust the width as needed */
+  
 }
 
 .value2 {
@@ -626,20 +636,241 @@ button {
   height: auto;
   width: 100px;
   margin-bottom: -50px;
-  margin-top: -15px;
+  margin-top: 5px;
   margin: auto;
 }
+.lowclass{
+  margin-top: -20px;
+}
+.a4-container p {
+  font-size: 1em; /* Relative font size */
+  margin-bottom: 1em; /* Relative margin */
+}
+
+.inner-containerz{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-left: 50%;
+  margin-top: 35px;
+}
+
+.inner-containerz p{
+  margin-top: 0px;
+  margin-bottom: -0px
+}
+
+.inner-containerz .signatizz{
+  margin-top: 50px;
+}
+
+.footerz{
+  text-align: left; margin-top: -87px; margin-left: 6%;
+}
+
+.cueare{
+  position: absolute;
+  margin-top: -560px;
+}
+
+.bigz{
+  height: 100px; width: 100px; position: absolute; margin-top: 490px;
+}
+.centz{
+  height: 50px; width: 50px; position: absolute; margin-top: 510px; margin-left: 26px;
+}
+
+@media screen and (max-width: 768px) {
+  .label-value-row2{
+    font-size: 18px;
+  }
+  .label2{
+    font-size: 18px;
+  }
+  .lowclass{
+  margin-top: -30px;
+  margin-left: -20px;
+}
+
+.a4-container {
+  width: 100%;
+  max-width: 21cm; /* A4 width */
+  padding: 1cm;
+  margin: 0 auto; /* Center the container */
+}
+.a4-container img :not(.a4-photo){
+  width: 60px;
+  height: auto;
+}
+.a4-photo{
+  width: 387px;
+  height: auto;
+}
+
+.a4-container p {
+    font-size: 8px;
+  }
+
+  .a4-to {
+  margin-top: 12%;
+  letter-spacing: 5px;
+  font-weight: bold;
+  font-size: 20px;
+  color: #000000;
+  margin-left: -30px;
+}
+.a4-textBold {
+  margin-top: -8px; 
+  margin-left: -30px;
+  text-align: center;
+}
+.outer-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.inner-container {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  margin: 5px;
+  /* Adding margin for spacing between inner containers */
+  margin-left: 40px;
+  margin-bottom: 15px
+}
+
+.inner-container2 {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  margin: 5px;
+  /* Adding margin for spacing between inner containers */
+  margin-left: 60px;
+  justify-content: center;
+  align-items: center;
+}
+.label-value-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.inner-container p {
+  margin: 1px 1px;
+  font-size: 6px;
+  text-align: left;
+  margin-left: -110px
+}
+.inner-container2 p {
+  margin: 20px 1px;
+  font-size: 6px;
+  text-align: left;
+  margin-left: -40px;
+}
+
+.label {
+  font-weight: bold;
+  width: 180px;
+  margin-left: 100px;
+  /* Adjust the width as needed */
+}
+
+.value {
+  text-decoration: underline;
+  word-wrap: break-word;
+  max-width: 30ch;
+  text-align: left;
+}
+
+.label-value-row2 {
+  display: flex;
+  flex-direction: row;
+  margin-left: -3px;
+  margin-top: -10px;
+  margin-bottom: -20px;
+}
+.label-value-row2 p{
+  margin: 13px;
+}
+
+.label2 {
+  font-weight: bold;
+  width: auto;
+  margin: 20px;
+  /* Adjust the width as needed */
+  
+}
+
+.value2 {
+  text-decoration: underline;
+  margin-left: 20px;
+}
+
+.certz{
+  margin-top: -30px;
+  margin-left: -37px;
+  margin-bottom: 500px;
+  width: 390px;
+}
+.signatiz{
+  margin-top: -20px;
+  height: 60px;
+  width: auto;
+  margin-left: -40px
+}
+.signatizz{
+  margin-top: -20px;
+  height: 60px;
+  width: auto;
+}
+.inner-containerz{
+  margin-top: 50px;
+}
+
+.footerz{
+  margin-top: -30px;
+}
+.cueare{
+  height: 60px;
+  width: auto;
+}
+.bigz{
+  height: 60px; width: 60px; position: absolute; margin-top: 540px; margin-left: 20px;
+}
+.centz{
+  height: 30px; width: 30px; position: absolute; margin-top: 555px; margin-left: 37px;
+}
+
+}
+
 @media print {
-  .buttons {
+  .bglang {
     display: none !important;
   }
-  .a4-container{
-    margin-top: -70px;
-    margin-bottom: -1000px;
-    overflow: hidden;
+  .a4-container {
+    border: none;
   }
   @page {
     size: A4;
+    margin: 5%;
+  }
+  .a4-photo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 101%;
+    z-index: -1;
+    /* Place the photo behind other content */
+  }
+  .label-value-row2{
+    font-size: 18px;
+
+  }
+  .label2{
+    font-size: 18px;
   }
 }
+
+
 </style>

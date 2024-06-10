@@ -1,24 +1,21 @@
 <template>
+  <div style="display: flex; justify-content: center">
   <div class="frontcontainer">
-    <div class="frontpic"> 
-    <img src="../assets/background_image.png">
-  </div>
-    
-    <div style="margin-top: 20px; font-size: 24px; font-weight: bold; ">
-      <p >Republic of the Philipines<br>
-        Department of Environment and Natural Resources<br>
-        Mines and Geosciences Bureau<br>
-        Regional Office No.X</p>
-      <div style="display: flex; justify-content: center; margin-top: 30px;">
-        <p>MGB Application Form</p>
-      </div>
-
+    <img src="../assets/background_image.png" class="frontpic">
+    <div class="textzxc">
+      <p class="p1">Republic of the Philipines</p>
+      <p class="p2">Department of Environment and Natural Resources</p>
+      <p class="p3">Mines and Geosciences Bureau</p>
+      <p class="p4">Regional Office No.X</p>
+      <p>MGB Application Form</p>
     </div>
+    
     <div class="hakdogzzz">
       <button class="frontbutton" @click="navigateTo('TravelOrder')">Travel Order Form</button>
       <button class="frontbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
     </div>
   
+  </div>
   </div>
 </template>
 
@@ -71,7 +68,6 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
 }
 
 .frontbutton {
@@ -93,21 +89,33 @@ export default {
 }
 
 .frontpic {
-  margin-top: 30px;
+  margin: 30px;
+  height: 250px;
+  width: auto;
+}
+.textzxc{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.p1, .p2, .p3, .p4{
+  font-weight: bold;
+  font-size: 25px;
+  margin-top: -20px;
 }
 
 @media (max-width: 768px) {
   .hakdogzzz {
     justify-content: center;
     flex-direction: column;
-
   }
-
-  .frontpic {
-    margin-top: -15px;
-    height: 200px;
-    margin-bottom: 150px;
+    .p1, .p2, .p3, .p4{
+    font-size: 12px;
+    margin-top: -10px;
   }
-
+  .textzxc {
+    text-align: center;
+  }
 }
 </style>

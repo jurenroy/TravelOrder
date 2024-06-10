@@ -1,5 +1,5 @@
 <template>
-   <div class=zero style="display: flex; justify-content: center; margin-top: 90px;">
+   <div class=zero style="display: flex; justify-content: center; margin-top: 210px;">
       <div class="first">
          <alerz></alerz>
          <div class="second">
@@ -179,10 +179,10 @@ const login_submit = () => {
 };
 
 const fetchAccounts = () => {
-   axios.get('http://172.31.10.164:8000/get_accounts_json')
+   axios.get('http://192.168.239.35:8000/get_accounts_json')
       .then(response => {
          accounts.value = response.data;
-         axios.get('http://172.31.10.164:8000/get_employees_json')
+         axios.get('http://192.168.239.35:8000/get_employees_json')
             .then(response => {
                employees.value = response.data;
             })

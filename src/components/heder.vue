@@ -4,11 +4,9 @@
       <img class="ima" src="../assets/logo.png" alt="Description of the image" >
       <img class="ima ims" src="../assets/republic.png" alt="Description of the image" >
       <img class="ima" src="../assets/bago.png" alt="Description of the image" >
-
     </div>
 
-    <div
-      style="display: flex; margin-top: 2px; margin-left:-100px ; height: inherit; width: 250px; justify-content: center;"
+    <div class="damn"
       v-if="routerzz == 'TravelOrder' && (setEmployee === name.name_id || name.name_id === 76)">
       <h1 style="position: fixed; margin-left:-90px ; margin-top: 3px;">Status:</h1>
 
@@ -76,7 +74,7 @@ const routerzz = localStorage.getItem('routerz')
 
 const setAccount = async () => {
   try {
-    const response = await axios.post(`http://172.31.10.164:8000/update_employee/${setEmployee.value}`);
+    const response = await axios.post(`http://192.168.239.35:8000/update_employee/${setEmployee.value}`);
     window.location.reload();
   } catch (error) {
     console.error('Error fetching accounts:', error);
@@ -90,7 +88,7 @@ const fetchAccounts = async () => {
 
   try {
     Usernames.value = false
-    const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
+    const response = await axios.get('http://192.168.239.35:8000/get_accounts_json');
 
     accounts.value = response.data;
     Usernames.value = true
@@ -101,7 +99,7 @@ const fetchAccounts = async () => {
 
 const fetchEmployee = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_employees_json');
+    const response = await axios.get('http://192.168.239.35:8000/get_employees_json');
     employees.value = response.data.filter(emp => emp.chief > 0)
     const selectedEmp = response.data.find(emp => emp.rd !== null);
     if (selectedEmp) {
@@ -119,7 +117,7 @@ const fetchEmployee = async () => {
 
 const fetchNames = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_names_json');
+    const response = await axios.get('http://192.168.239.35:8000/get_names_json');
     names.value = response.data;
 
     const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
@@ -335,6 +333,16 @@ export default {
 
 .usew {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 15px
+}
+
+.damn{
+  display: flex;
+  margin-top: 2px;
+  margin-left:-100px ;
+  height: inherit;
+  width: 250px;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -343,6 +351,8 @@ export default {
   .ima,
   .ima2 {
     margin-right: 0px;
+    height: 30px;
+    width: auto;
   }
 
   .ims {
@@ -360,6 +370,10 @@ export default {
 
   .usew {
     margin-right: -1px;
+    font-size: 10px;
+  }
+  .damn{
+    display: none;
   }
 
 }
