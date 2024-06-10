@@ -1,6 +1,6 @@
 <template>
   <div class="buttons">
-    <button @click="printzz">Download as PDF</button>
+    <button v-if="to_num !== 0" @click="printzz">Download as PDF</button>
     <alerz></alerz>
   </div>
   <div class="a4-container" id="pdf-content">
@@ -280,7 +280,7 @@ export default {
         'JANICE B. FUROG',
         'ALVIN M. VILLANUEVA',
         'RODANTE B. FELINA'
-      ]
+      ],
     };
   },
   mounted() {
@@ -304,7 +304,13 @@ export default {
       }
     }
   },
+
+  
+
   methods: {
+    
+
+
     async generateQRCode() {
       const textToEncode = `MGBX TRAVEL ORDER \nTRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}\n${this.name}`;
       try {
@@ -484,7 +490,9 @@ export default {
       }
     },
 
-  }
+  },
+
+  
 };
 </script>
 

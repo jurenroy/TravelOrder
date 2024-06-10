@@ -867,7 +867,6 @@ export default {
             }else{
             console.log('Others: ' + this.LeaveType)
             }
-
             // 6.B TYPE OF LEAVE TO BE AVAILED OF
             console.log('other purpose: '+this.otherPurpose)
             if (this.monetization.includes(1)){
@@ -875,11 +874,9 @@ export default {
             }else if (this.monetization.includes(2)){
                 console.log('Terminal Leave')
             }
-
             // 6.C Number OF WORKING DAYS APPLIED FOR
             console.log("working days applied for: "+ this.weekdaysCountWithSuffix )
             console.log('inclusive dates: ' + this.formattedDateRange)
-
 
             // 6.D COMMUTATION
             if(this.commutationLeavetype.includes(1)){
@@ -918,14 +915,41 @@ export default {
 
            console.log('Disapproved due to: '+ this.text2)
 
-
-           
-
-
-
             console.log('')
 
-           window.location.reload();
+
+            this.position = ''
+this.salary = ''
+this.selectedLeavetype = []
+this.vacationleavedetails = []
+this.vaction1 = ''
+this.vacation2 = ''
+this.sick1 = ''
+this.sick2 = ''
+this.studyleavedetails = []
+this.leaveforwoman = ''
+this.LeaveType = ''
+this.otherpurpose = ''
+this.monetization = []
+this.weekdaysCount = ''
+
+this.commutationLeavetype = []
+this.leavecredits = ''
+this.totalvacation = ''
+this.totalsick = ''
+this.lessvacation = ''
+this.lesssick = ''
+this.balancevacation = ''
+this.balancesick = ''
+this.recommendation = []
+this.text = ''
+this.withpay = ''
+this.withoutpay = ''
+this.othersSpecify = ''
+this. text2 = ''
+
+
+
         },
 
         closeaddleave() {

@@ -8,7 +8,7 @@
 
         <div class="updateinside">
           <div style="display: flex; flex-direction: column;  width: 100%; ">
-            <label class="updatelabel old">Old Email:</label>
+            <label class="updatelabel old">Old Username:</label>
             <input @keydown.enter='sendOTP' type="email" v-model="email" class='updateinput' id='oldemail' required
               readonly>
 
@@ -17,8 +17,8 @@
               required :disabled="notClikable1">
 
 
-            <label class="updatelabel new">Enter New Email: </label>
-            <input @keydown.enter='sendOTP' type="email" class='updateinput' v-model="newEmail" id='newEmail' required
+            <label class="updatelabel new">Enter New Username: </label>
+            <input @keydown.enter='sendOTP' type="email" class='updateinput' v-model="newUsername" id='newUsername' required
               :disabled="notClikable1">
             <label class="updatelabel new">Enter New Password: </label>
             <input @keydown.enter='sendOTP' type="password" class='updateinput' v-model="newPassword" id='newPassword'
@@ -149,7 +149,7 @@ const accounts = ref([]);
 const names = ref([]);
 const name = ref('')
 const email = ref('')
-const newEmail = ref('')
+const newUsername = ref('')
 const oldPass = ref('')
 const passwords = ref('')
 const newPassword = ref('')
@@ -181,11 +181,11 @@ const otp6 = ref('');
 const otppp = ref('');
 
 
-const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passvalids = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
 
 const isDisabled = computed(() => {
-  return newEmail.value === '' && newPassword.value === '' && signature.value === '' && !uploadedImageUrl.value;
+  return newUsername.value === '' && newPassword.value === '' && signature.value === '' && !uploadedImageUrl.value;
 });
 
 const decr = computed(() => {
@@ -279,7 +279,7 @@ const sendOTP = async () => {
   try {
 
     await axios.post(`http://172.31.10.164:8000/send-otp/${accountIdz}`);
-    if (regex.test(newEmail.value) === false && newEmail.value !== '') {
+    if ((newUsername.value) === false && newUsername.value !== '') {
       isEditemail.value = true;
       validation.value = 'Email'
       setTimeout(() => {
@@ -431,8 +431,8 @@ const updateProfile = () => {
   const formData = new FormData();
   try {
 
-    if (newEmail.value !== '') {
-      formData.append('email', newEmail.value);
+    if (newUsername.value !== '') {
+      formData.append('email', newUsername.value);
 
     } else {
     }
