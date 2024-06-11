@@ -26,7 +26,7 @@
               :class="{ 'red-border': isRed && departure === '' }" @input="resetRed" id='departurein' required>
 
             <label class="d"> Destination: </label>
-            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }" @input="resetRed"
+            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }"  @input="capitalizeAndReset('destination')"
               type="text" v-model="destination" class='inputsss' id='destinationin' required>
 
 
@@ -75,21 +75,21 @@
 
           <label class="pt" style="margin-top: 10px;"> Purpose of Travel: </label>
           <input @keydown.enter="form_submit" type="text" v-model="purpose"
-            :class="{ 'red-border': isRed && purpose === '' }" @input="resetRed" class='inputss' id='purposein'
+            :class="{ 'red-border': isRed && purpose === '' }" @input="capitalizeAndReset('purpose')"  class='inputss' id='purposein'
             required>
 
           <label class="per"> Per Deims/Expense Allowed</label>
-          <input @keydown.enter="form_submit" type="text" v-model="pdea" class='inputss' id='pdeain' required>
+          <input @keydown.enter="form_submit" type="text" @input="capitalize('pdea')"  v-model="pdea" class='inputss' id='pdeain' required>
 
           <label class="al"> Assistants or Laborer Allowed: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="ala" class='inputss' id='alain' required>
+          <input @keydown.enter="form_submit" type="text" v-model="ala" @input="capitalize('ala')" class='inputss' id='alain' required>
 
           <label class="at"> Appropriations to which travel should be charged: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="appropriation" class='inputss' id='appropriationin'
+          <input @keydown.enter="form_submit" type="text" v-model="appropriation"  @input="capitalize('appropriation')" class='inputss' id='appropriationin'
             required>
 
           <label class="r"> Remarks or Special Instructios: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="remarks" class='inputss' id='remarksin' required>
+          <input @keydown.enter="form_submit" type="text" v-model="remarks"  @input="capitalize('remarks')" class='inputss' id='remarksin' required>
         </div>
 
         <div v-if="isValid" class="error">
@@ -217,6 +217,20 @@ export default {
 
   },
   methods: {
+    capitalize(field) {
+      this[field] = this[field]
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    },
+    capitalizeAndReset(field) {
+      this.capitalize(field);
+      this.resetRed(); // Call resetRed if you need to reset the red border on input change
+    },
+    
+
+
+    
     resetRed() {
       this.isRed = false;
     },

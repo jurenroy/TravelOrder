@@ -28,8 +28,8 @@
             name.first_name }} {{ name.middle_init }}</option>
                   </select>
 
-                  <label class="n">Email:</label>
-                  <input type="email" v-model="email" class='regsinput' id='email' required
+                  <label class="n">Username:</label>
+                  <input type="text" v-model="email" class='regsinput' id='email' required
                      :class="{ 'red-border': isRed && email === '' }" @input="resetRed" @keydown.enter='regis_submit'>
 
                   <label class="p"> Password: </label>
@@ -180,7 +180,7 @@ export default {
 
       regis_submit() {
 
-         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+         // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
          const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
 
          if (this.email === '' && this.password === '' && this.account_type === '' && this.name === '') {
@@ -217,15 +217,15 @@ export default {
                this.isValid = false;
             }, 3000);
 
-         } else if (emailPattern.test(this.email) === false) {
-            this.isRed = true
-            this.loadingregis = false;
-            this.isEmail = true;
-            this.valid = 'Email'; 
-            this.valid3 = '';
-            setTimeout(() => {
-               this.isEmail = false; 
-            }, 3000);
+         // } else if (emailPattern.test(this.email) === false) {
+         //    this.isRed = true
+         //    this.loadingregis = false;
+         //    this.isEmail = true;
+         //    this.valid = 'Email'; 
+         //    this.valid3 = '';
+         //    setTimeout(() => {
+         //       this.isEmail = false; 
+         //    }, 3000);
 
          } else if (this.password === '') {
             this.isRed = true

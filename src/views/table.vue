@@ -43,7 +43,7 @@
       <div class="search" style="display: flex; flex-direction: row; justify-content: space-between; align-items: end; margin-top: 15px; margin-bottom: 10px; height: 35px; ">
         <div v-if="mawala "
           style="display: flex; border: 2px solid black; border-radius: 5px; align-items: center; height: 30px;position: relative;">
-          <img style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png">
+          <img class="`imgsearch" style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png">
           <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name">
         </div>
 
@@ -109,6 +109,7 @@
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Recommendation {{ item.aor }}
                   </p>
+
                   <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
                     style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
@@ -116,12 +117,12 @@
                   </p>
 
 
-                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
+                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
                     style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Approval
                   </p>
-                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
+                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
                     style="color: green;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Approved
@@ -255,6 +256,8 @@ export default {
       sub: 0,
       bus: 0,
       searchQuery: '',
+      csvformdata: []
+
 
     };
   },
@@ -284,7 +287,7 @@ export default {
         'Arrival Date',
       ];
 
-      const approvedTOs = this.formData.filter(item => item.to_num > 0);
+      const approvedTOs = this.csvformdata.filter(item => item.to_num > 0);
 
       approvedTOs.sort((a, b) => a.to_num - b.to_num);
 
@@ -379,6 +382,7 @@ export default {
 
       this.closeNote()
     },
+    
     initialize(numz) {
       this.initnum = numz
       const formData = new FormData();
@@ -516,6 +520,7 @@ export default {
           this.load = false
           this.sub = this.employees.find(emp => emp.name_id == this.acc.name_id)
           this.bus = this.employees.find(emp => emp.rd !== null)
+          this.csvformdata = response.data
 
           if (this.sectionChiefIds.includes(this.acc.name_id)) {
             console.log(this.acc.name_id)
@@ -552,7 +557,7 @@ export default {
             this.formData = response.data.filter(form => (form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null) || form.name_id === this.acc.name_id);
             this.siga = true
             if (this.sub.name_id == 20) {
-              this.formData = response.data.filter(form => form.name_id == this.acc.name_id && form.note !== null);
+              this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
               this.siga = false
             }
           }
@@ -735,6 +740,7 @@ th {
   width: 100%;
 }
 
+
 .loadings {
   top: 0;
   left: 0;
@@ -868,9 +874,5 @@ button:hover {
   .Btn {
     display: none !important;
   }
-  .buttons{
-    display: none !important;
-  }
-
 }
 </style>

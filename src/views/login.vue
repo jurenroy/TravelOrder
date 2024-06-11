@@ -7,8 +7,8 @@
 
             <div class="inside">
                <div style="display: flex; flex-direction: column;  width: 100%;">
-                  <label class="n">Email: </label>
-                  <input type="email" v-model="email" class='inputsss' id='email' required @keydown.enter='login_submit'
+                  <label class="n">Username: </label>
+                  <input type="text" v-model="email" class='inputsss' id='email' required @keydown.enter='login_submit'
                      :class="{ 'red-border': isRed && email === '' }" @input="resetRed">
 
                   <label class="p"> Password: </label>
@@ -92,7 +92,7 @@ const resetRed = () => {
 }
 
 const login_submit = () => {
-   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+   // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
    const account = accounts.value.find(acc => acc.email === email.value);
    if (account) {
@@ -116,13 +116,13 @@ const login_submit = () => {
       setTimeout(() => {
          isValid.value = false;
       }, 2000);
-   } else if (emailPattern.test(email.value) === false) {
-      error.value = 'Not Valid Email';
-      isEmail.value = true;
-      isRed.value = true
-      setTimeout(() => {
-         isEmail.value = false;
-      }, 2000);
+   // } else if (emailPattern.test(email.value) === false) {
+   //    error.value = 'Not Valid Email';
+   //    isEmail.value = true;
+   //    isRed.value = true
+   //    setTimeout(() => {
+   //       isEmail.value = false;
+   //    }, 2000);
    } else if (!account) {
       error.value = 'Email not Found';
       isEmail.value = true;
