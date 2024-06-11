@@ -107,7 +107,7 @@
                   <p v-if="(item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1 && aor == 1)"
                     style="color: red; margin-bottom: -15px;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                    For Recommendation {{ item.aor }}
+                    For Recommendation
                   </p>
 
                   <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
@@ -117,12 +117,12 @@
                   </p>
 
 
-                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
+                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
                     style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Approval
                   </p>
-                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
+                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
                     style="color: green;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Approved
@@ -366,7 +366,7 @@ export default {
       const formData = new FormData();
       formData.append('note', this.noteText);
 
-      axios.post(`http://192.168.239.35:8000/update_form/${this.notenum}`, formData, {
+      axios.post(`http://172.31.10.164:8000/update_form/${this.notenum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -388,7 +388,7 @@ export default {
       const formData = new FormData();
       formData.append('initial', 'initialized');
 
-      axios.post(`http://192.168.239.35:8000/update_form/${this.initnum}`, formData, {
+      axios.post(`http://172.31.10.164:8000/update_form/${this.initnum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -414,7 +414,7 @@ export default {
       formData.append('signature1', this.acc.signature);
       formData.append('name_id', name_id);
 
-      axios.post(`http://192.168.239.35:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -439,7 +439,7 @@ export default {
       const formData = new FormData();
       formData.append('signature1', this.acc.signature);
 
-      axios.post(`http://192.168.239.35:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -466,7 +466,7 @@ export default {
       formData.append('sdiv', this.sub.division_id);
 
 
-      axios.post(`http://192.168.239.35:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -497,12 +497,12 @@ export default {
       }
     },
     fetchAccounts() {
-      axios.get('http://192.168.239.35:8000/get_accounts_json')
+      axios.get('http://172.31.10.164:8000/get_accounts_json')
         .then(response => {
           this.acc = response.data.find(result => result.account_id == this.accountId);
           this.fetchData()
           if (this.acc) {
-            this.imageUrl = `http://192.168.239.35:8000/storage/${this.acc.signature}`;
+            this.imageUrl = `http://172.31.10.164:8000/storage/${this.acc.signature}`;
           }
           useAuthStore().updateVerifiedOTPs('false');
           localStorage.setItem('verifiedOTPs', 'false');
@@ -514,7 +514,7 @@ export default {
 
     fetchData() {
       this.load = true
-      axios.get('http://192.168.239.35:8000/get_forms_json')
+      axios.get('http://172.31.10.164:8000/get_forms_json')
         .then(response => {
           this.mawala = true;
           this.load = false
@@ -567,7 +567,7 @@ export default {
         });
     },
     fetchNames() {
-      axios.get('http://192.168.239.35:8000/get_names_json')
+      axios.get('http://172.31.10.164:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -576,7 +576,7 @@ export default {
         });
     },
     fetchEmployees() {
-      axios.get('http://192.168.239.35:8000/get_employees_json')
+      axios.get('http://172.31.10.164:8000/get_employees_json')
         .then(response => {
           this.employees = response.data;
         })
@@ -872,6 +872,9 @@ button:hover {
   .note,
   .sign,
   .Btn {
+    display: none !important;
+  }
+  .buttons{
     display: none !important;
   }
 }
