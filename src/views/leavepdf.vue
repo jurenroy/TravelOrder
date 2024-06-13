@@ -1,10 +1,9 @@
 <template>
     <div>
-        <button @click="closeaddleave"> Back to Dashboard
+        <button style=" border-radius: 10px; width: 90%; font-weight: bold; font-size: 16px; cursor: pointer; " @click="closeaddleave"> Back to Dashboard
         </button>
 
-        <button @click="submit"> submit
-        </button>
+       
     </div>
 
     <div class="a4-container">
@@ -612,7 +611,12 @@
                     <p style="text-align: center">{{ rdpos }}</p>
                 </div>
             </div>
+           <div class="buttonss">
+               <button class="button" @click="submitForm"> Submit
+            </button>
+           </div> 
         </div>
+
     </div>
 </template>
 
@@ -638,6 +642,11 @@ export default {
             recopost: 'Chief FAD',
             rd: 'RODANTE B. FELINA',
             rdpos: 'OIC, REGIONAL DIRECTOR',
+            name: {
+        last_name: '',
+        first_name: '',
+        middle_init: '',
+      },
             text: '',
             rows: 1,
             text2: '',
@@ -792,165 +801,122 @@ export default {
 
     methods: {
 
-        submit(){
-            console.log('lastname: ' + this.name.last_name)
-            console.log('firstname: '+ this.name.first_name)
-            console.log('middlename: '+ this.name.middle_init)
-            console.log('date to day: ' + this.datetoday)
-            console.log('position: ' + this.position)
-            console.log('salary: ' + this.salary)
-            
+        submitForm() {
+  const formData = {
+    name_id: this.name_id,
+    position_id: this.employees[0]?.position_id || null,
 
-            // 6.A TYPE OF LEAVE TO BE AVAILED OF
-            if (this.selectedLeavetype.includes(0)){
-                console.log('Leave Type:  Vacation Leave ')
-                // 6.B TYPE OF LEAVE TO BE AVAILED OF
-                if (this.vacationleavedetails.includes(1)){
-                    console.log('Within the Philippines, '+this.vacation1)
+    type: this.getLeaveType(),
+    
+    detail: this.getLeaveDetails(),
+    description: this.otherPurpose || '',
+    days: this.weekdaysCountWithSuffix || '',
+    dates: this.formattedDateRange || '',
+    commutation: this.getCommutation() || '',
+    applicant: this.salary || '', // Assuming salary is the applicant identifier
+    asof: this.leavecredits || '',
+    tevl: this.totalvacation || 0,
+    tesl: this.totalsick || 0,
+    ltavl: this.lessvacation || 0,
+    ltasl: this.lesssick || 0,
+    bvl: this.balancevacation || 0,
+    vsl: this.balancesick || 0,
+    certification: '', // Add your certification value here
+    reco: this.getRecommendation() || '',
+    recodesc: this.text || '',
+    recommendation: '', // Add your recommendation value here
+    dayswpay: this.withpay || 0,
+    dayswopay: this.withoutpay || 0,
+    others: this.othersSpecify || '',
+    disapproved: this.text2 || '',
+    approval: '', // Add your approval value here
+  };
 
-                }else if (this.vacationleavedetails.includes(2))(
-                    console.log('Abroad(Specify), '+this.vacation2)
-                )
+  console.log(formData);
 
-            }else if (this.selectedLeavetype.includes(1)){
-                console.log('Leave Type: Mandatory/Forced Leave')
-               
-            }else if (this.selectedLeavetype.includes(2)){
-                console.log('Leave Type: Sick Leave')
-          
-                if (this.vacationleavedetails.includes(1)){
-                    console.log('In Hospital (Specify Illness), '+this.sick1)
-
-                }else if (this.vacationleavedetails.includes(2))(
-                    console.log('Out Patient (Specify Illness), '+this.sick2)
-                )
-
-            }else if (this.selectedLeavetype.includes(3)){
-                console.log('Leave Type: Maternity Leave')
-            }else if (this.selectedLeavetype.includes(4)){
-                console.log('Leave Type: Paternity Leave')
-            }else if (this.selectedLeavetype.includes(5)){
-
-                // 6.B TYPE OF LEAVE TO BE AVAILED OF
-                console.log('Leave Type: Special Privilege Leave')
-                if (this.vacationleavedetails.includes(1)){
-                    console.log('Within the Philippines, '+this.vacation1)
-
-                }else if (this.vacationleavedetails.includes(2))(
-                    console.log('Abroad(Specify), '+this.vacation2)
-                )
-
-
-
-            }else if (this.selectedLeavetype.includes(6)){
-                console.log('Leave Type: Solo Parent Leave')
-            }else if (this.selectedLeavetype.includes(7)){
-                console.log('Leave Type: Study Leave')
-                if (this.studyleavedetails.includes(1)){
-                    console.log(`Completion of Master's Degree`)
-
-                }else if (this.studyleavedetails.includes(2))(
-                    console.log('BAR/Board Examination Review Other')
-                    
-                )
-            }else if (this.selectedLeavetype.includes(8)){
-                console.log('Leave Type: 10-Day VAWC Leave')
-            }else if (this.selectedLeavetype.includes(9)){
-                console.log('Leave Type: Rehabilitation Privilege')
-            }else if (this.selectedLeavetype.includes(10)){
-                console.log('Leave Type: Special Leave Benefits for Women')
-                console.log(this.leaveforwoman)
-            }else if (this.selectedLeavetype.includes(11)){
-                console.log('Leave Type: Special Emergency(Calamity) Leave')
-            }else if (this.selectedLeavetype.includes(12)){
-                console.log('Leave Type: Adoption Leave')
-            }else{
-            console.log('Others: ' + this.LeaveType)
-            }
-            // 6.B TYPE OF LEAVE TO BE AVAILED OF
-            console.log('other purpose: '+this.otherPurpose)
-            if (this.monetization.includes(1)){
-                console.log('Monetization of Leave Credits')
-            }else if (this.monetization.includes(2)){
-                console.log('Terminal Leave')
-            }
-            // 6.C Number OF WORKING DAYS APPLIED FOR
-            console.log("working days applied for: "+ this.weekdaysCountWithSuffix )
-            console.log('inclusive dates: ' + this.formattedDateRange)
-
-            // 6.D COMMUTATION
-            if(this.commutationLeavetype.includes(1)){
-                console.log('COMMUTATION: Not Requested')
-            }else if(this.commutationLeavetype.includes(2)){
-                console.log('COMMUTATION: Requested')
-            }
-
-
-            // 7.A CERTIFICATION OF LEAVE CREDITS
-
-            console.log('As of: ' + this.leavecredits)
-            console.log("Total Earned: Vacation Leave: "+this.totalvacation)
-            console.log('Total Earned: Sick Leave: ' +this.totalsick)
-            console.log('Less this Application: Vacation Leave: '+this.lessvacation)
-            console.log('Less this Application: Sick Leave: '+this.lesssick)
-            console.log('Balance: Vacation Leave: '+this.balancevacation)
-            console.log('Balance: Sick Leave: '+this.balancesick)
-
-
-            // 7.B RECOMMENDATION
-           if (this.recommendationLeavetype.includes(1)){
-            console.log('For approval')
-           }else if (this.recommendationLeavetype.includes(2)){
-            console.log('For disapproval due to: '+this.text)
-           }
-
-        //    7.C APPROVED FOR
-           console.log(this.withpay+' days with pay')
-           console.log(this.withoutpay+' days without pay')
-           console.log(this.othersSpecify+' others (Specify)')
-
-
-
-        //  7.D DISAPPROVED DUE TO
-
-           console.log('Disapproved due to: '+ this.text2)
-
-            console.log('')
-
-
-            this.position = ''
-this.salary = ''
-this.selectedLeavetype = []
-this.vacationleavedetails = []
-this.vaction1 = ''
-this.vacation2 = ''
-this.sick1 = ''
-this.sick2 = ''
-this.studyleavedetails = []
-this.leaveforwoman = ''
-this.LeaveType = ''
-this.otherpurpose = ''
-this.monetization = []
-this.weekdaysCount = ''
-
-this.commutationLeavetype = []
-this.leavecredits = ''
-this.totalvacation = ''
-this.totalsick = ''
-this.lessvacation = ''
-this.lesssick = ''
-this.balancevacation = ''
-this.balancesick = ''
-this.recommendation = []
-this.text = ''
-this.withpay = ''
-this.withoutpay = ''
-this.othersSpecify = ''
-this. text2 = ''
-
-
-
-        },
+  axios.post('http://172.31.10.159:8000/addleave_form', formData)
+    .then(response => {
+      console.log('Data saved successfully:', response.data);
+    })
+    .catch(error => {
+      if (error.response && error.response.data) {
+        console.error('Error saving data:', error.response.data);
+      } else {
+        console.error('Error saving data:', error);
+      }
+    });
+},
+    getLeaveType() {
+      if (this.selectedLeavetype.includes(0)) {
+        return 'Vacation Leave';
+      } else if (this.selectedLeavetype.includes(1)) {
+        return 'Mandatory/Forced Leave';
+      } else if (this.selectedLeavetype.includes(2)) {
+        return 'Sick Leave';
+      } else if (this.selectedLeavetype.includes(3)) {
+        return 'Maternity Leave';
+      } else if (this.selectedLeavetype.includes(4)) {
+        return 'Paternity Leave';
+      } else if (this.selectedLeavetype.includes(5)) {
+        return 'Special Privilege Leave';
+      } else if (this.selectedLeavetype.includes(6)) {
+        return 'Solo Parent Leave';
+      } else if (this.selectedLeavetype.includes(7)) {
+        return 'Study Leave';
+      } else if (this.selectedLeavetype.includes(8)) {
+        return '10-Day VAWC Leave';
+      } else if (this.selectedLeavetype.includes(9)) {
+        return 'Rehabilitation Privilege';
+      } else if (this.selectedLeavetype.includes(10)) {
+        return 'Special Leave Benefits for Women';
+      } else if (this.selectedLeavetype.includes(11)) {
+        return 'Special Emergency(Calamity) Leave';
+      } else if (this.selectedLeavetype.includes(12)) {
+        return 'Adoption Leave';
+      } else {
+        return 'Others';
+      }
+    },
+    getLeaveDetails() {
+      if (this.selectedLeavetype.includes(0)) {
+        if (this.vacationleavedetails.includes(1)) {
+          return `Within the Philippines, ${this.vacation1}`;
+        } else if (this.vacationleavedetails.includes(2)) {
+          return `Abroad(Specify), ${this.vacation2}`;
+        }
+      } else if (this.selectedLeavetype.includes(2)) {
+        if (this.vacationleavedetails.includes(1)) {
+          return `In Hospital (Specify Illness), ${this.sick1}`;
+        } else if (this.vacationleavedetails.includes(2)) {
+          return `Out Patient (Specify Illness), ${this.sick2}`;
+        }
+      } else if (this.selectedLeavetype.includes(7)) {
+        if (this.studyleavedetails.includes(1)) {
+          return `Completion of Master's Degree`;
+        } else if (this.studyleavedetails.includes(2)) {
+          return 'BAR/Board Examination Review Other';
+        }
+      } else if (this.selectedLeavetype.includes(10)) {
+        return this.leaveforwoman;
+      }
+      return '';
+    },
+    getCommutation() {
+      if (this.commutationLeavetype.includes(1)) {
+        return 'Not Requested';
+      } else if (this.commutationLeavetype.includes(2)) {
+        return 'Requested';
+      }
+      return '';
+    },
+    getRecommendation() {
+      if (this.recommendationLeavetype.includes(1)) {
+        return 'For approval';
+      } else if (this.recommendationLeavetype.includes(2)) {
+        return `For disapproval due to: ${this.text}`;
+      }
+      return '';
+    },
 
         closeaddleave() {
             isaddleave.value = false;
@@ -976,7 +942,7 @@ this. text2 = ''
         async fetchAccounts() {
 
             try {
-                const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
+                const response = await axios.get('http://172.31.10.159:8000/get_accounts_json');
 
                 this.accounts = response.data;
             } catch (error) {
@@ -986,7 +952,7 @@ this. text2 = ''
 
         async fetchNames() {
             try {
-                const response = await axios.get('http://172.31.10.164:8000/get_names_json');
+                const response = await axios.get('http://172.31.10.159:8000/get_names_json');
                 this.names = response.data;
 
 
@@ -1018,7 +984,7 @@ this. text2 = ''
             return item ? item.position_name : '';
         },
         fetchemployee() {
-            fetch('http://172.31.10.164:8000/get_employees_json/')
+            fetch('http://172.31.10.159:8000/get_employees_json/')
                 .then(response => response.json())
                 .then(data => {
                     this.employees = data.filter(det => det.name_id == this.name_id);
@@ -1070,7 +1036,7 @@ this. text2 = ''
                     console.error('Error fetching employees:', error);
                 });
             // Fetch positions data
-            fetch('http://172.31.10.164:8000/get_positions_json/')
+            fetch('http://172.31.10.159:8000/get_positions_json/')
                 .then(response => response.json())
                 .then(data => {
                     this.positions = data.filter(detz => detz.position_id == this.employees[0].position_id);
@@ -1205,6 +1171,22 @@ this. text2 = ''
 </script>
 
 <style>
+.buttonss {
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  height: 40px;
+  justify-content: space-around;
+  margin-top: 8px;
+
+}
+.button {
+  border-radius: 10px;
+  width: 20%;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+}
 .containerlist {
     cursor: pointer;
     position: relative;

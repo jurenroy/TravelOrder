@@ -1,7 +1,7 @@
 <template>
    <headers v-if="showHeader1" class="headz"/>
    <headers1 v-if="showHeader2" class="headx"/>
-   <div class="titlez"v-if="!isRegistrationClicked && !employeelis && !isEdits">
+   <div class="titlez" v-if="!isRegistrationClicked && !employeelis && !isEdits">
       <div>
          <p class="travel" >Travel Order</p>
       </div>
@@ -109,7 +109,7 @@ const showEditss = () => {
 // Fetch OTP data function
 const fetchAccounts = async () => {
    try {
-      const response = await axios.get('http://172.31.10.164:8000/get_accounts_json/');
+      const response = await axios.get('http://172.31.10.159:8000/get_accounts_json/');
       acc.value = response.data.find(result => result.account_id == accountId);
    } catch (error) {
       console.error('Error fetching OTP data:', error);

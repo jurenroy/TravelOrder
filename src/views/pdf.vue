@@ -80,22 +80,22 @@
             is necesarry and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
       </div>
-        <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (divisionChiefs.includes(name) && name != 'RODANTE B. FELINA')) ? 'flex-end' : 'space-around' }" v-if="aor == 0">
+        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (divisionChiefs.includes(name) && name != 'RODANTE B. FELINA')) ? 'flex-end' : 'space-around' }" v-if="aor == 0">
           
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD'">
             <p class="recoz">Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.159:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }">
               {{ recommended }}</p>
             <p style="margin-top: -10px;">Chief, {{ division }}</p>
           </div>
 
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
             <p class="recoz">Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.159:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px'}">
               LIBERTY B. DAITIA</p>
             <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
@@ -104,21 +104,21 @@
             <p class="aproz">Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.159:8000/storage/null' && aor == 0" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 3 && sdiv !== null ">OSIN JR. A. SINSUAT</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 2 && sdiv !== null ">LIBERTY B.DAITIA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
             <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
             <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
@@ -126,38 +126,38 @@
 
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA'">
             <p class="aproz">Approved by:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.159:8000/storage/null' && aor == 0" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
             >HENRY A. ADORNADO, PhD</p>
             <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
         </div>
-        <div class="outer-container":style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (name=='RODANTE B. FELINA' && intervals == 0) || (name=='LIBERTY B. DAITIA' && intervals == 0)) && !(name=='RODANTE B. FELINA' && intervals == 1) ? 'flex-end' : 'space-around' }" v-if="aor == 1">
+        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: (division == 'ORD' || (name=='RODANTE B. FELINA' && intervals == 0) || (name=='LIBERTY B. DAITIA' && intervals == 0)) && !(name=='RODANTE B. FELINA' && intervals == 1) ? 'flex-end' : 'space-around' }" v-if="aor == 1">
 
           <div class="inner-container2" v-if="divisionChiefs.includes(name) && intervals == 1">
             <p class="recoz">Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.159:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px'}">
               HENRY A. ADORNADO, PhD</p>
             <p style="margin-top: -10px;">Regional Executive Director</p>
           </div>
 
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD'">
             <p class="recoz">Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.159:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }">
               {{ recommended }}</p>
             <p style="margin-top: -10px;">Chief, {{ division }}</p>
           </div>
 
           <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1 && division !== 'ORD' && name !== 'LIBERTY B. DAITIA'">
             <p class="recoz">Recommended by:</p>
-            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.164:8000/storage/null'" />
+            <img :src="signature1" class="signatiz" v-if="signature1 !== 'http://172.31.10.159:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px'}">
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px'}">
               LIBERTY B. DAITIA</p>
             <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
@@ -166,21 +166,21 @@
             <p class="aproz">Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null' && aor == 0" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.159:8000/storage/null' && aor == 0" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 3 && sdiv !== null ">OSIN JR. A. SINSUAT</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 2 && sdiv !== null ">LIBERTY B.DAITIA</p>
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
               v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
             <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
             <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
@@ -188,16 +188,16 @@
 
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '-10px' : '0px' }" v-if="divisionChiefs.includes(name) && intervals == 1">
             <p class="aproz">Approved by:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.159:8000/storage/null'" />
             <p class="value"
-              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.164:8000/storage/null') ? '50px' : '50px' }"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://172.31.10.159:8000/storage/null') ? '50px' : '50px' }"
             >Atty. DANILO U. UYKIENG</p>
             <p style="margin-top: -10px;">OIC, Bureau Director</p>
           </div>
 
           <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA' && intervals == 0">
             <p class="aproz">Approved by:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.164:8000/storage/null'" />
+            <img :src="signature2" class="signatiz" v-if="signature2 !== 'http://172.31.10.159:8000/storage/null'" />
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == 'http://192.168.239.3555:8000/storage/null') ? '50px' : '50px' }"
             >HENRY A. ADORNADO, PhD</p>
@@ -212,7 +212,7 @@
           succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent
           official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-containerz" style="align-self: flex-end; margin-right: 6%; ">
-          <img :src="signature3" class="signatizz" v-if="signature3 !== 'http://172.31.10.164:8000/storage/null'"
+          <img :src="signature3" class="signatizz" v-if="signature3 !== 'http://172.31.10.159:8000/storage/null'"
             style="margin-top: -50px; margin-bottom: 0px" />
           <p style="font-weight: bold; text-align: center;">{{ name }}</p>
           <p style="text-align: center;">Official Employee</p>
@@ -359,7 +359,7 @@ export default {
       });
     },
     fetchAccounts() {
-      axios.get('http://172.31.10.164:8000/get_accounts_json')
+      axios.get('http://172.31.10.159:8000/get_accounts_json')
         .then(response => {
           this.accounts = response.data;
         })
@@ -368,7 +368,7 @@ export default {
         });
     },
     fetchData() {
-      axios.get('http://172.31.10.164:8000/get_forms_json')
+      axios.get('http://172.31.10.159:8000/get_forms_json')
         .then(response => {
           this.formData = response.data;
         })
@@ -377,7 +377,7 @@ export default {
         });
     },
     fetchNames() {
-      axios.get('http://172.31.10.164:8000/get_names_json')
+      axios.get('http://172.31.10.159:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -386,7 +386,7 @@ export default {
         });
     },
     fetchPositions() {
-      fetch('http://172.31.10.164:8000/get_positions_json/')
+      fetch('http://172.31.10.159:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -396,7 +396,7 @@ export default {
         });
     },
     fetchDivisions() {
-      fetch('http://172.31.10.164:8000/get_divisions_json/')
+      fetch('http://172.31.10.159:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
@@ -406,7 +406,7 @@ export default {
         });
     },
     fetchEmployees() {
-      fetch('http://172.31.10.164:8000/get_employees_json/')
+      fetch('http://172.31.10.159:8000/get_employees_json/')
         .then(response => response.json())
         .then(data => {
           this.employees = data;
@@ -444,9 +444,9 @@ export default {
         this.to_num = selectedForm.to_num;
         this.intervals = selectedForm.intervals;
         this.aor = selectedForm.aor;
-        this.signature1 = `http://172.31.10.164:8000/storage/${selectedForm.signature1}`;
-        this.signature2 = `http://172.31.10.164:8000/storage/${selectedForm.signature2}`;
-        this.signature3 = 'http://172.31.10.164:8000/storage/null';
+        this.signature1 = `http://172.31.10.159:8000/storage/${selectedForm.signature1}`;
+        this.signature2 = `http://172.31.10.159:8000/storage/${selectedForm.signature2}`;
+        this.signature3 = 'http://172.31.10.159:8000/storage/null';
 
 
         const nameDetails = this.names[this.name_id - 1];
@@ -471,7 +471,7 @@ export default {
         }
         const selectedAccount = this.accounts.find(acc => acc.name_id === nameDetails.name_id);
         if (selectedAccount) {
-          this.signature3 = `http://172.31.10.164:8000/storage/${selectedAccount.signature}`;
+          this.signature3 = `http://172.31.10.159:8000/storage/${selectedAccount.signature}`;
         }
         this.generateQRCode();
       } else {
@@ -569,6 +569,7 @@ export default {
 .label-value-row {
   display: flex;
   flex-direction: row;
+  margin: -7px;
 }
 
 .inner-container p {
@@ -593,7 +594,7 @@ export default {
 .label-value-row2 {
   display: flex;
   flex-direction: row;
-  margin-left: 6%;
+  margin-left: 3.5%;
   margin-top: -10px;
   margin-bottom: -20px;
 }
@@ -665,19 +666,18 @@ button {
 }
 
 .footerz{
-  text-align: left; margin-top: -87px; margin-left: 6%;
+  text-align: left; margin-top: 87px; margin-left: 6%;
 }
 
 .cueare{
-  position: absolute;
-  margin-top: -560px;
+  display: flex;
 }
 
 .bigz{
-  height: 100px; width: 100px; position: absolute; margin-top: 490px;
+  height: 100px; width: 100px; position: absolute; margin-top: 130px;
 }
 .centz{
-  height: 50px; width: 50px; position: absolute; margin-top: 510px; margin-left: 26px;
+  height: 50px; width: 50px; position: absolute; margin-top: 160px; margin-left: 26px;
 }
 
 @media screen and (max-width: 768px) {

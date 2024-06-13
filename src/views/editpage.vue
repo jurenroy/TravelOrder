@@ -278,7 +278,7 @@ const sendOTP = async () => {
   otp6.value = ''
   try {
 
-    await axios.post(`http://172.31.10.164:8000/send-otp/${accountIdz}`);
+    await axios.post(`http://172.31.10.159:8000/send-otp/${accountIdz}`);
     if ((newUsername.value) === false && newUsername.value !== '') {
       isEditemail.value = true;
       validation.value = 'Email'
@@ -327,7 +327,7 @@ const submitImage = async () => {
     const formData = new FormData();
     const file = dataURItoBlob(uploadedImageUrl.value);
     formData.append('signature', file);
-    await axios.post(`http://172.31.10.164:8000/update_account/${accountId}`, formData, {
+    await axios.post(`http://172.31.10.159:8000/update_account/${accountId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -448,7 +448,7 @@ const updateProfile = () => {
     } else {
     }
 
-    axios.post(`http://172.31.10.164:8000/update_account/${accountIdz}`, formData)
+    axios.post(`http://172.31.10.159:8000/update_account/${accountIdz}`, formData)
       .then(response => {
         verifiedotp.value = (true)
         setTimeout(() => {
@@ -464,7 +464,7 @@ const updateProfile = () => {
 
 const fetchAccounts = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_accounts_json');
 
     accounts.value = await response.data.filter(result => result.account_id == accountIdz);
     email.value = accounts.value[0].email
@@ -476,7 +476,7 @@ const fetchAccounts = async () => {
 
 const fetchNames = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_names_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_names_json');
     names.value = response.data;
 
     const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
@@ -502,7 +502,7 @@ const convert = async () => {
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountIdz);
     otppp.value = otpData.value[0].code
   } catch (error) {

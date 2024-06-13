@@ -313,7 +313,7 @@ export default {
         this.submitting = true;
         this.loadis = true
 
-        axios.post('http://172.31.10.164:8000/add_form/', formData)
+        axios.post('http://172.31.10.159:8000/add_form/', formData)
 
           .then(response => {
             if (response.status === 200) {
@@ -351,12 +351,12 @@ export default {
       this.isRed = false
     },
     fetchData() {
-      fetch('http://172.31.10.164:8000/get_names_json/')
+      fetch('http://172.31.10.159:8000/get_names_json/')
         .then(response => response.json())
         .then(data => {
           this.names = data;
           if (this.names) {
-            fetch('http://172.31.10.164:8000/get_accounts_json/')
+            fetch('http://172.31.10.159:8000/get_accounts_json/')
               .then(response => response.json())
               .then(data => {
                 if (this.accountIdz) {
@@ -380,7 +380,7 @@ export default {
           console.error('Error fetching names:', error);
         });
 
-      fetch('http://172.31.10.164:8000/get_employees_json/')
+      fetch('http://172.31.10.159:8000/get_employees_json/')
         .then(response => response.json())
         .then(data => {
           this.employees = data;
@@ -389,7 +389,7 @@ export default {
           console.error('Error fetching employees:', error);
         });
       // Fetch positions data
-      fetch('http://172.31.10.164:8000/get_positions_json/')
+      fetch('http://172.31.10.159:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -399,7 +399,7 @@ export default {
         });
 
       // Fetch divisions data
-      fetch('http://172.31.10.164:8000/get_divisions_json/')
+      fetch('http://172.31.10.159:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;

@@ -120,8 +120,8 @@ export default {
         dataToSend.middle_init = this.formData.middleInit.toUpperCase().endsWith('.') ? this.formData.middleInit.toUpperCase() : this.formData.middleInit.toUpperCase() + '.';
 
       }
-
-      axios.post('http://172.31.10.164:8000/add_employees', dataToSend)
+      
+      axios.post('http://172.31.10.159:8000/add_employees', dataToSend)
         .then(response => {
           console.log('Response:', response.data);
           this.formData = {
@@ -143,7 +143,7 @@ export default {
         });
     },
     fetchPositions() {
-      fetch('http://172.31.10.164:8000/get_positions_json/')
+      fetch('http://172.31.10.159:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -153,7 +153,7 @@ export default {
         });
     },
     fetchDivisions() {
-      fetch('http://172.31.10.164:8000/get_divisions_json/')
+      fetch('http://172.31.10.159:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
