@@ -1,6 +1,6 @@
 <template>
    <div class="una1">
-      <div class="imagediv1" @click="window.location.reload()">
+      <div class="imagediv1" @click="navigatefront">
          <img class="ima1" src="../assets/logo.png" alt="Description of the image">
          <img class="ima1 ims1" src="../assets/republic.png" alt="Description of the image">
          <img class="ima1" src="../assets/bago.png" alt="Description of the image">
@@ -24,6 +24,11 @@ export default {
          isRegistration,
          toggleButton
       };
+   }, 
+   methods:{
+      navigatefront() {
+      this.$router.push('/');
+    },
    }
 };
 </script>

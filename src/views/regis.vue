@@ -28,8 +28,8 @@
             name.first_name }} {{ name.middle_init }}</option>
                   </select>
 
-                  <label class="n">Email:</label>
-                  <input type="email" v-model="email" class='regsinput' id='email' required
+                  <label class="n">Username:</label>
+                  <input type="text" v-model="email" class='regsinput' id='email' required
                      :class="{ 'red-border': isRed && email === '' }" @input="resetRed" @keydown.enter='regis_submit'>
 
                   <label class="p"> Password: </label>
@@ -81,13 +81,8 @@
 
             <div class="buttonss">
                <button class="button re" :disabled="submit2" @click="regis_submit">Register</button>
-               <!-- <button class="button re"></button> -->
-               <!-- <div :disabled="submit2"
-                  style="padding: 5px; border: 2px solid black; border-radius: 10px; width: 200px; display: flex; justify-content: center;"
-                  v-if="lods">
-                  <img src="../assets/loading.gif" width="auto" height="25px">
-               </div> -->
                <button class="button bax" :disabled="submit2" @click="backButton">Back</button>
+               
 
             </div>
 
@@ -98,6 +93,7 @@
 
 <script setup>
 import { isRegistrationClicked, isVisible, backButton } from './dashboard.vue';
+import {  isregisclick} from './leaveform.vue';
 import { showEdit } from '@/components/heder.vue';
 import logout from '@/components/logout.vue';
 import axios from 'axios';
@@ -107,6 +103,7 @@ import CryptoJS from 'crypto-js';
 
 <script>
 export const regis_logout = false;
+const routers = localStorage.getItem('routerz')
 export default {
 
 
@@ -114,10 +111,14 @@ export default {
       isRegistrationClicked.value = false;
       isVisible.value = false;
       showEdit.value = false
+  isregisclick.value = false;
+
    },
+
 
    data() {
       return {
+        
          isRed: false,
          types: [],
          names: {},
@@ -168,18 +169,18 @@ export default {
          return this.password !== ''
       },
       resetRed() {
-         this.isRed = false; // Reset the isRed flag when typing in the input
+         this.isRed = false; 
       },
       disablenames() {
          this.disablename = false;
       },
       resetRed() {
-         this.isRed = false; // Reset the isRed flag when typing in the input
+         this.isRed = false; 
       },
 
       regis_submit() {
 
-         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+         // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
          const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
 
          if (this.email === '' && this.password === '' && this.account_type === '' && this.name === '') {
@@ -216,15 +217,15 @@ export default {
                this.isValid = false;
             }, 3000);
 
-         } else if (emailPattern.test(this.email) === false) {
-            this.isRed = true
-            this.loadingregis = false;
-            this.isEmail = true;
-            this.valid = 'Email'; // Set isEmail to true to show the error message
-            this.valid3 = '';
-            setTimeout(() => {
-               this.isEmail = false; // Reset isValid to false after 3 seconds
-            }, 3000);
+         // } else if (emailPattern.test(this.email) === false) {
+         //    this.isRed = true
+         //    this.loadingregis = false;
+         //    this.isEmail = true;
+         //    this.valid = 'Email'; 
+         //    this.valid3 = '';
+         //    setTimeout(() => {
+         //       this.isEmail = false; 
+         //    }, 3000);
 
          } else if (this.password === '') {
             this.isRed = true
@@ -239,7 +240,6 @@ export default {
             this.loadingregis = false;
             this.isEmail = true;
             this.valid = 'Password';
-            // this.valid3 = 'Must contain A-a letters & numbers with 8 characters...'
             setTimeout(() => {
                this.isEmail = false;
                this.lods = true
@@ -258,7 +258,7 @@ export default {
                };
 
 
-               axios.post('http://172.31.10.164:8000/add_account/', formData)
+               axios.post('http://172.31.10.159:8000/add_account/', formData)
                   .then(response => {
                      if (response.status === 200) {
                         this.loadingregis = false;
@@ -270,7 +270,6 @@ export default {
                         this.password = '';
                         this.regiss = true;
 
-                        // Set a 3-second timer before reloading the page
                         setTimeout(() => {
                            window.location.reload();
 
@@ -291,7 +290,7 @@ export default {
 
       },
       fetchData() {
-         fetch('http://172.31.10.164:8000/get_names_json/')
+         fetch('http://172.31.10.159:8000/get_names_json/')
             .then(response => response.json())
             .then(data => {
                this.names = data;
@@ -300,7 +299,7 @@ export default {
                console.error('Error fetching names:', error);
             });
 
-         fetch('http://172.31.10.164:8000/get_type_json/')
+         fetch('http://172.31.10.159:8000/get_type_json/')
             .then(response => response.json())
             .then(data => {
                this.types = data;
@@ -309,7 +308,7 @@ export default {
                console.error('Error fetching employees:', error);
             });
 
-         fetch('http://172.31.10.164:8000/get_employees_json/')
+         fetch('http://172.31.10.159:8000/get_employees_json/')
             .then(response => response.json())
             .then(data => {
                this.employee = data.filter(emp => emp.chief > 0)
@@ -394,11 +393,8 @@ export default {
    border-radius: 25px;
    background-color: white;
    width: 80vw;
-   /* Set width to a percentage of the viewport width */
    max-width: 500px;
-   /* Set a maximum width */
    height: auto;
-   /* Let the height adjust based on content */
    padding: 20px;
    color: #212121;
    border: 2px solid black;
@@ -407,7 +403,6 @@ export default {
 
 .second.zoomed {
    transform: scale(2);
-   /* Zoom in by a factor of 2 */
 }
 
 .form {
@@ -487,7 +482,6 @@ export default {
    top: 0;
    left: 0;
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;
@@ -502,7 +496,6 @@ export default {
    top: 0;
    left: 0;
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;
@@ -536,7 +529,6 @@ export default {
    top: 0;
    left: 0;
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;

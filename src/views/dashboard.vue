@@ -1,76 +1,29 @@
 <template>
-   <div>
-      <div style="flex-direction: column; justify-content: center;" v-if="isEdits && isRegistrationClicked">
-         <editss></editss>
-      </div>
-      <div style="flex-direction: column; justify-content: center;" v-if="isRegistrationClicked && !isEdits">
-         <registrationform></registrationform>
-      </div>
-      <div style="flex-direction: column; justify-content: center;" v-if="employeelis && !isEdits">
-         <employeelist></employeelist>
-      </div>
-      <div class="logssss" v-if="isButssClicked">
-         <logsss></logsss>
-      </div>
-
+   <headers v-if="showHeader1" class="headz"/>
+   <headers1 v-if="showHeader2" class="headx"/>
+   <div class="titlez" v-if="!isRegistrationClicked && !employeelis && !isEdits">
       <div>
-         <headers v-if="showHeader1" />
-         <headers1 v-if="showHeader2" />
-
-         <div v-if="!isRegistrationClicked">
-
-            <!-- <headers v-if="showHeader1"/>
-         <headers1 v-if="showHeader2"/> -->
-
-            <div v-if="!employeelis">
-
-               <!-- <headers v-if="showHeader1"/>
-<headers1 v-if="showHeader2"/> -->
-               <div class="sig">
-                  <signature v-if="acc.signature === null" />
-                  <div v-else>
-                     <div v-if="!isRegistrationClicked">
-                        <div
-                           style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                           <div class="tra">
-                              <p class="travel">Travel Order</p>
-                           </div>
-
-                           <div>
-                              <button class="add" @click="toggleForm">{{ isVisible ? 'Close form' : 'Add form'
-                                 }}</button>
-                              <button v-show="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="reg"
-                                 @click="toggleRegistration">{{
-         'Registration' }}</button>
-                              <button v-show="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{
-         'Employee List' }}</button>
-                           </div>
-
-                        </div>
-
-                        <div style="display: flex; justify-content: center;" v-if="isVisible">
-                           <addforms></addforms>
-                        </div>
-                        <div style="display: flex; justify-content: center;" v-if="!isVisible">
-                           <tablez></tablez>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="logssss" v-if="isButssClicked">
-                  <logsss></logsss>
-               </div>
-
-            </div>
-
-         </div>
-
+         <p class="travel" >Travel Order</p>
       </div>
-
+      <div class="navigationz" >
+         <button class="add" @click="toggleForm">{{ isVisible ? 'Close Form' : 'Add Form'}}</button>
+         <button v-if="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="reg" @click="toggleRegistration">{{'Registration' }}</button>
+         <button v-if="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{'Employee List' }}</button>
+      </div>
    </div>
+   <tablez class="tablex" v-if="!isVisible && !isRegistrationClicked && !isEdits && !employeelis"/>
+   <addforms class="formz" v-if="isVisible"/>
+   <registrationform class="regixcv" v-if="isRegistrationClicked && !isEdits && !employeelis"/>
+   <employeelist class="empex" v-if="employeelis && !isEdits"/>
+   <signature class="sig" v-if="acc.signature === null" />
+   <editss class="edix" v-if="isEdits && isRegistrationClicked"/>
+   <logsss class="logssss" v-if="isButssClicked"/>
 </template>
 
+
 <script setup>
+
+
 import headers from '../components/heder.vue'
 import signature from '../components/signature.vue'
 import headers1 from '../components/heder2.vue'
@@ -81,12 +34,16 @@ import employeelist from '../views/employeelist.vue'
 import logsss from '../components/logout.vue'
 import editss from '../views/editpage.vue'
 import { showEdit } from '../components/heder.vue';
+import { isleavelogoutClicked, isregisclick } from './leaveform.vue';
+
 </script>
 
 
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
+
+
 const accountId = localStorage.getItem('accountId');
 const isVisible = ref(false);
 const isRegistrationClicked = ref(false);
@@ -123,6 +80,7 @@ const backButton = () => {
    isRegistrationClicked.value = false;
    isVisible.value = false;
    showEdit.value = false
+   isregisclick.value = false;
 
 };
 
@@ -138,8 +96,10 @@ const logButton = () => {
 
 const noButton = () => {
    isButssClicked.value = false;
+   isleavelogoutClicked.value = false;
    showHeader1.value = true;
    showHeader2.value = false
+
 };
 
 const showEditss = () => {
@@ -149,17 +109,21 @@ const showEditss = () => {
 // Fetch OTP data function
 const fetchAccounts = async () => {
    try {
-      const response = await axios.get('http://172.31.10.164:8000/get_accounts_json/');
-      // Filter the fetched OTP data based on the accountId
+      const response = await axios.get('http://172.31.10.159:8000/get_accounts_json/');
       acc.value = response.data.find(result => result.account_id == accountId);
    } catch (error) {
       console.error('Error fetching OTP data:', error);
    }
 };
+const loginstate = () => {
+   const state = localStorage.getItem('isLoggedIn');
+   if (!state) {
+      localStorage.setItem('isLoggedIn', false);
+   }
+}
 
+loginstate()
 fetchAccounts()
-
-
 
 
 export {
@@ -199,13 +163,11 @@ export {
    font-size: 20px;
    font-weight: bold;
    box-shadow: 7px 7px 12px black;
-   /* box-shadow: 7px 7px 12px black, 0px 0px 10px black inset; */
    cursor: pointer;
 }
 
 .back {
    margin-top: -19px;
-   margin-top: 13px;
    height: auto;
    width: 95px;
    padding: 5px;
@@ -226,7 +188,6 @@ export {
    font-size: 20px;
    font-weight: bold;
    box-shadow: 7px 7px 12px black;
-   /* box-shadow: 7px 7px 12px black, 0px 0px 10px black inset; */
    cursor: pointer;
 }
 
@@ -241,14 +202,12 @@ export {
    font-size: 20px;
    font-weight: bold;
    box-shadow: 7px 7px 12px black;
-   /* box-shadow: 7px 7px 12px black, 0px 0px 10px black inset; */
    cursor: pointer;
 }
 
 .logssss {
    flex-direction: column;
    justify-content: center;
-   /* align-items: center; */
    top: 0px;
    width: auto
 }
@@ -257,6 +216,60 @@ export {
    margin-top: 100px;
 
 }
+
+.navigationz{
+   display: flex;
+   flex-direction: row;
+}
+
+.formz{
+   display: flex;
+   justify-content:center; 
+   margin-top: 0px;
+}
+
+.regiz{
+   display: flex;
+   justify-content:center; 
+   margin-top: 0px;
+}
+.titlez{
+   display: flex; 
+   flex-direction: column; 
+   align-items: center; 
+   margin-top: 100px;
+}
+
+@media (max-width: 768px) {
+   .navigationz{
+   flex-direction: column;
+   }
+   .add{
+      margin-bottom: 30px;
+   }
+   .reg{
+      margin-top: -19px;
+      margin-bottom: 30px;
+      margin-left: 0px;
+   }
+   .emplo{
+      margin-top: -19px;
+      margin-bottom: 13px;
+      margin-left: -5px;
+   }
+   .formz{
+      margin-top: 110px;
+   }
+   .regiz{
+      display: flex;
+      justify-content:center; 
+      margin-top: -100px;
+   }
+   .empeee{
+      margin-right: 0px;
+   }
+}
+
 
 @media print {
    .add {
@@ -272,6 +285,9 @@ export {
    }
 
    .tra {
+      display: none !important;
+   }
+   .headz, .headx, .titlez, .formz, .regixcv, .sig, .edix, .logssss{
       display: none !important;
    }
 }

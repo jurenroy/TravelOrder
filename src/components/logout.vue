@@ -15,10 +15,14 @@
 
 <script setup>
 import { noButton, isButssClicked, showHeader1, showHeader2 } from '@/views/dashboard.vue';
+import { noleaveButton } from '@/views/leaveform.vue';
+import { isleavelogoutClicked } from '@/views/leaveform.vue';
 import { showEdit } from './heder.vue';
 import { regis_logout } from '@/views/regis.vue';
 import { useAuthStore } from '../store/auth';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 
 
 const authStore = useAuthStore();
@@ -27,10 +31,10 @@ const accountIdz = localStorage.getItem('accountId');
 
 
 const logout = () => {
-   authStore.logout(); // Call the logout method from your authentication store
-   localStorage.setItem('isLoggedIn', 'false'); // Update the isLoggedIn key in localStorage
-   localStorage.removeItem('accountId'); // Remove any other relevant data from localStorage
-   window.location.reload();
+   authStore.logout();
+   localStorage.setItem('isLoggedIn', 'false');
+   localStorage.removeItem('accountId');
+   router.push("/")
 }
 
 
@@ -46,6 +50,12 @@ export default {
          showHeader2.value = false
 
       },
+
+      noleaveButton(){
+         isleavelogoutClicked.value = false
+         showHeader1.value = true;
+         showHeader2.value = false
+      }
    },
 }
 </script>
@@ -54,13 +64,12 @@ export default {
 .firstlogout {
    top: 0px;
    position: absolute;
-   width: 200vh;
-   height: 100vh;
+   width: 100%;
+   height: 103vh;
    display: flex;
    flex-direction: column;
    justify-content: center;
    align-items: center;
-   /* background-color: black; */
    backdrop-filter: blur(10px);
 }
 
@@ -72,21 +81,16 @@ export default {
    border-radius: 25px;
    background-color: white;
    width: 75w;
-   /* Set width to a percentage of the viewport width */
    max-width: 500px;
-   /* Set a maximum width */
    height: auto;
-   /* Let the height adjust based on content */
    padding: 20px;
    color: #212121;
    border: 2px solid black;
-   /* box-shadow: 0px 0px 35px -2px black; */
    box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
 }
 
 .secondlogout.zoomed {
    transform: scale(2);
-   /* Zoom in by a factor of 2 */
 }
 
 .logoutform {

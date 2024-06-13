@@ -1,15 +1,13 @@
 <template>
   <div class="una">
-    <div class="imagediv1">
-      <img class="ima" src="../assets/logo.png" alt="Description of the image">
-      <img class="ima ims" src="../assets/republic.png" alt="Description of the image">
-      <img class="ima" src="../assets/bago.png" alt="Description of the image">
-
+    <div class="imagediv1" @click="navigatefront">
+      <img class="ima" src="../assets/logo.png" alt="Description of the image" >
+      <img class="ima ims" src="../assets/republic.png" alt="Description of the image" >
+      <img class="ima" src="../assets/bago.png" alt="Description of the image" >
     </div>
 
-    <div
-      style="display: flex; margin-top: 2px; margin-left:-100px ; height: inherit; width: 250px; justify-content: center;"
-      v-if="setEmployee === name.name_id || name.name_id === 76">
+    <div class="damn"
+      v-if="routerzz == 'TravelOrder' && (setEmployee === name.name_id || name.name_id === 76)">
       <h1 style="position: fixed; margin-left:-90px ; margin-top: 3px;">Status:</h1>
 
       <div v-if="setEmployee !== null && setEmployee !== ''">
@@ -65,8 +63,9 @@ const employees = ref([]);
 const names = ref([]);
 const name = ref('')
 const nameLoaded = ref(false)
-const selectedEmployee = ref(null); // Store the selected employee ID
-const setEmployee = ref(null); // Store the selected employee ID
+const selectedEmployee = ref(null);
+const setEmployee = ref(null);
+const routerzz = localStorage.getItem('routerz')
 
 
 
@@ -75,7 +74,7 @@ const setEmployee = ref(null); // Store the selected employee ID
 
 const setAccount = async () => {
   try {
-    const response = await axios.post(`http://172.31.10.164:8000/update_employee/${setEmployee.value}`);
+    const response = await axios.post(`http://172.31.10.159:8000/update_employee/${setEmployee.value}`);
     window.location.reload();
   } catch (error) {
     console.error('Error fetching accounts:', error);
@@ -89,7 +88,7 @@ const fetchAccounts = async () => {
 
   try {
     Usernames.value = false
-    const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_accounts_json');
 
     accounts.value = response.data;
     Usernames.value = true
@@ -100,15 +99,14 @@ const fetchAccounts = async () => {
 
 const fetchEmployee = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_employees_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_employees_json');
     employees.value = response.data.filter(emp => emp.chief > 0)
-    // Find the first employee with a non-null 'rd' property and set its 'name_id' as selectedEmployee
     const selectedEmp = response.data.find(emp => emp.rd !== null);
     if (selectedEmp) {
       setEmployee.value = selectedEmp.name_id;
       selectedEmployee.value = selectedEmp.name_id;
     } else {
-      setEmployee.value = null; // Set selectedEmployee to null if no employee meets the condition
+      setEmployee.value = null;
       selectedEmployee.value = null;
     }
   } catch (error) {
@@ -119,7 +117,7 @@ const fetchEmployee = async () => {
 
 const fetchNames = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_names_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_names_json');
     names.value = response.data;
 
     const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
@@ -129,7 +127,7 @@ const fetchNames = async () => {
       const foundName = names.value.find(name => name.name_id === nameId);
       if (foundName) {
         name.value = foundName;
-        nameLoaded.value = true; // Set the flag to true when the name is found
+        nameLoaded.value = true;
       } else {
       }
     } else {
@@ -139,7 +137,6 @@ const fetchNames = async () => {
   }
 };
 
-// Define the function to get the formatted name
 const getName = (nameId) => {
   const namec = names.value.find(name => name.name_id === nameId);
   if (namec) {
@@ -166,7 +163,8 @@ fetchNames();
 
 <script>
 import { ref } from 'vue';
-import { isButssClicked, showHeader1, showHeader2, isEdits, isRegistrationClicked, isVisible } from '../views/dashboard.vue';
+import { isButssClicked,showHeader1, showHeader2, isEdits, isRegistrationClicked, isVisible } from '../views/dashboard.vue';
+import { isleavelogoutClicked, leaveedit } from '@/views/leaveform.vue';
 import { addem, blurTable } from '@/views/employeelist.vue';
 
 export const showEdit = ref(false)
@@ -176,6 +174,7 @@ export const Usernames = ref(true)
 export const islogout2 = ref(false)
 export const hideedit = ref(true)
 
+export const showstatus = ref(true)
 
 
 
@@ -183,8 +182,13 @@ export const hideedit = ref(true)
 export default {
   inject: ['close'],
   methods: {
+    navigatefront() {
+      this.$router.push('/');
+    },
+
     logButtonz() {
       isButssClicked.value = true;
+      isleavelogoutClicked.value = true;
       showHeader1.value = false;
       showHeader2.value = true
       showEdit.value = false
@@ -206,6 +210,7 @@ export default {
     },
 
     clickEdit() {
+      leaveedit.value = true
       showEdit.value = false;
       isEdits.value = true
       isRegistrationClicked.value = true;
@@ -226,6 +231,7 @@ export default {
 
     clickOut() {
       showEdit.value = true;
+      leaveedit.value = false
       isEdits.value = false
       Usernames.value = true
     }
@@ -258,8 +264,7 @@ export default {
 }
 
 .editnames {
-  /* display: flex;
-  align-items: center; */
+
   position: relative;
   top: 30px;
   left: -30px;
@@ -328,6 +333,16 @@ export default {
 
 .usew {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 15px
+}
+
+.damn{
+  display: flex;
+  margin-top: 2px;
+  margin-left:-100px ;
+  height: inherit;
+  width: 250px;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -336,6 +351,8 @@ export default {
   .ima,
   .ima2 {
     margin-right: 0px;
+    height: 30px;
+    width: auto;
   }
 
   .ims {
@@ -353,6 +370,10 @@ export default {
 
   .usew {
     margin-right: -1px;
+    font-size: 10px;
+  }
+  .damn{
+    display: none;
   }
 
 }

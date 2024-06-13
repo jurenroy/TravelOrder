@@ -1,29 +1,28 @@
 <template>
-  <div>
+  <div style="width: fit-content;">
+    <p class="AddEmp">
+        Add Employee</p>
     <form @submit.prevent="submitForm">
 
-      <div
-        style="font-size: 20px; display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -80px;">
-        <label for="firstName">First Name:</label>
-        <label for="middleInit" style="left: 7px; position: relative;">Middle Initial:</label>
-        <label for="lastName" style="left: -7px; position: relative;">Last Name:</label>
+      <div class="label1">
+        <label for="firstName" style="margin-left: -40px;">First Name:</label>
+        <label for="middleInit" style="margin-left: 10px;">Middle Initial:</label>
+        <label for="lastName" style="margin-left: 5px;">Last Name:</label>
       </div>
 
-      <div
-        style="display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -3px; margin-bottom: 10px;">
+      <div class="input1">
         <!-- Fist Name -->
-        <input style="border:1px solid black; width: 160px;" type="text" id="firstName" v-model="formData.firstName"
+        <input class="inputszxc" type="text" id="firstName" v-model="formData.firstName"
           @keydown.enter="submitForm" required><br>
         <!-- Middle Name -->
-        <input style="border:1px solid black; width: 160px;" type="text" id="middleInit" v-model="formData.middleInit"
+        <input class="inputszxc" type="text" id="middleInit" v-model="formData.middleInit"
           maxlength="1" @keydown.enter="submitForm"><br>
         <!-- Last Name -->
-        <input style="border:1px solid black; width: 160px;" type="text" id="lastName" v-model="formData.lastName"
+        <input class="inputszxc" type="text" id="lastName" v-model="formData.lastName"
           @keydown.enter="submitForm" required><br>
       </div>
 
-      <div
-        style="font-size: 20px; display: flex; flex-direction: row; justify-content: space-evenly; margin-left: -60px; ">
+      <div class="label2">
         <label for="division">Division:</label>
         <label for="position" style="left: 50px; position: relative;">Position:</label>
         <!-- custom position -->
@@ -39,26 +38,23 @@
         <label for="customPosition" style="left: 25px; position: relative;">Custom Position</label>
       </div>
 
-      <div style="display: flex; flex-direction: row;  margin-left: 15px; margin-bottom: 15px; ">
+      <div class="input2">
         <!-- division -->
-        <select style="border:1px solid black; width: 160px; position: relative; left: -3px" id="division"
+        <select  id="division" class="inputszxc1"
           v-model="formData.division" @keydown.enter="submitForm" required>
           <option v-for="division in divisions" :key='division.division_id' :value="division.division_name">{{
       division.division_name }}</option>
-        </select><br>
+        </select>
         <!-- Position -->
-        <select style="border:1px solid black; width: 160px; position: relative; left: 34px" id="position"
+        <select  id="position" class="inputszxc2"
           v-model="formData.position" z required :disabled="customPositionEnabled" @keydown.enter="submitForm">
           <option v-for="position in positions" :key='position.position_id' :value="position.position_name">{{
       position.position_name }}</option>
         </select>
         <!-- Custom Position -->
-        <input style="border:1px solid black; width: 160px; position: relative; left: 70px" type="text"
+        <input type="text" class="inputszxc3"
           id="customPositionInput" v-model="formData.customPosition" v-if="customPositionEnabled"
-          placeholder="Enter Custom Position" @keydown.enter="submitForm" required><br>
-
-
-
+          placeholder="Enter Custom Position" @keydown.enter="submitForm" required>
       </div>
 
       <div v-if="loadis" class="loadid">
@@ -112,27 +108,22 @@ export default {
 
     submitForm() {
       this.loadis = true
-      // Set position_name based on customPositionEnabled
       const positionName = this.customPositionEnabled ? this.formData.customPosition : this.formData.position;
 
-      // Prepare data to send
       const dataToSend = {
         first_name: this.formData.firstName,
         last_name: this.formData.lastName,
         position_name: positionName,
         division_name: this.formData.division,
       };
-      // Check if middle_init is not empty before adding it to dataToSend
       if (this.formData.middleInit !== '') {
-        // dataToSend.middle_init = this.formData.middleInit + '.';
         dataToSend.middle_init = this.formData.middleInit.toUpperCase().endsWith('.') ? this.formData.middleInit.toUpperCase() : this.formData.middleInit.toUpperCase() + '.';
 
       }
-
-      axios.post('http://172.31.10.164:8000/add_employees', dataToSend)
+      
+      axios.post('http://172.31.10.159:8000/add_employees', dataToSend)
         .then(response => {
           console.log('Response:', response.data);
-          // Reset form data
           this.formData = {
             firstName: '',
             middleInit: '',
@@ -145,7 +136,6 @@ export default {
           addem.value = false;
           blurTable.value = false
           seemplo();
-          // Emit an event to indicate that an employee has been added
 
         })
         .catch(error => {
@@ -153,7 +143,7 @@ export default {
         });
     },
     fetchPositions() {
-      fetch('http://172.31.10.164:8000/get_positions_json/')
+      fetch('http://172.31.10.159:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -163,7 +153,7 @@ export default {
         });
     },
     fetchDivisions() {
-      fetch('http://172.31.10.164:8000/get_divisions_json/')
+      fetch('http://172.31.10.159:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
@@ -192,7 +182,7 @@ export default {
 .container {
   cursor: pointer;
   top: 2px;
-  left: 95px;
+  left: 83px;
   position: relative;
 
 }
@@ -223,5 +213,92 @@ export default {
 .container input:checked~svg .path {
   stroke-dasharray: 70.5096664428711 9999999;
   stroke-dashoffset: -262.2723388671875;
+}
+
+.label1{
+  font-size: 20px; 
+  display: flex; 
+  flex-direction: row; 
+  justify-content: space-evenly;
+}
+.label2{
+  font-size: 20px; 
+  display: flex; 
+  flex-direction: row; 
+  justify-content: space-evenly; 
+  margin-left: -40px;
+}
+.input1{
+  display: flex; 
+  flex-direction: row; 
+  justify-content: space-evenly; 
+  margin-left: -3px; 
+  margin-bottom: 10px;
+}
+.input2{
+  display: flex; 
+  flex-direction: row;  
+  margin-left: 15px; 
+  margin-bottom: 15px;
+}
+.AddEmp{
+  display: flex; 
+  justify-content: center; 
+  font-weight: bold; 
+  font-size: 28px; 
+  margin-top: -5px; 
+  margin-bottom: 10px;
+}
+.inputszxc{
+  border:1px solid black; 
+  width: 160px;
+  margin: 10px;
+}
+.inputszxc1{
+  border:1px solid black; 
+  width: 160px; 
+  position: relative; 
+  left: -7px
+}
+.inputszxc2{
+  border:1px solid black; 
+  width: 160px; 
+  position: relative; 
+  left: 20px
+}
+.inputszxc3{
+  border:1px solid black; 
+  width: 160px; 
+  position: relative; 
+  left: 45px
+}
+@media (max-width: 768px) {
+  .label1, .label2, .input1, .input2{
+    font-size: 10px;
+  }
+  .inputszxc{
+  border:1px solid black; 
+  width: 100px;
+}
+.inputszxc1{
+  border:1px solid black; 
+  width: 100px; 
+  position: relative; 
+}
+.inputszxc2{
+  border:1px solid black; 
+  width: 100px; 
+  position: relative; 
+}
+.inputszxc3{
+  border:1px solid black; 
+  width: 100px; 
+  position: relative; 
+}
+.container{
+  left: 70px;
+  top: 0px;
+}
+
 }
 </style>

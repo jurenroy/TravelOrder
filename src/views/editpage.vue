@@ -1,6 +1,6 @@
 <template>
   <div class=update1 style="display: flex; justify-content: center; margin-top: 90px;">
-    
+
     <div class="update2">
       <label style="margin-bottom: 10px; font-weight: bold; font-size: 40px;">Edit Page</label>
       <div class="update3">
@@ -8,7 +8,7 @@
 
         <div class="updateinside">
           <div style="display: flex; flex-direction: column;  width: 100%; ">
-            <label class="updatelabel old">Old Email:</label>
+            <label class="updatelabel old">Old Username:</label>
             <input @keydown.enter='sendOTP' type="email" v-model="email" class='updateinput' id='oldemail' required
               readonly>
 
@@ -17,8 +17,8 @@
               required :disabled="notClikable1">
 
 
-            <label class="updatelabel new">Enter New Email: </label>
-            <input @keydown.enter='sendOTP' type="email" class='updateinput' v-model="newEmail" id='newEmail' required
+            <label class="updatelabel new">Enter New Username: </label>
+            <input @keydown.enter='sendOTP' type="email" class='updateinput' v-model="newUsername" id='newUsername' required
               :disabled="notClikable1">
             <label class="updatelabel new">Enter New Password: </label>
             <input @keydown.enter='sendOTP' type="password" class='updateinput' v-model="newPassword" id='newPassword'
@@ -138,7 +138,6 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-//  import signature from '@/components/signature.vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
@@ -150,15 +149,15 @@ const accounts = ref([]);
 const names = ref([]);
 const name = ref('')
 const email = ref('')
-const newEmail = ref('')
+const newUsername = ref('')
 const oldPass = ref('')
 const passwords = ref('')
 const newPassword = ref('')
 const signature = ref('')
 const hakdog = ref('')
 const isNotEqual = ref(false)
-const otp = ref('');//ge type
-const otpData = ref([]);//confirm
+const otp = ref('');
+const otpData = ref([]);
 const showotp = ref(false)
 const uploads = ref(true)
 const succesful = ref(false);
@@ -173,7 +172,6 @@ const wrongOTPs = ref(false);
 const resed = ref(true)
 const expi = ref(false)
 const verifydisab = ref(false);
-//  const isNewPassword = ref (false)
 const otp1 = ref('');
 const otp2 = ref('');
 const otp3 = ref('');
@@ -183,11 +181,11 @@ const otp6 = ref('');
 const otppp = ref('');
 
 
-const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passvalids = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
 
 const isDisabled = computed(() => {
-  return newEmail.value === '' && newPassword.value === '' && signature.value === '' && !uploadedImageUrl.value;
+  return newUsername.value === '' && newPassword.value === '' && signature.value === '' && !uploadedImageUrl.value;
 });
 
 const decr = computed(() => {
@@ -204,9 +202,7 @@ const isbackDisabled = computed(() => {
   return showotp.value === false && uploads.value === true
 });
 
-// const isVerify = computed(() => {
-//   return otp.value ===''
-// });
+
 const isVerify = computed(() => {
   return otp1.value === '' || otp2.value === '' || otp3.value === '' || otp4.value === '' || otp5.value === '' || otp6.value === '';
 });
@@ -282,18 +278,18 @@ const sendOTP = async () => {
   otp6.value = ''
   try {
 
-    await axios.post(`http://172.31.10.164:8000/send-otp/${accountIdz}`);
-    if (regex.test(newEmail.value) === false && newEmail.value !== '') {
-      isEditemail.value = true; // Set isEmail to true to show the error message
+    await axios.post(`http://172.31.10.159:8000/send-otp/${accountIdz}`);
+    if ((newUsername.value) === false && newUsername.value !== '') {
+      isEditemail.value = true;
       validation.value = 'Email'
       setTimeout(() => {
-        isEditemail.value = false; // Reset isValid to false after 3 seconds
+        isEditemail.value = false;
       }, 3000);
     } else if (passvalids.test(newPassword.value) === false && newPassword.value !== '') {
-      isEditemail.value = true; // Set isEmail to true to show the error message
+      isEditemail.value = true;
       validation.value = 'Password'
       setTimeout(() => {
-        isEditemail.value = false; // Reset isValid to false after 3 seconds
+        isEditemail.value = false;
       }, 3000);
 
     } else {
@@ -312,7 +308,6 @@ const sendOTP = async () => {
       }, 2000);
 
     }
-    // sendingOTP.value = false;
 
 
 
@@ -332,7 +327,7 @@ const submitImage = async () => {
     const formData = new FormData();
     const file = dataURItoBlob(uploadedImageUrl.value);
     formData.append('signature', file);
-    await axios.post(`http://172.31.10.164:8000/update_account/${accountId}`, formData, {
+    await axios.post(`http://172.31.10.159:8000/update_account/${accountId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -352,7 +347,7 @@ const verifyOTP = () => {
     if (otpData.value.length > 0) {
       const currentTime = getCurrentTimeAdjusted();
       const backendExpiryTime = otpData.value[0].expires_at;
-      
+
 
 
       const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
@@ -406,10 +401,8 @@ const adjustExpiryTime = (expiryTime) => {
   let minutes = parseInt(expiryTimeParts[1]);
   let seconds = parseInt(expiryTimeParts[2]);
 
-  // Ensure 24-hour format
   hours = hours % 24;
 
-  // Format hours, minutes, seconds
   hours = (hours < 10) ? '0' + hours : hours;
   minutes = (minutes < 10) ? '0' + minutes : minutes;
   seconds = (seconds < 10) ? '0' + seconds : seconds;
@@ -422,12 +415,11 @@ const adjustExpiryTime = (expiryTime) => {
 
 const getCurrentTimeAdjusted = () => {
   const today = new Date();
-  today.setHours(today.getHours() - 8); // Add 8 hours
+  today.setHours(today.getHours() - 8);
   let hr = today.getHours();
   let mn = today.getMinutes();
   let sc = today.getSeconds();
 
-  // Ensure leading zero for single digit values
   hr = (hr < 10) ? '0' + hr : hr;
   mn = (mn < 10) ? '0' + mn : mn;
   sc = (sc < 10) ? '0' + sc : sc;
@@ -439,8 +431,8 @@ const updateProfile = () => {
   const formData = new FormData();
   try {
 
-    if (newEmail.value !== '') {
-      formData.append('email', newEmail.value);
+    if (newUsername.value !== '') {
+      formData.append('email', newUsername.value);
 
     } else {
     }
@@ -456,7 +448,7 @@ const updateProfile = () => {
     } else {
     }
 
-    axios.post(`http://172.31.10.164:8000/update_account/${accountIdz}`, formData)
+    axios.post(`http://172.31.10.159:8000/update_account/${accountIdz}`, formData)
       .then(response => {
         verifiedotp.value = (true)
         setTimeout(() => {
@@ -472,7 +464,7 @@ const updateProfile = () => {
 
 const fetchAccounts = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_accounts_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_accounts_json');
 
     accounts.value = await response.data.filter(result => result.account_id == accountIdz);
     email.value = accounts.value[0].email
@@ -484,7 +476,7 @@ const fetchAccounts = async () => {
 
 const fetchNames = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_names_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_names_json');
     names.value = response.data;
 
     const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
@@ -494,7 +486,7 @@ const fetchNames = async () => {
       const foundName = names.value.find(name => name.name_id === nameId);
       if (foundName) {
         name.value = foundName;
-        nameLoaded.value = true; // Set the flag to true when the name is found
+        nameLoaded.value = true;
       } else {
       }
     } else {
@@ -510,7 +502,7 @@ const convert = async () => {
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountIdz);
     otppp.value = otpData.value[0].code
   } catch (error) {
@@ -528,6 +520,7 @@ convert();
 <script>
 import { Usernames, showEdit, hideedit } from '@/components/heder.vue';
 import { isEdits, isRegistrationClicked, isVisible } from '@/views/dashboard.vue';
+import { leaveedit, isaddleave } from './leaveform.vue';
 
 
 export default {
@@ -535,12 +528,14 @@ export default {
 
   methods: {
     cli() {
+      leaveedit.value = false
       showEdit.value = false;
       isEdits.value = false
       Usernames.value = true
       isRegistrationClicked.value = false;
       isVisible.value = false
       hideedit.value = true
+      isaddleave.value = false
     },
 
 
@@ -561,7 +556,6 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: white;
-  /* backdrop-filter: blur(10px); */
 }
 
 .update3 {
@@ -572,11 +566,8 @@ export default {
   border-radius: 25px;
   background-color: white;
   width: 400px;
-  /* Set width to a percentage of the viewport width */
   max-width: 500px;
-  /* Set a maximum width */
   height: auto;
-  /* Let the height adjust based on content */
   padding: 20px;
   color: #212121;
   border: 2px solid black;
@@ -585,7 +576,6 @@ export default {
 
 .update3.zoomed {
   transform: scale(2);
-  /* Zoom in by a factor of 2 */
 }
 
 .updateform {
@@ -645,12 +635,10 @@ export default {
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
   border: 1px solid #c95e58;
-  /* background-color: #c95e58; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
@@ -712,12 +700,10 @@ export default {
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
   border: 1px solid #39b259;
-  /* background-color: #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
@@ -744,12 +730,10 @@ export default {
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
   border: 1px solid #39b259;
-  /* background-color: #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
@@ -783,19 +767,17 @@ export default {
   margin-bottom: 12px;
   text-align: center;
   font-size: 24px;
-
+  outline: none;
 }
 
 .editwronge {
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
   border: 1px solid #c95e58;
-  /* background-color: #c95e58; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;

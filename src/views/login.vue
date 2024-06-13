@@ -1,5 +1,5 @@
 <template>
-   <div class=zero style="display: flex; justify-content: center; margin-top: 90px;">
+   <div class=zero style="display: flex; justify-content: center; margin-top: 210px;">
       <div class="first">
          <alerz></alerz>
          <div class="second">
@@ -7,8 +7,8 @@
 
             <div class="inside">
                <div style="display: flex; flex-direction: column;  width: 100%;">
-                  <label class="n">Email: </label>
-                  <input type="email" v-model="email" class='inputsss' id='email' required @keydown.enter='login_submit'
+                  <label class="n">Username: </label>
+                  <input type="text" v-model="email" class='inputsss' id='email' required @keydown.enter='login_submit'
                      :class="{ 'red-border': isRed && email === '' }" @input="resetRed">
 
                   <label class="p"> Password: </label>
@@ -92,14 +92,14 @@ const resetRed = () => {
 }
 
 const login_submit = () => {
-   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+   // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
    const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
    const account = accounts.value.find(acc => acc.email === email.value);
-   if (account){
+   if (account) {
       empi.value = employees.value.find(emp => emp.name_id === account.name_id).isActive;
-   decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
+      decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
    }
-   
+
 
    isRed.value = true
 
@@ -116,13 +116,13 @@ const login_submit = () => {
       setTimeout(() => {
          isValid.value = false;
       }, 2000);
-   } else if (emailPattern.test(email.value) === false) {
-      error.value = 'Not Valid Email';
-      isEmail.value = true;
-      isRed.value = true
-      setTimeout(() => {
-         isEmail.value = false;
-      }, 2000);
+   // } else if (emailPattern.test(email.value) === false) {
+   //    error.value = 'Not Valid Email';
+   //    isEmail.value = true;
+   //    isRed.value = true
+   //    setTimeout(() => {
+   //       isEmail.value = false;
+   //    }, 2000);
    } else if (!account) {
       error.value = 'Email not Found';
       isEmail.value = true;
@@ -179,13 +179,13 @@ const login_submit = () => {
 };
 
 const fetchAccounts = () => {
-   axios.get('http://172.31.10.164:8000/get_accounts_json')
+   axios.get('http://172.31.10.159:8000/get_accounts_json')
       .then(response => {
          accounts.value = response.data;
-         axios.get('http://172.31.10.164:8000/get_employees_json')
+         axios.get('http://172.31.10.159:8000/get_employees_json')
             .then(response => {
-         employees.value = response.data; 
-         })
+               employees.value = response.data;
+            })
       })
       .catch(error => {
          console.error('Error fetching accounts:', error);
@@ -230,11 +230,8 @@ const pas = () => {
    border-radius: 25px;
    background-color: white;
    width: 80vw;
-   /* Set width to a percentage of the viewport width */
    max-width: 500px;
-   /* Set a maximum width */
    height: auto;
-   /* Let the height adjust based on content */
    padding: 20px;
    color: #212121;
    border: 2px solid black;
@@ -243,7 +240,6 @@ const pas = () => {
 
 .second.zoomed {
    transform: scale(2);
-   /* Zoom in by a factor of 2 */
 }
 
 .form {
@@ -310,7 +306,6 @@ const pas = () => {
 
 .error {
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;
@@ -325,7 +320,6 @@ const pas = () => {
    top: 0;
    left: 0;
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;
@@ -358,7 +352,6 @@ const pas = () => {
 
 .wronge {
    width: fit-content;
-   /* Adjust width based on content */
    justify-self: center;
    display: flex;
    flex-direction: column;

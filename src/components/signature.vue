@@ -105,9 +105,9 @@ import axios from 'axios';
 const uploadedImageUrl = ref('');
 const accountId = localStorage.getItem('accountId');
 const OTPsent = ref(false);
-const otp = ref('');//ge type
+const otp = ref('');
 const OTPverified = ref(false);
-const otpData = ref([]);//confirm
+const otpData = ref([]);
 const hideUpload = ref(false);
 const OTPsuccesful = ref(false)
 const OTPsuccesful2 = ref(false)
@@ -187,7 +187,7 @@ const sendOTP = async () => {
   otp5.value = ''
   otp6.value = ''
   try {
-    await axios.post(`http://172.31.10.164:8000/send-otp/${accountId}`);
+    await axios.post(`http://172.31.10.159:8000/send-otp/${accountId}`);
     await fetchOTPData();
     sendingOTPS.value = false;
     OTPsuccesful.value = true;
@@ -214,7 +214,7 @@ const submitImage = async () => {
     const formData = new FormData();
     const file = dataURItoBlob(uploadedImageUrl.value);
     formData.append('signature', file);
-    await axios.post(`http://172.31.10.164:8000/update_account/${accountId}`, formData, {
+    await axios.post(`http://172.31.10.159:8000/update_account/${accountId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -250,7 +250,6 @@ const verifyOTP = () => {
       if (expiryTimeAdjusted > currentTime) {
         verifydisab.value = false
         if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
-          // OTPverified.value = true;
 
           verifyingotp.value = false;
           verifiedotps.value = true;
@@ -291,10 +290,8 @@ const adjustExpiryTime = (expiryTime) => {
   let minutes = parseInt(expiryTimeParts[1]);
   let seconds = parseInt(expiryTimeParts[2]);
 
-  // Ensure 24-hour format
   hours = hours % 24;
 
-  // Format hours, minutes, seconds
   hours = (hours < 10) ? '0' + hours : hours;
   minutes = (minutes < 10) ? '0' + minutes : minutes;
   seconds = (seconds < 10) ? '0' + seconds : seconds;
@@ -307,12 +304,11 @@ const adjustExpiryTime = (expiryTime) => {
 
 const getCurrentTimeAdjusted = () => {
   const today = new Date();
-  today.setHours(today.getHours() - 8); // Add 8 hours
+  today.setHours(today.getHours() - 8); 
   let hr = today.getHours();
   let mn = today.getMinutes();
   let sc = today.getSeconds();
 
-  // Ensure leading zero for single digit values
   hr = (hr < 10) ? '0' + hr : hr;
   mn = (mn < 10) ? '0' + mn : mn;
   sc = (sc < 10) ? '0' + sc : sc;
@@ -322,7 +318,7 @@ const getCurrentTimeAdjusted = () => {
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
+    const response = await axios.get('http://172.31.10.159:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountId);
     otppp.value = otpData.value[0].code
   } catch (error) {
@@ -341,7 +337,6 @@ const fetchOTPData = async () => {
   top: 0;
   left: 0;
   width: 200px;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
@@ -349,7 +344,6 @@ const fetchOTPData = async () => {
   padding: 10px;
   margin-top: 12px;
   margin-left: 15px;
-  /* margin: 10px auto; */
   border-radius: 10px;
   box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
 }
@@ -431,7 +425,7 @@ const fetchOTPData = async () => {
   margin-bottom: 12px;
   text-align: center;
   font-size: 24px;
-
+  outline: none;
 }
 
 .Enterotps {
@@ -455,12 +449,10 @@ const fetchOTPData = async () => {
   top: 0;
   left: 0;
   width: fit-content;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
   border: 1px solid #39b259;
-  /* background-color: #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
@@ -497,7 +489,6 @@ const fetchOTPData = async () => {
   top: 0;
   left: 0;
   width: 200px;
-  /* Adjust width based on content */
   justify-self: center;
   display: flex;
   flex-direction: column;
@@ -505,7 +496,6 @@ const fetchOTPData = async () => {
   padding: 10px;
   margin-top: 12px;
   margin-left: 60px;
-  /* margin: 10px auto; */
   border-radius: 10px;
   box-shadow: 0px 0px 4px red, 0px 0px 3px red inset;
 

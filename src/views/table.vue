@@ -1,21 +1,10 @@
 <template>
-  <div style="display: flex; flex-direction: column;">
-
-    <h2 style="display: flex; flex-direction: column; align-items: center;" class="hist">History</h2>
-    <div v-if="load" class="loadings">
-      <img src='../assets/loading.gif' width="auto" height="100px" />
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: center;" v-if="otp">
-      <otpz />
-    </div>
-    <div class="note" v-if="addNote">
-      <!-- Title and Close Icon -->
+  <div class="note" v-if="addNote">
       <div class="title-bar">
         <div class="title">Add note</div>
         <div class="close-icon" @click="closeNote">X</div>
       </div>
 
-      <!-- Content -->
       <div class="content">
         <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
         <div class="butokz">
@@ -25,10 +14,8 @@
       </div>
     </div>
     <div class="note" v-if="viewNote">
-      <!-- Title and Close Icon -->
       <div class="title-bar">
         <div class="title">View note</div>
-        <!-- <div class="close-icon" @click="closeNote">X</div> -->
       </div>
 
       <!-- Content -->
@@ -42,31 +29,39 @@
     </div>
 
 
-    <div style="display: flex; flex-direction: column; margin-top: -50px;">
+  <div style="display: flex; flex-direction: column;">
 
-<div style="display: flex; flex-direction: row; justify-content: space-between; align-items: end; margin-top: 15px; margin-bottom: 10px; height: 35px; ">
-  <div v-if="mawala "
-    style="display: flex; border: 2px solid black;  align-items: center; height: 30px;position: relative;">
-    <img style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png">
-    <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name">
-  </div>
-
-  <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
-
-    <div class="sign">
-      <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
+    <h2 style="display: flex; flex-direction: column; align-items: center;" class="hist">History</h2>
+    <div v-if="load" class="loadings">
+      <img src='../assets/loading.gif' width="auto" height="100px" />
     </div>
+    <div style="display: flex; flex-direction: column; align-items: center;" v-if="otp">
+      <otpz />
+    </div>
+    <div style="display: flex; flex-direction: column; margin-top: 0px;">
 
-    <div class="text">Download Summary Reports</div>
-  </button>
-</div>
+      <div class="search" style="display: flex; flex-direction: row; justify-content: space-between; align-items: end; margin-top: 15px; margin-bottom: 10px; height: 35px; ">
+        <div v-if="mawala "
+          style="display: flex; border: 2px solid black; border-radius: 5px; align-items: center; height: 30px;position: relative;">
+          <img class="`imgsearch" style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png">
+          <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name">
+        </div>
 
+        <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
+          <div class="sign">
+            <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
+          </div>
+          <div class="text">Download Summary Reports</div>
+        </button>
 
-      <div v-if="mawala" class="outer">
+      </div>
+    </div>
+    
+    <div v-if="mawala" class="outer">
         <div class="scrollable-table">
           <table>
             <thead>
-              <tr >
+              <tr>
                 <th style="text-align: center; ">TO No.</th>
                 <th style="text-align: center;">Name</th>
                 <th style="text-align: center;">Departure Date</th>
@@ -76,7 +71,6 @@
                 <th style="text-align: center;">Date</th>
                 <th style="text-align: center;">Status</th>
                 <th style="text-align: center;">Action</th>
-                <!-- Add more table headers as needed -->
               </tr>
             </thead>
             <tbody>
@@ -93,11 +87,13 @@
                   For Initial
                 </td>
                 <td v-else style="color: green; ">
-                  
-                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20].includes(item.name_id) && item.initial !== null" style="color: green; margin-top: -8px;margin-bottom: -1px">
+
+                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20].includes(item.name_id) && item.initial !== null"
+                    style="color: green; margin-top: -8px;margin-bottom: -1px">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                  {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}</p>
-                  
+                    {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}
+                  </p>
+
 
                   <p v-if="item.note === null" style="color: red; margin-top: 1px; margin-bottom: -15px">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
@@ -108,21 +104,25 @@
                     Noted
                   </p>
 
-                  <p v-if="(item.signature1 === null && item.note !== null  && ![15, 20, 21, 45, 48,13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)" style="color: red; margin-bottom: -15px;">
+                  <p v-if="(item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1 && aor == 1)"
+                    style="color: red; margin-bottom: -15px;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Recommendation
                   </p>
-                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null  && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1) " style="color: green; margin-bottom: -15px;">
+
+                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
+                    style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Recommended
                   </p>
 
-                      
-                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))" style="color: red;">
+
+                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
+                    style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Approval
                   </p>
-                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
+                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
                     style="color: green;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Approved
@@ -140,9 +140,10 @@
                   style="display: flex; justify-content: center;"><button
                     @click="signature1(item.travel_order_id)">Recommend</button></td>
 
-                <td v-if="acc.name_id==20 && item.note !== null && item.signature1 == null && item.aor == 1 && [15,21,45,48].includes(item.name_id)"
+                <td
+                  v-if="acc.name_id == 20 && item.note !== null && item.signature1 == null && item.aor == 1 && [15, 21, 45, 48].includes(item.name_id)"
                   style="display: flex; justify-content: center;"><button
-                    @click="signature11(item.travel_order_id,item.name_id)">Recommend</button></td>
+                    @click="signature11(item.travel_order_id, item.name_id)">Recommend</button></td>
 
                 <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37"
                   style="display: flex; justify-content: center;"><button @click="openNote(item.travel_order_id)">Add
@@ -165,31 +166,34 @@
                 </td>
 
                 <td
-                  v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null)) && item.name_id !== acc.name_id ) "
+                  v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null)) && item.name_id !== acc.name_id)"
                   style="display: flex; justify-content: center;"><button
                     @click="signature2(item.travel_order_id)">Approve</button></td>
 
 
-                    <td  v-if="isSectionChief(acc.name_id) && selectedTravelOrderId != item.travel_order_id && item.initial === null" style="display: flex; justify-content: center;">
+                <td
+                  v-if="isSectionChief(acc.name_id) && selectedTravelOrderId != item.travel_order_id && item.initial === null"
+                  style="display: flex; justify-content: center;">
                   <button @click="initialize(item.travel_order_id)">
                     Initial
                   </button>
                   <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
-                <!-- Add more table data cells as needed -->
               </tr>
             </tbody>
           </table>
           <h1 style="text-align: center; margin-bottom: 0px;" v-if="reversedFormData.length == 0">NO MATCH FOUND</h1>
         </div>
       </div>
+  </div>
+  <div v-show="selectedTravelOrderId" class="prent full-screen">
+    <div class="buttons">
+      <button @click="printzz">Download as PDF</button>
+      <button @click="close">Close PDF</button>
     </div>
-
-    <div v-show="selectedTravelOrderId" style="height: 0px;">
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
     </div>
-  </div>
 </template>
 
 <script>
@@ -251,28 +255,28 @@ export default {
       noteText: '',
       sub: 0,
       bus: 0,
-      searchQuery: '', // Holds the search query
-      
+      searchQuery: '',
+      csvformdata: []
+
+
     };
   },
   created() {
-    // Watch for changes in localStorage and update verifiedOTPs accordingly
     window.addEventListener('storage', this.updateVerifiedOTPs);
   },
   destroyed() {
-    // Cleanup the event listener when the component is destroyed
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
-   
-
+    printzz(){
+      window.print();
+    },
     isSectionChief(name_id) {
       return this.sectionChiefIds.includes(name_id);
     },
 
     downloadCSV() {
-      const summary = ['Summary Report of Travel Order ']; // Placeholder for whatever 'summary' is supposed to be
-
+      const summary = ['Summary Report of Travel Order '];
       const headers = [
         'TO No.',
         'Name',
@@ -281,10 +285,9 @@ export default {
         'Destination',
         'Purpose',
         'Arrival Date',
-        // Add more headers as needed
       ];
 
-      const approvedTOs = this.formData.filter(item => item.to_num > 0);
+      const approvedTOs = this.csvformdata.filter(item => item.to_num > 0);
 
       approvedTOs.sort((a, b) => a.to_num - b.to_num);
 
@@ -309,8 +312,8 @@ export default {
           const month = yearMonthDate.toLocaleString('default', { month: 'long' });
 
           const yearMonthSection = [
-            [`\n ${month} ${yearKey}`], // Display year and month
-            headers.join(','), // Join headers into a single comma-separated string
+            [`\n ${month} ${yearKey}`],
+            headers.join(','),
             ...yearData[yearKey].map(item => [
               `${this.padWithZeroes(item.to_num)}  -  ${this.yearToday}`,
               this.getName(item.name_id),
@@ -322,7 +325,7 @@ export default {
             ].join(','))
           ];
 
-          monthSections.push(yearMonthSection.join('\n')); // Join section rows into a single string
+          monthSections.push(yearMonthSection.join('\n'));
         });
 
         return monthSections;
@@ -330,7 +333,7 @@ export default {
 
       csvData.unshift(summary);
 
-      const csvContent = csvData.join('\n'); // Join sections into a single string
+      const csvContent = csvData.join('\n');
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -343,7 +346,7 @@ export default {
       document.body.removeChild(link);
     },
 
- 
+
     viewNotez(nutz, numx) {
       this.viewNote = true,
         this.noteText = nutz
@@ -360,11 +363,10 @@ export default {
         this.notenum = 0
     },
     postNote() {
-      // Axios POST request logic here
       const formData = new FormData();
       formData.append('note', this.noteText);
 
-      axios.post(`http://172.31.10.164:8000/update_form/${this.notenum}`, formData, {
+      axios.post(`http://172.31.10.159:8000/update_form/${this.notenum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -380,13 +382,13 @@ export default {
 
       this.closeNote()
     },
+    
     initialize(numz) {
       this.initnum = numz
-      // Axios POST request logic here
       const formData = new FormData();
       formData.append('initial', 'initialized');
 
-      axios.post(`http://172.31.10.164:8000/update_form/${this.initnum}`, formData, {
+      axios.post(`http://172.31.10.159:8000/update_form/${this.initnum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -401,43 +403,43 @@ export default {
         this.verifiedOTPs = event.newValue;
       }
     },
-    async signature11(form_id,name_id) {
+    async signature11(form_id, name_id) {
 
-    this.otp = true;
+      this.otp = true;
 
-    await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
-    this.otp = false;
-
-    const formData = new FormData();
-    formData.append('signature1', this.acc.signature);
-    formData.append('name_id', name_id);
-
-    axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).then(() => {
-      this.fetchData();
-      this.selectedTravelOrderId = 0;
-      useAuthStore().updateVerifiedOTPs('false');
-      localStorage.setItem('verifiedOTPs', 'false');
+      await this.waitForVerifiedOTPs();
       this.otp = false;
-      window.location.reload();
-    }).catch(error => {
-      console.error('Error:', error);
-    });
+
+      const formData = new FormData();
+      formData.append('signature1', this.acc.signature);
+      formData.append('name_id', name_id);
+
+      axios.post(`http://172.31.10.159:8000/update_form/${form_id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(() => {
+        this.fetchData();
+        this.selectedTravelOrderId = 0;
+        useAuthStore().updateVerifiedOTPs('false');
+        localStorage.setItem('verifiedOTPs', 'false');
+        this.otp = false;
+        window.location.reload();
+      }).catch(error => {
+        console.error('Error:', error);
+      });
     },
     async signature1(form_id) {
 
       this.otp = true;
 
-      await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
+      await this.waitForVerifiedOTPs();
       this.otp = false;
 
       const formData = new FormData();
       formData.append('signature1', this.acc.signature);
 
-      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://172.31.10.159:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -455,7 +457,7 @@ export default {
 
     async signature2(form_id) {
       this.otp = true;
-      await this.waitForVerifiedOTPs(); // Wait for verifiedOTPs to become true
+      await this.waitForVerifiedOTPs();
       this.otp = false;
 
       const formData = new FormData();
@@ -464,7 +466,7 @@ export default {
       formData.append('sdiv', this.sub.division_id);
 
 
-      axios.post(`http://172.31.10.164:8000/update_form/${form_id}`, formData, {
+      axios.post(`http://172.31.10.159:8000/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -482,29 +484,25 @@ export default {
 
     async waitForVerifiedOTPs() {
       while (this.verifiedOTPs == 'false') {
-        await new Promise(resolve => setTimeout(resolve, 1000), this.verifiedOTPs = localStorage.getItem('verifiedOTPs')); // Wait for 10 seconds
+        await new Promise(resolve => setTimeout(resolve, 1000), this.verifiedOTPs = localStorage.getItem('verifiedOTPs'));
       }
     },
 
     padWithZeroes(travel_order_id) {
-      // Convert travel_order_id to string
       const idString = travel_order_id.toString();
-      // Check if the length is less than 4
       if (idString.length < 4) {
-        // Pad with zeroes to make it four digits
         return '0'.repeat(4 - idString.length) + idString;
       } else {
-        // If already four digits, return as is
         return idString;
       }
     },
     fetchAccounts() {
-      axios.get('http://172.31.10.164:8000/get_accounts_json')
+      axios.get('http://172.31.10.159:8000/get_accounts_json')
         .then(response => {
           this.acc = response.data.find(result => result.account_id == this.accountId);
           this.fetchData()
           if (this.acc) {
-            this.imageUrl = `http://172.31.10.164:8000/storage/${this.acc.signature}`;
+            this.imageUrl = `http://172.31.10.159:8000/storage/${this.acc.signature}`;
           }
           useAuthStore().updateVerifiedOTPs('false');
           localStorage.setItem('verifiedOTPs', 'false');
@@ -516,12 +514,13 @@ export default {
 
     fetchData() {
       this.load = true
-      axios.get('http://172.31.10.164:8000/get_forms_json')
+      axios.get('http://172.31.10.159:8000/get_forms_json')
         .then(response => {
           this.mawala = true;
           this.load = false
           this.sub = this.employees.find(emp => emp.name_id == this.acc.name_id)
           this.bus = this.employees.find(emp => emp.rd !== null)
+          this.csvformdata = response.data
 
           if (this.sectionChiefIds.includes(this.acc.name_id)) {
             console.log(this.acc.name_id)
@@ -550,7 +549,7 @@ export default {
             } else {
               this.siga = false
             }
-            this.formData = response.data.filter(form => ((form.signature2 === null && form.signature1 !== null && form.note !== null && !(form.aor == 1 && [15,21,45,48].includes(form.name_id))) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id)|| form.name_id == 20) || ([15,21,45,48].includes(form.name_id) && form.aor == 1 && form.signature1 == null && form.intervals === 0));
+            this.formData = response.data.filter(form => ((form.signature2 === null && form.signature1 !== null && form.note !== null && !(form.aor == 1 && [15, 21, 45, 48].includes(form.name_id))) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id) || form.name_id == 20) || ([15, 21, 45, 48].includes(form.name_id) && form.aor == 1 && form.signature1 == null && form.intervals === 0));
             this.siga1 = true
 
           } else if (this.acc.type_id == 3) {
@@ -558,7 +557,7 @@ export default {
             this.formData = response.data.filter(form => (form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null) || form.name_id === this.acc.name_id);
             this.siga = true
             if (this.sub.name_id == 20) {
-              this.formData = response.data.filter(form => form.name_id == this.acc.name_id && form.note !== null);
+              this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
               this.siga = false
             }
           }
@@ -568,7 +567,7 @@ export default {
         });
     },
     fetchNames() {
-      axios.get('http://172.31.10.164:8000/get_names_json')
+      axios.get('http://172.31.10.159:8000/get_names_json')
         .then(response => {
           this.names = response.data;
         })
@@ -577,7 +576,7 @@ export default {
         });
     },
     fetchEmployees() {
-      axios.get('http://172.31.10.164:8000/get_employees_json')
+      axios.get('http://172.31.10.159:8000/get_employees_json')
         .then(response => {
           this.employees = response.data;
         })
@@ -594,7 +593,6 @@ export default {
       return 'Unknown';
     },
     openPDF(travelOrderId) {
-      // Set the selected travel order ID
       this.selectedTravelOrderId = travelOrderId;
       useAuthStore().updateVerifiedOTPs('false');
       localStorage.setItem('verifiedOTPs', 'false');
@@ -606,31 +604,19 @@ export default {
     updateVisibleItems() {
       this.visibleItems = this.formData.slice(0, 20);
     },
-    // Method to sort data based on column
-    // sortBy(column) {
-    //   console.log(column)
-    //   console.log(this.sortColumn)
-    //   if (this.sortColumn === column) {
-    //     this.sortOrder = (this.sortOrder === 'asc') ? 'desc' : 'asc'; // Toggle sort order
-    //   } else {
-    //     this.sortColumn = column;
-    //     this.sortOrder = 'asc';
-    //   }
-    // },
-
 
   },
 
   computed: {
+
     reversedFormData() {
-      let data = this.formData.slice().reverse(); 
-      
+      let data = this.formData.slice().reverse(); // Make a copy of the original data
+
       if (this.searchQuery !== '') {
         data = data.filter(item => {
           return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
         });
       }
-
       return data;
     },
   },
@@ -640,12 +626,11 @@ export default {
 </script>
 
 <style scoped>
-.pholder{
+.pholder {
   padding: 5px;
-  border-radius: none; 
+  border-radius: none;
   border: none;
   outline: none;
-  /* background-color: red; */
 }
 
 
@@ -679,7 +664,6 @@ export default {
   justify-content: center;
   position: relative;
   left: 1px;
-  top: 1px;
 }
 
 
@@ -725,7 +709,6 @@ export default {
 }
 
 
-/* Add CSS styles for table design */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -754,7 +737,9 @@ th {
   border: 1px solid black;
   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
   border-radius: 5px;
+  width: 100%;
 }
+
 
 .loadings {
   top: 0;
@@ -763,11 +748,9 @@ th {
   justify-self: center;
   display: flex;
   flex-direction: column;
-  /* border: 1px solid #39b259; */
   padding: 10px;
   margin: 10px auto;
   border-radius: 10px;
-  /* box-shadow: 0px 0px 10px #39b259, 0px 0px 10px #39b259 inset; */
 }
 
 .loadings1 {
@@ -849,6 +832,32 @@ button:hover {
   color: white;
 }
 
+@media screen and (max-width: 768px) {
+  .Btn{
+    margin-right: 20px;
+  }
+ /* Adjust the media query to target a specific screen size */
+ .prent {
+    /* Apply styles to takeover the screen */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: fit-content;
+    height: 100%; /* Set height to 50% of the viewport height */
+    max-height: 1000px; /* Set maximum height for smaller screens */
+    z-index: 9999; /* Ensure it's above other content */
+    height: 100vh;
+    background-color: white;
+  }
+  .prent .buttons{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 70px;
+    margin-bottom: 10px;
+  }
+
+}
+
 @media print {
   .outer {
     display: none !important;
@@ -859,9 +868,13 @@ button:hover {
   }
 
   .content,
+  .search,
   .note,
   .sign,
   .Btn {
+    display: none !important;
+  }
+  .buttons{
     display: none !important;
   }
 }
