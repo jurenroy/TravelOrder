@@ -98,6 +98,7 @@ import { showEdit } from '@/components/heder.vue';
 import logout from '@/components/logout.vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import { showleavehome } from './leaveform.vue';
 
 </script>
 

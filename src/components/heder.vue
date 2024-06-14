@@ -182,6 +182,7 @@ export const showstatus = ref(true)
 export default {
   inject: ['close'],
   methods: {
+    
     navigatefront() {
       this.$router.push('/');
     },

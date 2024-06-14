@@ -5,6 +5,7 @@ import frontpage from './views/frontpage.vue';
 import dashboard from './views/dashboard.vue';
 import leaveform from './views/leaveform.vue'
 import leavepdf from './views/leavepdf.vue';
+import Leavepdfview from './views/leavepdfview.vue';
 
 
 const routes = [
@@ -29,6 +30,12 @@ const routes = [
     path: '/pdf',
     name: 'PDF',
     component: leavepdf,
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/pdfz',
+    name: 'PDF',
+    component: Leavepdfview,
     meta: { requiresAuth: false }
   },
 ];

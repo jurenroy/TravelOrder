@@ -596,6 +596,7 @@ export default {
   position: relative;
   flex-direction: row;
   height: 40px;
+  
   justify-content: space-between;
   margin-top: 8px;
 

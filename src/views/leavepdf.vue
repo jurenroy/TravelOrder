@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <button style=" border-radius: 10px; width: 90%; font-weight: bold; font-size: 16px; cursor: pointer; " @click="closeaddleave"> Back to Dashboard
-        </button>
-
-       
+    <div style="display: flex; flex-direction: row;">
+        <img v-if="leaveshowhome" @click="closeaddleave"
+            style="cursor: pointer; height: 30px; width: 30px; margin-top: -6px; margin-right: 5px;"
+            src="../assets/dashboard.png" title="Back to Dashboard">
+        <label v-if="leaveshowhome" @click="closeaddleave" style="cursor: pointer;">Back to Dashboard</label>
     </div>
 
     <div class="a4-container">
@@ -239,8 +239,10 @@
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist" :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value)) }">
-                                        <input type="checkbox" :disabled="![0, 5].some(value => selectedLeavetype.includes(value))"
+                                    <label class="containerlist"
+                                        :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value)) }">
+                                        <input type="checkbox"
+                                            :disabled="![0, 5].some(value => selectedLeavetype.includes(value))"
                                             v-model="vacationleavedetails" :value="vacationdetails[0]">
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
@@ -254,16 +256,18 @@
                                 <div>
                                     <input
                                         style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                        :disabled="![0, 5].some(value => selectedLeavetype.includes(value))  || !vacationleavedetails.includes(1)"
+                                        :disabled="![0, 5].some(value => selectedLeavetype.includes(value)) || !vacationleavedetails.includes(1)"
                                         v-model="vacation1"
-                                        :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value))  || !vacationleavedetails.includes(1) }">
+                                        :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value)) || !vacationleavedetails.includes(1) }">
                                 </div>
                             </div>
                             <div
                                 style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
                                 <div style="display: flex; flex-direction: row;">
-                                    <label class="containerlist" :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value)) }">
-                                        <input type="checkbox" :disabled="![0, 5].some(value => selectedLeavetype.includes(value))"
+                                    <label class="containerlist"
+                                        :class="{ 'not': ![0, 5].some(value => selectedLeavetype.includes(value)) }">
+                                        <input type="checkbox"
+                                            :disabled="![0, 5].some(value => selectedLeavetype.includes(value))"
                                             v-model="vacationleavedetails" :value="vacationdetails[1]">
                                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                                             <path
@@ -373,7 +377,8 @@
 
                                 <input
                                     style="height: 10px; width: 150px; margin-top: -3px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                                     v-model="otherPurpose">
+                                    v-model="otherPurpose" :disabled="!selectedLeavetype.includes(7)"
+                                    :class="{ 'not': !selectedLeavetype.includes(7) }">
                             </div>
 
                             <div style="display: flex; flex-direction: row; margin-top: -5px">
@@ -495,7 +500,8 @@
                         <div style="display: flex;flex-direction: row; justify-content: center; margin-left: 90px">
                             <p>As of</p>
                             <input
-                                style="height: 10px; width: 230px; border: none; border-bottom: 1.5px solid black;outline: none; font-size: 10px; margin-top: 7px; margin-left: 3px" v-model="leavecredits">
+                                style="height: 10px; width: 230px; border: none; border-bottom: 1.5px solid black;outline: none; font-size: 10px; margin-top: 7px; margin-left: 3px"
+                                v-model="leavecredits">
                         </div>
                         <div>
                             <div class="grid-container">
@@ -611,10 +617,18 @@
                     <p style="text-align: center">{{ rdpos }}</p>
                 </div>
             </div>
-           <div class="buttonss">
-               <button class="button" @click="submitForm"> Submit
-            </button>
-           </div> 
+            <div v-if="loadis" class="leaveloadid">
+                <div class="leaveloader"></div>
+            </div>
+            <div class="leavebuttonss">
+
+
+                <button class="leavebutton" @click="validation"> Submit
+                </button>
+
+
+            </div>
+
         </div>
 
     </div>
@@ -626,6 +640,7 @@ import image1 from '../assets/background_image.png'
 import image2 from '../assets/bago.png'
 import axios from 'axios';
 import { isaddleave } from './leaveform.vue';
+import { showleavehome } from './leaveform.vue';
 
 
 
@@ -633,6 +648,7 @@ import { isaddleave } from './leaveform.vue';
 export default {
     data() {
         return {
+            leaveshowhome: true,
             image1: image1,
             image2: image2,
             datetoday: '',
@@ -643,10 +659,10 @@ export default {
             rd: 'RODANTE B. FELINA',
             rdpos: 'OIC, REGIONAL DIRECTOR',
             name: {
-        last_name: '',
-        first_name: '',
-        middle_init: '',
-      },
+                last_name: '',
+                first_name: '',
+                middle_init: '',
+            },
             text: '',
             rows: 1,
             text2: '',
@@ -683,7 +699,6 @@ export default {
             commutationtype: [1, 2],
 
             recommendationtype: [1, 2],
-
             terminalleave: [1, 2],
 
             totalvacation: '',
@@ -695,7 +710,7 @@ export default {
             withpay: '',
             withoutpay: '',
             othersSpecify: '',
-            leavecredits:'',
+            leavecredits: '',
 
 
             accounts: [],
@@ -721,7 +736,8 @@ export default {
                 "Chief, GD",
                 "Chief, MSESDD",
                 "OIC, Regional Director",
-            ]
+            ],
+            loadis: false
         };
     },
     watch: {
@@ -768,6 +784,7 @@ export default {
             if (newValue.length > 1) {
                 this.studyleavedetails = [newValue[newValue.length - 1]]
                 this.study1 = '';
+                this.otherPurpose = ''
 
             }
         },
@@ -801,125 +818,207 @@ export default {
 
     methods: {
 
+        validation() {
+            if (this.selectedLeavetype.length === 0) {
+                console.log('mali ni siya')
+
+            } else {
+                console.log('sakto')
+                if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
+                    console.log('nag choose na siya og vacation leave')
+
+                    if (this.vacationleavedetails.length === 0) {
+                        console.log('pili sa dinha')
+
+                    } else {
+
+                    }
+
+                } else if (this.selectedLeavetype.includes(2)) {
+                    console.log('nag choose na siya og sick leave')
+                }
+
+                
+               this.submitForm()
+            }
+        },
+
         submitForm() {
-  const formData = {
-    name_id: this.name_id,
-    position_id: this.employees[0]?.position_id || null,
 
-    type: this.getLeaveType(),
-    
-    detail: this.getLeaveDetails(),
-    description: this.otherPurpose || '',
-    days: this.weekdaysCountWithSuffix || '',
-    dates: this.formattedDateRange || '',
-    commutation: this.getCommutation() || '',
-    applicant: this.salary || '', // Assuming salary is the applicant identifier
-    asof: this.leavecredits || '',
-    tevl: this.totalvacation || 0,
-    tesl: this.totalsick || 0,
-    ltavl: this.lessvacation || 0,
-    ltasl: this.lesssick || 0,
-    bvl: this.balancevacation || 0,
-    vsl: this.balancesick || 0,
-    certification: '', // Add your certification value here
-    reco: this.getRecommendation() || '',
-    recodesc: this.text || '',
-    recommendation: '', // Add your recommendation value here
-    dayswpay: this.withpay || 0,
-    dayswopay: this.withoutpay || 0,
-    others: this.othersSpecify || '',
-    disapproved: this.text2 || '',
-    approval: '', // Add your approval value here
-  };
+                if (this.getLeaveType() && this.getLeaveDetails() && this.weekdaysCountWithSuffix && this.formattedDateRange && this.salary && this.getCommutation()){
+                    const formData = {
+                    name_id: this.name_id,
+                    position_id: this.employees[0]?.position_id || null,
 
-  console.log(formData);
+                    type: this.getLeaveType() || this.LeaveType,
 
-  axios.post('http://172.31.10.159:8000/addleave_form', formData)
-    .then(response => {
-      console.log('Data saved successfully:', response.data);
-    })
-    .catch(error => {
-      if (error.response && error.response.data) {
-        console.error('Error saving data:', error.response.data);
-      } else {
-        console.error('Error saving data:', error);
-      }
-    });
-},
-    getLeaveType() {
-      if (this.selectedLeavetype.includes(0)) {
-        return 'Vacation Leave';
-      } else if (this.selectedLeavetype.includes(1)) {
-        return 'Mandatory/Forced Leave';
-      } else if (this.selectedLeavetype.includes(2)) {
-        return 'Sick Leave';
-      } else if (this.selectedLeavetype.includes(3)) {
-        return 'Maternity Leave';
-      } else if (this.selectedLeavetype.includes(4)) {
-        return 'Paternity Leave';
-      } else if (this.selectedLeavetype.includes(5)) {
-        return 'Special Privilege Leave';
-      } else if (this.selectedLeavetype.includes(6)) {
-        return 'Solo Parent Leave';
-      } else if (this.selectedLeavetype.includes(7)) {
-        return 'Study Leave';
-      } else if (this.selectedLeavetype.includes(8)) {
-        return '10-Day VAWC Leave';
-      } else if (this.selectedLeavetype.includes(9)) {
-        return 'Rehabilitation Privilege';
-      } else if (this.selectedLeavetype.includes(10)) {
-        return 'Special Leave Benefits for Women';
-      } else if (this.selectedLeavetype.includes(11)) {
-        return 'Special Emergency(Calamity) Leave';
-      } else if (this.selectedLeavetype.includes(12)) {
-        return 'Adoption Leave';
-      } else {
-        return 'Others';
-      }
-    },
-    getLeaveDetails() {
-      if (this.selectedLeavetype.includes(0)) {
-        if (this.vacationleavedetails.includes(1)) {
-          return `Within the Philippines, ${this.vacation1}`;
-        } else if (this.vacationleavedetails.includes(2)) {
-          return `Abroad(Specify), ${this.vacation2}`;
-        }
-      } else if (this.selectedLeavetype.includes(2)) {
-        if (this.vacationleavedetails.includes(1)) {
-          return `In Hospital (Specify Illness), ${this.sick1}`;
-        } else if (this.vacationleavedetails.includes(2)) {
-          return `Out Patient (Specify Illness), ${this.sick2}`;
-        }
-      } else if (this.selectedLeavetype.includes(7)) {
-        if (this.studyleavedetails.includes(1)) {
-          return `Completion of Master's Degree`;
-        } else if (this.studyleavedetails.includes(2)) {
-          return 'BAR/Board Examination Review Other';
-        }
-      } else if (this.selectedLeavetype.includes(10)) {
-        return this.leaveforwoman;
-      }
-      return '';
-    },
-    getCommutation() {
-      if (this.commutationLeavetype.includes(1)) {
-        return 'Not Requested';
-      } else if (this.commutationLeavetype.includes(2)) {
-        return 'Requested';
-      }
-      return '';
-    },
-    getRecommendation() {
-      if (this.recommendationLeavetype.includes(1)) {
-        return 'For approval';
-      } else if (this.recommendationLeavetype.includes(2)) {
-        return `For disapproval due to: ${this.text}`;
-      }
-      return '';
-    },
+                    detail: this.getLeaveDetails(),
+                    description: this.otherPurpose || '',
+                    days: this.weekdaysCountWithSuffix || '',
+                    dates: this.formattedDateRange || '',
+                    commutation: this.getCommutation() || '',
+                    applicant: this.salary || '', // Assuming salary is the applicant identifier
+                    asof: this.leavecredits || '',
+                    tevl: this.totalvacation || 0,
+                    tesl: this.totalsick || 0,
+                    ltavl: this.lessvacation || 0,
+                    ltasl: this.lesssick || 0,
+                    bvl: this.balancevacation || 0,
+                    vsl: this.balancesick || 0,
+                    certification: '', // Add your certification value here
+                    reco: this.getRecommendation() || '',
+                    recodesc: this.text || '',
+                    recommendation: '', // Add your recommendation value here
+                    dayswpay: this.withpay || 0,
+                    dayswopay: this.withoutpay || 0,
+                    others: this.othersSpecify || '',
+                    disapproved: this.text2 || '',
+                };
+
+                console.log(formData);
+
+                axios.post('http://172.31.10.159:8000/addleave_form', formData)
+                    .then(response => {
+                        console.log('Data saved successfully:', response.data);
+                        this.loadis = true
+                        this.resetForm();
+                        setTimeout(() => {
+                            this.loadis = false
+                            window.location.reload();
+                        }, 3000);
+                    })
+                    .catch(error => {
+                        if (error.response && error.response.data) {
+                            console.error('Error saving data:', error.response.data);
+                        } else {
+                            console.error('Error saving data:', error);
+                        }
+                    });
+                }
+                else {
+                    console.log('error')
+                }
+
+
+                
+            
+        },
+
+        resetForm() {
+            this.name_id = null;
+            this.employees = [];
+            this.selectedLeavetype = [];
+            this.vacationleavedetails = [];
+            this.vacation1 = '';
+            this.vacation2 = '';
+            this.sick1 = '';
+            this.sick2 = '';
+            this.studyleavedetails = [];
+            this.leaveforwoman = '';
+            this.otherPurpose = '';
+            this.weekdaysCountWithSuffix = '';
+            this.formattedDateRange = '';
+            this.commutationLeavetype = [];
+            this.salary = '';
+            this.leavecredits = '';
+            this.totalvacation = '';
+            this.totalsick = '';
+            this.lessvacation = '';
+            this.lesssick = '';
+            this.balancevacation = '';
+            this.balancesick = '';
+            this.recommendationLeavetype = [];
+            this.text = '';
+            this.withpay = '';
+            this.withoutpay = '';
+            this.othersSpecify = '';
+            this.text2 = '';
+            // Add any other fields that need to be reset
+        },
+        getLeaveType() {
+            if (this.selectedLeavetype.includes(0)) {
+                return 'Vacation Leave';
+            } else if (this.selectedLeavetype.includes(1)) {
+                return 'Mandatory/Forced Leave';
+            } else if (this.selectedLeavetype.includes(2)) {
+                return 'Sick Leave';
+            } else if (this.selectedLeavetype.includes(3)) {
+                return 'Maternity Leave';
+            } else if (this.selectedLeavetype.includes(4)) {
+                return 'Paternity Leave';
+            } else if (this.selectedLeavetype.includes(5)) {
+                return 'Special Privilege Leave';
+            } else if (this.selectedLeavetype.includes(6)) {
+                return 'Solo Parent Leave';
+            } else if (this.selectedLeavetype.includes(7)) {
+                return 'Study Leave';
+            } else if (this.selectedLeavetype.includes(8)) {
+                return '10-Day VAWC Leave';
+            } else if (this.selectedLeavetype.includes(9)) {
+                return 'Rehabilitation Privilege';
+            } else if (this.selectedLeavetype.includes(10)) {
+                return 'Special Leave Benefits for Women';
+            } else if (this.selectedLeavetype.includes(11)) {
+                return 'Special Emergency(Calamity) Leave';
+            } else if (this.selectedLeavetype.includes(12)) {
+                return 'Adoption Leave';
+            } else {
+                return 'Others - ' + this.LeaveType;
+            }
+        },
+        getLeaveDetails() {
+            if (this.selectedLeavetype.includes(0)) {
+                if (this.vacationleavedetails.includes(1)) {
+                    return `Within the Philippines, ${this.vacation1}`;
+                } else if (this.vacationleavedetails.includes(2)) {
+                    return `Abroad(Specify), ${this.vacation2}`;
+                }
+            } else if (this.selectedLeavetype.includes(2)) {
+                if (this.vacationleavedetails.includes(1)) {
+                    return `In Hospital (Specify Illness), ${this.sick1}`;
+                } else if (this.vacationleavedetails.includes(2)) {
+                    return `Out Patient (Specify Illness), ${this.sick2}`;
+                }
+            } else if (this.selectedLeavetype.includes(7)) {
+                if (this.studyleavedetails.includes(1)) {
+                    return `Completion of Master's Degree, ${this.otherPurpose}`;
+                } else if (this.studyleavedetails.includes(2)) {
+                    return `BAR/Board Examination Review Other, ${this.otherPurpose}`;
+                } else {
+                    return this.otherPurpose
+                }
+            } else if (this.selectedLeavetype.includes(10)) {
+                return this.leaveforwoman;
+            } else {
+                if (this.monetization.includes(1)) {
+                    return 'Monetization of Leave Credits';
+                }
+                else if (this.monetization.includes(2)) {
+                    return 'Terminal Leave';
+                }
+            }
+            return '';
+        },
+        getCommutation() {
+            if (this.commutationLeavetype.includes(1)) {
+                return 'Not Requested';
+            } else if (this.commutationLeavetype.includes(2)) {
+                return 'Requested';
+            }
+            return '';
+        },
+        getRecommendation() {
+            if (this.recommendationLeavetype.includes(1)) {
+                return 'For approval';
+            } else if (this.recommendationLeavetype.includes(2)) {
+                return `For disapproval due to: ${this.text}`;
+            }
+            return '';
+        },
 
         closeaddleave() {
             isaddleave.value = false;
+            showleavehome.value = true
         },
 
         formatCurrency(event) {
@@ -1171,22 +1270,55 @@ export default {
 </script>
 
 <style>
-.buttonss {
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  height: 40px;
-  justify-content: space-around;
-  margin-top: 8px;
+.leaveloadid {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    height: 10px;
+    justify-content: space-around;
+}
+
+.leaveloader {
+    display: flex;
+    --height-of-loader: 4px;
+    --loader-color: black;
+    width: 285px;
+    height: 4px;
+    border-radius: 30px;
+    background-color: rgba(0, 0, 0, 0.2);
+    position: relative;
+    margin-top: 10px;
+}
+
+.leaveloader::before {
+    content: "";
+    position: absolute;
+    background: var(--loader-color);
+
+    width: 0%;
+    height: 100%;
+    border-radius: 30px;
+    animation: moving 1s ease-in-out infinite;
+}
+
+.leavebuttonss {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: space-around;
 
 }
-.button {
-  border-radius: 10px;
-  width: 20%;
-  font-weight: bold;
-  font-size: 20px;
-  cursor: pointer;
+
+.leavebutton {
+    border-radius: 10px;
+    width: 20%;
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
 }
+
+
+
 .containerlist {
     cursor: pointer;
     position: relative;
@@ -1294,5 +1426,17 @@ export default {
 
 .not {
     cursor: not-allowed;
+}
+
+@keyframes moving {
+    50% {
+        width: 100%;
+    }
+
+    100% {
+        width: 0;
+        right: 0;
+        left: unset;
+    }
 }
 </style>

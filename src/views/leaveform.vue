@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showleavehome">
+      <img src="../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
+      <p style="margin-left:10px; font-size: 20px; margin-top: 9px; cursor: pointer;" @click="$router.push('/')">Home</p>
+    </div>
     <div style="flex-direction: column; justify-content: center;" v-if="isEdits && isregisclick">
       <editss></editss>
     </div>
@@ -34,10 +38,15 @@
                     <button v-show="!isaddleave && acc.type_id == 1" class="emploleave" @click="employeelst">{{
       'Employee List' }}</button>
                   </div>
+                  <div>
+                    <leavetable/>
+                  </div>
+
                 </div>
                 <div style="display: flex; justify-content: center;" v-if="(isaddleave && !leaveedit)">
                   <leavepdf></leavepdf>
                 </div>
+                
               </div>
             </div>
           </div>
@@ -55,11 +64,13 @@ import employeelist from './employeelist.vue';
 import regis from './regis.vue';
 import editpage from './editpage.vue';
 import headers from '../components/heder.vue'
+import leavetable from '../views/leavetable.vue'
 import signature from '../components/signature.vue'
 import headers1 from '../components/heder2.vue'
 import leavelogout from '../components/logout.vue'
 import { showEdit } from '../components/heder.vue';
 import addleaveform from '../views/addleaveform.vue'
+import { hideedit } from '../components/heder.vue';
 import leavepdf from './leavepdf.vue';
 </script>
 
@@ -68,6 +79,7 @@ import leavepdf from './leavepdf.vue';
 import { ref } from 'vue';
 import axios from 'axios';
 import addleaveformVue from './addleaveform.vue';
+import leavetableVue from './leavetable.vue';
 const accountId = localStorage.getItem('accountId');
 const isaddleave = ref(false);
 const isregisclick = ref(false);
@@ -79,6 +91,7 @@ const acc = ref([]);
 //header
 const showHeader1 = ref(true)
 const showHeader2 = ref(false)
+const showleavehome = ref(true)
 
 
 
@@ -86,6 +99,7 @@ const showHeader2 = ref(false)
 const toggleForm = () => {
   isaddleave.value = true
   showEdit.value = false
+  showleavehome.value = false
 };
 
 const formback = () => {
@@ -99,11 +113,13 @@ const formback = () => {
 const toggleRegistration = () => {
   isregisclick.value = true;
   showEdit.value = false;
+  showleavehome.value = false
 };
 
 const employeelst = () => {
   employeelisleave.value = true;
   showEdit.value = false;
+  showleavehome.value = false
 };
 
 //ma back ang registration
@@ -134,6 +150,8 @@ const showEditss = () => {
   leaveedit.value = true
 }
 
+
+
 // Fetch OTP data function
 const fetchAccounts = async () => {
   try {
@@ -162,6 +180,7 @@ export {
   leaveedit,
   isregisclick,
   employeelisleave,
+  showleavehome,
   noleaveButton,
   toggleForm,
   toggleRegistration,
@@ -179,7 +198,7 @@ export {
 .travel {
   font-weight: bold;
   font-size: 40px;
-  margin-top: 10px;
+  margin-top: -25px;
 }
 
 .addleave {

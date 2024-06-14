@@ -1,6 +1,10 @@
 <template>
    <headers v-if="showHeader1" class="headz"/>
    <headers1 v-if="showHeader2" class="headx"/>
+   <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showhome">
+      <img src="../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
+      <p style="margin-left:10px; font-size: 20px; margin-top: 9px; cursor: pointer;" @click="$router.push('/')">Home</p>
+    </div>
    <div class="titlez" v-if="!isRegistrationClicked && !employeelis && !isEdits">
       <div>
          <p class="travel" >Travel Order</p>
@@ -42,6 +46,7 @@ import { isleavelogoutClicked, isregisclick } from './leaveform.vue';
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
+import { showleavehome } from './leaveform.vue';
 
 
 const accountId = localStorage.getItem('accountId');
@@ -51,6 +56,7 @@ const employeelis = ref(false);
 const isButssClicked = ref(false);
 const isEdits = ref(false);
 const acc = ref([]);
+const showhome = ref(true)
 
 //header
 const showHeader1 = ref(true)
@@ -62,17 +68,20 @@ const showHeader2 = ref(false)
 const toggleForm = () => {
    isVisible.value = !isVisible.value;
    showEdit.value = false
+   showhome.value = !showhome.value
 };
 
 // makita ang registration
 const toggleRegistration = () => {
    isRegistrationClicked.value = true;
    showEdit.value = false;
+   showhome.value = false
 };
 
 const employeelst = () => {
    employeelis.value = true;
    showEdit.value = false;
+   showhome.value = false
 };
 
 //ma back ang registration
@@ -81,6 +90,8 @@ const backButton = () => {
    isVisible.value = false;
    showEdit.value = false
    isregisclick.value = false;
+   showhome.value = true
+   showleavehome.value = true;
 
 };
 

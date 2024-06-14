@@ -29,9 +29,6 @@
             <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }"  @input="capitalizeAndReset('destination')"
               type="text" v-model="destination" class='inputsss' id='destinationin' required>
 
-
-
-
           </div>
           <div style="display: flex; flex-direction: column;  width: 100%;">
             <label class="da"> Date: </label>
