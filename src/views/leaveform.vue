@@ -1,28 +1,49 @@
 <template>
-  <div>
-    <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showleavehome">
-      <img src="../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
-      <p style="margin-left:10px; font-size: 20px; margin-top: 9px; cursor: pointer;" @click="$router.push('/')">Home</p>
+  <headers v-if="showHeader1" class="headz"/>
+  <headers1 v-if="showHeader2" class="headx"/>
+  <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showleavehome">
+    <img src="../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
+    <p style="margin-left:10px; font-size: 20px; margin-top: 9px; cursor: pointer;" @click="$router.push('/')">Home</p>
+  </div>
+  <div class="titlez" v-if="!isregisclick && !employeelisleave && !leaveedit ">
+      <div>
+         <p class="travel" v-if="!isaddleave">Leave Form</p>
+      </div>
+      <div class="navigationz" v-if="!isaddleave">
+         <button class="addleave" @click="toggleForm">Add Leave</button>
+         <button v-if="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="regleave" @click="toggleRegistration">{{'Registration' }}</button>
+         <button v-if="!isVisible && acc.type_id == 1" class="emploleave" @click="employeelst">{{'Employee List' }}</button>
+      </div>
+   </div>
+
+   <editss v-if="isEdits && isregisclick"/>
+   <regis v-if="isregisclick && !isEdits"/>
+   <employeelist v-if="employeelisleave && !isEdits"/>
+   <editpage v-if="leaveedit" />
+   <signature v-if="acc.signature === null" />
+   <leavetable v-if="!isaddleave && !isregisclick && !employeelisleave && !leaveedit " />
+   <leavepdf v-if="(isaddleave && !leaveedit)"/>
+   <leavelogout v-if="isleavelogoutClicked"/>
+  <!-- <div>
+    
+    <div style="flex-direction: column; justify-content: center;">
+      
     </div>
-    <div style="flex-direction: column; justify-content: center;" v-if="isEdits && isregisclick">
-      <editss></editss>
+    <div style="flex-direction: column; justify-content: center;" >
+      
     </div>
-    <div style="flex-direction: column; justify-content: center;" v-if="isregisclick && !isEdits">
-      <regis></regis>
+    <div style="flex-direction: column; justify-content: center;" >
+      
     </div>
-    <div style="flex-direction: column; justify-content: center;" v-if="employeelisleave && !isEdits">
-      <employeelist></employeelist>
-    </div>
-    <div style="flex-direction: column; justify-content: center;" v-if="leaveedit">
-      <editpage></editpage>
+    <div style="flex-direction: column; justify-content: center;" >
+      
     </div>
     <div>
-      <headers v-if="showHeader1" />
-      <headers1 v-if="showHeader2" />
+      
       <div v-if="!isregisclick">
         <div v-if="!employeelisleave">
           <div class="sigleave">
-            <signature v-if="acc.signature === null" />
+            
             <div v-else>
               <div v-if="!isregisclick">
                 <div v-show="!isaddleave"
@@ -39,24 +60,24 @@
       'Employee List' }}</button>
                   </div>
                   <div>
-                    <leavetable/>
+                    
                   </div>
 
                 </div>
                 <div style="display: flex; justify-content: center;" v-if="(isaddleave && !leaveedit)">
-                  <leavepdf></leavepdf>
+                  
                 </div>
                 
               </div>
             </div>
           </div>
           <div class="logssssleave" v-if="isleavelogoutClicked">
-            <leavelogout></leavelogout>
+            
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script setup>
@@ -155,7 +176,7 @@ const showEditss = () => {
 // Fetch OTP data function
 const fetchAccounts = async () => {
   try {
-    const response = await axios.get('http://172.31.10.159:8000/get_accounts_json/');
+    const response = await axios.get('http://192.168.1.250:8000/get_accounts_json/');
     acc.value = response.data.find(result => result.account_id == accountId);
   } catch (error) {
     console.error('Error fetching OTP data:', error);
@@ -202,8 +223,6 @@ export {
 }
 
 .addleave {
-  margin-top: -19px;
-  margin-bottom: 13px;
   height: auto;
   width: 150px;
   padding: 5px;
@@ -227,9 +246,6 @@ export {
 }
 
 .regleave {
-  margin-top: -19px;
-  margin-bottom: 13px;
-  margin-left: 20px;
   height: auto;
   width: 150px;
   padding: 5px;
@@ -238,12 +254,10 @@ export {
   font-weight: bold;
   box-shadow: 7px 7px 12px black;
   cursor: pointer;
+  margin-left: 20px;
 }
 
 .emploleave {
-  margin-top: -19px;
-  margin-bottom: 13px;
-  margin-left: 20px;
   height: auto;
   width: 160px;
   padding: 5px;
@@ -252,6 +266,7 @@ export {
   font-weight: bold;
   box-shadow: 7px 7px 12px black;
   cursor: pointer;
+  margin-left: 20px;
 }
 
 .logssssleave {
@@ -263,8 +278,49 @@ export {
 
 .sigleave {
   margin-top: 100px;
-
 }
+.navigationz{
+   display: flex;
+   flex-direction: row;
+}
+
+.titlez{
+   display: flex; 
+   flex-direction: column; 
+   align-items: center; 
+   margin-top: 100px;
+}
+
+@media (max-width: 768px) {
+   .navigationz{
+   flex-direction: column;
+   }
+   .addleave{
+      margin-bottom: 30px;
+   }
+   .regleave{
+      margin-top: -19px;
+      margin-bottom: 30px;
+      margin-left: 0px;
+   }
+   .emploleave{
+      margin-top: -19px;
+      margin-bottom: 13px;
+      margin-left: -5px;
+   }
+   .formz{
+      margin-top: 110px;
+   }
+   .regiz{
+      display: flex;
+      justify-content:center; 
+      margin-top: -100px;
+   }
+   .empeee{
+      margin-right: 0px;
+   }
+}
+
 
 @media print {
   .addleave {

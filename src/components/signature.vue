@@ -187,7 +187,7 @@ const sendOTP = async () => {
   otp5.value = ''
   otp6.value = ''
   try {
-    await axios.post(`http://172.31.10.159:8000/send-otp/${accountId}`);
+    await axios.post(`http://192.168.1.250:8000/send-otp/${accountId}`);
     await fetchOTPData();
     sendingOTPS.value = false;
     OTPsuccesful.value = true;
@@ -214,7 +214,7 @@ const submitImage = async () => {
     const formData = new FormData();
     const file = dataURItoBlob(uploadedImageUrl.value);
     formData.append('signature', file);
-    await axios.post(`http://172.31.10.159:8000/update_account/${accountId}`, formData, {
+    await axios.post(`http://192.168.1.250:8000/update_account/${accountId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -318,7 +318,7 @@ const getCurrentTimeAdjusted = () => {
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://172.31.10.159:8000/get_otp_json');
+    const response = await axios.get('http://192.168.1.250:8000/get_otp_json');
     otpData.value = response.data.filter(result => result.account_id == accountId);
     otppp.value = otpData.value[0].code
   } catch (error) {

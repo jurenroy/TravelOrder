@@ -179,10 +179,10 @@ const login_submit = () => {
 };
 
 const fetchAccounts = () => {
-   axios.get('http://172.31.10.159:8000/get_accounts_json')
+   axios.get('http://192.168.1.250:8000/get_accounts_json')
       .then(response => {
          accounts.value = response.data;
-         axios.get('http://172.31.10.159:8000/get_employees_json')
+         axios.get('http://192.168.1.250:8000/get_employees_json')
             .then(response => {
                employees.value = response.data;
             })

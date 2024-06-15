@@ -837,7 +837,7 @@ export default {
 
  console.log(formData);
 
- axios.post('http://172.31.10.159:8000/updateleave_form', formData)
+ axios.post('http://192.168.1.250:8000/updateleave_form', formData)
    .then(response => {
      console.log('Data saved successfully:', response.data);
      this.resetForm();
@@ -991,7 +991,7 @@ resetForm() {
        async fetchAccounts() {
 
            try {
-               const response = await axios.get('http://172.31.10.159:8000/get_accounts_json');
+               const response = await axios.get('http://192.168.1.250:8000/get_accounts_json');
 
                this.accounts = response.data;
            } catch (error) {
@@ -1001,7 +1001,7 @@ resetForm() {
 
        async fetchNames() {
            try {
-               const response = await axios.get('http://172.31.10.159:8000/get_names_json');
+               const response = await axios.get('http://192.168.1.250:8000/get_names_json');
                this.names = response.data;
 
 
@@ -1033,7 +1033,7 @@ resetForm() {
            return item ? item.position_name : '';
        },
        fetchemployee() {
-           fetch('http://172.31.10.159:8000/get_employees_json/')
+           fetch('http://192.168.1.250:8000/get_employees_json/')
                .then(response => response.json())
                .then(data => {
                    this.employees = data.filter(det => det.name_id == this.name_id);
@@ -1085,7 +1085,7 @@ resetForm() {
                    console.error('Error fetching employees:', error);
                });
            // Fetch positions data
-           fetch('http://172.31.10.159:8000/get_positions_json/')
+           fetch('http://192.168.1.250:8000/get_positions_json/')
                .then(response => response.json())
                .then(data => {
                    this.positions = data.filter(detz => detz.position_id == this.employees[0].position_id);
@@ -1096,7 +1096,7 @@ resetForm() {
                });
        },
        fetchLeaveForms() {
-      axios.get('http://172.31.10.159:8000/get_leave_json')
+      axios.get('http://192.168.1.250:8000/get_leave_json')
         .then(response => {
           this.leaveForms = response.data.filter(libporm => libporm.leaveform_id == 1);
           

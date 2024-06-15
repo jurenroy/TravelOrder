@@ -359,7 +359,7 @@
         const formData = new FormData();
         formData.append('note', this.noteText);
   
-        axios.post(`http://172.31.10.159:8000/update_form/${this.notenum}`, formData, {
+        axios.post(`http://192.168.1.250:8000/update_form/${this.notenum}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -381,7 +381,7 @@
         const formData = new FormData();
         formData.append('initial', 'initialized');
   
-        axios.post(`http://172.31.10.159:8000/update_form/${this.initnum}`, formData, {
+        axios.post(`http://192.168.1.250:8000/update_form/${this.initnum}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -407,7 +407,7 @@
         formData.append('signature1', this.acc.signature);
         formData.append('name_id', name_id);
   
-        axios.post(`http://172.31.10.159:8000/update_form/${form_id}`, formData, {
+        axios.post(`http://192.168.1.250:8000/update_form/${form_id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -432,7 +432,7 @@
         const formData = new FormData();
         formData.append('signature1', this.acc.signature);
   
-        axios.post(`http://172.31.10.159:8000/update_form/${form_id}`, formData, {
+        axios.post(`http://192.168.1.250:8000/update_form/${form_id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -459,7 +459,7 @@
         formData.append('sdiv', this.sub.division_id);
   
   
-        axios.post(`http://172.31.10.159:8000/update_form/${form_id}`, formData, {
+        axios.post(`http://192.168.1.250:8000/update_form/${form_id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -490,12 +490,12 @@
       //   }
       // },
       fetchAccounts() {
-        axios.get('http://172.31.10.159:8000/get_accounts_json')
+        axios.get('http://192.168.1.250:8000/get_accounts_json')
           .then(response => {
             this.acc = response.data.find(result => result.account_id == this.accountId);
             this.fetchData()
             if (this.acc) {
-              this.imageUrl = `http://172.31.10.159:8000/storage/${this.acc.signature}`;
+              this.imageUrl = `http://192.168.1.250:8000/storage/${this.acc.signature}`;
             }
             useAuthStore().updateVerifiedOTPs('false');
             localStorage.setItem('verifiedOTPs', 'false');
@@ -507,7 +507,7 @@
   
       fetchData() {
         this.load = true
-        axios.get('http://172.31.10.159:8000/get_leave_json')
+        axios.get('http://192.168.1.250:8000/get_leave_json')
           .then(response => {
             this.mawala = true;
             this.load = false
@@ -560,7 +560,7 @@
           });
       },
       fetchNames() {
-        axios.get('http://172.31.10.159:8000/get_names_json')
+        axios.get('http://192.168.1.250:8000/get_names_json')
           .then(response => {
             this.names = response.data;
           })
@@ -569,7 +569,7 @@
           });
       },
       fetchEmployees() {
-        axios.get('http://172.31.10.159:8000/get_employees_json')
+        axios.get('http://192.168.1.250:8000/get_employees_json')
           .then(response => {
             this.employees = response.data;
           })
