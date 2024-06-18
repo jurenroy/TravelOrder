@@ -218,7 +218,7 @@
                                             pathLength="575.0541381835938" class="path"></path>
                                     </svg>
                                 </label>
-                                <p>Adoption Leave</p>
+                                <p>Adoption Leave</p>f
                             </div>
 
                             <div style="display: flex; flex-direction: row; margin-top: -15px">
@@ -501,33 +501,33 @@
                             <p>As of</p>
                             <input
                                 style="height: 10px; width: 230px; border: none; border-bottom: 1.5px solid black;outline: none; font-size: 10px; margin-top: 7px; margin-left: 3px"
-                                v-model="leavecredits">
+                                v-model="leavecredits" disabled>
                         </div>
-                        <div>
+                        <div>   
                             <div class="grid-container">
                                 <div class="grid-item"></div>
                                 <div class="grid-item">Vacation Leave</div>
                                 <div class="grid-item">Sick Leave</div>
                                 <div class="grid-item">Total Earned</div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits" v-model="totalvacation">
+                                    <input type="text" class="leavecredits" v-model="totalvacation" disabled>
                                 </div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits" v-model="totalsick">
+                                    <input type="text" class="leavecredits" disabled v-model="totalsick">
                                 </div>
                                 <div class="grid-item">Less this Application</div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits" v-model="lessvacation">
+                                    <input type="text" class="leavecredits" disabled v-model="lessvacation">
                                 </div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits" v-model="lesssick">
+                                    <input type="text" class="leavecredits" disabled v-model="lesssick">
                                 </div>
                                 <div class="grid-item">Balance</div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits" v-model="balancevacation">
+                                    <input type="text" class="leavecredits" disabled v-model="balancevacation">
                                 </div>
                                 <div class="grid-item">
-                                    <input type="text" class="leavecredits" v-model="balancesick">
+                                    <input type="text" class="leavecredits" disabled v-model="balancesick">
                                 </div>
                             </div>
                         </div>
@@ -544,7 +544,7 @@
                         <p style="margin-left: 10px;">7.B RECOMMENDATION</p>
                         <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
                             <label class="containerlist">
-                                <input type="checkbox" v-model="recommendationLeavetype" :value="recommendationtype[0]">
+                                <input type="checkbox" disabled v-model="recommendationLeavetype" :value="recommendationtype[0]">
                                 <svg viewBox="0 0 64 64" height="2em" width="2em">
                                     <path
                                         d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -556,7 +556,7 @@
 
                         <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
                             <label class="containerlist">
-                                <input type="checkbox" v-model="recommendationLeavetype" :value="recommendationtype[1]">
+                                <input type="checkbox" disabled v-model="recommendationLeavetype" :value="recommendationtype[1]">
                                 <svg viewBox="0 0 64 64" height="2em" width="2em">
                                     <path
                                         d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
@@ -566,8 +566,8 @@
                             <p>For disapproval due to:</p>
                         </div>
 
-                        <textarea @keydown.enter.prevent v-model="text" id="myTextarea" :rows="rows"
-                            :class="{ 'not': !recommendationLeavetype.includes(2) }"
+                        <textarea @keydown.enter.prevent v-model="text" id="myTextarea" :rows="rows" disabled
+                            
                             :disabled="!recommendationLeavetype.includes(2)"
                             style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 350px; margin-left: 20px; font-size: 10px; text-decoration: underline;"></textarea>
                         <p style="text-align: center;margin-bottom: -20px;z-index: 9;">{{ reco }}</p>
@@ -586,19 +586,19 @@
                             <p style="margin-left: 10px;">7.C APPROVED FOR</p>
                             <div style="margin-left: 20px;">
                                 <div style="display: flex; flex-direction: row; margin-top: -5px;">
-                                    <input
+                                    <input disabled
                                         style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
                                         v-model="withpay">
                                     <p style="font-size: 10px;">days with pay</p>
                                 </div>
                                 <div style="display: flex; flex-direction: row; margin-top: -5px;">
-                                    <input
+                                    <input disabled
                                         style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
                                         v-model="withoutpay">
                                     <p>days without pay</p>
                                 </div>
                                 <div style="display: flex; flex-direction: row; margin-top: -5px;">
-                                    <input
+                                    <input disabled
                                         style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
                                         v-model="othersSpecify">
                                     <p>others (Specify)</p>
@@ -607,7 +607,7 @@
                         </div>
                         <div>
                             <p style="margin-left: 10px;">7.D DISAPPROVED DUE TO:</p>
-                            <textarea @keydown.enter.prevent v-model="text2" id="myTextarea" :rows="rows2"
+                            <textarea @keydown.enter.prevent v-model="text2" id="myTextarea" :rows="rows2" disabled
                                 style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 350px; margin-left: 20px; font-size: 10px; text-decoration: underline;"></textarea>
                         </div>
                     </div>
@@ -896,7 +896,7 @@ export default {
                     });
                 }
                 else {
-                    console.log('error')
+                    console.log(this.getLeaveDetails())
                 }
 
 
@@ -974,9 +974,10 @@ export default {
                     return `Abroad(Specify), ${this.vacation2}`;
                 }
             } else if (this.selectedLeavetype.includes(2)) {
-                if (this.vacationleavedetails.includes(1)) {
+                if (this.sickleavedetails.includes(1)) {
                     return `In Hospital (Specify Illness), ${this.sick1}`;
-                } else if (this.vacationleavedetails.includes(2)) {
+                    
+                } else if (this.sickleavedetails.includes(2)) {
                     return `Out Patient (Specify Illness), ${this.sick2}`;
                 }
             } else if (this.selectedLeavetype.includes(7)) {

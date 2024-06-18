@@ -1,11 +1,11 @@
 <template>
   <headers v-if="showHeader1" class="headz"/>
   <headers1 v-if="showHeader2" class="headx"/>
-  <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showleavehome">
+  <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showleavehome && acc.signature !== null">
     <img src="../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
     <p style="margin-left:10px; font-size: 20px; margin-top: 9px; cursor: pointer;" @click="$router.push('/')">Home</p>
   </div>
-  <div class="titlez" v-if="!isregisclick && !employeelisleave && !leaveedit ">
+  <div class="titlez" v-if="!isregisclick && !employeelisleave && !leaveedit && acc.signature !== null">
       <div>
          <p class="travel" v-if="!isaddleave">Leave Form</p>
       </div>
@@ -21,7 +21,7 @@
    <employeelist v-if="employeelisleave && !isEdits"/>
    <editpage v-if="leaveedit" />
    <signature v-if="acc.signature === null" />
-   <leavetable v-if="!isaddleave && !isregisclick && !employeelisleave && !leaveedit " />
+   <leavetable v-if="!isaddleave && !isregisclick && !employeelisleave && !leaveedit && acc.signature !== null" />
    <leavepdf v-if="(isaddleave && !leaveedit)"/>
    <leavelogout v-if="isleavelogoutClicked"/>
   <!-- <div>
