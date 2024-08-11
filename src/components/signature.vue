@@ -1,138 +1,197 @@
 <template>
   <div
-    style="justify-content: center; align-items: center; background-color: transparent; display: flex; margin-top: 200px;">
+    style="
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      display: flex;
+      margin-top: 200px;
+    "
+  >
     <div class="sign1">
       <div class="sign1" v-if="!OTPsent">
         <label for="fileInput" class="custom-button">Upload Signature</label>
-        <input class="buttonz" type="file" accept="image/*" id="fileInput" ref="fileInput" style="display: none;"
-          @change="handleFileUpload">
-        <img class="uploaded-image" :src="uploadedImageUrl" alt="Uploaded Image" v-if="uploadedImageUrl">
+        <input
+          class="buttonz"
+          type="file"
+          accept="image/*"
+          id="fileInput"
+          ref="fileInput"
+          style="display: none"
+          @change="handleFileUpload"
+        />
+        <img
+          class="uploaded-image"
+          :src="uploadedImageUrl"
+          alt="Uploaded Image"
+          v-if="uploadedImageUrl"
+        />
 
         <div v-if="sendingOTPS" class="verifieds">
-          <a class="verifieds1">
-            Sending OTP....
-          </a>
+          <a class="verifieds1"> Sending OTP.... </a>
         </div>
 
         <div v-if="OTPsuccesful" class="succesfullyotp">
-          <a class="succesfullyotp1">
-            OTP loaded successfully
-          </a>
+          <a class="succesfullyotp1"> OTP loaded successfully </a>
         </div>
-        <button class="submit-button" @click="sendOTP" :disabled="dlimaclick" v-if="hideUpload">Submit</button>
+        <button
+          class="submit-button"
+          @click="sendOTP"
+          :disabled="dlimaclick"
+          v-if="hideUpload"
+        >
+          Submit
+        </button>
       </div>
 
-
-
       <div v-if="OTPsent">
-        <div style="display: flex; justify-content: center; align-items: center; flex-direction: column;  width: 170%;">
-          <label for="otpInput" class="Enterotps">Enter OTP Verification: {{ otppp }}</label>
+        <div
+          style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 170%;
+          "
+        >
+          <label for="otpInput" class="Enterotps"
+            >Enter OTP Verification: {{ otppp }}</label
+          >
 
-          <div style="display: flex; flex-direction: row;">
-
-            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 1, 0)"
-              @input="moveToNextField($event, 2)" class="otpinput" type="text" id="otpInput1" v-model="otp1"
-              maxlength="1" autofocus>
-            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 2, 1)"
-              @input="moveToNextField($event, 3)" class="otpinput" type="text" id="otpInput2" v-model="otp2"
-              maxlength="1">
-            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 3, 2)"
-              @input="moveToNextField($event, 4)" class="otpinput" type="text" id="otpInput3" v-model="otp3"
-              maxlength="1">
-            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 4, 3)"
-              @input="moveToNextField($event, 5)" class="otpinput" type="text" id="otpInput4" v-model="otp4"
-              maxlength="1">
-            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 5, 4)"
-              @input="moveToNextField($event, 6)" class="otpinput" type="text" id="otpInput5" v-model="otp5"
-              maxlength="1">
-            <input @keydown.enter='verifyOTP' @keydown="moveToPrevField($event, 6, 5)"
-              @input="moveToNextField($event, 0)" class="otpinput" type="text" id="otpInput6" v-model="otp6"
-              maxlength="1">
-
+          <div style="display: flex; flex-direction: row">
+            <input
+              @keydown.enter="verifyOTP"
+              @keydown="moveToPrevField($event, 1, 0)"
+              @input="moveToNextField($event, 2)"
+              class="otpinput"
+              type="text"
+              id="otpInput1"
+              v-model="otp1"
+              maxlength="1"
+              autofocus
+            />
+            <input
+              @keydown.enter="verifyOTP"
+              @keydown="moveToPrevField($event, 2, 1)"
+              @input="moveToNextField($event, 3)"
+              class="otpinput"
+              type="text"
+              id="otpInput2"
+              v-model="otp2"
+              maxlength="1"
+            />
+            <input
+              @keydown.enter="verifyOTP"
+              @keydown="moveToPrevField($event, 3, 2)"
+              @input="moveToNextField($event, 4)"
+              class="otpinput"
+              type="text"
+              id="otpInput3"
+              v-model="otp3"
+              maxlength="1"
+            />
+            <input
+              @keydown.enter="verifyOTP"
+              @keydown="moveToPrevField($event, 4, 3)"
+              @input="moveToNextField($event, 5)"
+              class="otpinput"
+              type="text"
+              id="otpInput4"
+              v-model="otp4"
+              maxlength="1"
+            />
+            <input
+              @keydown.enter="verifyOTP"
+              @keydown="moveToPrevField($event, 5, 4)"
+              @input="moveToNextField($event, 6)"
+              class="otpinput"
+              type="text"
+              id="otpInput5"
+              v-model="otp5"
+              maxlength="1"
+            />
+            <input
+              @keydown.enter="verifyOTP"
+              @keydown="moveToPrevField($event, 6, 5)"
+              @input="moveToNextField($event, 0)"
+              class="otpinput"
+              type="text"
+              id="otpInput6"
+              v-model="otp6"
+              maxlength="1"
+            />
           </div>
-
-
 
           <div v-if="sendingOTPS2" class="verifieds">
-            <a class="verifieds1">
-              Sending OTP....
-            </a>
+            <a class="verifieds1"> Sending OTP.... </a>
           </div>
-
 
           <div v-if="expired" class="notequal">
-            <a class="notequal1">
-              OTP Expired
-            </a>
+            <a class="notequal1"> OTP Expired </a>
           </div>
 
-
-
           <div v-if="verifyingotp" class="verifieds">
-            <a class="verifieds1">
-              Verifying OTP....
-            </a>
+            <a class="verifieds1"> Verifying OTP.... </a>
           </div>
 
           <div v-if="verifiedotps" class="verifieds">
-            <a class="verifieds1">
-              Success Verified OTP
-            </a>
+            <a class="verifieds1"> Success Verified OTP </a>
           </div>
           <div v-if="wrongsOTPs" class="notequal">
-            <a class="notequal1">
-              Incorrect Input OTP
-            </a>
+            <a class="notequal1"> Incorrect Input OTP </a>
           </div>
 
-          <button class="verifyotps" @click="verifyOTP" :disabled="verify || verifydisab">Verify OTP</button>
+          <button
+            class="verifyotps"
+            @click="verifyOTP"
+            :disabled="verify || verifydisab"
+          >
+            Verify OTP
+          </button>
 
-          <button class="verifyotps" @click="sendOTP" :disabled="resed">Resend OTP</button>
+          <button class="verifyotps" @click="sendOTP" :disabled="resed">
+            Resend OTP
+          </button>
         </div>
       </div>
-
     </div>
   </div>
 </template>
 
-
-
 <script setup>
-import { ref, computed } from 'vue';
-import axios from 'axios';
+import { ref, computed } from "vue";
+import axios from "axios";
 
-
-const uploadedImageUrl = ref('');
-const accountId = localStorage.getItem('accountId');
+const uploadedImageUrl = ref("");
+const accountId = localStorage.getItem("accountId");
 const OTPsent = ref(false);
-const otp = ref('');//ge type
+const otp = ref(""); //ge type
 const OTPverified = ref(false);
-const otpData = ref([]);//confirm
+const otpData = ref([]); //confirm
 const hideUpload = ref(false);
-const OTPsuccesful = ref(false)
-const OTPsuccesful2 = ref(false)
-const verifiedotps = ref(false)
-const sendingOTPS = ref(false)
-const sendingOTPS2 = ref(false)
-const dlimaclick = ref(false)
-const verifyingotp = ref(false)
-const wrongsOTPs = ref(false)
-const expired = ref(false)
-const resed = ref(true)
-const OTPsent2 = ref(false)
+const OTPsuccesful = ref(false);
+const OTPsuccesful2 = ref(false);
+const verifiedotps = ref(false);
+const sendingOTPS = ref(false);
+const sendingOTPS2 = ref(false);
+const dlimaclick = ref(false);
+const verifyingotp = ref(false);
+const wrongsOTPs = ref(false);
+const expired = ref(false);
+const resed = ref(true);
+const OTPsent2 = ref(false);
 
 const verifydisab = ref(false);
-const otp1 = ref('');
-const otp2 = ref('');
-const otp3 = ref('');
-const otp4 = ref('');
-const otp5 = ref('');
-const otp6 = ref('');
-const otppp = ref('');
-
+const otp1 = ref("");
+const otp2 = ref("");
+const otp3 = ref("");
+const otp4 = ref("");
+const otp5 = ref("");
+const otp6 = ref("");
+const otppp = ref("");
 
 const moveToPrevField = (event, currentField, prevField) => {
-  if (event.key === 'Backspace' && event.target.value === '') {
+  if (event.key === "Backspace" && event.target.value === "") {
     const prevInput = document.getElementById(`otpInput${prevField}`);
     if (prevInput) {
       prevInput.focus();
@@ -156,16 +215,23 @@ const moveToNextField = (event, nextField) => {
 };
 
 const verify = computed(() => {
-  return otp1.value === '' || otp2.value === '' || otp3.value === '' || otp4.value === '' || otp5.value === '' || otp6.value === '';
+  return (
+    otp1.value === "" ||
+    otp2.value === "" ||
+    otp3.value === "" ||
+    otp4.value === "" ||
+    otp5.value === "" ||
+    otp6.value === ""
+  );
 });
 
 const showUpload = () => {
-  hideUpload.value = true
-}
+  hideUpload.value = true;
+};
 
 const handleFileUpload = (event) => {
   const file = event.target.files[0];
-  if (file && file.type.startsWith('image/')) {
+  if (file && file.type.startsWith("image/")) {
     const reader = new FileReader();
     reader.onload = (e) => {
       uploadedImageUrl.value = e.target.result;
@@ -178,14 +244,14 @@ const handleFileUpload = (event) => {
 const sendOTP = async () => {
   sendingOTPS.value = true;
   resed.value = true;
-  verifydisab.value = false
+  verifydisab.value = false;
 
-  otp1.value = ''
-  otp2.value = ''
-  otp3.value = ''
-  otp4.value = ''
-  otp5.value = ''
-  otp6.value = ''
+  otp1.value = "";
+  otp2.value = "";
+  otp3.value = "";
+  otp4.value = "";
+  otp5.value = "";
+  otp6.value = "";
   try {
     await axios.post(`http://172.31.10.164:8000/send-otp/${accountId}`);
     await fetchOTPData();
@@ -193,40 +259,42 @@ const sendOTP = async () => {
     OTPsuccesful.value = true;
     setTimeout(() => {
       sendingOTPS2.value = false;
-      OTPsuccesful2.value = true
+      OTPsuccesful2.value = true;
       OTPsuccesful.value = false;
       OTPsent.value = true;
       OTPsent2.value = true;
-
     }, 2000);
-
   } catch (error) {
-    console.error('Error sending OTP:', error);
+    console.error("Error sending OTP:", error);
   }
 };
 
 const submitImage = async () => {
   if (!uploadedImageUrl.value) {
-    console.error('No image uploaded.');
+    console.error("No image uploaded.");
     return;
   }
   try {
     const formData = new FormData();
     const file = dataURItoBlob(uploadedImageUrl.value);
-    formData.append('signature', file);
-    await axios.post(`http://172.31.10.164:8000/update_account/${accountId}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+    formData.append("signature", file);
+    await axios.post(
+      `http://172.31.10.164:8000/update_account/${accountId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
-    });
+    );
   } catch (error) {
-    console.error('Error uploading image:', error);
+    console.error("Error uploading image:", error);
   }
 };
 
 const dataURItoBlob = (dataURI) => {
-  const byteString = atob(dataURI.split(',')[1]);
-  const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+  const byteString = atob(dataURI.split(",")[1]);
+  const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
   const arrayBuffer = new ArrayBuffer(byteString.length);
   const uint8Array = new Uint8Array(arrayBuffer);
   for (let i = 0; i < byteString.length; i++) {
@@ -236,8 +304,9 @@ const dataURItoBlob = (dataURI) => {
 };
 
 const verifyOTP = () => {
-  const fullOTP = otp1.value + otp2.value + otp3.value + otp4.value + otp5.value + otp6.value;
-  verifydisab.value = true
+  const fullOTP =
+    otp1.value + otp2.value + otp3.value + otp4.value + otp5.value + otp6.value;
+  verifydisab.value = true;
   verifyingotp.value = true;
   verify.value = true;
   setTimeout(() => {
@@ -245,10 +314,9 @@ const verifyOTP = () => {
       const currentTime = getCurrentTimeAdjusted();
       const backendExpiryTime = otpData.value[0].expires_at;
 
-
       const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
       if (expiryTimeAdjusted > currentTime) {
-        verifydisab.value = false
+        verifydisab.value = false;
         if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
           // OTPverified.value = true;
 
@@ -263,30 +331,26 @@ const verifyOTP = () => {
           // verifydisab.value = false
           wrongsOTPs.value = true;
           setTimeout(() => {
-
-            wrongsOTPs.value = false
+            wrongsOTPs.value = false;
           }, 2000);
         }
       } else {
-        verifyingotp.value = false
-        expired.value = true
-        resed.value = false
+        verifyingotp.value = false;
+        expired.value = true;
+        resed.value = false;
         setTimeout(() => {
-          expired.value = false
-          verifydisab.value = true
-
+          expired.value = false;
+          verifydisab.value = true;
         }, 2000);
       }
     } else {
-      console.error('OTP data not preloaded.');
+      console.error("OTP data not preloaded.");
       return;
     }
   }, 2000);
-
-
 };
 const adjustExpiryTime = (expiryTime) => {
-  const expiryTimeParts = expiryTime.split(':');
+  const expiryTimeParts = expiryTime.split(":");
   let hours = parseInt(expiryTimeParts[0]);
   let minutes = parseInt(expiryTimeParts[1]);
   let seconds = parseInt(expiryTimeParts[2]);
@@ -295,15 +359,12 @@ const adjustExpiryTime = (expiryTime) => {
   hours = hours % 24;
 
   // Format hours, minutes, seconds
-  hours = (hours < 10) ? '0' + hours : hours;
-  minutes = (minutes < 10) ? '0' + minutes : minutes;
-  seconds = (seconds < 10) ? '0' + seconds : seconds;
+  hours = hours < 10 ? "0" + hours : hours;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  seconds = seconds < 10 ? "0" + seconds : seconds;
 
   return `${hours}:${minutes}:${seconds}`;
 };
-
-
-
 
 const getCurrentTimeAdjusted = () => {
   const today = new Date();
@@ -313,28 +374,25 @@ const getCurrentTimeAdjusted = () => {
   let sc = today.getSeconds();
 
   // Ensure leading zero for single digit values
-  hr = (hr < 10) ? '0' + hr : hr;
-  mn = (mn < 10) ? '0' + mn : mn;
-  sc = (sc < 10) ? '0' + sc : sc;
+  hr = hr < 10 ? "0" + hr : hr;
+  mn = mn < 10 ? "0" + mn : mn;
+  sc = sc < 10 ? "0" + sc : sc;
 
   return `${hr}:${mn}:${sc}`;
 };
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://172.31.10.164:8000/get_otp_json');
-    otpData.value = response.data.filter(result => result.account_id == accountId);
-    otppp.value = otpData.value[0].code
+    const response = await axios.get("http://172.31.10.164:8000/get_otp_json");
+    otpData.value = response.data.filter(
+      (result) => result.account_id == accountId
+    );
+    otppp.value = otpData.value[0].code;
   } catch (error) {
-    console.error('Error fetching OTP data:', error);
+    console.error("Error fetching OTP data:", error);
   }
 };
-
-
-
 </script>
-
-
 
 <style scoped>
 .succesfullyotp {
@@ -409,7 +467,6 @@ const fetchOTPData = async () => {
   margin-left: 10px;
   font-weight: bold;
   font-size: 24px;
-
 }
 
 .custom-button:hover {
@@ -431,7 +488,6 @@ const fetchOTPData = async () => {
   margin-bottom: 12px;
   text-align: center;
   font-size: 24px;
-
 }
 
 .Enterotps {
@@ -439,7 +495,6 @@ const fetchOTPData = async () => {
   font-size: 24px;
   text-align: left;
 }
-
 
 .verifyotps {
   height: 40px;
@@ -489,8 +544,6 @@ const fetchOTPData = async () => {
   width: 100%;
   text-align: center;
   color: black;
-
-
 }
 
 .notequal {
@@ -508,6 +561,5 @@ const fetchOTPData = async () => {
   /* margin: 10px auto; */
   border-radius: 10px;
   box-shadow: 0px 0px 4px red, 0px 0px 3px red inset;
-
 }
 </style>

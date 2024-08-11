@@ -1,113 +1,217 @@
 <template>
-  <div class=zero style="display: flex; justify-content: center;" v-if="isVisible">
+  <div
+    class="zero"
+    style="display: flex; justify-content: center"
+    v-if="isVisible"
+  >
     <div class="first">
       <div class="second">
         <p class="form">Fill up Form</p>
 
         <div class="inside">
-          <div style="display: flex; flex-direction: column;  width: 100%;">
+          <div style="display: flex; flex-direction: column; width: 100%">
             <label class="n">Name:</label>
             <!-- Dropdown for names -->
-            <select v-model="selectedName" class='inputsss' id='namein'
-              style="height: 35px; border: 2px solid black; width: 90%;"
-              :class="{ 'red-border': isRed && selectedName === '' }" required>
+            <select
+              v-model="selectedName"
+              class="inputsss"
+              id="namein"
+              style="height: 35px; border: 2px solid black; width: 90%"
+              :class="{ 'red-border': isRed && selectedName === '' }"
+              required
+            >
               <option value="" disabled>Select a Name</option>
-              <option v-for="name in names" :key="name.name_id" :value="name.name_id">{{ name.last_name }},
-                {{ name.first_name }} {{ name.middle_init }}</option>
+              <option
+                v-for="name in names"
+                :key="name.name_id"
+                :value="name.name_id"
+              >
+                {{ name.last_name }}, {{ name.first_name }}
+                {{ name.middle_init }}
+              </option>
             </select>
 
             <label class="p"> Position: </label>
-            <input @keydown.enter="form_submit" type="text" v-model="position"
-              :class="{ 'red-border': isRed && position === '' }" class='inputsss' @input="resetRed" id='positionin'
-              required readonly>
+            <input
+              @keydown.enter="form_submit"
+              type="text"
+              v-model="position"
+              :class="{ 'red-border': isRed && position === '' }"
+              class="inputsss"
+              @input="resetRed"
+              id="positionin"
+              required
+              readonly
+            />
 
             <label class="dd"> Depature Date: </label>
-            <input @keydown.enter="form_submit" type="date" v-model="departure" class='inputsss'
-              :class="{ 'red-border': isRed && departure === '' }" @input="resetRed" id='departurein' required>
+            <input
+              @keydown.enter="form_submit"
+              type="date"
+              v-model="departure"
+              class="inputsss"
+              :class="{ 'red-border': isRed && departure === '' }"
+              @input="resetRed"
+              id="departurein"
+              required
+            />
 
             <label class="d"> Destination: </label>
-            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }" @input="resetRed"
-              type="text" v-model="destination" class='inputsss' id='destinationin' required>
-
-
-
-
+            <input
+              @keydown.enter="form_submit"
+              :class="{ 'red-border': isRed && destination === '' }"
+              @input="resetRed"
+              type="text"
+              v-model="destination"
+              class="inputsss"
+              id="destinationin"
+              required
+            />
           </div>
-          <div style="display: flex; flex-direction: column;  width: 100%;">
+          <div style="display: flex; flex-direction: column; width: 100%">
             <label class="da"> Date: </label>
-            <input @keydown.enter="form_submit" type="type" v-model="date" class='inputsss' id='datein' required
-              readonly>
+            <input
+              @keydown.enter="form_submit"
+              type="type"
+              v-model="date"
+              class="inputsss"
+              id="datein"
+              required
+              readonly
+            />
 
             <label class="ds"> Division/Section: </label>
-            <input @keydown.enter="form_submit" type="text" v-model="division"
-              :class="{ 'red-border': isRed && division === '' }" @input="resetRed" class='inputsss' id='divisionin'
-              required readonly>
+            <input
+              @keydown.enter="form_submit"
+              type="text"
+              v-model="division"
+              :class="{ 'red-border': isRed && division === '' }"
+              @input="resetRed"
+              class="inputsss"
+              id="divisionin"
+              required
+              readonly
+            />
 
             <label class="os"> Official Station:</label>
-            <input @keydown.enter="form_submit" type="text" v-model="station" class='inputsss' id='stationin' required
-              readonly>
+            <input
+              @keydown.enter="form_submit"
+              type="text"
+              v-model="station"
+              class="inputsss"
+              id="stationin"
+              required
+              readonly
+            />
 
             <label class="ad"> Arrival Date: </label>
-            <input @keydown.enter="form_submit" type="date" v-model="arrival"
-              :class="{ 'red-border': isRed && arrival === '' }" @input="resetRed" class='inputsss' id='arrivalin'
-              required>
+            <input
+              @keydown.enter="form_submit"
+              type="date"
+              v-model="arrival"
+              :class="{ 'red-border': isRed && arrival === '' }"
+              @input="resetRed"
+              class="inputsss"
+              id="arrivalin"
+              required
+            />
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; justify-content: center;">
+        <div
+          style="display: flex; flex-direction: column; justify-content: center"
+        >
           <div>
-          <label class="container">
-          <input type="checkbox" id="areaofres" v-model="aor">
-          <svg viewBox="0 0 64 64" height="2em" width="2em">
-            <path
-              d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-              pathLength="575.0541381835938" class="path"></path>
-          </svg>
-          
-        </label>
-        <label for="areaofres" style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">
-          Outside Area of Responsibility (AOR) 
-          <span v-if="travelDurationz >7">{{ travelDurationz }} Days</span>
-        </label>
-      </div>
-      
-        
-          <label class="pt" style="margin-top: 10px;"> Purpose of Travel: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="purpose"
-            :class="{ 'red-border': isRed && purpose === '' }" @input="resetRed" class='inputss' id='purposein'
-            required>
+            <label class="container">
+              <input type="checkbox" id="areaofres" v-model="aor" />
+              <svg viewBox="0 0 64 64" height="2em" width="2em">
+                <path
+                  d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                  pathLength="575.0541381835938"
+                  class="path"
+                ></path>
+              </svg>
+            </label>
+            <label
+              for="areaofres"
+              style="
+                left: 15px;
+                top: 5px;
+                font-size: 20px;
+                font-weight: bold;
+                position: relative;
+              "
+            >
+              Outside Area of Responsibility (AOR)
+              <span v-if="travelDurationz > 7">{{ travelDurationz }} Days</span>
+            </label>
+          </div>
+
+          <label class="pt" style="margin-top: 10px">
+            Purpose of Travel:
+          </label>
+          <input
+            @keydown.enter="form_submit"
+            type="text"
+            v-model="purpose"
+            :class="{ 'red-border': isRed && purpose === '' }"
+            @input="resetRed"
+            class="inputss"
+            id="purposein"
+            required
+          />
 
           <label class="per"> Per Deims/Expense Allowed</label>
-          <input @keydown.enter="form_submit" type="text" v-model="pdea" class='inputss' id='pdeain' required>
+          <input
+            @keydown.enter="form_submit"
+            type="text"
+            v-model="pdea"
+            class="inputss"
+            id="pdeain"
+            required
+          />
 
           <label class="al"> Assistants or Laborer Allowed: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="ala" class='inputss' id='alain' required>
+          <input
+            @keydown.enter="form_submit"
+            type="text"
+            v-model="ala"
+            class="inputss"
+            id="alain"
+            required
+          />
 
-          <label class="at"> Appropriations to which travel should be charged: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="appropriation" class='inputss' id='appropriationin'
-            required>
+          <label class="at">
+            Appropriations to which travel should be charged:
+          </label>
+          <input
+            @keydown.enter="form_submit"
+            type="text"
+            v-model="appropriation"
+            class="inputss"
+            id="appropriationin"
+            required
+          />
 
           <label class="r"> Remarks or Special Instructios: </label>
-          <input @keydown.enter="form_submit" type="text" v-model="remarks" class='inputss' id='remarksin' required>
+          <input
+            @keydown.enter="form_submit"
+            type="text"
+            v-model="remarks"
+            class="inputss"
+            id="remarksin"
+            required
+          />
         </div>
 
         <div v-if="isValid" class="error">
-          <a class="errormsg1">
-            Warning Alert!!
-          </a>
-          <a class="errormsg">
-            Please Fill out the Text Fields
-          </a>
+          <a class="errormsg1"> Warning Alert!! </a>
+          <a class="errormsg"> Please Fill out the Text Fields </a>
         </div>
 
         <div v-else-if="pleaseWait" class="formcorrect">
-          <a class="formcorrect1">
-            Submited!!
-          </a>
-          <a class="formcorrect1">
-            Please wait for a moment....
-          </a>
-
+          <a class="formcorrect1"> Submited!! </a>
+          <a class="formcorrect1"> Please wait for a moment.... </a>
         </div>
 
         <div v-else-if="loadis" class="loadid">
@@ -115,58 +219,55 @@
         </div>
 
         <div class="buttonss">
-          <button class="button" :disabled="submitting" @click="form_submit">Submit</button>
+          <button class="button" :disabled="submitting" @click="form_submit">
+            Submit
+          </button>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 
-
-
 <script>
-import { ref } from 'vue';
-import axios from 'axios';
+import { ref } from "vue";
+import axios from "axios";
 
 export default {
   data() {
     return {
       isRed: false,
-      selectedName: '',
+      selectedName: "",
       names: [],
-      position: '',
-      departure: '',
-      destination: '',
-      purpose: '',
+      position: "",
+      departure: "",
+      destination: "",
+      purpose: "",
       date: this.getCurrentDate(),
-      division: '',
-      station: 'MGB-X',
-      arrival: '',
-      pdea: '',
-      ala: '',
-      appropriation: '',
-      remarks: '',
+      division: "",
+      station: "MGB-X",
+      arrival: "",
+      pdea: "",
+      ala: "",
+      appropriation: "",
+      remarks: "",
       isValid: false,
       isVisible: true,
       pleaseWait: false,
       employees: [],
       positions: [],
       divisions: [],
-      positionID: '',
+      positionID: "",
       submitting: false,
-      divisionID: '',
+      divisionID: "",
       accounts: [],
       accountz: [],
-      accountIdz: localStorage.getItem('accountId'),
+      accountIdz: localStorage.getItem("accountId"),
       loadis: false,
-      aor:false,
-      errorDate: ''
+      aor: false,
+      errorDate: "",
     };
   },
   computed: {
-    
-
     travelDuration() {
       if (this.departure && this.arrival) {
         const departureDate = new Date(this.departure);
@@ -184,36 +285,34 @@ export default {
         const currentDate = new Date();
         const timeDifference = arrivalDate - departureDate;
         const dayDifference = timeDifference / (1000 * 3600 * 24);
-        
 
-        if (dayDifference < 0 ) {
+        if (dayDifference < 0) {
           this.departure = null;
           this.arrival = null;
           return 0;
-      }
+        }
 
-      this.errorDate = ''; // Clear any existing error messages
+        this.errorDate = ""; // Clear any existing error messages
         return Math.ceil(dayDifference);
       }
       return 0;
     },
-  
+
     nem() {
       return this.selectedName;
     },
     departor() {
-      return this.departure !== ''
+      return this.departure !== "";
     },
     destinashwon() {
-      return this.destination !== ''
+      return this.destination !== "";
     },
     araybal() {
-      return this.arrival !== ''
+      return this.arrival !== "";
     },
     porpos() {
-      return this.purpose !== ''
+      return this.purpose !== "";
     },
-
   },
   methods: {
     resetRed() {
@@ -222,10 +321,12 @@ export default {
     // Function to fetch the selected employee based on selectedName
     fetchSelectedEmployee() {
       if (this.selectedName) {
-        const selectedEmployee = this.employees.find(employee => employee.name_id === this.selectedName);
+        const selectedEmployee = this.employees.find(
+          (employee) => employee.name_id === this.selectedName
+        );
         if (selectedEmployee) {
-          this.positionID = selectedEmployee.position_id
-          this.divisionID = selectedEmployee.division_id
+          this.positionID = selectedEmployee.position_id;
+          this.divisionID = selectedEmployee.division_id;
           this.position = this.findPositionName(selectedEmployee.position_id);
           this.division = this.findDivisionName(selectedEmployee.division_id);
         }
@@ -233,19 +334,23 @@ export default {
     },
     // Function to find the employee's position name based on their position_id
     findPositionName(positionId) {
-      const matchedPosition = this.positions.find(position => position.position_id === positionId);
-      return matchedPosition ? matchedPosition.position_name : '';
+      const matchedPosition = this.positions.find(
+        (position) => position.position_id === positionId
+      );
+      return matchedPosition ? matchedPosition.position_name : "";
     },
     // Function to find the employee's division name based on their division_id
     findDivisionName(divisionId) {
-      const matchedDivision = this.divisions.find(division => division.division_id === divisionId);
-      return matchedDivision ? matchedDivision.division_name : '';
+      const matchedDivision = this.divisions.find(
+        (division) => division.division_id === divisionId
+      );
+      return matchedDivision ? matchedDivision.division_name : "";
     },
     convertToUpperCase() {
       this.name = this.name.toUpperCase();
     },
     enableTyping(event) {
-      event.target.removeAttribute('readonly');
+      event.target.removeAttribute("readonly");
     },
     getCurrentDate() {
       const today = new Date();
@@ -264,20 +369,18 @@ export default {
       // this.isRed = true
 
       if (
-
-        this.selectedName === '' ||
-        this.position === '' ||
-        this.departure === '' ||
-        this.destination === '' ||
-        this.date === '' ||
-        this.division === '' ||
-        this.station === '' ||
-        this.arrival === '' ||
-        this.purpose === ''
-
+        this.selectedName === "" ||
+        this.position === "" ||
+        this.departure === "" ||
+        this.destination === "" ||
+        this.date === "" ||
+        this.division === "" ||
+        this.station === "" ||
+        this.arrival === "" ||
+        this.purpose === ""
       ) {
         // this.isRed = false;
-        this.isRed = true
+        this.isRed = true;
         this.isValid = true;
 
         setTimeout(() => {
@@ -285,9 +388,9 @@ export default {
         }, 3000);
       } else {
         const formData = {
-          name_id: '' + this.selectedName,
-          position_id: '' + this.positionID,
-          division_id: '' + this.divisionID,
+          name_id: "" + this.selectedName,
+          position_id: "" + this.positionID,
+          division_id: "" + this.divisionID,
           station: this.station,
           destination: this.destination,
           purpose: this.purpose,
@@ -297,15 +400,16 @@ export default {
           ala: this.ala,
           appropriations: this.appropriation,
           remarks: this.remarks,
-          aor: this.aor ? '1' : '0', 
-          intervals: this.travelDuration ? '1' : '0',
+          aor: this.aor ? "1" : "0",
+          intervals: this.travelDuration ? "1" : "0",
         };
         this.submitting = true;
-        this.loadis = true
+        this.loadis = true;
 
-        axios.post('http://172.31.10.164:8000/add_form/', formData)
+        axios
+          .post("http://172.31.10.164:8000/add_form/", formData)
 
-          .then(response => {
+          .then((response) => {
             if (response.status === 200) {
               this.resetForm();
               setTimeout(() => {
@@ -313,94 +417,101 @@ export default {
                 this.submitting = false; // Set submitting back to false after timeout
               }, 3000);
             } else {
-              throw new Error('Failed to submit form');
+              throw new Error("Failed to submit form");
             }
           })
-          .catch(error => {
-            console.error('Error submitting form:', error);
+          .catch((error) => {
+            console.error("Error submitting form:", error);
           });
         setTimeout(() => {
-          this.loadis = false
+          this.loadis = false;
         }, 3000);
       }
     },
     resetForm() {
-      this.selectedName = '';
-      this.position = '';
-      this.departure = '';
-      this.destination = '';
-      this.division = '';
-      this.purpose = '';
-      this.arrival = '';
-      this.pdea = '';
-      this.ala = '';
-      this.appropriation = '';
-      this.remarks = '';
+      this.selectedName = "";
+      this.position = "";
+      this.departure = "";
+      this.destination = "";
+      this.division = "";
+      this.purpose = "";
+      this.arrival = "";
+      this.pdea = "";
+      this.ala = "";
+      this.appropriation = "";
+      this.remarks = "";
       this.pleaseWait = true;
       this.submitting = true;
-      this.isRed = false
+      this.isRed = false;
     },
     fetchData() {
-      fetch('http://172.31.10.164:8000/get_names_json/')
-        .then(response => response.json())
-        .then(data => {
+      fetch("http://172.31.10.164:8000/get_names_json/")
+        .then((response) => response.json())
+        .then((data) => {
           this.names = data;
           if (this.names) {
-            fetch('http://172.31.10.164:8000/get_accounts_json/')
-              .then(response => response.json())
-              .then(data => {
+            fetch("http://172.31.10.164:8000/get_accounts_json/")
+              .then((response) => response.json())
+              .then((data) => {
                 if (this.accountIdz) {
                   this.accounts = data;
-                  this.accountz = this.accounts.find(acc => parseInt(acc.account_id) === parseInt(this.accountIdz));
+                  this.accountz = this.accounts.find(
+                    (acc) =>
+                      parseInt(acc.account_id) === parseInt(this.accountIdz)
+                  );
                   if (this.accountz.type_id == 1) {
-                    console.log(this.accountz.type_id)
-                  } else if (this.accountz.type_id !== 1){
-                    console.log(this.accountz.type_id)
-                    this.names = this.names.filter(nem => parseInt(nem.name_id) === parseInt(this.accountz.name_id))
+                    console.log(this.accountz.type_id);
+                  } else if (this.accountz.type_id !== 1) {
+                    console.log(this.accountz.type_id);
+                    this.names = this.names.filter(
+                      (nem) =>
+                        parseInt(nem.name_id) ===
+                        parseInt(this.accountz.name_id)
+                    );
                   }
                 } else {
                 }
               })
-              .catch(error => {
-                console.error('Error fetching accounts:', error);
+              .catch((error) => {
+                console.error("Error fetching accounts:", error);
               });
           }
         })
-        .catch(error => {
-          console.error('Error fetching names:', error);
+        .catch((error) => {
+          console.error("Error fetching names:", error);
         });
 
-      fetch('http://172.31.10.164:8000/get_employees_json/')
-        .then(response => response.json())
-        .then(data => {
+      fetch("http://172.31.10.164:8000/get_employees_json/")
+        .then((response) => response.json())
+        .then((data) => {
           this.employees = data;
         })
-        .catch(error => {
-          console.error('Error fetching employees:', error);
+        .catch((error) => {
+          console.error("Error fetching employees:", error);
         });
       // Fetch positions data
-      fetch('http://172.31.10.164:8000/get_positions_json/')
-        .then(response => response.json())
-        .then(data => {
+      fetch("http://172.31.10.164:8000/get_positions_json/")
+        .then((response) => response.json())
+        .then((data) => {
           this.positions = data;
         })
-        .catch(error => {
-          console.error('Error fetching positions:', error);
+        .catch((error) => {
+          console.error("Error fetching positions:", error);
         });
 
       // Fetch divisions data
-      fetch('http://172.31.10.164:8000/get_divisions_json/')
-        .then(response => response.json())
-        .then(data => {
+      fetch("http://172.31.10.164:8000/get_divisions_json/")
+        .then((response) => response.json())
+        .then((data) => {
           this.divisions = data;
         })
-        .catch(error => {
-          console.error('Error fetching divisions:', error);
+        .catch((error) => {
+          console.error("Error fetching divisions:", error);
         });
     },
   },
   watch: {
-    selectedName: 'fetchSelectedEmployee', // Watch for changes in selectedName
+    selectedName: "fetchSelectedEmployee", // Watch for changes in selectedName
   },
   mounted() {
     this.fetchData();
@@ -409,19 +520,15 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
 .container {
   cursor: pointer;
   top: 7px;
   left: 7px;
   position: relative;
-
 }
 
 .container input {
-
   display: none;
 }
 
@@ -432,7 +539,6 @@ export default {
 }
 
 .path {
-
   fill: none;
   stroke: black;
   stroke-width: 6;
@@ -443,12 +549,10 @@ export default {
   stroke-dashoffset: 0;
 }
 
-.container input:checked~svg .path {
+.container input:checked ~ svg .path {
   stroke-dasharray: 70.5096664428711 9999999;
   stroke-dashoffset: -262.2723388671875;
 }
-
-
 
 .red-border {
   border: 2px solid red;
@@ -488,7 +592,6 @@ export default {
   font-size: 25px;
   margin-top: -5px;
   text-align: center;
-
 }
 
 .inputsss {
@@ -536,7 +639,6 @@ export default {
   height: 40px;
   justify-content: space-around;
   margin-top: 8px;
-
 }
 
 .button {
@@ -587,7 +689,6 @@ export default {
   text-align: center;
   color: black;
   font-weight: bold;
-
 }
 
 .errormsg {
@@ -627,7 +728,6 @@ export default {
   height: 100%;
   border-radius: 30px;
   animation: moving 1s ease-in-out infinite;
-  ;
 }
 
 @keyframes moving {

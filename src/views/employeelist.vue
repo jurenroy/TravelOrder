@@ -1,34 +1,62 @@
 <template>
-  <div style="display: flex; flex-direction: column; margin-top: 105px; ">
+  <div style="display: flex; flex-direction: column; margin-top: 105px">
+    <img
+      v-if="showhome"
+      @click="relod"
+      :class="{ blur: blurTable }"
+      style="
+        cursor: pointer;
+        height: 30px;
+        width: 30px;
+        position: relative;
+        left: 45px;
+        top: -30px;
+      "
+      src="../assets/home.png"
+      title="Go back to Home"
+    />
+    <label
+      v-if="showhome"
+      :class="{ blur: blurTable }"
+      @click="relod"
+      style="position: relative; top: -25px; cursor: pointer"
+      >Return to Dashboard</label
+    >
 
-    <img v-if="showhome" @click="relod" :class="{ 'blur': blurTable }"
-      style="cursor: pointer; height: 30px; width: 30px; position: relative; left: 45px; top: -30px;"
-      src="../assets/home.png" title="Go back to Home">
-    <label v-if="showhome" :class="{ 'blur': blurTable }" @click="relod"
-      style="position: relative; top: -25px; cursor: pointer;">Return to Dashboard</label>
-
-    <div style="display: flex; flex-direction: row; justify-content: center;" :class="{ 'blur': blurTable }">
-      <p style="font-size: 30px; font-weight: bold;">Employee List</p>
-      <img src="../assets/add.png"
-        style="width: 26px; height: 26px; margin-left: 10px; margin-top: 35px; cursor: pointer;" @click="showaddem">
+    <div
+      style="display: flex; flex-direction: row; justify-content: center"
+      :class="{ blur: blurTable }"
+    >
+      <p style="font-size: 30px; font-weight: bold">Employee List</p>
+      <img
+        src="../assets/add.png"
+        style="
+          width: 26px;
+          height: 26px;
+          margin-left: 10px;
+          margin-top: 35px;
+          cursor: pointer;
+        "
+        @click="showaddem"
+      />
     </div>
 
-    <button @click="fetchData" id="refresh" style="height: 0; width: 0;" hidden></button>
+    <button
+      @click="fetchData"
+      id="refresh"
+      style="height: 0; width: 0"
+      hidden
+    ></button>
 
     <div v-if="successfulyadd" class="successadd">
-      <a class="successadd1">
-        Employee Successfuly Added!!
-      </a>
-
+      <a class="successadd1"> Employee Successfuly Added!! </a>
     </div>
-
 
     <div v-if="load" class="loadings">
-      <img src='../assets/loading.gif' width="auto" height="100px" />
+      <img src="../assets/loading.gif" width="auto" height="100px" />
     </div>
 
-    <div v-if="!load" class="outer" :class="{ 'blur': blurTable }">
-
+    <div v-if="!load" class="outer" :class="{ blur: blurTable }">
       <!-- <div class="outer"> -->
       <div class="scrollable-table">
         <table>
@@ -46,144 +74,212 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="employee in sortedEmployees" :key="employee.id" style="font-size:18px;">
-
+            <tr
+              v-for="employee in sortedEmployees"
+              :key="employee.id"
+              style="font-size: 18px"
+            >
               <!-- Last Name -->
-              <td v-if="!employee.isEditing" style="width: 120px; ">{{ getLastNameById(employee.name_id,
-      'names').toUpperCase() }}</td>
+              <td v-if="!employee.isEditing" style="width: 120px">
+                {{ getLastNameById(employee.name_id, "names").toUpperCase() }}
+              </td>
               <td v-else>
-                <input style="width: 95%; " v-model="edited.lastName" type="text">
+                <input
+                  style="width: 95%"
+                  v-model="edited.lastName"
+                  type="text"
+                />
               </td>
 
               <!-- First Name  -->
-              <td v-if="!employee.isEditing">{{ getNameById(employee.name_id, 'names').toUpperCase() }}</td>
+              <td v-if="!employee.isEditing">
+                {{ getNameById(employee.name_id, "names").toUpperCase() }}
+              </td>
               <td v-else>
-                <input v-model="edited.firstName" style="width: 95%; " type="text">
+                <input
+                  v-model="edited.firstName"
+                  style="width: 95%"
+                  type="text"
+                />
               </td>
 
               <!-- Middle Initials -->
-              <td v-if="!employee.isEditing" style=" text-align: center;">{{ getMiddleInitById(employee.name_id,
-      'names') }}</td>
+              <td v-if="!employee.isEditing" style="text-align: center">
+                {{ getMiddleInitById(employee.name_id, "names") }}
+              </td>
               <td v-else>
-                <input style="width: 95%; " v-model="edited.middleName" type="text" maxlength="1">
+                <input
+                  style="width: 95%"
+                  v-model="edited.middleName"
+                  type="text"
+                  maxlength="1"
+                />
               </td>
 
               <!-- Position -->
-              <td v-if="!employee.isEditing">{{ getPositionById(employee.position_id, 'positions') }}</td>
-              <td style="width: 550px;" v-else>
-
+              <td v-if="!employee.isEditing">
+                {{ getPositionById(employee.position_id, "positions") }}
+              </td>
+              <td style="width: 550px" v-else>
                 <select v-model="edited.position" :disabled="input.pospos">
-                  <option v-for="position in positions" :key="position.position_id" :value="position.position_name">
+                  <option
+                    v-for="position in positions"
+                    :key="position.position_id"
+                    :value="position.position_name"
+                  >
                     {{ position.position_name }}
                   </option>
                 </select>
 
                 <label class="containerlist">
-                  <input type="checkbox" id="pospos" v-model="input.pospos">
+                  <input type="checkbox" id="pospos" v-model="input.pospos" />
                   <svg viewBox="0 0 64 64" height="2em" width="2em">
                     <path
                       d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-                      pathLength="575.0541381835938" class="path"></path>
+                      pathLength="575.0541381835938"
+                      class="path"
+                    ></path>
                   </svg>
                 </label>
-                <input v-model="edited.position" type="text" v-if="input.pospos">
+                <input
+                  v-model="edited.position"
+                  type="text"
+                  v-if="input.pospos"
+                />
               </td>
 
-
               <!-- Divisions -->
-              <td v-if="!employee.isEditing" style=" text-align: center;">{{ getDivisionById(employee.division_id,
-      'divisions') }}</td>
+              <td v-if="!employee.isEditing" style="text-align: center">
+                {{ getDivisionById(employee.division_id, "divisions") }}
+              </td>
               <td v-else>
                 <select v-model="edited.division">
-                  <option v-for="division in divisions" :key="division.division_id" :value="division.division_name">
+                  <option
+                    v-for="division in divisions"
+                    :key="division.division_id"
+                    :value="division.division_name"
+                  >
                     {{ division.division_name }}
                   </option>
                 </select>
               </td>
 
-
               <!-- Chief -->
-              <td v-if="!employee.isEditing" style=" text-align: center;">{{ isChief(employee.chief) }}</td>
+              <td v-if="!employee.isEditing" style="text-align: center">
+                {{ isChief(employee.chief) }}
+              </td>
               <td v-else>
                 <!-- <input v-model="edited.isChief" type="checkbox"> -->
 
                 <label class="containeremployee">
-                  <input type="checkbox" v-model="edited.isChief">
+                  <input type="checkbox" v-model="edited.isChief" />
                   <svg viewBox="0 0 64 64" height="2em" width="2em">
                     <path
                       d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-                      pathLength="575.0541381835938" class="path"></path>
+                      pathLength="575.0541381835938"
+                      class="path"
+                    ></path>
                   </svg>
                 </label>
-
               </td>
 
-
               <!-- isActive -->
-              <td v-if="!employee.isEditing"
-                :style="{ backgroundColor: employee.isActive === 'out' ? 'red' : 'green' }"></td>
+              <td
+                v-if="!employee.isEditing"
+                :style="{
+                  backgroundColor:
+                    employee.isActive === 'out' ? 'red' : 'green',
+                }"
+              ></td>
               <td v-else>
                 <!-- <input v-model="edited.isActive" type="checkbox"> -->
                 <label class="containeremployee">
-                  <input type="checkbox" v-model="edited.isActive">
+                  <input type="checkbox" v-model="edited.isActive" />
                   <svg viewBox="0 0 64 64" height="2em" width="2em">
                     <path
                       d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-                      pathLength="575.0541381835938" class="path"></path>
+                      pathLength="575.0541381835938"
+                      class="path"
+                    ></path>
                   </svg>
                 </label>
-
               </td>
-
 
               <!-- Actions -->
-              <td v-if="!employee.isEditing" style="display: flex; justify-content: center;">
-                <img src="../assets/edit.png" style=" cursor: pointer; width: 30px; height: 30px;"
-                  @click="editEmployeee(employee.employee_id)" />
+              <td
+                v-if="!employee.isEditing"
+                style="display: flex; justify-content: center"
+              >
+                <img
+                  src="../assets/edit.png"
+                  style="cursor: pointer; width: 30px; height: 30px"
+                  @click="editEmployeee(employee.employee_id)"
+                />
               </td>
 
-              <td v-if="employee.isEditing" style=" cursor: pointer; display: flex; justify-content: center;">
-                <img src="../assets/save.png" style="width: 30px; height: 30px;" @click="doneeditEmployeee(employee)" />
+              <td
+                v-if="employee.isEditing"
+                style="cursor: pointer; display: flex; justify-content: center"
+              >
+                <img
+                  src="../assets/save.png"
+                  style="width: 30px; height: 30px"
+                  @click="doneeditEmployeee(employee)"
+                />
               </td>
-
             </tr>
           </tbody>
         </table>
       </div>
-
     </div>
     <div
-      style="width: 600px; height: auto; background-color: white; border: 2px solid BLACK; border-radius: 5px; padding: 10px;  position: fixed;  top: 50%;  left: 50%;  transform: translate(-50%, -50%); "
-      v-if="addem">
+      style="
+        width: 600px;
+        height: auto;
+        background-color: white;
+        border: 2px solid BLACK;
+        border-radius: 5px;
+        padding: 10px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      "
+      v-if="addem"
+    >
       <p
-        style="display: flex; justify-content: center; font-weight: bold; font-size: 28px; margin-top: -5px; margin-bottom: 10px;">
-        Add Employee</p>
+        style="
+          display: flex;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 28px;
+          margin-top: -5px;
+          margin-bottom: 10px;
+        "
+      >
+        Add Employee
+      </p>
       <addemp @click="fetchData, seemplo, seemplo"></addemp>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { employeelis, isVisible, backButtonemp } from './dashboard.vue';
-import addemp from '../components/addemployee.vue';
-import axios from 'axios';
-
-
+import { ref } from "vue";
+import { employeelis, isVisible, backButtonemp } from "./dashboard.vue";
+import addemp from "../components/addemployee.vue";
+import axios from "axios";
 </script>
-
-
-
 
 <script>
 const addem = ref(false);
 const blurTable = ref(false);
-const successfulyadd = ref(false)
-const showhome = ref(true)
+const successfulyadd = ref(false);
+const showhome = ref(true);
 
 const relod = () => {
   window.location.reload();
-}
+};
 
 const showaddem = () => {
   addem.value = true;
@@ -191,36 +287,35 @@ const showaddem = () => {
 };
 
 const cancelemplo = () => {
-  addem.value = false
+  addem.value = false;
   blurTable.value = false;
-}
+};
 const seemplo = () => {
-  addem.value = false
+  addem.value = false;
   // Find the button element
   // Find the button element by ID
-  const button = document.getElementById('refresh');
+  const button = document.getElementById("refresh");
 
   // Check if the button element is found before dispatching the click event
   if (button) {
     // Create and dispatch a click event
-    const clickEvent = new Event('click', {
+    const clickEvent = new Event("click", {
       bubbles: true,
       cancelable: true,
     });
     button.dispatchEvent(clickEvent);
   } else {
-    console.error('Button element not found');
+    console.error("Button element not found");
   }
-  successfulyadd.value = true
+  successfulyadd.value = true;
   setTimeout(() => {
-    successfulyadd.value = false
+    successfulyadd.value = false;
   }, 3000);
-}
+};
 
-export { cancelemplo, addem, blurTable, seemplo }
+export { cancelemplo, addem, blurTable, seemplo };
 
 export default {
-
   data() {
     return {
       names: [],
@@ -229,28 +324,33 @@ export default {
       divisions: [],
       load: true,
       mawala: false,
-      // addem: false, 
+      // addem: false,
       selectedEmployee: 0,
       edited: {
-        lastName: '',
-        firstName: '',
-        middleName: '',
-        position: '',
-        division: '',
-        isChief: '',
-        isActive: ''
+        lastName: "",
+        firstName: "",
+        middleName: "",
+        position: "",
+        division: "",
+        isChief: "",
+        isActive: "",
       },
       input: {
-        pospos: false
+        pospos: false,
       },
-
     };
   },
   computed: {
     sortedEmployees() {
       return this.employees.slice().sort((a, b) => {
-        const lastNameA = this.getLastNameById(a.name_id, 'names').toUpperCase();
-        const lastNameB = this.getLastNameById(b.name_id, 'names').toUpperCase();
+        const lastNameA = this.getLastNameById(
+          a.name_id,
+          "names"
+        ).toUpperCase();
+        const lastNameB = this.getLastNameById(
+          b.name_id,
+          "names"
+        ).toUpperCase();
         if (lastNameA < lastNameB) {
           return -1;
         }
@@ -259,16 +359,16 @@ export default {
         }
         return 0;
       });
-    }
+    },
   },
 
   watch: {
     chingchang(newValue, oldValue) {
       if (newValue > oldValue) {
         this.fetchData();
-        console.log('yawa');
+        console.log("yawa");
       }
-    }
+    },
   },
   methods: {
     isPosposDisabled() {
@@ -284,20 +384,27 @@ export default {
     },
     editEmployeee(employees_id) {
       this.selectedEmployee = employees_id;
-      const map = this.employees.find(emp => emp.employee_id == employees_id)
-      this.employees.forEach(employee => {
-        if (employee.employee_id === employees_id && this.selectedEmployee === employees_id) {
+      const map = this.employees.find((emp) => emp.employee_id == employees_id);
+      this.employees.forEach((employee) => {
+        if (
+          employee.employee_id === employees_id &&
+          this.selectedEmployee === employees_id
+        ) {
           employee.isEditing = true;
-          const nem = this.names.find(name => name.name_id == map.name_id)
-          const pus = this.positions.find(name => name.position_id == map.position_id)
-          const dev = this.divisions.find(name => name.division_id == map.division_id)
+          const nem = this.names.find((name) => name.name_id == map.name_id);
+          const pus = this.positions.find(
+            (name) => name.position_id == map.position_id
+          );
+          const dev = this.divisions.find(
+            (name) => name.division_id == map.division_id
+          );
           this.edited.lastName = nem.last_name.toUpperCase();
           this.edited.firstName = nem.first_name.toUpperCase();
           this.edited.middleName = nem.middle_init.toUpperCase();
           this.edited.position = pus.position_name;
           this.edited.division = dev.division_name;
-          this.edited.isChief = (employee.chief > 0);
-          this.edited.isActive = (employee.isActive !== 'out');
+          this.edited.isChief = employee.chief > 0;
+          this.edited.isActive = employee.isActive !== "out";
         } else {
           employee.isEditing = false;
         }
@@ -305,133 +412,130 @@ export default {
     },
     doneeditEmployeee(employee) {
       // Remove excess periods and add one if missing
-      let middleName = '';
+      let middleName = "";
       if (this.edited.middleName !== null) {
-        middleName = this.edited.middleName.toUpperCase().replace(/\.{2,}/g, '.');
-        if (!middleName.endsWith('.') && middleName) {
-          middleName += '.';
-        } else if (middleName == '.') {
-          middleName = ''
+        middleName = this.edited.middleName
+          .toUpperCase()
+          .replace(/\.{2,}/g, ".");
+        if (!middleName.endsWith(".") && middleName) {
+          middleName += ".";
+        } else if (middleName == ".") {
+          middleName = "";
         }
       }
       this.edited.middleName = middleName;
-
 
       // Create a new FormData object
       const formData = new FormData();
 
       // Append key-value pairs to the FormData object
-      formData.append('employee_id', this.selectedEmployee);
-      formData.append('last_name', this.edited.lastName);
-      formData.append('first_name', this.edited.firstName);
-      formData.append('middle_init', this.edited.middleName);
-      formData.append('position_name', this.edited.position);
-      formData.append('division_name', this.edited.division);
-      formData.append('chief', this.edited.isChief ? 1 : 0);
-      formData.append('isActive', this.edited.isActive ? null : 'out');
+      formData.append("employee_id", this.selectedEmployee);
+      formData.append("last_name", this.edited.lastName);
+      formData.append("first_name", this.edited.firstName);
+      formData.append("middle_init", this.edited.middleName);
+      formData.append("position_name", this.edited.position);
+      formData.append("division_name", this.edited.division);
+      formData.append("chief", this.edited.isChief ? 1 : 0);
+      formData.append("isActive", this.edited.isActive ? null : "out");
 
       // Send the data using Axios
-      axios.post('http://172.31.10.164:8000/edit_employee', formData)
-        .then(response => {
+      axios
+        .post("http://172.31.10.164:8000/edit_employee", formData)
+        .then((response) => {
           // Handle success
           this.selectedEmployee = 0;
           employee.isEditing = false;
-          this.edited.middleName = ''
+          this.edited.middleName = "";
           this.fetchData();
         })
-        .catch(error => {
+        .catch((error) => {
           // Handle error
-          console.error('Error:', error);
+          console.error("Error:", error);
           this.selectedEmployee = 0;
           employee.isEditing = false;
         });
     },
 
-
     isChief(value) {
-      return value === 1 ? 'Yes' : 'No';
+      return value === 1 ? "Yes" : "No";
     },
     getNameById(id, arrayName) {
       const array = this[arrayName];
-      const item = array.find(item => item.name_id === id);
-      return item ? item.first_name : '';
+      const item = array.find((item) => item.name_id === id);
+      return item ? item.first_name : "";
     },
     getMiddleInitById(id, arrayName) {
       const array = this[arrayName];
-      const item = array.find(item => item.name_id === id);
-      return item ? item.middle_init : '';
+      const item = array.find((item) => item.name_id === id);
+      return item ? item.middle_init : "";
     },
     getLastNameById(id, arrayName) {
       const array = this[arrayName];
-      const item = array.find(item => item.name_id === id);
-      return item ? item.last_name : '';
+      const item = array.find((item) => item.name_id === id);
+      return item ? item.last_name : "";
     },
     getPositionById(id, arrayName) {
       const array = this[arrayName];
-      const item = array.find(item => item.position_id === id);
-      return item ? item.position_name : '';
+      const item = array.find((item) => item.position_id === id);
+      return item ? item.position_name : "";
     },
     getDivisionById(id, arrayName) {
       const array = this[arrayName];
-      const item = array.find(item => item.division_id === id);
-      return item ? item.division_name : '';
+      const item = array.find((item) => item.division_id === id);
+      return item ? item.division_name : "";
     },
     fetchData() {
-      fetch('http://172.31.10.164:8000/get_names_json/')
-        .then(response => response.json())
-        .then(data => {
+      fetch("http://172.31.10.164:8000/get_names_json/")
+        .then((response) => response.json())
+        .then((data) => {
           this.mawala = true;
-          this.load = false
+          this.load = false;
           this.names = data;
         })
-        .catch(error => {
-          console.error('Error fetching names:', error);
+        .catch((error) => {
+          console.error("Error fetching names:", error);
         });
 
-      fetch('http://172.31.10.164:8000/get_employees_json/')
-        .then(response => response.json())
-        .then(data => {
+      fetch("http://172.31.10.164:8000/get_employees_json/")
+        .then((response) => response.json())
+        .then((data) => {
           this.mawala = true;
-          this.load = false
+          this.load = false;
           this.employees = data;
         })
-        .catch(error => {
-          console.error('Error fetching employees:', error);
+        .catch((error) => {
+          console.error("Error fetching employees:", error);
         });
       // Fetch positions data
-      fetch('http://172.31.10.164:8000/get_positions_json/')
-        .then(response => response.json())
-        .then(data => {
+      fetch("http://172.31.10.164:8000/get_positions_json/")
+        .then((response) => response.json())
+        .then((data) => {
           this.mawala = true;
-          this.load = false
+          this.load = false;
           this.positions = data;
         })
-        .catch(error => {
-          console.error('Error fetching positions:', error);
+        .catch((error) => {
+          console.error("Error fetching positions:", error);
         });
 
       // Fetch divisions data
-      fetch('http://172.31.10.164:8000/get_divisions_json/')
-        .then(response => response.json())
-        .then(data => {
+      fetch("http://172.31.10.164:8000/get_divisions_json/")
+        .then((response) => response.json())
+        .then((data) => {
           this.mawala = true;
-          this.load = false
+          this.load = false;
           this.divisions = data;
         })
-        .catch(error => {
-          console.error('Error fetching divisions:', error);
+        .catch((error) => {
+          console.error("Error fetching divisions:", error);
         });
-    }
+    },
   },
 
   mounted() {
     this.fetchData();
   },
-
-
-}
-
-
+};
 </script>
 
 <style scoped>
@@ -441,7 +545,6 @@ export default {
   left: 3px;
   top: 2px;
   margin-right: 10px;
-
 }
 
 .containerlist input {
@@ -454,13 +557,10 @@ export default {
   width: 15px;
 }
 
-
-
 .containeremployee {
   cursor: pointer;
   display: flex;
   justify-content: center;
-
 }
 
 .containeremployee input {
@@ -474,7 +574,6 @@ export default {
 }
 
 .path {
-
   fill: none;
   stroke: black;
   stroke-width: 6;
@@ -485,8 +584,8 @@ export default {
   stroke-dashoffset: 0;
 }
 
-.containeremployee input:checked~svg .path,
-.containerlist input:checked~svg .path {
+.containeremployee input:checked ~ svg .path,
+.containerlist input:checked ~ svg .path {
   stroke-dasharray: 70.5096664428711 9999999;
   stroke-dashoffset: -262.2723388671875;
 }
@@ -518,18 +617,13 @@ export default {
 table {
   width: 100%;
   border-collapse: collapse;
-
 }
-
 
 td {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 5px;
-
 }
-
-
 
 th {
   background-color: #f2f2f2;
@@ -547,7 +641,6 @@ th {
 }
 
 .outer {
-
   border: 1px solid black;
   /* box-shadow: 0px 0px 3px black; */
   box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
@@ -597,7 +690,6 @@ th {
   transform: translate(-50%, -50%);
   z-index: 100;
 }
-
 
 .title-bar {
   display: flex;
