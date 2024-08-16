@@ -1,7 +1,8 @@
 <template>
   <div class="textfield-cont">
+    
     <input
-      :value="value"
+      :value="modelValue"
       :type="type"
       :id="id"
       :required="required"
@@ -9,9 +10,12 @@
       @keydown.enter="onEnter"
       :class="classNames"
       :placeholder="placeholder"
-      
     />
-    <p class="label">{{ label }}</p>
+    <div class="img-cont">
+      <img :src="imgSrc" class="img-login" alt="Input Image" v-if="imgSrc">
+    </div>
+    
+    
   </div>
 </template>
 
@@ -29,9 +33,9 @@ export default {
       type: String,
       required: true,
     },
-    value: {
+    modelValue: {
       type: String,
-      required: true,
+      default: "",
     },
     type: {
       type: String,
@@ -45,13 +49,17 @@ export default {
       type: Boolean,
       default: false,
     },
-    hasError: {  // Prop for error state
+    hasError: {
       type: Boolean,
       default: false,
     },
-    default: {  // Prop for default state
+    isDefault: {
       type: Boolean,
       default: false,
+    },
+    imgSrc: {
+      type: String,
+      default: ""
     }
   },
   computed: {
@@ -59,13 +67,13 @@ export default {
       return [
         'text-input',
         { 'red-border': this.hasError },
-        { 'default-border': this.default }
+        { 'default-border': this.isDefault }
       ];
     }
   },
   methods: {
     updateValue(event) {
-      this.$emit("input", event.target.value);
+      this.$emit("update:modelValue", event.target.value);
     },
     onEnter(event) {
       this.$emit("enter", event);

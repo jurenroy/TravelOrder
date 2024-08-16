@@ -1,40 +1,35 @@
 <template>
   <div class="zero">
-    <div class="header">
-        <alerz></alerz>
-      </div>
-      
     <div class="first">
-     
       <div class="second">
         <img class="logo-pinas" src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Bagong_Pilipinas_logo.png"></img>
-        <p class="form">Login Form</p>
-
         <div class="inside">
           <div class="box">
             <TextField
-              label="Email"
-              type="email"
-              v-model="email"
-              id="email"
-              required
-              onEnter="login_submit"
-              updateValue="resetRed"
-              placeholder="Email"
-              :hasError="isRed && email === ''"
-            ></TextField>
-
+            :imgSrc="emailIcon"
+            label="Username"
+            type="text"
+            v-model="email"
+            id="email"
+            required
+            @enter="login_submit"
+            @input="resetRed"
+            :hasError="isRed && email === ''"
+            placeholder="Email"
+            />
             <TextField
+              :imgSrc="passwordIcon"
               label="Password"
               type="password"
               v-model="password"
-              id="email"
-              placeholder="Password"
+              id="password"
               required
-              onEnter="login_submit"
-              updateValue="resetRed"
-              :hasError="isRed && email === ''"
-            ></TextField>
+              @enter="login_submit"
+              @input="resetRed"
+              :hasError="isRed && password === ''"
+              placeholder="Password"
+
+            />
           </div>
         </div>
 
@@ -56,24 +51,23 @@
         </div>
 
         <div class="buttonss">
-          <button class="button"  :disabled="isSubmitting" @click="login_submit">
-            Login
-          </button>
           <CustomButton label="LOGIN" :disabled="isSubmitting" @click="login_submit"></CustomButton>
         </div>
       </div>
+      <div class="image-cont"></div>
     </div>
   </div>
 </template>
 
 <script setup>
-import alerz from "../components/heder2.vue";
 import { ref } from "vue";
 import axios from "axios";
 import { useAuthStore } from "../store/auth";
 import CryptoJS from "crypto-js";
 import TextField from "./../components/TextField.vue";
 import CustomButton from './../components/CustomButton.vue'
+import emailIcon from '@/assets/email.png';
+import passwordIcon from '@/assets/password.png';
 
 
 const email = ref("");
@@ -99,95 +93,90 @@ const resetRed = () => {
 };
 
 const login_submit = () => {
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
-  const account = accounts.value.find((acc) => acc.email === email.value);
-  if (account) {
-    empi.value = employees.value.find(
-      (emp) => emp.name_id === account.name_id
-    ).isActive;
-    decryptedPassword.value = CryptoJS.AES.decrypt(
-      account.password,
-      "jUr3ñr0yR@br4g@n"
-    ).toString(CryptoJS.enc.Utf8);
-  }
+   // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+   const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
+   const account = accounts.value.find(acc => acc.email === email.value);
+   if (account) {
+      empi.value = employees.value.find(emp => emp.name_id === account.name_id).isActive;
+      decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
+   }
 
-  isRed.value = true;
-  
 
-  if (email.value === "" && password.value === "") {
-    isValid.value = true;
-    isRed.value = true;
-    setTimeout(() => {
-      isValid.value = false;
-    }, 2000);
-  } else if (email.value === "") {
-    error.value = "Input Email";
-    isValid.value = true;
-    isRed.value = true;
-    setTimeout(() => {
-      isValid.value = false;
-    }, 2000);
-  } else if (emailPattern.test(email.value) === false) {
-    error.value = "Not Valid Email";
-    isEmail.value = true;
-    isRed.value = true;
-    setTimeout(() => {
-      isEmail.value = false;
-    }, 2000);
-  } else if (!account) {
-    error.value = "Email not Found";
-    isEmail.value = true;
-    isRed.value = true;
-    setTimeout(() => {
-      isEmail.value = false;
-    }, 2000);
-  } else if (password.value === "") {
-    isValid.value = true;
-    isRed.value = true;
-    setTimeout(() => {
-      isValid.value = false;
-    }, 2000);
-  } else if (passvalid.test(password.value) === false) {
-    error.value = "Invalid Password Format";
-    isEmail.value = true;
-    isRed.value = true;
-    setTimeout(() => {
-      isEmail.value = false;
-    }, 2000);
-  } else if (decryptedPassword.value !== password.value) {
-    if (first.value) {
-      first.value = false;
-      login_submit();
-    } else {
-      error.value = "Wrong Password";
-    }
-    isEmail.value = true;
-    isRed.value = true;
-    setTimeout(() => {
-      isEmail.value = false;
-    }, 2000);
-  } else if (empi.value == "out") {
-    error.value = "Account inactive";
-    isEmail.value = true;
-    isRed.value = true;
-    setTimeout(() => {
-      isEmail.value = false;
-    }, 2000);
-  } else {
-    email.value = "";
-    password.value = "";
-    authStore.login(account.account_id);
-    localStorage.setItem("isLoggedIn", true);
-    localStorage.setItem("accountId", account.account_id);
-    submitting.value = true;
-    isRed.value = false;
-    pleaseWait.value = true;
+   isRed.value = true
 
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
-  }
+   if (email.value === '' && password.value === '') {
+      isValid.value = true;
+      isRed.value = true
+      setTimeout(() => {
+         isValid.value = false;
+      }, 2000);
+   } else if (email.value === '') {
+      error.value = 'Input Email';
+      isValid.value = true;
+      isRed.value = true
+      setTimeout(() => {
+         isValid.value = false;
+      }, 2000);
+   // } else if (emailPattern.test(email.value) === false) {
+   //    error.value = 'Not Valid Email';
+   //    isEmail.value = true;
+   //    isRed.value = true
+   //    setTimeout(() => {
+   //       isEmail.value = false;
+   //    }, 2000);
+   } else if (!account) {
+      error.value = 'Email not Found';
+      isEmail.value = true;
+      isRed.value = true
+      setTimeout(() => {
+         isEmail.value = false;
+      }, 2000);
+   } else if (password.value === '') {
+      isValid.value = true;
+      isRed.value = true
+      setTimeout(() => {
+         isValid.value = false;
+      }, 2000);
+   } else if (passvalid.test(password.value) === false) {
+      error.value = 'Invalid Password Format';
+      isEmail.value = true;
+      isRed.value = true
+      setTimeout(() => {
+         isEmail.value = false;
+      }, 2000);
+   } else if (decryptedPassword.value !== password.value) {
+      if (first.value) {
+         first.value = false
+         login_submit();
+      } else {
+         error.value = 'Wrong Password';
+      }
+      isEmail.value = true;
+      isRed.value = true
+      setTimeout(() => {
+         isEmail.value = false;
+      }, 2000);
+   } else if (empi.value == 'out') {
+      error.value = 'Account inactive';
+      isEmail.value = true;
+      isRed.value = true
+      setTimeout(() => {
+         isEmail.value = false;
+      }, 2000);
+   } else {
+      email.value = '';
+      password.value = '';
+      authStore.login(account.account_id);
+      localStorage.setItem('isLoggedIn', true);
+      localStorage.setItem('accountId', account.account_id);
+      submitting.value = true;
+      isRed.value = false
+      pleaseWait.value = true;
+
+      setTimeout(() => {
+         window.location.reload();
+      }, 2000);;
+   }
 };
 
 const fetchAccounts = () => {
