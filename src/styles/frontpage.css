@@ -106,16 +106,41 @@
   
   
   
-  @media (max-width: 768px) {
-    .hakdogzzz {
-      justify-content: center;
-      flex-direction: column;
+  @media (max-width: 1030px) {
+    .hakdogzzz{
+        flex-direction: column;
+        height: 100vh;
+        background-color: red;
     }
-      .p1, .p2, .p3, .p4{
-      font-size: 12px;
-      margin-top: -10px;
+    .frontbutton{
+        height: 100%;
     }
-    .textzxc {
-      text-align: center;
+    .p1, .p2, .p3, .p4, .p5{
+        font-size: 1.5vh;
+        margin-top: 0;
+        margin: 0;
+        padding: 0;
+    }
+    .frontpic{
+        width: 15vh;
+        height: auto;
+    }
+  }
+  @media (max-width: 600px) {
+    .p1, .p2, .p3, .p4, .p5{
+        font-size: 1.5vh;
+        margin-top: 0;
+        margin: 0;
+        padding: 0;
+    }
+    .frontpic{
+        width: 10vh;
+        height: auto;
+        margin-left: 5%;
+    }
+  }
+  @media (max-width: 600px) {
+    .p1, .p2, .p3, .p4, .p5{
+        font-size: 1.2vh;
     }
   }

@@ -1,8 +1,6 @@
 <template>
   <div class="front-cont">
     <div class="frontcontainer">
-      
-      
       <div class="hakdogzzz">
         <button class="frontbutton trabel-btn" @click="navigateTo('TravelOrder')"><div class="trabel-cont"><p class="travel-text">Travel Order Form</p></div></button>
         <button class="frontbutton leave-btn" @click="navigateTo('LeaveForm')"><div class="leave-cont"><p class="leave-text">Leave Form</p></div></button>
