@@ -816,7 +816,7 @@ export default {
        async fetchAccounts() {
 
            try {
-               const response = await axios.get('http://192.168.1.250:8000/get_accounts_json');
+               const response = await axios.get('http://172.21.96.1:8000/get_accounts_json');
 
                this.accounts = response.data;
            } catch (error) {
@@ -826,7 +826,7 @@ export default {
 
        async fetchNames() {
            try {
-               const response = await axios.get('http://192.168.1.250:8000/get_names_json');
+               const response = await axios.get('http://172.21.96.1:8000/get_names_json');
                this.names = response.data;
            } catch (error) {
                console.error('Error fetching names:', error);
@@ -841,7 +841,7 @@ export default {
            return item ? item.position_name : '';
        },
        fetchemployee() {
-           fetch('http://192.168.1.250:8000/get_employees_json/')
+           fetch('http://172.21.96.1:8000/get_employees_json/')
                .then(response => response.json())
                .then(data => {
                    this.employees = data.filter(det => det.name_id == this.name_id);
@@ -893,7 +893,7 @@ export default {
                    console.error('Error fetching employees:', error);
                });
            // Fetch positions data
-           fetch('http://192.168.1.250:8000/get_positions_json/')
+           fetch('http://172.21.96.1:8000/get_positions_json/')
                .then(response => response.json())
                .then(data => {
                    this.positions = data
@@ -903,7 +903,7 @@ export default {
                });
        },
        fetchLeaveForms() {
-      axios.get('http://192.168.1.250:8000/get_leave_json')
+      axios.get('http://172.21.96.1:8000/get_leave_json')
         .then(response => {
           this.leaveForms = response.data.filter(libporm => libporm.leaveform_id == 15);
           

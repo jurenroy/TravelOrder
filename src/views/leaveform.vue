@@ -176,7 +176,7 @@ const showEditss = () => {
 // Fetch OTP data function
 const fetchAccounts = async () => {
   try {
-    const response = await axios.get('http://192.168.1.250:8000/get_accounts_json/');
+    const response = await axios.get('http://172.21.96.1:8000/get_accounts_json/');
     acc.value = response.data.find(result => result.account_id == accountId);
   } catch (error) {
     console.error('Error fetching OTP data:', error);

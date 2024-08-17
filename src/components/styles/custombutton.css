@@ -1,0 +1,19 @@
+/* styles/custombutton.css */
+.button-cont {
+    width: 100%;
+    padding: 2vh;
+}
+
+.propsBtn {
+    background-color: blue;
+    width: 100%;
+    height: 5vh;
+    border-radius: 10px;
+    cursor: pointer;
+    color: white;
+    font-weight: 700;
+    border: none;
+    font-size: 2vh;
+    transition: background 0.5s ease;
+    background: radial-gradient(circle at center, #ff7a18, #af002d 75%);
+}

@@ -1,0 +1,121 @@
+
+  .front-cont{
+    background-color: red;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+  }
+  .frontcontainer {
+    width: 100%;
+    height: 100%;
+    background-color: pink;
+    display: flex;
+    flex-direction: column;
+  }
+  .frontbutton {
+    cursor: pointer;
+    width: 100%;
+    border: 0;
+  }
+  .trabel-btn{
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .travel-gif{
+    border: none;
+  }
+  .trabel-cont, .leave-cont{
+    height: 100%;
+    width: 100%;
+    background-image: url("./../assets//travel.png");
+    background-color: white;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 0;
+  }
+  .travel-text, .leave-text{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 4vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: transparent;
+    background: linear-gradient( #ffff0000, #0c07527f , #000000);
+    -webkit-text-stroke: 1px #ffffff;
+    transition: 0.1s ease-in-out;
+    
+  }
+  .leave-btn{
+    padding: 0;
+    margin: 0;
+  }
+  
+  .trabel-btn:hover .travel-text{
+    color: white;
+    background: linear-gradient( #ffff0000, #08009e5b , #000000);
+  }
+
+  .leave-btn:hover .leave-text{
+    color: white;
+    background: linear-gradient( #ffff0000, #08009e5b , #000000);
+  }
+  .leave-cont{
+    background-image: url("./../assets//leave.jpg");
+  }
+
+
+  .details-cont{
+    background-color: #15003f;
+    width: 100%;
+    height: 30vh;
+    display: flex;
+    align-items: center;
+  }
+  .frontpic {
+    height: 70%;
+    margin-left: 10vh;
+  }
+  
+  .textzxc{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 5vh;
+  }
+  .p1, .p2, .p3, .p4, .p5{
+    font-weight: bold;
+    font-size: 2.5vh;
+    margin-top: -20px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+  }
+  .p5{
+    font-size: 1.5vh;
+  }
+  
+  .hakdogzzz {
+    display: flex;
+    width: 100%;
+    height: 70vh;
+  }
+  
+  
+  
+  @media (max-width: 768px) {
+    .hakdogzzz {
+      justify-content: center;
+      flex-direction: column;
+    }
+      .p1, .p2, .p3, .p4{
+      font-size: 12px;
+      margin-top: -10px;
+    }
+    .textzxc {
+      text-align: center;
+    }
+  }

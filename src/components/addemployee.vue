@@ -121,7 +121,7 @@ export default {
 
       }
       
-      axios.post('http://192.168.1.250:8000/add_employees', dataToSend)
+      axios.post('http://172.21.96.1:8000/add_employees', dataToSend)
         .then(response => {
           console.log('Response:', response.data);
           this.formData = {
@@ -143,7 +143,7 @@ export default {
         });
     },
     fetchPositions() {
-      fetch('http://192.168.1.250:8000/get_positions_json/')
+      fetch('http://172.21.96.1:8000/get_positions_json/')
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -153,7 +153,7 @@ export default {
         });
     },
     fetchDivisions() {
-      fetch('http://192.168.1.250:8000/get_divisions_json/')
+      fetch('http://172.21.96.1:8000/get_divisions_json/')
         .then(response => response.json())
         .then(data => {
           this.divisions = data;

@@ -1,21 +1,24 @@
 <template>
-  <div style="display: flex; justify-content: center">
-  <div class="frontcontainer">
-    <img src="../assets/background_image.png" class="frontpic">
-    <div class="textzxc">
-      <p class="p1">Republic of the Philipines</p>
-      <p class="p2">Department of Environment and Natural Resources</p>
-      <p class="p3">Mines and Geosciences Bureau</p>
-      <p class="p4">Regional Office No.X</p>
-      <p>MGB Application Form</p>
+  <div class="front-cont">
+    <div class="frontcontainer">
+      
+      
+      <div class="hakdogzzz">
+        <button class="frontbutton trabel-btn" @click="navigateTo('TravelOrder')"><div class="trabel-cont"><p class="travel-text">Travel Order Form</p></div></button>
+        <button class="frontbutton leave-btn" @click="navigateTo('LeaveForm')"><div class="leave-cont"><p class="leave-text">Leave Form</p></div></button>
+      </div>
+      <div class="details-cont">
+        <img src="../assets/logo-white.png" class="frontpic">
+        <div class="textzxc">
+          <p class="p1">Republic of the Philipines</p>
+          <p class="p2">Department of Environment and Natural Resources</p>
+          <p class="p3">Mines and Geosciences Bureau</p>
+          <p class="p4">Regional Office No.X</p>
+          <p class="p5">MGB Application Form</p>
+      </div>
+      </div>
+      
     </div>
-    
-    <div class="hakdogzzz">
-      <button class="frontbutton" @click="navigateTo('TravelOrder')">Travel Order Form</button>
-      <button class="frontbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
-    </div>
-
-  </div>
   </div>
 </template>
 
@@ -24,6 +27,7 @@ import { showstatus } from '@/components/heder.vue';
 import { isRegistrationClicked, isEdits, employeelis, isButssClicked, isVisible } from './dashboard.vue';
 import { showEdit } from '@/components/heder.vue';
 import { isregisclick, leaveedit, employeelisleave, isaddleave, isleavelogoutClicked } from './leaveform.vue';
+import './../styles/frontpage.css'
 export default {
   data() {
     return {
@@ -62,60 +66,5 @@ export default {
 </script>
 
 <style>
-.frontcontainer {
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.frontbutton {
-  height: 60px;
-  width: 300px;
-  font-size: 20px;
-  font-weight: bold;
-  border-radius: 10px;
-  margin: 10px;
-  cursor: pointer;
-}
-
-.hakdogzzz {
-  margin-top: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-}
-
-.frontpic {
-  margin: 30px;
-  height: 250px;
-  width: auto;
-}
-.textzxc{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.p1, .p2, .p3, .p4{
-  font-weight: bold;
-  font-size: 25px;
-  margin-top: -20px;
-}
-
-@media (max-width: 768px) {
-  .hakdogzzz {
-    justify-content: center;
-    flex-direction: column;
-  }
-    .p1, .p2, .p3, .p4{
-    font-size: 12px;
-    margin-top: -10px;
-  }
-  .textzxc {
-    text-align: center;
-  }
-}
 </style>
