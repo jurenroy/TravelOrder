@@ -66,6 +66,7 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { useAuthStore } from '../store/auth';
 import CryptoJS from 'crypto-js';
+import { API_BASE_URL } from '../config'
 
 const email = ref('');
 const password = ref('');
@@ -179,10 +180,10 @@ const login_submit = () => {
 };
 
 const fetchAccounts = () => {
-   axios.get('http://192.168.1.250:8000/get_accounts_json')
+   axios.get(`${API_BASE_URL}/get_accounts_json`)
       .then(response => {
          accounts.value = response.data;
-         axios.get('http://192.168.1.250:8000/get_employees_json')
+         axios.get(`${API_BASE_URL}/get_employees_json`)
             .then(response => {
                employees.value = response.data;
             })

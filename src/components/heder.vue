@@ -50,6 +50,7 @@
 import { ref } from 'vue';
 import { useAuthStore } from '../store/auth';
 import { isButssClicked } from '../views/dashboard.vue';
+import { API_BASE_URL } from '../config'
 
 import axios from 'axios';
 
@@ -74,7 +75,7 @@ const routerzz = localStorage.getItem('routerz')
 
 const setAccount = async () => {
   try {
-    const response = await axios.post(`http://192.168.1.250:8000/update_employee/${setEmployee.value}`);
+    const response = await axios.post(`${API_BASE_URL}/update_employee/${setEmployee.value}`);
     window.location.reload();
   } catch (error) {
     console.error('Error fetching accounts:', error);
@@ -88,7 +89,7 @@ const fetchAccounts = async () => {
 
   try {
     Usernames.value = false
-    const response = await axios.get('http://192.168.1.250:8000/get_accounts_json');
+    const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
 
     accounts.value = response.data;
     Usernames.value = true
@@ -99,7 +100,7 @@ const fetchAccounts = async () => {
 
 const fetchEmployee = async () => {
   try {
-    const response = await axios.get('http://192.168.1.250:8000/get_employees_json');
+    const response = await axios.get(`${API_BASE_URL}/get_employees_json`);
     employees.value = response.data.filter(emp => emp.chief > 0)
     const selectedEmp = response.data.find(emp => emp.rd !== null);
     if (selectedEmp) {
@@ -117,7 +118,7 @@ const fetchEmployee = async () => {
 
 const fetchNames = async () => {
   try {
-    const response = await axios.get('http://192.168.1.250:8000/get_names_json');
+    const response = await axios.get(`${API_BASE_URL}/get_names_json`);
     names.value = response.data;
 
     const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));

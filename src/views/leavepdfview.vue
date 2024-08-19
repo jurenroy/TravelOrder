@@ -20,7 +20,7 @@
                </div>
                <img :src="image2" alt="Bago Image" class="pic2">
            </div>
-           <h3 style="text-align: center">APPLICATION FOR LEAVE </h3>
+           <h3 style="text-align: center">APPLICATION FOR LEAVE</h3>
            <div>
                <div style="border: 2px solid black; padding: 5px;">
                    <div
@@ -631,11 +631,15 @@ import image2 from '../assets/bago.png'
 import axios from 'axios';
 import { isaddleave } from './leaveform.vue';
 import { showleavehome } from './leaveform.vue';
-
-
-
+import { API_BASE_URL } from '../config'
 
 export default {
+    props: {
+      leaveform_id: {
+        type: String,
+        required: true,
+      },
+    },
    data() {
        return {
         leaveForms:[],
@@ -650,10 +654,10 @@ export default {
            rd: 'RODANTE B. FELINA',
            rdpos: 'OIC, REGIONAL DIRECTOR',
            name: {
-       last_name: '',
-       first_name: '',
-       middle_init: '',
-     },
+            last_name: '',
+            first_name: '',
+            middle_init: '',
+           },
            text: '',
            rows: 1,
            text2: '',
@@ -733,6 +737,12 @@ export default {
        };
    },
    watch: {
+    leaveform_id(newVal) {
+      // Check if the new value is not null, then populate fields
+      if (newVal !== null) {
+        this.fetchLeaveForms(newVal);
+      }
+    },
        text() {
            this.updateRows();
        },
@@ -804,7 +814,7 @@ export default {
    mounted() {
        this.fetchAccounts();
        this.fetchNames();
-       this.fetchLeaveForms();
+       this.fetchLeaveForms(this.leaveform_id);
        this.fetchemployee();
        this.comparePosition();
    },
@@ -816,7 +826,7 @@ export default {
        async fetchAccounts() {
 
            try {
-               const response = await axios.get('http://192.168.1.250:8000/get_accounts_json');
+               const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
 
                this.accounts = response.data;
            } catch (error) {
@@ -826,7 +836,7 @@ export default {
 
        async fetchNames() {
            try {
-               const response = await axios.get('http://192.168.1.250:8000/get_names_json');
+               const response = await axios.get(`${API_BASE_URL}/get_names_json`);
                this.names = response.data;
            } catch (error) {
                console.error('Error fetching names:', error);
@@ -841,7 +851,7 @@ export default {
            return item ? item.position_name : '';
        },
        fetchemployee() {
-           fetch('http://192.168.1.250:8000/get_employees_json/')
+           fetch(`${API_BASE_URL}/get_employees_json/`)
                .then(response => response.json())
                .then(data => {
                    this.employees = data.filter(det => det.name_id == this.name_id);
@@ -893,7 +903,7 @@ export default {
                    console.error('Error fetching employees:', error);
                });
            // Fetch positions data
-           fetch('http://192.168.1.250:8000/get_positions_json/')
+           fetch(`${API_BASE_URL}/get_positions_json/`)
                .then(response => response.json())
                .then(data => {
                    this.positions = data
@@ -902,10 +912,25 @@ export default {
                    console.error('Error fetching positions:', error);
                });
        },
-       fetchLeaveForms() {
-      axios.get('http://192.168.1.250:8000/get_leave_json')
+       fetchLeaveForms(leaveformID) {
+      axios.get(`${API_BASE_URL}/get_leave_json`)
         .then(response => {
-          this.leaveForms = response.data.filter(libporm => libporm.leaveform_id == 15);
+
+            this.selectedLeavetype = []; // Ensure it's cleared before setting a new type
+            this.vacationleavedetails = []; // Ensure it's cleared before setting a new type
+            this.vacation1 = []; // Ensure it's cleared before setting a new type
+            this.vacation2 = []; // Ensure it's cleared before setting a new type
+
+            this.sickleavedetails = []; // Ensure it's cleared before setting a new type
+            this.sick1 = []; // Ensure it's cleared before setting a new type
+            this.sick2 = []; // Ensure it's cleared before setting a new type
+
+            this.studyleavedetails = []; // Ensure it's cleared before setting a new type
+            this.otherPurpose = []; // Ensure it's cleared before setting a new type
+
+            
+          this.leaveForms = response.data.filter(libporm => libporm.leaveform_id == leaveformID);
+          console.log(this.leaveForms);
           
           if (this.leaveForms){
             this.comparePosition()
@@ -917,9 +942,9 @@ export default {
             this.dateszz = this.leaveForms[0].dates
 
             if (this.leaveForms[0].commutation == "Not Requested"){
-                this.commutationLeavetype.push(1);
+                this.commutationLeavetype = [1];
             }else if (this.leaveForms[0].commutation == "Requested"){
-                this.commutationLeavetype.push(2);
+                this.commutationLeavetype = [2];
             }
 
 
@@ -955,43 +980,45 @@ export default {
                    }
 
             if (this.leaveForms[0].type == 'Vacation Leave'){
-                this.selectedLeavetype.push(0);
+                this.selectedLeavetype = [0];
             }else if (this.leaveForms[0].type == 'Mandatory/Forced Leave'){
-                this.selectedLeavetype.push(1);
+                this.selectedLeavetype = [1];
             }else if (this.leaveForms[0].type == 'Sick Leave'){
-                this.selectedLeavetype.push(2);
+                this.selectedLeavetype = [2];
             }else if (this.leaveForms[0].type == 'Maternity Leave'){
-                this.selectedLeavetype.push(3);
+                this.selectedLeavetype = [3];
             }else if (this.leaveForms[0].type == 'Paternity Leave'){
-                this.selectedLeavetype.push(4);
+                this.selectedLeavetype = [4];
             }else if (this.leaveForms[0].type == 'Special Privilege Leave'){
-                this.selectedLeavetype.push(5);
+                this.selectedLeavetype = [5];
             }else if (this.leaveForms[0].type == 'Solo Parent Leave'){
-                this.selectedLeavetype.push(6);
+                this.selectedLeavetype = [6];
             }else if (this.leaveForms[0].type == 'Study Leave'){
-                this.selectedLeavetype.push(7);
+                this.selectedLeavetype = [7];
             }else if (this.leaveForms[0].type == '10-Day VAWC Leave'){
-                this.selectedLeavetype.push(8);
+                this.selectedLeavetype = [8];
             }else if (this.leaveForms[0].type == 'Rehabilitation Privilege'){
-                this.selectedLeavetype.push(9);
+                this.selectedLeavetype = [9];
             }else if (this.leaveForms[0].type == 'Special Leave Benefits for Women'){
-                this.selectedLeavetype.push(10);
+                this.selectedLeavetype = [10];
             }else if (this.leaveForms[0].type == 'Special Emergency(Calamity) Leave'){
-                this.selectedLeavetype.push(11);
+                this.selectedLeavetype = [11];
             }else if (this.leaveForms[0].type == 'Adoption Leave Leave'){
-                this.selectedLeavetype.push(12);
+                this.selectedLeavetype = [12];
             }else{
                 
             }
 
+
+
             if (this.leaveForms[0].detail.startsWith('Within the Philippines,')) {
-                if (this.selectedLeavetype.includes(0)) {
+                if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
                     this.vacationleavedetails.push(1);
                     this.vacation1 = this.leaveForms[0].detail.replace('Within the Philippines,', '').trim();
                     return 'Within the Philippines, ' + this.vacation1;
                 }
             } else if (this.leaveForms[0].detail.startsWith('Abroad(Specify),')) {
-                if (this.selectedLeavetype.includes(0)) {
+                if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
                     this.vacationleavedetails.push(2);
                     this.vacation2 = this.leaveForms[0].detail.replace('Abroad(Specify),', '').trim();
                     return 'Abroad(Specify), ' + this.vacation2;
@@ -1024,14 +1051,18 @@ export default {
                 if (this.selectedLeavetype.includes(10)) {
                     return this.leaveforwoman;
                 }
-            } else if (this.leaveForms[0].detail === 'Monetization of Leave Credits') {
+            } else if (this.leaveForms[0].detail === "Monetization of Leave Credits") {
+                this.terminalleave = [0];
+                this.monetization = [0];
                 if (this.monetization.includes(1)) {
-                    this.vacationleavedetails.push(0); // Example push
+                     // Example push
                     return 'Monetization of Leave Credits';
                 }
             } else if (this.leaveForms[0].detail === 'Terminal Leave') {
+                this.terminalleave = [1];
+                this.monetization = [1];
                 if (this.monetization.includes(2)) {
-                    this.vacationleavedetails.push(0); // Example push
+                    // Example push
                     return 'Terminal Leave';
                 }
             }

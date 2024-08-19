@@ -47,6 +47,7 @@ import { isleavelogoutClicked, isregisclick } from './leaveform.vue';
 import { ref } from 'vue';
 import axios from 'axios';
 import { showleavehome } from './leaveform.vue';
+import { API_BASE_URL } from '../config'
 
 
 const accountId = localStorage.getItem('accountId');
@@ -120,7 +121,7 @@ const showEditss = () => {
 // Fetch OTP data function
 const fetchAccounts = async () => {
    try {
-      const response = await axios.get('http://192.168.1.250:8000/get_accounts_json/');
+      const response = await axios.get(`${API_BASE_URL}/get_accounts_json/`);
       acc.value = response.data.find(result => result.account_id == accountId);
    } catch (error) {
       console.error('Error fetching OTP data:', error);

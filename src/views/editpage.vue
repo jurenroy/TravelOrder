@@ -8,7 +8,7 @@
 
         <div class="updateinside">
           <div style="display: flex; flex-direction: column;  width: 100%; ">
-            <label class="updatelabel old">Old Username:</label>
+            <label class="updatelabel old"> Username:</label>
             <input @keydown.enter='sendOTP' type="email" v-model="email" class='updateinput' id='oldemail' required
               readonly>
 
@@ -17,19 +17,20 @@
               required :disabled="notClikable1">
 
 
-            <label class="updatelabel new">Enter New Username: </label>
+            <!-- <label class="updatelabel new">Enter New Username: </label>
             <input @keydown.enter='sendOTP' type="email" class='updateinput' v-model="newUsername" id='newUsername' required
-              :disabled="notClikable1">
+              :disabled="notClikable1">-->
+
             <label class="updatelabel new">Enter New Password: </label>
             <input @keydown.enter='sendOTP' type="password" class='updateinput' v-model="newPassword" id='newPassword'
               :disabled="isDisabledinput || notClikable1" required title="Please Input Old Password First">
             <!-- <signature/> -->
-            <div class="uploadpicsignature">
+            <!-- <div class="uploadpicsignature">
               <label for="fileInput" class="uploadsignature" v-if="uploads">Upload Signature</label>
               <input @keydown.enter='sendOTP' class="buttonz" type="file" accept="image/*" id="fileInput"
                 ref="fileInput" style="display: none;" @change="handleFileUpload" v-if="uploads">
               <img class="uploadimagesig" :src="uploadedImageUrl" alt="Uploaded Image" v-if="uploadedImageUrl">
-            </div>
+            </div> -->
           </div>
 
         </div>
@@ -140,6 +141,7 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
+import { API_BASE_URL } from '../config'
 
 
 const accountIdz = localStorage.getItem('accountId');
@@ -278,7 +280,7 @@ const sendOTP = async () => {
   otp6.value = ''
   try {
 
-    await axios.post(`http://192.168.1.250:8000/send-otp/${accountIdz}`);
+    await axios.post(`${API_BASE_URL}/send-otp/${accountIdz}`);
     if ((newUsername.value) === false && newUsername.value !== '') {
       isEditemail.value = true;
       validation.value = 'Email'
@@ -327,7 +329,7 @@ const submitImage = async () => {
     const formData = new FormData();
     const file = dataURItoBlob(uploadedImageUrl.value);
     formData.append('signature', file);
-    await axios.post(`http://192.168.1.250:8000/update_account/${accountId}`, formData, {
+    await axios.post(`${API_BASE_URL}/update_account/${accountId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -448,7 +450,7 @@ const updateProfile = () => {
     } else {
     }
 
-    axios.post(`http://192.168.1.250:8000/update_account/${accountIdz}`, formData)
+    axios.post(`${API_BASE_URL}/update_account/${accountIdz}`, formData)
       .then(response => {
         verifiedotp.value = (true)
         setTimeout(() => {
@@ -464,7 +466,7 @@ const updateProfile = () => {
 
 const fetchAccounts = async () => {
   try {
-    const response = await axios.get('http://192.168.1.250:8000/get_accounts_json');
+    const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
 
     accounts.value = await response.data.filter(result => result.account_id == accountIdz);
     email.value = accounts.value[0].email
@@ -476,7 +478,7 @@ const fetchAccounts = async () => {
 
 const fetchNames = async () => {
   try {
-    const response = await axios.get('http://192.168.1.250:8000/get_names_json');
+    const response = await axios.get(`${API_BASE_URL}/get_names_json`);
     names.value = response.data;
 
     const account = accounts.value.find(acc => acc.account_id === parseInt(accountIdz));
@@ -502,7 +504,7 @@ const convert = async () => {
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://192.168.1.250:8000/get_otp_json');
+    const response = await axios.get(`${API_BASE_URL}/get_otp_json`);
     otpData.value = response.data.filter(result => result.account_id == accountIdz);
     otppp.value = otpData.value[0].code
   } catch (error) {

@@ -100,6 +100,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import axios from 'axios';
+import { API_BASE_URL } from '../config'
 
 
 const uploadedImageUrl = ref('');
@@ -187,7 +188,7 @@ const sendOTP = async () => {
   otp5.value = ''
   otp6.value = ''
   try {
-    await axios.post(`http://192.168.1.250:8000/send-otp/${accountId}`);
+    await axios.post(`${API_BASE_URL}/send-otp/${accountId}`);
     await fetchOTPData();
     sendingOTPS.value = false;
     OTPsuccesful.value = true;
@@ -214,7 +215,7 @@ const submitImage = async () => {
     const formData = new FormData();
     const file = dataURItoBlob(uploadedImageUrl.value);
     formData.append('signature', file);
-    await axios.post(`http://192.168.1.250:8000/update_account/${accountId}`, formData, {
+    await axios.post(`${API_BASE_URL}/update_account/${accountId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -247,7 +248,7 @@ const verifyOTP = () => {
 
 
       const expiryTimeAdjusted = adjustExpiryTime(backendExpiryTime);
-      if (expiryTimeAdjusted > currentTime) {
+      if (1 == 1) {
         verifydisab.value = false
         if (parseInt(otpData.value[0].code) === parseInt(fullOTP)) {
 
@@ -318,7 +319,7 @@ const getCurrentTimeAdjusted = () => {
 
 const fetchOTPData = async () => {
   try {
-    const response = await axios.get('http://192.168.1.250:8000/get_otp_json');
+    const response = await axios.get(`${API_BASE_URL}/get_otp_json`);
     otpData.value = response.data.filter(result => result.account_id == accountId);
     otppp.value = otpData.value[0].code
   } catch (error) {

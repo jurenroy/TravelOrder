@@ -641,6 +641,7 @@ import image2 from '../assets/bago.png'
 import axios from 'axios';
 import { isaddleave } from './leaveform.vue';
 import { showleavehome } from './leaveform.vue';
+import { API_BASE_URL } from '../config'
 
 
 
@@ -831,7 +832,7 @@ export default {
                         console.log('pili sa dinha')
 
                     } else {
-
+                        this.submitForm()
                     }
 
                 } else if (this.selectedLeavetype.includes(2)) {
@@ -877,7 +878,7 @@ export default {
 
                 console.log(formData);
 
-                axios.post('http://192.168.1.250:8000/addleave_form', formData)
+                axios.post(`${API_BASE_URL}/addleave_form`, formData)
                     .then(response => {
                         console.log('Data saved successfully:', response.data);
                         this.loadis = true
@@ -967,7 +968,7 @@ export default {
             }
         },
         getLeaveDetails() {
-            if (this.selectedLeavetype.includes(0)) {
+            if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
                 if (this.vacationleavedetails.includes(1)) {
                     return `Within the Philippines, ${this.vacation1}`;
                 } else if (this.vacationleavedetails.includes(2)) {
@@ -1042,8 +1043,7 @@ export default {
         async fetchAccounts() {
 
             try {
-                const response = await axios.get('http://192.168.1.250:8000/get_accounts_json');
-
+                const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
                 this.accounts = response.data;
             } catch (error) {
                 console.error('Error fetching accounts:', error);
@@ -1052,7 +1052,7 @@ export default {
 
         async fetchNames() {
             try {
-                const response = await axios.get('http://192.168.1.250:8000/get_names_json');
+                const response = await axios.get(`${API_BASE_URL}/get_names_json`);
                 this.names = response.data;
 
 
@@ -1084,7 +1084,7 @@ export default {
             return item ? item.position_name : '';
         },
         fetchemployee() {
-            fetch('http://192.168.1.250:8000/get_employees_json/')
+            fetch(`${API_BASE_URL}/get_employees_json/`)
                 .then(response => response.json())
                 .then(data => {
                     this.employees = data.filter(det => det.name_id == this.name_id);
@@ -1136,7 +1136,7 @@ export default {
                     console.error('Error fetching employees:', error);
                 });
             // Fetch positions data
-            fetch('http://192.168.1.250:8000/get_positions_json/')
+            fetch(`${API_BASE_URL}/get_positions_json/`)
                 .then(response => response.json())
                 .then(data => {
                     this.positions = data.filter(detz => detz.position_id == this.employees[0].position_id);

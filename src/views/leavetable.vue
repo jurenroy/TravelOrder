@@ -78,7 +78,7 @@
         :disabled="this.leavecredits == '' || this.totalvacation == '' || this.totalsick == '' || this.lessvacation == '' || this.lesssick == '' || this.balancevacation == '' || this.balancesick == '' "
         :style="{ cursor:this.leavecredits == '' || this.totalvacation == '' || this.totalsick == '' || this.lessvacation == '' || this.lesssick == '' || this.balancevacation == '' || this.balancesick == '' ? 'not-allowed' : 'pointer' }"
          >Save</button>
-        <button @click="certification">Cancel</button>
+        <button @click="certification(certinum)">Cancel</button>
       </div>
     </div>
   </div>
@@ -134,7 +134,7 @@
           :disabled="recommendationLeavetype < 1 || recommendationLeavetype.length === 0"
           :style="{ cursor: recommendationLeavetype < 1 || recommendationLeavetype.length === 0 ? 'not-allowed' : 'pointer' }">{{
             recommendationLeavetype == 2 ? 'disapprove' : 'approve' }}</button>
-        <button @click="recommendation">Cancel</button>
+        <button @click="recommendation(reconum)">Cancel</button>
       </div>
     </div>
   </div>
@@ -191,7 +191,7 @@
         <button @click="postApproval" :disabled="approveLeavetype < 1 || approveLeavetype.length === 0"
           :style="{ cursor: approveLeavetype < 1 || approveLeavetype.length === 0 ? 'not-allowed' : 'pointer' }">{{
             approveLeavetype == 2 ? 'disapprove' : 'approve' }}</button>
-        <button @click="approve">Cancel</button>
+        <button @click="approve(apronum)">Cancel</button>
       </div>
     </div>
   </div>
@@ -243,13 +243,13 @@
         <table>
           <thead>
             <tr>
-              <th style="text-align: center;">Name</th>
-              <th style="text-align: center;">Type of Leave</th>
-              <th style="text-align: center;">Leave Details</th>
+              <th style="text-align: center;">Name </th>
+              <th style="text-align: center;">Type of Leave </th>
+              <th style="text-align: center;">Leave Details </th>
               <th style="text-align: center;">Duration</th>
               <th style="text-align: center;">Commutation</th>
               <th style="text-align: center;">Date of filing</th>
-              <th style="text-align: center;">Status</th>
+              <!-- <th style="text-align: center;">Status</th> -->
               <th style="text-align: center;">Action</th>
             </tr>
           </thead>
@@ -261,7 +261,7 @@
               <td>{{ item.dates }} ({{ item.days }})</td>
               <td>{{ item.commutation }}</td>
               <td>{{ formattedDate(item.date) }}</td>
-              <td v-if="item.initial === null" style="color: red;">
+              <!-- <td v-if="item.initial === null" style="color: red;">
                 <img src="../assets/close.png" style="height: 10px; width: 10px;">
                 For Initial
               </td>
@@ -306,58 +306,76 @@
                   <img src="../assets/check.png" style="height: 10px; width: 10px;">
                   Approved
                 </p>
-              </td>
+              </td> -->
 
               <td style="display: flex; justify-content: center;">
-                <button v-if="selectedTravelOrderId != item.travel_order_id"
-                  @click="openPDF(item.travel_order_id)">PDF</button>
-                <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
+                <button 
+                  v-if="selectedTravelOrderId != item.leaveform_id"
+                  @click="openPDF(item.leaveform_id)">PDF</button>
+                <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id" @click="close"
                   style="width: 40px; height: 40px; cursor: pointer;" />
               </td>
 
-              <td style="display: flex; justify-content: center;">
-                <button v-if="selectedTravelOrderId != item.travel_order_id"
-                  @click="certification(item.leaveform_id)">certification</button>
-                <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id"
-                  @click="certification" style="width: 40px; height: 40px; cursor: pointer;" />
+              <td style="display: flex; justify-content: center;" v-if="acc.name_id == 24 || acc.name_id == 2">
+                <button 
+                  @click="certification(item.leaveform_id)"
+                  :style="{
+                    color: certinum === item.leaveform_id ? 'white' : 'black',
+                    backgroundColor: certinum === item.leaveform_id ? 'black' : 'white',
+                    padding: '10px 20px',
+                    cursor: 'pointer'
+                  }">
+                  Certification
+                </button>
               </td>
-              <td style="display: flex; justify-content: center;">
-                <button v-if="selectedTravelOrderId != item.travel_order_id"
-                  @click="recommendation(item.leaveform_id)">Recommend</button>
-                <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id"
-                  @click="recommendation" style="width: 40px; height: 40px; cursor: pointer;" />
+              <td style="display: flex; justify-content: center;" v-if="siga">
+                <button 
+                  @click="recommendation(item.leaveform_id)"
+                  :style="{
+                    color: reconum === item.leaveform_id ? 'white' : 'black',
+                    backgroundColor: reconum === item.leaveform_id ? 'black' : 'white',
+                    padding: '10px 20px',
+                    cursor: 'pointer'
+                  }">
+                  Recommend
+                </button>
               </td>
-              <td style="display: flex; justify-content: center;">
-                <button v-if="selectedTravelOrderId != item.travel_order_id"
-                  @click="approve(item.leaveform_id)">Approve</button>
+              <td style="display: flex; justify-content: center;" v-if="siga1">
+                <button 
+                  @click="approve(item.leaveform_id)"
+                  :style="{
+                    color: apronum === item.leaveform_id ? 'white' : 'black',
+                    backgroundColor: apronum === item.leaveform_id ? 'black' : 'white',
+                    padding: '10px 20px',
+                    cursor: 'pointer'
+                  }">
+                  Approve
+                </button>
+              </td>
 
-
-                <!-- <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
-                      style="width: 40px; height: 40px; cursor: pointer;" /> -->
-              </td>
 
               <!-- <td v-if="siga && item.note !== null && item.signature1 == null && item.name_id !== acc.name_id"
                     style="display: flex; justify-content: center;"><button
-                      @click="signature1(item.travel_order_id)">Recommend</button></td> -->
+                      @click="signature1(item.leaveform_id)">Recommend</button></td> -->
 
               <!-- <td
                     v-if="acc.name_id == 20 && item.note !== null && item.signature1 == null && item.aor == 1 && [15, 21, 45, 48].includes(item.name_id)"
                     style="display: flex; justify-content: center;"><button
-                      @click="signature11(item.travel_order_id, item.name_id)">Recommend</button></td>
+                      @click="signature11(item.leaveform_id, item.name_id)">Recommend</button></td>
   
                   <td
                     v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null)) && item.name_id !== acc.name_id)"
                     style="display: flex; justify-content: center;"><button
-                      @click="signature2(item.travel_order_id)">Approve</button></td> -->
+                      @click="signature2(item.leaveform_id)">Approve</button></td> -->
 
 
               <!-- <td
-                    v-if="isSectionChief(acc.name_id) && selectedTravelOrderId != item.travel_order_id && item.initial === null"
+                    v-if="isSectionChief(acc.name_id) && selectedTravelOrderId != item.leaveform_id && item.initial === null"
                     style="display: flex; justify-content: center;">
-                    <button @click="initialize(item.travel_order_id)">
+                    <button @click="initialize(item.leaveform_id)">
                       Initial
                     </button>
-                    <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close"
+                    <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id" @click="close"
                       style="width: 40px; height: 40px; cursor: pointer;" />
                   </td> -->
             </tr>
@@ -372,15 +390,15 @@
       <button @click="printzz">Download as PDF</button>
       <button @click="close">Close PDF</button>
     </div>
-    <pdf :travel_order_id="selectedTravelOrderId"></pdf>
+    <pdf :leaveform_id="selectedTravelOrderId"></pdf>
   </div>
 </template>
   
 <script>
 import axios from 'axios';
-import pdf from './pdf.vue'
+import pdf from './leavepdfview.vue'
 import otpz from '../components/otp.vue';
-
+import { API_BASE_URL } from '../config'
 import { useAuthStore } from '../store/auth';
 
 export default {
@@ -505,7 +523,7 @@ export default {
       formData.append('certification', 'this.certification');
 
 
-      axios.post(`http://192.168.1.250:8000/updateleave_form/${this.certinum}`, formData, {
+      axios.post(`${API_BASE_URL}/updateleave_form/${this.certinum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -536,7 +554,7 @@ export default {
       formData.append('recodesc', this.text);
       formData.append('recommendation', this.recommendation);
 
-      axios.post(`http://192.168.1.250:8000/updateleave_form/${this.reconum}`, formData, {
+      axios.post(`${API_BASE_URL}/updateleave_form/${this.reconum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -558,7 +576,7 @@ export default {
       formData.append('disapproved', this.text2);
       formData.append('approval', this.approval);
 
-      axios.post(`http://192.168.1.250:8000/updateleave_form/${this.apronum}`, formData, {
+      axios.post(`${API_BASE_URL}/updateleave_form/${this.apronum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -583,7 +601,7 @@ export default {
       const formData = new FormData();
       formData.append('signature1', this.acc.signature);
 
-      axios.post(`http://192.168.1.250:8000/update_form/${form_id}`, formData, {
+      axios.post(`${API_BASE_URL}/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -610,7 +628,7 @@ export default {
       formData.append('sdiv', this.sub.division_id);
 
 
-      axios.post(`http://192.168.1.250:8000/update_form/${form_id}`, formData, {
+      axios.post(`${API_BASE_URL}/update_form/${form_id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -641,12 +659,12 @@ export default {
     //   }
     // },
     fetchAccounts() {
-      axios.get('http://192.168.1.250:8000/get_accounts_json')
+      axios.get(`${API_BASE_URL}/get_accounts_json`)
         .then(response => {
           this.acc = response.data.find(result => result.account_id == this.accountId);
           this.fetchData()
           if (this.acc) {
-            this.imageUrl = `http://192.168.1.250:8000/storage/${this.acc.signature}`;
+            this.imageUrl = `${API_BASE_URL}/storage/${this.acc.signature}`;
           }
           useAuthStore().updateVerifiedOTPs('false');
           localStorage.setItem('verifiedOTPs', 'false');
@@ -658,7 +676,7 @@ export default {
 
     fetchData() {
       this.load = true
-      axios.get('http://192.168.1.250:8000/get_leave_json')
+      axios.get(`${API_BASE_URL}/get_leave_json`)
         .then(response => {
           this.mawala = true;
           this.load = false
@@ -711,7 +729,7 @@ export default {
         });
     },
     fetchNames() {
-      axios.get('http://192.168.1.250:8000/get_names_json')
+      axios.get(`${API_BASE_URL}/get_names_json`)
         .then(response => {
           this.names = response.data;
         })
@@ -720,7 +738,7 @@ export default {
         });
     },
     fetchEmployees() {
-      axios.get('http://192.168.1.250:8000/get_employees_json')
+      axios.get(`${API_BASE_URL}/get_employees_json`)
         .then(response => {
           this.employees = response.data;
         })
@@ -746,8 +764,17 @@ export default {
     },
 
     certification(leaveformID) {
-      this.certif = !this.certif
-      this.certinum = leaveformID
+      // this.certif = !this.certif
+      if (this.certif == false && this.certinum == 0){
+        this.certif = true
+        this.certinum = leaveformID
+      }else if (this.certif == true && this.certinum == leaveformID){
+        this.certif = false
+        this.certinum = 0
+      }else if (this.certif == true && this.certinum !== 0){
+        this.certif = true
+        this.certinum = leaveformID
+      }
       this.leavecredits = ''
       this.totalvacation = ''
       this.totalsick = ''
@@ -761,17 +788,37 @@ export default {
     },
 
     recommendation(leaveformID) {
-      this.recoms = !this.recoms
+      // this.recoms = !this.recoms
+      if (this.recoms == false && this.reconum == 0){
+        this.recoms = true
+        this.reconum = leaveformID
+      }else if (this.recoms == true && this.reconum == leaveformID){
+        this.recoms = false
+        this.reconum = 0
+      }else if (this.recoms == true && this.reconum !== 0){
+        this.recoms = true
+        this.reconum = leaveformID
+      }
       this.recommendationLeavetype.length = 0
       this.text = ''
-      this.reconum = leaveformID
+      // this.reconum = leaveformID
     },
 
     approve(leaveformID) {
-      this.appr = !this.appr
+      // this.appr = !this.appr
+      if (this.appr == false && this.apronum == 0){
+        this.appr = true
+        this.apronum = leaveformID
+      }else if (this.appr == true && this.apronum == leaveformID){
+        this.appr = false
+        this.apronum = 0
+      }else if (this.appr == true && this.apronum !== 0){
+        this.appr = true
+        this.apronum = leaveformID
+      }
       this.approveLeavetype.length = 0
       this.text2 = ''
-      this.apronum = leaveformID
+      // this.apronum = leaveformID
     },
 
     updateVisibleItems() {

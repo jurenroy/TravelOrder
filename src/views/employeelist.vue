@@ -170,6 +170,7 @@ import axios from 'axios';
 
 
 <script>
+import { API_BASE_URL } from '../config'
 const addem = ref(false);
 const blurTable = ref(false);
 const successfulyadd = ref(false)
@@ -318,7 +319,7 @@ export default {
       formData.append('chief', this.edited.isChief ? 1 : 0);
       formData.append('isActive', this.edited.isActive ? null : 'out');
 
-      axios.post('http://192.168.1.250:8000/edit_employee', formData)
+      axios.post(`${API_BASE_URL}/edit_employee`, formData)
         .then(response => {
           // Handle success
           this.selectedEmployee = 0;
@@ -364,7 +365,7 @@ export default {
       return item ? item.division_name : '';
     },
     fetchData() {
-      fetch('http://192.168.1.250:8000/get_names_json/')
+      fetch(`${API_BASE_URL}/get_names_json/`)
         .then(response => response.json())
         .then(data => {
           this.mawala = true;
@@ -375,7 +376,7 @@ export default {
           console.error('Error fetching names:', error);
         });
 
-      fetch('http://192.168.1.250:8000/get_employees_json/')
+      fetch(`${API_BASE_URL}/get_employees_json/`)
         .then(response => response.json())
         .then(data => {
           this.mawala = true;
@@ -386,7 +387,7 @@ export default {
           console.error('Error fetching employees:', error);
         });
       // Fetch positions data
-      fetch('http://192.168.1.250:8000/get_positions_json/')
+      fetch(`${API_BASE_URL}/get_positions_json/`)
         .then(response => response.json())
         .then(data => {
           this.mawala = true;
@@ -398,7 +399,7 @@ export default {
         });
 
       // Fetch divisions data
-      fetch('http://192.168.1.250:8000/get_divisions_json/')
+      fetch(`${API_BASE_URL}/get_divisions_json/`)
         .then(response => response.json())
         .then(data => {
           this.mawala = true;
