@@ -79,6 +79,7 @@ import { cancelemplo, addem, seemplo, blurTable } from '@/views/employeelist.vue
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
+import { API_BASE_URL } from '../config'
 
 
 
@@ -121,7 +122,8 @@ export default {
 
       }
       
-      axios.post('http://192.168.1.250:8000/add_employees', dataToSend)
+      
+      axios.post(`${API_BASE_URL}/add_employees`, dataToSend)
         .then(response => {
           console.log('Response:', response.data);
           this.formData = {
@@ -143,7 +145,7 @@ export default {
         });
     },
     fetchPositions() {
-      fetch('http://192.168.1.250:8000/get_positions_json/')
+      fetch(`${API_BASE_URL}/get_positions_json/`)
         .then(response => response.json())
         .then(data => {
           this.positions = data;
@@ -153,7 +155,7 @@ export default {
         });
     },
     fetchDivisions() {
-      fetch('http://192.168.1.250:8000/get_divisions_json/')
+      fetch(`${API_BASE_URL}/get_divisions_json/`)
         .then(response => response.json())
         .then(data => {
           this.divisions = data;
