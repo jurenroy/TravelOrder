@@ -7,9 +7,15 @@
     <label v-if="showhome" :class="{ 'blur': blurTable }" @click="relod"
       style="cursor: pointer;">Back to Dashboard</label>
     </div>
+    <div style="display: flex; flex-direction: row; justify-content: center;">
+      <button class="state-button" @click="toggleState">
+      {{ state ? 'Go to employees list' : 'Go to accounts list' }}
+    </button></div>
     <div style="display: flex; flex-direction: row; justify-content: center;" :class="{ 'blur': blurTable }">
-      <p style="font-size: 30px; font-weight: bold;">Employee List</p>
-      <img src="../assets/add.png"
+      <p style="font-size: 30px; font-weight: bold;">
+        {{ !state ? 'Employee List' : 'Account List' }}
+      </p>
+      <img src="../assets/add.png" v-if="!state"
         style="width: 26px; height: 26px; margin-left: 10px; margin-top: 35px; cursor: pointer;" @click="showaddem">
     </div>
 
@@ -29,7 +35,7 @@
 
     <div v-if="!load" class="outer" :class="{ 'blur': blurTable }">
 
-      <div class="scrollable-table">
+      <div class="scrollable-table" v-if="!state">
         <table>
           <thead>
             <tr>
@@ -147,12 +153,70 @@
         </table>
       </div>
 
+      <div class="scrollable-table" v-if="state == true">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Username</th>
+              <th>Signature</th>
+              <th>default password?</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="account in accounts" :key="account.id" style="font-size:18px;">
+              <td>{{ getNameById(account.name_id,'names').toUpperCase() }} {{ getMiddleInitById(account.name_id,'names').toUpperCase() }} {{ getLastNameById(account.name_id,'names').toUpperCase() }}</td>
+              <td>{{ getAccountType(account.type_id) }}</td>
+              <td>{{ account.email }}</td>
+              <td style="display: flex; align-items: center; justify-content: center;"><img :src="getImageUrl(account.signature)" alt="Account Signature" height="50px" width="auto" /></td>
+              <td>{{ checkDefaultStatus(account.password) }}</td>
+              <td style=" text-align: center; vertical-align: middle; height: 50px; ">
+                <button @click="editAccount(account)">{{ this.selectedAccount && this.selectedAccount.account_id === account.account_id ? 'Cancel' : 'Edit' }}</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
     <div
       style="width: fit-content; height: auto; background-color: white; border: 2px solid BLACK; border-radius: 5px; padding: 10px;  position: fixed;  top: 50%;  left: 50%;  transform: translate(-50%, -50%); "
       v-if="addem">
       
       <addemp @click="fetchData, seemplo, seemplo"></addemp>
+    </div>
+
+
+    <!-- Edit Form Popup -->
+    <div v-if="selectedAccount" class="edit-form">
+      <h2>Edit Account for {{ getNameById(selectedAccount.name_id,'names').toUpperCase() }} {{ getMiddleInitById(selectedAccount.name_id,'names').toUpperCase() }} {{ getLastNameById(selectedAccount.name_id,'names').toUpperCase() }}</h2>
+      <div class="form-group">
+        <h3 for="username">Username:</h3>
+        <input
+          id="username"
+          type="text"
+          v-model="newUsername"
+          placeholder="Optional"
+        />
+      </div>
+    
+      <div class="form-group12">
+        <h3 for="defaultPassword">Default Password?</h3>
+        <input
+          id="defaultBox"
+          type="checkbox"
+          v-model="defaultBox"
+        />
+        <p v-if="defaultBox">Pass12345</p>
+      </div>
+      
+      <div class="button-group">
+        <button @click="saveAccount" class="yesno">Save</button>
+        <button @click="cancelEdit" class="yesno">Cancel</button>
+      </div>
+      
     </div>
   </div>
 </template>
@@ -166,11 +230,9 @@ import axios from 'axios';
 
 </script>
 
-
-
-
 <script>
 import { API_BASE_URL } from '../config'
+import CryptoJS from 'crypto-js';
 const addem = ref(false);
 const blurTable = ref(false);
 const successfulyadd = ref(false)
@@ -214,6 +276,7 @@ export default {
 
   data() {
     return {
+      accounts: [],
       names: [],
       employees: [],
       positions: [],
@@ -233,6 +296,11 @@ export default {
       input: {
         pospos: false
       },
+      state: false, // Initial state
+      predefinedPassword: 'Pass12345',
+      selectedAccount: null,
+      newUsername: '',
+      defaultBox: false,
 
     };
   },
@@ -261,6 +329,54 @@ export default {
     }
   },
   methods: {
+    toggleDefaultPassword() {
+    if (this.selectedAccount) {
+      this.selectedAccount.defaultPassword = !this.selectedAccount.defaultPassword;
+      }
+    },
+    editAccount(account) {
+      if (this.selectedAccount && this.selectedAccount.account_id === account.account_id) {
+        // If the clicked account is the same as the currently selected one, clear the selection
+        this.selectedAccount = null;
+      } else {
+        // Otherwise, set the selected account to the clicked account
+        this.selectedAccount = { ...account };
+      }
+    },
+    saveAccount() {
+      // Implement the save functionality here
+      // Update the account in your data source
+      console.log('Saved account:', this.selectedAccount);
+      this.selectedAccount = null; // Hide the form
+    },
+    cancelEdit() {
+      this.selectedAccount = null; // Hide the form
+    },
+    // Function to check if the decrypted password matches the predefined password
+    checkDefaultStatus(encryptedPassword) {
+      const decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
+      return decryptedPassword === this.predefinedPassword ? 'Yes' : 'No';
+    },
+    // Function to map type_id to role name
+    getAccountType(type_id){
+      switch (type_id) {
+        case 1:
+          return 'Superuser';
+        case 2:
+          return 'User';
+        case 3:
+          return 'Signatories';
+        default:
+          return 'Unknown'; // Default case for unexpected values
+      }
+    },
+    // Function to construct the image URL
+    getImageUrl(signature) {
+      return `${API_BASE_URL}/storage/${signature}`;
+    },
+    toggleState() {
+      this.state = !this.state;
+    },
     isPosposDisabled() {
       return !this.edited.position;
     },
@@ -365,6 +481,17 @@ export default {
       return item ? item.division_name : '';
     },
     fetchData() {
+      fetch(`${API_BASE_URL}/get_accounts_json/`)
+        .then(response => response.json())
+        .then(data => {
+          this.mawala = true;
+          this.load = false
+          this.accounts = data;
+        })
+        .catch(error => {
+          console.error('Error fetching accounts:', error);
+        });
+
       fetch(`${API_BASE_URL}/get_names_json/`)
         .then(response => response.json())
         .then(data => {
@@ -632,5 +759,75 @@ button {
 button:hover {
   background-color: black;
   color: white;
+}
+
+/* Style for the edit form popup */
+.edit-form {
+  width: 90%; /* Width of popup relative to the viewport */
+  max-width: 500px; /* Maximum width of the popup */
+  height: auto; /* Height adjusts based on content */
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Ensure the popup is above other content */
+  box-sizing: border-box; /* Includes padding and border in the width and height */
+  overflow: auto; /* Scroll if content is too long */
+  max-height: 90vh; /* Limit height to prevent overflow on small screens */
+}
+
+/* Adjust button styles for responsiveness */
+.edit-form button {
+  width: 100%; /* Full width buttons */
+  margin-top: 10px; /* Space between buttons */
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-group12 {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.form-group12 input{
+  display: flex;
+  margin-left: 10px;
+}
+
+.form-group12 p{
+  display: flex;
+  margin-left: 10px;
+}
+
+.form-group input {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+}
+
+.yesno {
+  margin: 5px;
+}
+
+@media (max-width: 600px) {
+  /* Adjustments for mobile screens */
+  .edit-form {
+    width: 95%; /* Full width on small screens */
+    padding: 15px; /* Less padding for mobile */
+  }
 }
 </style>
