@@ -14,8 +14,29 @@
       <button class="frontbutton" @click="navigateTo('TravelOrder')">Travel Order Form</button>
       <button class="frontbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
     </div>
-
   </div>
+  <!-- Password Change Popup -->
+  <div v-if="showPopup" class="popup-overlay">
+      <div class="popup-content">
+        <h2>Please Change Your Default Password</h2>
+        <form @submit.prevent="handleSubmit">
+          <div class="form-group">
+            <label for="password">New Password:</label>
+            <input 
+              type="password" 
+              id="password" 
+              v-model="password" 
+              placeholder="Enter your new password" 
+              required
+            />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="skip-button" @click="skip">Skip</button>
+            <button type="submit" class="submit-button">Change Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -24,10 +45,17 @@ import { showstatus } from '@/components/heder.vue';
 import { isRegistrationClicked, isEdits, employeelis, isButssClicked, isVisible } from './dashboard.vue';
 import { showEdit } from '@/components/heder.vue';
 import { isregisclick, leaveedit, employeelisleave, isaddleave, isleavelogoutClicked } from './leaveform.vue';
+import CryptoJS from 'crypto-js';
+import { API_BASE_URL } from '../config';
+import axios from 'axios';
+
 export default {
   data() {
     return {
       showstatus: true,
+      showPopup: false, // Control the visibility of the popup
+      password: '',
+      predefinedPassword: 'Pass12345',
     }
   },
   methods: {
@@ -57,6 +85,58 @@ export default {
       this.$router.push({ name: routeName });
       localStorage.setItem('routerz', routeName);
     },
+    handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        this.skip();
+      }
+    },
+    handleSubmit() {
+      // Logic for handling password change
+      console.log('Password changed to:', this.password);
+      this.showPopup = false; // Hide popup after submission
+    },
+    skip() {
+      // Logic for skipping the password change
+      this.showPopup = false; // Hide popup if user chooses to skip
+    },
+    async fetchAccountData() {
+      try {
+        const accountId = localStorage.getItem('accountId');
+        if (!accountId) {
+          console.error('Account ID not found in local storage');
+          return;
+        }
+
+        const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
+        const accountData = response.data;
+        const account = accountData.find(result => result.account_id === parseInt(accountId));
+
+        console.log(accountData)
+        console.log(account)
+
+        if (account && account.password) {
+          const defaultStatus = this.checkDefaultStatus(account.password);
+          this.showPopup = defaultStatus === 'Yes';
+        } else {
+          console.error('Account not found or password missing');
+        }
+      } catch (error) {
+        console.error('Error fetching account data:', error);
+      }
+    },
+    checkDefaultStatus(encryptedPassword) {
+      const decryptedPassword = CryptoJS.AES.decrypt(encryptedPassword, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
+      return decryptedPassword === this.predefinedPassword ? 'Yes' : 'No';
+    },
+  },
+  mounted() {
+    this.fetchAccountData();
+    // Add keydown event listener for the ESC key when the component is mounted
+    window.addEventListener('keydown', this.handleKeyDown);
+  },
+  beforeDestroy() {
+    // Remove the event listener when the component is destroyed
+    window.removeEventListener('keydown', this.handleKeyDown);
   },
 };
 </script>
@@ -116,6 +196,92 @@ export default {
   }
   .textzxc {
     text-align: center;
+  }
+}
+
+/* Popup Styles */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input[type="password"] {
+  width: 95%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.submit-button,
+.skip-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-button {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.skip-button {
+  background-color: #6c757d;
+  color: white;
+  font-weight: bold;
+}
+
+.submit-button:hover,
+.skip-button:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .popup-content {
+    padding: 15px;
+  }
+
+  .submit-button,
+  .skip-button {
+    padding: 8px 16px;
   }
 }
 </style>
