@@ -260,7 +260,7 @@ label {
   margin-bottom: 5px;
 }
 
-input[type="password"] {
+.form-group input[type="password"] {
   width: 95%;
   padding: 10px;
   border: 1px solid #ddd;
