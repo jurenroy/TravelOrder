@@ -326,7 +326,7 @@ export default {
         this.fetchData();
         console.log('yawa');
       }
-    }
+    },
   },
   methods: {
     toggleDefaultPassword() {
@@ -343,11 +343,58 @@ export default {
         this.selectedAccount = { ...account };
       }
     },
-    saveAccount() {
+    async saveAccount() {
       // Implement the save functionality here
       // Update the account in your data source
       console.log('Saved account:', this.selectedAccount);
-      this.selectedAccount = null; // Hide the form
+
+      this.encryptedPassword = CryptoJS.AES.encrypt(this.predefinedPassword, 'jUr3ñr0yR@br4g@n').toString();
+
+      const accountId = this.selectedAccount.account_id; // Assuming you're using Vuex for state management
+      // Alternatively, replace with your method of getting account ID
+
+      if (!accountId) {
+        console.error('No account ID found in the account object');
+        return;
+      }
+
+      // Create a FormData object
+      const formData = new FormData();
+
+      // Conditionally append values to FormData
+      if (this.newUsername !== '') {
+        formData.append('email', this.newUsername);
+      }
+
+      if (this.defaultBox) {
+        formData.append('password', this.encryptedPassword);
+      }
+
+       // Check if FormData is empty
+      if (![...formData.entries()].length) {
+        // If no data was added, show a popup indicating no changes
+        this.showNoChangesPopup = true; // Assuming `showNoChangesPopup` controls the visibility of the popup
+        return;
+      }
+
+      try {
+        const response = await axios.post(`${API_BASE_URL}/update_account/${accountId}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      
+        console.log('Email and password updated successfully:', response.data);
+        this.fetchData();
+        this.selectedAccount = null; // Hide the form
+        this.newUsername = '';
+        this.defaultBox = false;
+        // Handle success (e.g., show a success message)
+      } catch (error) {
+        console.error('Error updating email and password:', error);
+        // Handle error (e.g., show an error message)
+      }
+
     },
     cancelEdit() {
       this.selectedAccount = null; // Hide the form

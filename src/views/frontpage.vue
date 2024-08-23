@@ -90,10 +90,33 @@ export default {
         this.skip();
       }
     },
-    handleSubmit() {
+    async handleSubmit() {
       // Logic for handling password change
-      console.log('Password changed to:', this.password);
-      this.showPopup = false; // Hide popup after submission
+      const id = localStorage.getItem('accountId');
+      this.encryptedPassword = CryptoJS.AES.encrypt(this.password, 'jUr3ñr0yR@br4g@n').toString();
+
+      if (!id) {
+        console.error('No account ID found in localStorage');
+        return;
+      }
+
+      try {
+        // Create a FormData object
+        const formData = new FormData();
+        formData.append('password', this.encryptedPassword);
+
+        // Send the FormData object with axios
+        const response = await axios.post(`${API_BASE_URL}/update_account/${id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        // Handle success (e.g., show a success message)
+        this.showPopup = false; // Hide popup after submission
+      } catch (error) {
+        console.error('Error updating password:', error);
+        // Handle error (e.g., show an error message)
+      }
     },
     skip() {
       // Logic for skipping the password change
