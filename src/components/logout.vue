@@ -21,6 +21,7 @@ import { showEdit } from './heder.vue';
 import { regis_logout } from '@/views/regis.vue';
 import { useAuthStore } from '../store/auth';
 import { useRouter } from 'vue-router';
+import { onMounted, onBeforeUnmount } from 'vue';
 
 const router = useRouter();
 
@@ -34,8 +35,23 @@ const logout = () => {
    authStore.logout();
    localStorage.setItem('isLoggedIn', 'false');
    localStorage.removeItem('accountId');
+   localStorage.removeItem('nameId');
    router.push("/")
 }
+const handleKeyPress = (event) => {
+   if (event.key === 'Enter'){
+      logout();
+   }else if(event.key === 'Escape'){
+      noButton();
+   }
+}
+
+onMounted(() => {
+   window.addEventListener('keydown', handleKeyPress);
+})
+onBeforeUnmount(()=>{
+   window.removeEventListener('keydown', handleKeyPress);
+})
 
 
 </script>

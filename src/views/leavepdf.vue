@@ -13,9 +13,9 @@
                 <div style="text-align: center;">
                     <p style=" font-size: 11px;">Republic of the Philippines</p>
                     <p style=" font-size: 11px;">Department of Environment and Natural Resources</p>
-                    <p style=" font-size: 13px; font-weight: bold;">MINES ABD GEOSCIENCE BUREAU REGIONAL OFFICE NO. X
+                    <p style=" font-size: 13px; font-weight: bold;">MINES AND GEOSCIENCE BUREAU REGIONAL OFFICE NO. X
                     </p>
-                    <p style=" font-size: 11px;">DENR-X Compound, Puntod, cagayan de Oro City</p>
+                    <p style=" font-size: 11px;">DENR-X Compound, Puntod, Cagayan de Oro City</p>
                 </div>
                 <img :src="image2" alt="Bago Image" class="pic2">
             </div>

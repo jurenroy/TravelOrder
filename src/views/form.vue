@@ -21,21 +21,7 @@
               :class="{ 'red-border': isRed && position === '' }" class='inputsss' @input="resetRed" id='positionin'
               required readonly>
 
-            <label class="dd"> Depature Date: </label>
-            <input @keydown.enter="form_submit" type="date" v-model="departure" class='inputsss'
-              :class="{ 'red-border': isRed && departure === '' }" @input="resetRed" id='departurein' required>
-
-            <label class="d"> Destination: </label>
-            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }"  @input="capitalizeAndReset('destination')"
-              type="text" v-model="destination" class='inputsss' id='destinationin' required>
-
-          </div>
-          <div style="display: flex; flex-direction: column;  width: 100%;">
-            <label class="da"> Date: </label>
-            <input @keydown.enter="form_submit" type="type" v-model="date" class='inputsss' id='datein' required
-              readonly>
-
-            <label class="ds"> Division/Section: </label>
+              <label class="ds"> Division/Section: </label>
             <input @keydown.enter="form_submit" type="text" v-model="division"
               :class="{ 'red-border': isRed && division === '' }" @input="resetRed" class='inputsss' id='divisionin'
               required readonly>
@@ -44,10 +30,25 @@
             <input @keydown.enter="form_submit" type="text" v-model="station" class='inputsss' id='stationin' required
               readonly>
 
+          </div>
+          <div style="display: flex; flex-direction: column;  width: 100%;">
+            <label class="da"> Date: </label>
+            <input @keydown.enter="form_submit" type="type" v-model="date" class='inputsss' id='datein' required
+              readonly>
+
+              <label class="dd"> Depature Date: </label>
+            <input @keydown.enter="form_submit" type="date" v-model="departure" class='inputsss'
+              :class="{ 'red-border': isRed && departure === '' }" @input="resetRed" id='departurein' required>
+
             <label class="ad"> Arrival Date: </label>
             <input @keydown.enter="form_submit" type="date" v-model="arrival"
               :class="{ 'red-border': isRed && arrival === '' }" @input="resetRed" class='inputsss' id='arrivalin'
               required>
+            
+            <label class="d"> Destination: </label>
+            <input @keydown.enter="form_submit" :class="{ 'red-border': isRed && destination === '' }"  @input="capitalizeAndReset('destination')"
+              type="text" v-model="destination" class='inputsss' id='destinationin' required>
+              
           </div>
         </div>
 
@@ -63,7 +64,7 @@
 
             </label>
             <label for="areaofres"
-              style="left: 15px; top: 5px; font-size: 20px; font-weight: bold; position: relative;">
+              style="left: 40px; top: 0px; font-size: 20px; font-weight: bold; position: relative;">
               Outside Area of Responsibility (AOR)
               <span v-if="travelDurationz > 7">{{ travelDurationz }} Days</span>
             </label>
@@ -437,6 +438,8 @@ export default {
   overflow: visible;
   height: 20px;
   width: 20px;
+  margin-top: 20px;
+  margin-bottom: -20px;
 }
 
 .path {

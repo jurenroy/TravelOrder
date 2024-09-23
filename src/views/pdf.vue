@@ -213,7 +213,7 @@
           official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-containerz" style="align-self: flex-end; margin-right: 6%; ">
           <img :src="signature3" class="signatizz" v-if="signature3 !== `${API_BASE_URL}/storage/null`"
-            style="margin-top: -50px; margin-bottom: 0px" />
+            style="margin-top: -50px; margin-bottom: -10px" />
           <p style="font-weight: bold; text-align: center;">{{ name }}</p>
           <p style="text-align: center;">Official Employee</p>
         </div>
@@ -282,7 +282,7 @@ export default {
       aor: '',
       divisionChiefs:[
         'LIBERTY B. DAITIA',
-        'OSIN JR. A. SINSUAT',
+        'OSIN A. SINSUAT JR',
         'JANICE B. FUROG',
         'ALVIN M. VILLANUEVA',
         'RODANTE B. FELINA'
@@ -635,8 +635,8 @@ button {
   margin-top: -15px;
 }
 .signatizz {
-  height: auto;
-  width: 150px;
+  height: 60px;
+  width: auto;
   margin-bottom: -50px;
   margin-top: 5px;
   margin: auto;

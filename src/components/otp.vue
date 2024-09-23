@@ -1,6 +1,6 @@
 <template>
   <div
-    style="justify-content: center;  background-color: white; display: flex; margin-top: 100px; position: absolute;  width: 300px; height: auto; ">
+    style="justify-content: center;  background-color: white; display: flex; margin-top: 100px; position: absolute;  width: 300px; height: auto; z-index: 9999;">
 
     <div v-if="sendingOTPS" class="verifieds">
       <a class="verifieds1">

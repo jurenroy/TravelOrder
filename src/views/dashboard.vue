@@ -1,7 +1,7 @@
 <template>
    <headers v-if="showHeader1" class="headz"/>
    <headers1 v-if="showHeader2" class="headx"/>
-   <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showhome">
+   <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showhome" class="homerun">
       <img src="../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
       <p style="margin-left:10px; font-size: 20px; margin-top: 9px; cursor: pointer;" @click="$router.push('/')">Home</p>
     </div>
@@ -22,6 +22,7 @@
    <signature class="sig" v-if="acc.signature === null" />
    <editss class="edix" v-if="isEdits && isRegistrationClicked"/>
    <logsss class="logssss" v-if="isButssClicked"/>
+   <Help class="tabang" :accountId="acc.name_id" />
 </template>
 
 
@@ -39,7 +40,7 @@ import logsss from '../components/logout.vue'
 import editss from '../views/editpage.vue'
 import { showEdit } from '../components/heder.vue';
 import { isleavelogoutClicked, isregisclick } from './leaveform.vue';
-
+import Help from '../components/help/helpdata.vue'; // Adjust the path if necessary
 </script>
 
 
@@ -62,8 +63,6 @@ const showhome = ref(true)
 //header
 const showHeader1 = ref(true)
 const showHeader2 = ref(false)
-
-
 
 // visible sa  Add form
 const toggleForm = () => {
@@ -252,6 +251,7 @@ export {
    margin-top: 100px;
 }
 
+
 @media (max-width: 768px) {
    .navigationz{
    flex-direction: column;
@@ -299,7 +299,7 @@ export {
    .tra {
       display: none !important;
    }
-   .headz, .headx, .titlez, .formz, .regixcv, .sig, .edix, .logssss{
+   .headz, .headx, .titlez, .formz, .regixcv, .sig, .edix, .logssss, .homerun, .tabang{
       display: none !important;
    }
 }

@@ -169,6 +169,7 @@ const login_submit = () => {
       authStore.login(account.account_id);
       localStorage.setItem('isLoggedIn', true);
       localStorage.setItem('accountId', account.account_id);
+      localStorage.setItem('nameId', account.name_id);
       submitting.value = true;
       isRed.value = false
       pleaseWait.value = true;

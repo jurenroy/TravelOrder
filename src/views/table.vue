@@ -88,7 +88,7 @@
                 </td>
                 <td v-else style="color: green; ">
 
-                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20].includes(item.name_id) && item.initial !== null"
+                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77].includes(item.name_id) && item.initial !== null"
                     style="color: green; margin-top: -8px;margin-bottom: -1px">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}
@@ -104,25 +104,25 @@
                     Noted
                   </p>
 
-                  <p v-if="(item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1 && aor == 1)"
+                  <p v-if="(item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1 && aor == 1)"
                     style="color: red; margin-bottom: -15px;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Recommendation
                   </p>
 
-                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
+                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
                     style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Recommended
                   </p>
 
 
-                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
+                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
                     style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
                     For Approval
                   </p>
-                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
+                  <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id) && item.signature2 !== null)"
                     style="color: green;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     Approved
@@ -523,15 +523,23 @@ export default {
           this.csvformdata = response.data
 
           if (this.sectionChiefIds.includes(this.acc.name_id)) {
+            console.log(response.data.some.initial === null)
             console.log(this.acc.name_id)
             const index = this.sectionChiefIds.indexOf(this.acc.name_id);
             console.log(index)
             const members = this.members[index];
             console.log(this.members[index])
+            if (this.sectionChiefIds.includes(48)){
+              const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
+            this.siga = true
+            console.log(this.formData)
+              this.formData = response.data.filter(form => (form.name_id == this.acc.name_id ||members.includes(form.name_id) && form.initial === null) || 
+              ((form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null) || form.name_id === this.acc.name_id));
+            }else{
             this.formData = response.data.filter(form => form.name_id == this.acc.name_id ||
               members.includes(form.name_id) && form.initial === null
             );
-
+            }
           }
           else if (this.acc.name_id == 37) {
             this.formData = response.data.filter(form => form.name_id == this.acc.name_id || form.note == null && form.initial !== null);
@@ -553,9 +561,11 @@ export default {
             this.siga1 = true
 
           } else if (this.acc.type_id == 3) {
+            console.log('yawa')
             const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
             this.formData = response.data.filter(form => (form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null) || form.name_id === this.acc.name_id);
             this.siga = true
+            console.log(this.formData)
             if (this.sub.name_id == 20) {
               this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
               this.siga = false
