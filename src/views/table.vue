@@ -1,4 +1,5 @@
 <template>
+  <editform v-if="selectedTravelOrderIdEdit > 0" :travelOrderId="selectedTravelOrderIdEdit" @cancel-edit="closeEdit"></editform>
   <div class="note" v-if="addNote">
       <div class="title-bar">
         <div class="title">Add note</div>
@@ -22,7 +23,7 @@
       <div class="content">
         <textarea v-model="noteText" rows="3"></textarea>
         <div class="butokz">
-          <button @click="postNote" v-if="siga || siga1 || acc.name_id == 76">Save</button>
+          <button @click="postNote" v-if="siga || siga1 || acc.name_id == 76 || acc.name_id == 37">Save</button>
           <button @click="closeNote">Close</button>
         </div>
       </div>
@@ -30,8 +31,13 @@
 
 
   <div style="display: flex; flex-direction: column;">
-
-    <h2 style="display: flex; flex-direction: column; align-items: center;" class="hist">History</h2>
+     <h2 style="display: flex; flex-direction: row; align-self: center;" class="hist">History for:  
+        <select v-model="selectedStatus" id="status" class="styled-select">
+          <option v-for="option in options" :key="option" :value="option">
+            {{ option }}
+          </option>
+        </select> 
+      </h2>
     <div v-if="load" class="loadings">
       <img src='../assets/loading.gif' width="auto" height="100px" />
     </div>
@@ -46,7 +52,6 @@
           <img class="`imgsearch" style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png">
           <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name">
         </div>
-
         <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
           <div class="sign">
             <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
@@ -84,14 +89,14 @@
                 <td>{{ item.date }}</td>
                 <td v-if="item.initial === null" style="color: red;">
                   <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                  For Initial
+                  For Initial by: <span v-if="[15,21,45,48].includes(item.name_id)">RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1">DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
                 </td>
                 <td v-else style="color: green; ">
 
-                  <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77].includes(item.name_id) && item.initial !== null"
+                  <p v-if="(![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77].includes(item.name_id) && item.initial !== null) || ([15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1) || ([2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1)"
                     style="color: green; margin-top: -8px;margin-bottom: -1px">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                    {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }}
+                    {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }} <span v-if="[15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1">by RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1">by DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
                   </p>
 
 
@@ -104,31 +109,36 @@
                     Noted
                   </p>
 
-                  <p v-if="(item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1 && aor == 1)"
+                  <p v-if="((item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48,56,58,55,59,60,13,10,37,62,53,77,4].includes(item.name_id) && item.intervals == 1)) && !([15].includes(item.name_id) && item.aor == 0 && item.intervals == 1)"
                     style="color: red; margin-bottom: -15px;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                    For Recommendation
+                    For Recommendation <span v-if="[15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1">by RED</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1">by CAO</span> <span v-else-if="item.intervals == 1">by CAO</span> <span v-else>by DC</span>
                   </p>
 
-                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
+                  <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && ([15, 21, 45, 48].includes(item.name_id) || item.division_id == 5) && item.intervals == 1)"
                     style="color: green; margin-bottom: -15px;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                    Recommended
+                    Recommended <span v-if="[15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1">by RED</span> <span v-else-if="([2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) || item.division_id == 5) && item.intervals == 1">by CAO</span> <span v-else-if="item.intervals == 1">by CAO</span> <span v-else>by DC</span>
                   </p>
 
 
-                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
+                  <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id) && item.signature2 === null && item.note !== null && item.intervals == 0)) || (item.name_id == 20 && item.intervals == 1)) || ([15].includes(item.name_id) && item.aor == 0 && item.intervals == 1)"
                     style="color: red;">
                     <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                    For Approval
+                    For Approval <span v-if="item.name_id == 20 && (item.aor !== 1 || item.intervals !== 1)">by RED</span><span v-if="[15,20,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1">by BD</span>
                   </p>
                   <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id) && item.signature2 !== null)"
                     style="color: green;">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                    Approved
+                    Approved <span v-if="item.sname !== 20">by: {{ getName(item.sname) }}</span> 
                   </p>
                 </td>
-
+                <td style="display: flex; justify-content: center;" v-if="item.name_id == acc.name_id">
+                  <button v-if="selectedTravelOrderIdEdit != item.travel_order_id"
+                    @click="edit(item.travel_order_id)">Edit</button>
+                  <img src="/src/assets/canceledit.png" v-if="selectedTravelOrderIdEdit == item.travel_order_id" @click="closeEdit"
+                    style="width: 40px; height: 40px; cursor: pointer;" />
+                </td>
                 <td style="display: flex; justify-content: center;">
                   <button v-if="selectedTravelOrderId != item.travel_order_id"
                     @click="openPDF(item.travel_order_id)">PDF</button>
@@ -136,14 +146,14 @@
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
 
-                <td v-if="siga && item.note !== null && item.signature1 == null && item.name_id !== acc.name_id"
+                <td v-if="(siga && item.note !== null && item.signature1 == null && ![15, 21, 45, 48].includes(item.name_id) && item.division_id !== 5 && item.intervals == 0) || (acc.name_id == 15 && item.note !== null && item.signature1 == null && item.intervals == 1)"
                   style="display: flex; justify-content: center;"><button
                     @click="signature1(item.travel_order_id)">Recommend</button></td>
 
                 <td
-                  v-if="acc.name_id == 20 && item.note !== null && item.signature1 == null && item.aor == 1 && [15, 21, 45, 48].includes(item.name_id)"
+                  v-if="acc.name_id == 20 && item.note !== null && item.signature1 == null && item.intervals == 1 && [15, 21, 45, 48].includes(item.name_id)"
                   style="display: flex; justify-content: center;"><button
-                    @click="signature11(item.travel_order_id, item.name_id)">Recommend</button></td>
+                    @click="signature11(item.travel_order_id, item.name_id)">Recommends cao</button></td>
 
                 <td v-if="item.travel_order_id !== notenum && item.note == null && acc.name_id == 37"
                   style="display: flex; justify-content: center;"><button @click="openNote(item.travel_order_id)">Add
@@ -166,13 +176,11 @@
                 </td>
 
                 <td
-                  v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null)) && item.name_id !== acc.name_id)"
+                  v-if="(siga1 && item.note !== null && item.name_id !== 20 && item.signature2 === null) && ((item.signature1 !== null && item.division_id !== 5) || (item.signature1 === null && item.division_id === 5) || (item.signature1 !== null && item.division_id === 5 && item.intervals == 1)|| ([15, 21, 45, 48].includes(item.name_id)))"
                   style="display: flex; justify-content: center;"><button
                     @click="signature2(item.travel_order_id)">Approve</button></td>
-
-
                 <td
-                  v-if="isSectionChief(acc.name_id) && selectedTravelOrderId != item.travel_order_id && item.initial === null"
+                  v-if="(isSectionChief(acc.name_id) && selectedTravelOrderId != item.travel_order_id && item.initial === null && this.acc.name_id !== item.name_id) || ([15,21,45,48].includes(this.acc.name_id) && item.initial === null && item.intervals == 1 && this.acc.name_id !== item.name_id) || ([20].includes(this.acc.name_id) && item.initial === null && item.intervals == 1 && item.aor == 1 && this.acc.name_id !== item.name_id)"
                   style="display: flex; justify-content: center;">
                   <button @click="initialize(item.travel_order_id)">
                     Initial
@@ -193,15 +201,21 @@
       <button @click="close">Close PDF</button>
     </div>
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
+      <editform v-if="selectedTravelOrderIdEdit > 0"></editform>
+      <sample>yawa</sample>
     </div>
 </template>
 
 <script>
 import axios from 'axios';
-import pdf from './pdf.vue'
+import pdf from './pdf.vue';
+import editform from './editform.vue';
+import form from './form.vue';
+import sample from './sampol.vue'
 import otpz from '../components/otp.vue';
 import { API_BASE_URL } from '../config'
 import { useAuthStore } from '../store/auth';
+import { f } from 'html2pdf.js';
 
 export default {
   provide() {
@@ -211,7 +225,10 @@ export default {
   },
   components: {
     pdf,
-    otpz
+    otpz,
+    editform,
+    form,
+    sample
   },
   mounted() {
     this.fetchAccounts();
@@ -220,6 +237,9 @@ export default {
   },
   data() {
     return {
+      selectedStatus: 'Me',
+      optionsEmp: ['Pending', 'Done', 'All'],
+      options: ['Pending', 'Done', 'Me'],
       sectionChiefIds: [39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47],
       members: [
         [23, 25, 35, 70, 64],
@@ -239,6 +259,7 @@ export default {
       names: {},
       employees: {},
       selectedTravelOrderId: 0,
+      selectedTravelOrderIdEdit: 0,
       accountId: localStorage.getItem('accountId'),
       acc: [],
       imageUrl: '',
@@ -256,9 +277,8 @@ export default {
       sub: 0,
       bus: 0,
       searchQuery: '',
-      csvformdata: []
-
-
+      csvformdata: [],
+      isVisible: true
     };
   },
   created() {
@@ -268,6 +288,13 @@ export default {
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
+    edit(travelOrderId) {
+      this.selectedTravelOrderIdEdit = travelOrderId;
+      this.$emit('edit-travel-order', travelOrderId); // Emit the selected travel order ID
+    },
+    closeEdit(){
+      this.selectedTravelOrderIdEdit = 0
+    },
     printzz(){
       window.print();
     },
@@ -523,49 +550,30 @@ export default {
           this.csvformdata = response.data
 
           if (this.sectionChiefIds.includes(this.acc.name_id)) {
-            console.log(response.data.some.initial === null)
-            console.log(this.acc.name_id)
             const index = this.sectionChiefIds.indexOf(this.acc.name_id);
-            console.log(index)
             const members = this.members[index];
-            console.log(this.members[index])
-            if (this.sectionChiefIds.includes(48)){
-              const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
-            this.siga = true
-            console.log(this.formData)
-              this.formData = response.data.filter(form => (form.name_id == this.acc.name_id ||members.includes(form.name_id) && form.initial === null) || 
-              ((form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null) || form.name_id === this.acc.name_id));
-            }else{
-            this.formData = response.data.filter(form => form.name_id == this.acc.name_id ||
-              members.includes(form.name_id) && form.initial === null
-            );
-            }
-          }
-          else if (this.acc.name_id == 37) {
-            this.formData = response.data.filter(form => form.name_id == this.acc.name_id || form.note == null && form.initial !== null);
+            this.formData = response.data
+          } else if (this.acc.name_id == 37) {
+            this.formData = response.data
             this.siga = false
           } else if (this.acc.type_id == 1) {
             this.formData = response.data;
             this.siga = false
-          }
-          else if (this.acc.type_id == 2) {
-            this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
+          } else if (this.acc.type_id == 2) {
+            this.formData = response.data
             this.siga = false
+            console.log('yawa') 
           } else if (this.bus.name_id == this.sub.name_id) {
             if (this.acc.name_id !== 20) {
               this.siga = true
             } else {
               this.siga = false
             }
-            this.formData = response.data.filter(form => ((form.signature2 === null && form.signature1 !== null && form.note !== null && !(form.aor == 1 && [15, 21, 45, 48].includes(form.name_id))) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id) || form.name_id == 20) || ([15, 21, 45, 48].includes(form.name_id) && form.aor == 1 && form.signature1 == null && form.intervals === 0));
+            this.formData = response.data
             this.siga1 = true
-
           } else if (this.acc.type_id == 3) {
-            console.log('yawa')
-            const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
-            this.formData = response.data.filter(form => (form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null) || form.name_id === this.acc.name_id);
+            this.formData = response.data
             this.siga = true
-            console.log(this.formData)
             if (this.sub.name_id == 20) {
               this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
               this.siga = false
@@ -618,9 +626,96 @@ export default {
   },
 
   computed: {
+    filteredData() {
+      if (this.sectionChiefIds.includes(this.acc.name_id)) {
+        const index = this.sectionChiefIds.indexOf(this.acc.name_id);
+        const members = this.members[index];
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          } else if (this.selectedStatus === 'Pending' && this.acc.name_id == 48 && this.bus.name_id === this.sub.name_id) {
+            this.siga = true
+            this.siga1 = true
+            return (members.includes(form.name_id) && form.initial === null) || (form.division_id == this.sub.division_id && form.intervals == 0 && form.note !== null && form.signature1 === null && form.name_id !== this.sub.name_id) || (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null)  || (form.note !== null && form.signature2 == null && [15,21,48,45].includes(form.name_id)) || (form.division_id === this.sub.division_id && form.initial == null && form.intervals == 1 && form.name_id !== this.sub.name_id);
+          } else if (this.selectedStatus === 'Pending' && this.acc.name_id == 48) {
+            this.siga = true
+            console.log('its your smile')
+            return ((members.includes(form.name_id) && form.initial === null) || (form.division_id == this.sub.division_id && form.intervals == 0 && form.note !== null && form.signature1 === null )) && form.name_id !== this.acc.name_id || (form.division_id === this.sub.division_id && form.initial == null && form.intervals == 1 && form.name_id !== this.sub.name_id);
+          } else if (this.selectedStatus === 'Pending') {
+            return members.includes(form.name_id) && form.initial === null && form.intervals == 0;
+          } else if (this.selectedStatus === 'Done' && this.acc.name_id == 48 && this.bus.name_id === this.sub.name_id) {
+            this.siga = true
+            return (members.includes(form.name_id) && form.initial !== null) || (form.division_id == this.sub.division_id && form.note !== null && form.signature1 !== null ) || (this.sub.name_id == form.sname) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id);
+          } else if (this.selectedStatus === 'Done' && this.acc.name_id == 48) {
+            this.siga = true
+            return (members.includes(form.name_id) && form.initial !== null) || (form.division_id == this.sub.division_id && form.intervals == 0 && form.note !== null && form.signature1 !== null ) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id);
+          } else if (this.selectedStatus === 'Done') {
+            return members.includes(form.name_id) && form.initial !== null && form.intervals == 0;
+          }
+          return true; // If no selection, return all
+        });
+      }else if (this.acc.name_id == 37){
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          } else if (this.selectedStatus === 'Pending') {
+            // return (form.note == null) || (this.members.some(memberArray => memberArray.includes(form.name_id) && form.initial !== null && form.note == null))
+            return form.note == null && form.initial !== null
+          } else if (this.selectedStatus === 'Done') {
+            return form.note !== null;
+          }
+          return true; // If no selection, return all
+        });
+      }else if (this.bus.name_id === this.sub.name_id) {
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          }  else if (this.selectedStatus === 'Pending' && this.acc.name_id !== 20) {
+            return (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null) || (this.sub.division_id === form.division_id && form.note !== null && form.signature1 == null && form.signature2 == null) || (form.note !== null && form.signature2 == null && [15,21,48,45].includes(form.name_id)) || (form.division_id === this.sub.division_id && form.initial == null && form.intervals == 1 && form.name_id !== this.sub.name_id);
+          } else if (this.selectedStatus === 'Pending' && this.acc.name_id == 20) {
+            return (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null) || ([15,21,45,48].includes(form.name_id) && form.initial == null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id);
+          } else if (this.selectedStatus === 'Done' && this.acc.name_id !== 20) {
+            return (form.note !== null && form.signature1 !== null && form.signature2 !== null && this.sub.name_id == form.sname) || (this.sub.division_id === form.division_id && form.signature1 !== null) || (this.sub.name_id == form.sname) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id);
+          } else if (this.selectedStatus === 'Done' && this.acc.name_id == 20) {
+            return (form.note !== null && form.signature1 !== null && form.signature2 !== null) || (form.division_id === 5 && form.note !== null && form.signature2 !== null) || ([15,21,45,48].includes(form.name_id) && form.initial !== null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id);
+          }
+          return true; // If no selection, return all
+        });
+      }else if (this.acc.type_id == 3){
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          } else if (this.selectedStatus === 'Pending' && this.acc.name_id == 15) {
+            // return (form.note == null) || (this.members.some(memberArray => memberArray.includes(form.name_id) && form.initial !== null && form.note == null))
+            console.log(this.formData)
+            return (form.note !== null && form.initial !== null && form.signature1 === null && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) || (form.aor == 0 && form.intervals == 1 && [21,48,45].includes(form.name_id) && form.note !== null && form.signature1 == null) || (form.intervals == 1 && ![15,20,21,48,45].includes(form.name_id) && form.note !== null && form.signature1 == null) || (form.division_id === this.sub.division_id && form.initial == null && form.name_id !== this.sub.name_id)
+          } else if (this.selectedStatus === 'Pending') {
+            // return (form.note == null) || (this.members.some(memberArray => memberArray.includes(form.name_id) && form.initial !== null && form.note == null))
+            return (form.note !== null && form.initial !== null && form.signature1 === null && form.intervals == 0 && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) || (form.division_id === this.sub.division_id && form.initial == null && form.intervals == 1 && form.name_id !== this.sub.name_id)
+          } else if (this.selectedStatus === 'Done' && this.acc.name_id == 15) {
+            return (form.note !== null && form.signature1 !== null && form.intervals == 0 && form.division_id === this.sub.division_id) || (this.sub.name_id == form.sname && form.signature2 !== null) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id) || (form.intervals == 1 && ![15,20,21,48,45].includes(form.name_id) && form.note !== null && form.signature1 !== null);
+          }else if (this.selectedStatus === 'Done') {
+            return (form.note !== null && form.signature1 !== null && form.intervals == 0 && form.division_id === this.sub.division_id) || (this.sub.name_id == form.sname && form.signature2 !== null) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id);
+          }
+          return true; // If no selection, return all
+        });
+      }else if (this.acc.type_id == 2) {
 
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          } else if (this.selectedStatus === 'Pending') {
+            return form.name_id === this.acc.name_id && form.signature2 == null;
+          } else if (this.selectedStatus === 'Done') {
+            return form.name_id === this.acc.name_id && form.signature2 !== null;
+          } 
+          return true; // If no selection, return all
+        });
+      }
+      return this.formData; // Return all if not section chief
+    },
     reversedFormData() {
-      let data = this.formData.slice().reverse(); // Make a copy of the original data
+      let data = this.filteredData.slice().reverse(); // Make a copy of the original data
 
       if (this.searchQuery !== '') {
         data = data.filter(item => {
@@ -662,10 +757,6 @@ export default {
   background-color: white;
 
 }
-
-
-
-
 .sign {
   width: 100%;
   transition-duration: .3s;
@@ -842,6 +933,30 @@ button:hover {
   color: white;
 }
 
+.styled-select {
+  appearance: none;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  width: 100px;
+  font-weight: bold;
+  margin-top: -5px;
+  margin-left: 5px;
+}
+
+.styled-select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.styled-select option {
+  padding: 10px;
+  font-weight: bold;
+}
+
 @media screen and (max-width: 768px) {
   .Btn{
     margin-right: 20px;
@@ -881,7 +996,8 @@ button:hover {
   .search,
   .note,
   .sign,
-  .Btn {
+  .Btn,
+  .dropdown {
     display: none !important;
   }
   .buttons{

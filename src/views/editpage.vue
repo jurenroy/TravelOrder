@@ -127,7 +127,7 @@
 
         <div class="buttonss">
           <button class="button yes" @click="sendOTP" :disabled="isDisabled" v-if="isbackDisabled">Update</button>
-          <button class="button no" @click="cli" v-if="isbackDisabled">Back</button>
+          <button class="button no" @click="handleBack2" v-if="1==1">Back</button>
 
         </div>
 
@@ -142,6 +142,21 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 import { API_BASE_URL } from '../config'
+
+  // Define props
+  const props = defineProps({
+  show: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+const emit = defineEmits(); // Add this line
+const handleBack2 = () => {
+  emit('handleBack2', false); // Emit the ID as 0
+  console.log('damn')
+  // Reset form fields if necessary
+};
 
 
 const accountIdz = localStorage.getItem('accountId');
@@ -475,6 +490,7 @@ const fetchAccounts = async () => {
     console.error('Error fetching accounts:', error);
   }
 };
+const nameLoaded = ref(true)
 
 const fetchNames = async () => {
   try {

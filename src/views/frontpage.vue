@@ -13,6 +13,8 @@
     <div class="hakdogzzz">
       <button class="frontbutton" @click="navigateTo('TravelOrder')">Travel Order Form</button>
       <button class="frontbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
+      <button class="frontbutton" @click="navigateTo('ICTSRF')">ICT Service Request Form</button>
+      <button class="frontbutton" @click="openLink">Document Tracking System</button>
     </div>
   </div>
   <!-- Password Change Popup -->
@@ -84,6 +86,9 @@ export default {
       }
       this.$router.push({ name: routeName });
       localStorage.setItem('routerz', routeName);
+    },
+    openLink() {
+      window.open('http://202.137.117.84:8001/', '_blank');
     },
     handleKeyDown(event) {
       if (event.key === 'Escape') {

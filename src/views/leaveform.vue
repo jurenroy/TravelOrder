@@ -1,5 +1,5 @@
 <template>
-  <headers v-if="showHeader1" class="headz"/>
+  <headers v-if="showHeader1" class="headz"  @toggleEdit="handleEditToggle" @toggleLogout="handleLogoutToggle"/>
   <headers1 v-if="showHeader2" class="headx"/>
   <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showleavehome && acc.signature !== null">
     <img src="../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
@@ -17,13 +17,13 @@
    </div>
 
    <editss v-if="isEdits && isregisclick"/>
-   <regis v-if="isregisclick && !isEdits"/>
+   <regis v-if="isregisclick && !isEdits" :show="isregisclick" @handleBack="handleBack"/>
    <employeelist v-if="employeelisleave && !isEdits"/>
-   <editpage v-if="leaveedit" />
+   <editpage v-if="leaveedit" :show="leaveedit" @handleBack2="handleBack2"/>
    <signature v-if="acc.signature === null" />
    <leavetable v-if="!isaddleave && !isregisclick && !employeelisleave && !leaveedit && acc.signature !== null" />
    <leavepdf v-if="(isaddleave && !leaveedit)"/>
-   <leavelogout v-if="isleavelogoutClicked"/>
+   <leavelogout v-if="isleavelogoutClicked" :show="isleavelogoutClicked" @handleNo="handleNo"/>
   <!-- <div>
     
     <div style="flex-direction: column; justify-content: center;">
@@ -93,6 +93,22 @@ import { showEdit } from '../components/heder.vue';
 import addleaveform from '../views/addleaveform.vue'
 import { hideedit } from '../components/heder.vue';
 import leavepdf from './leavepdf.vue';
+
+const handleBack = () => {
+  isregisclick.value = false; // Close the popup
+};
+const handleBack2 = () => {
+   leaveedit.value = false; // Close the popup
+};
+const handleNo = () => {
+   isleavelogoutClicked.value = false; // Close the popup
+};
+const handleEditToggle = () => {
+   leaveedit.value = true; // Close the popup
+};
+const handleLogoutToggle = () => {
+  isleavelogoutClicked.value = true; // Close the popup
+};
 </script>
 
 

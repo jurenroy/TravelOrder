@@ -5,7 +5,7 @@
             <p class="logoutform">Are you sure you want to logout?</p>
             <div class="buttonsslogout">
                <button class="button yeslogout" @click="logout">Yes</button>
-               <button class="button nologout" @click="noButton">No</button>
+               <button class="button nologout" @click="handleNo">No</button>
             </div>
          </div>
       </div>
@@ -42,7 +42,7 @@ const handleKeyPress = (event) => {
    if (event.key === 'Enter'){
       logout();
    }else if(event.key === 'Escape'){
-      noButton();
+      handleNo();
    }
 }
 
@@ -53,6 +53,20 @@ onBeforeUnmount(()=>{
    window.removeEventListener('keydown', handleKeyPress);
 })
 
+  // Define props
+  const props = defineProps({
+  show: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+const emit = defineEmits(); // Add this line
+const handleNo = () => {
+  emit('handleNo', false); // Emit the ID as 0
+  console.log('damn')
+  // Reset form fields if necessary
+};
 
 </script>
 

@@ -161,6 +161,7 @@ export default {
       accountIdz: localStorage.getItem('accountId'),
       loadis: false,
       aor: false,
+      nameIdz: localStorage.getItem('nameId'),
       errorDate: ''
     };
   },

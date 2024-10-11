@@ -131,6 +131,7 @@ const setStep = (index) => {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 35px;
 }
 
 .help-popup-content {

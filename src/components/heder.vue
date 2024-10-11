@@ -34,8 +34,8 @@
         <div v-if="showEdit" style="height: auto; width:auto ; position: relative; top: 5px;left: 10px; ">
           <div
             style="border:2px solid black; border-radius: 10px; padding:5px;  background-color: white; width: 60px; height:auto; position: relative; display: flex; flex-direction: column;">
-            <button class="editbut" v-if="hideedit" @click="backUpdate">Edit</button>
-            <button class="logoutbut" @click="closeAndLog">Logout</button>
+            <button class="editbut" v-if="hideedit" @click="toggleEdit">Edit</button>
+            <button class="logoutbut" @click="toggleLogout">Logout</button>
           </div>
 
         </div>
@@ -57,6 +57,16 @@ import axios from 'axios';
 const authStore = useAuthStore();
 
 const accountIdz = localStorage.getItem('accountId');
+
+const emit = defineEmits();
+
+    const toggleEdit = () => {
+      emit('toggleEdit', true); // Emit the edit toggle
+    };
+
+    const toggleLogout = () => {
+      emit('toggleLogout', true); // Emit the logout toggle
+    };
 
 
 const accounts = ref([]);

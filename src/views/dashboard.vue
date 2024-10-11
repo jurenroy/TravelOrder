@@ -1,5 +1,5 @@
 <template>
-   <headers v-if="showHeader1" class="headz"/>
+   <headers v-if="showHeader1" class="headz" @toggleEdit="handleEditToggle" @toggleLogout="handleLogoutToggle"/>
    <headers1 v-if="showHeader2" class="headx"/>
    <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showhome" class="homerun">
       <img src="../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
@@ -17,11 +17,11 @@
    </div>
    <tablez class="tablex" v-if="!isVisible && !isRegistrationClicked && !isEdits && !employeelis"/>
    <addforms class="formz" v-if="isVisible"/>
-   <registrationform class="regixcv" v-if="isRegistrationClicked && !isEdits && !employeelis"/>
+   <registrationform class="regixcv" v-if="isRegistrationClicked && !isEdits && !employeelis" :show="isRegistrationClicked" @handleBack="handleBack"/>
    <employeelist class="empex" v-if="employeelis && !isEdits"/>
    <signature class="sig" v-if="acc.signature === null" />
-   <editss class="edix" v-if="isEdits && isRegistrationClicked"/>
-   <logsss class="logssss" v-if="isButssClicked"/>
+   <editss class="edix" v-if="isEdits" :show="isEdits" @handleBack2="handleBack2"/>
+   <logsss class="logssss" v-if="isButssClicked" :show="isButssClicked" @handleNo="handleNo"/>
    <Help class="tabang" :accountId="acc.name_id" />
 </template>
 
@@ -41,6 +41,25 @@ import editss from '../views/editpage.vue'
 import { showEdit } from '../components/heder.vue';
 import { isleavelogoutClicked, isregisclick } from './leaveform.vue';
 import Help from '../components/help/helpdata.vue'; // Adjust the path if necessary
+
+const handleBack = () => {
+  isRegistrationClicked.value = false; // Close the popup
+};
+
+const handleBack2 = () => {
+   isEdits.value = false; // Close the popup
+};
+
+const handleNo = () => {
+   isButssClicked.value = false; // Close the popup
+};
+
+const handleEditToggle = () => {
+   isEdits.value = true; // Close the popup
+};
+const handleLogoutToggle = () => {
+   isButssClicked.value = true; // Close the popup
+};
 </script>
 
 
@@ -49,7 +68,6 @@ import { ref } from 'vue';
 import axios from 'axios';
 import { showleavehome } from './leaveform.vue';
 import { API_BASE_URL } from '../config'
-
 
 const accountId = localStorage.getItem('accountId');
 const isVisible = ref(false);

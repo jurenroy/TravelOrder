@@ -81,7 +81,7 @@
 
             <div class="buttonss">
                <button class="button re" :disabled="submit2" @click="regis_submit">Register</button>
-               <button class="button bax" :disabled="submit2" @click="backButton">Back</button>
+               <button class="button bax" :disabled="submit2" @click="handleBack">Back</button>
                
 
             </div>
@@ -101,6 +101,21 @@ import CryptoJS from 'crypto-js';
 import { showleavehome } from './leaveform.vue';
 import { API_BASE_URL } from '../config'
 
+  // Define props
+  const props = defineProps({
+  show: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+const emit = defineEmits(); // Add this line
+const handleBack = () => {
+  emit('handleBack', false); // Emit the ID as 0
+  console.log('damn')
+  // Reset form fields if necessary
+};
+
 </script>
 
 <script>
@@ -113,8 +128,7 @@ export default {
       isRegistrationClicked.value = false;
       isVisible.value = false;
       showEdit.value = false
-  isregisclick.value = false;
-
+      isregisclick.value = false;
    },
 
 
