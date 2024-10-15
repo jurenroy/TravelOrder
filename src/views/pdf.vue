@@ -80,9 +80,9 @@
             is necessary and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
       </div>
-        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: ((division == 'ORD' && intervals == 0 && name !== 'RODANTE B. FELINA') || (divisionChiefs.includes(name) && intervals == 0) || name == 'RODANTE B. FELINA' || name == 'LIBERTY B. DAITIA' || sdiv !== division) ? 'flex-end' : 'space-around' }" v-if="aor == 0">
+        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: ((division == 'ORD' && intervals == 0 && name !== 'RODANTE B. FELINA') || (divisionChiefs.includes(name) && intervals == 0) || name == 'RODANTE B. FELINA' || name == 'LIBERTY B. DAITIA' || (signature2 !== `${API_BASE_URL}/storage/null` && sdiv && sdiv !== division))  ? 'flex-end' : 'space-around' }" v-if="aor == 0">
           
-          <div class="inner-container2" v-if="(!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD') && sdiv == division ">
+          <div class="inner-container2" v-if="((!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD') && !(signature2 !== `${API_BASE_URL}/storage/null` && sdiv && sdiv !== division))">
             <p class="recoz">Recommended by:</p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== `${API_BASE_URL}/storage/null`" @contextmenu.prevent/>
             <p class="value"
@@ -100,7 +100,7 @@
             <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
 
-          <div class="inner-container2" :style="{ marginRight: (division == 'ORD' && intervals == 0) || (divisionChiefs.includes(name) && intervals == 0) ? '120px' : '0px' }" v-if="name !== 'RODANTE B. FELINA'">
+          <div class="inner-container2" :style="{ marginRight: (division == 'ORD' && intervals == 0) || (divisionChiefs.includes(name) && intervals == 0) || (signature2 !== `${API_BASE_URL}/storage/null` && sdiv && sdiv !== division) ? '120px' : '0px' }" v-if="name !== 'RODANTE B. FELINA'">
             <p class="aproz">Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
@@ -238,6 +238,7 @@ import jsPDF from 'jspdf';
 import axios from 'axios';
 import mgbx from '../assets/mgbx.png'
 import { API_BASE_URL } from '../config'
+import { vShow } from 'vue';
 export default {
   props: {
     travel_order_id: String
@@ -427,7 +428,7 @@ export default {
     populateFields(travelOrderId) {
       const selectedForm = this.formData.find(form => form.travel_order_id === travelOrderId);
       if (selectedForm) {
-        this.name_id = selectedForm.name_id;
+        this.name_id = selectedForm.name_id === 79 ? 78 : selectedForm.name_id;
         this.position_id = selectedForm.position_id;
         this.departure = selectedForm.departure;
         this.destination = selectedForm.destination;
@@ -669,7 +670,7 @@ button {
 }
 
 .footerz{
-  text-align: left; margin-top: 87px; margin-left: 6%;
+  text-align: left; margin-top: 30px; margin-left: 6%;
 }
 
 .cueare{
@@ -677,10 +678,10 @@ button {
 }
 
 .bigz{
-  height: 100px; width: 100px; position: absolute; margin-top: 110px;
+  height: 100px; width: 100px; position: absolute; margin-top: 50px;
 }
 .centz{
-  height: 50px; width: 50px; position: absolute; margin-top: 135px; margin-left: 26px;
+  height: 50px; width: 50px; position: absolute; margin-top: 75px; margin-left: 26px;
 }
 
 @media screen and (max-width: 768px) {
