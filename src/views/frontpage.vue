@@ -12,6 +12,7 @@
     
     <div class="hakdogzzz">
       <button class="frontbutton" @click="navigateTo('TravelOrder')">Travel Order Form</button>
+      <Notification/>
       <button class="frontbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
       <button class="frontbutton" @click="navigateTo('ICTSRF')">ICT Service Request Form</button>
       <button class="frontbutton" @click="openLink">Document Tracking System</button>
@@ -49,9 +50,13 @@ import { showEdit } from '@/components/heder.vue';
 import { isregisclick, leaveedit, employeelisleave, isaddleave, isleavelogoutClicked } from './leaveform.vue';
 import CryptoJS from 'crypto-js';
 import { API_BASE_URL } from '../config';
-import axios from 'axios';
+import axios from 'axios'
+import Notification from '@/components/notification.vue';
 
 export default {
+  components: {
+    Notification,
+  },
   data() {
     return {
       showstatus: true,

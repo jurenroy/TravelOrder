@@ -31,12 +31,15 @@
 
 
   <div style="display: flex; flex-direction: column;">
-     <h2 style="display: flex; flex-direction: row; align-self: center;" class="hist">History for:  
+     <h2 style="display: flex; flex-direction: row; align-self: center;" class="hist">History for: 
         <select v-model="selectedStatus" id="status" class="styled-select">
           <option v-for="option in options" :key="option" :value="option">
             {{ option }}
           </option>
         </select> 
+        <span v-if="pendingCount !== 0" class="notification-count">
+        {{ pendingCount }}
+      </span>
       </h2>
     <div v-if="load" class="loadings">
       <img src='../assets/loading.gif' width="auto" height="100px" />
@@ -623,9 +626,84 @@ export default {
       this.visibleItems = this.formData.slice(0, 20);
     },
 
+    countPendingNotifications(formData, acc, sectionChiefIds, members) {
+      let pendingCount = 0;
+
+      if (sectionChiefIds.includes(acc.name_id)) {
+        const index = sectionChiefIds.indexOf(acc.name_id);
+        const memberGroup = members[index];
+
+          if (acc.name_id === 48 && this.bus.name_id === this.sub.name_id) {
+            pendingCount += formData.filter(form => {
+              return (
+                (memberGroup.includes(form.name_id) && form.initial === null) ||
+                (form.division_id === this.sub.division_id && form.intervals === 0 && form.note !== null && form.signature1 === null && form.name_id !== this.sub.name_id) ||
+                (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 === null) ||
+                (form.division_id === 5 && form.note !== null && form.signature2 === null)
+              );
+            }).length;
+          } else if (acc.name_id === 48) {
+            pendingCount += formData.filter(form => {
+              return (
+                (memberGroup.includes(form.name_id) && form.initial === null) ||
+                (form.division_id === this.sub.division_id && form.initial === null && form.intervals === 1 && form.name_id !== this.sub.name_id)
+              );
+            }).length;
+          } else {
+            pendingCount += formData.filter(form => {
+              return memberGroup.includes(form.name_id) && form.initial === null && form.intervals === 0;
+            }).length;
+          }
+      } else if (acc.name_id === 37) {
+          pendingCount += formData.filter(form => {
+            return form.note === null && form.initial !== null;
+          }).length;
+      } else if (this.bus.name_id === this.sub.name_id) {
+          if (acc.name_id !== 20) {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 === null) ||
+                (form.division_id === 5 && form.note !== null && form.signature2 === null)
+              );
+            }).length;
+          } else {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 === null) ||
+                (form.division_id === 5 && form.note !== null && form.signature2 === null)
+              );
+            }).length;
+          }
+      } else if (acc.type_id === 3) {
+          if (acc.name_id === 15) {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.note !== null && form.initial !== null && form.signature1 === null && form.intervals === 0 && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) ||
+                (form.division_id === this.sub.division_id && form.initial === null && form.name_id !== this.sub.name_id)
+              );
+            }).length;
+          } else {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.note !== null && form.initial !== null && form.signature1 === null && form.intervals === 0 && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) ||
+                (form.division_id === this.sub.division_id && form.initial === null && form.name_id !== this.sub.name_id)
+              );
+            }).length;
+          }
+      } else if (this.acc.type_id == 2) {
+          pendingCount += formData.filter(form => {
+            return form.name_id === this.acc.name_id && form.signature2 == null;
+          }).length;
+      }        
+      return pendingCount;
+    },
   },
 
   computed: {
+    pendingCount() {
+      console.log(this.countPendingNotifications(this.formData, this.acc, this.sectionChiefIds, this.members))
+      return this.countPendingNotifications(this.formData, this.acc, this.sectionChiefIds, this.members);
+    },
     filteredData() {
       if (this.sectionChiefIds.includes(this.acc.name_id)) {
         const index = this.sectionChiefIds.indexOf(this.acc.name_id);
@@ -731,6 +809,21 @@ export default {
 </script>
 
 <style scoped>
+
+.notification-count {
+  margin-top: -10px;
+  margin-left: -10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 20px; /* Adjust size */
+  height: 20px; /* Adjust size */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px; /* Adjust font size */
+}
+
 .pholder {
   padding: 5px;
   border-radius: none;
