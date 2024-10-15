@@ -80,9 +80,9 @@
             is necessary and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
       </div>
-        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: ((division == 'ORD' && intervals == 0 && name !== 'RODANTE B. FELINA') || (divisionChiefs.includes(name) && intervals == 0) || name == 'RODANTE B. FELINA' || name == 'LIBERTY B. DAITIA') ? 'flex-end' : 'space-around' }" v-if="aor == 0">
+        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: ((division == 'ORD' && intervals == 0 && name !== 'RODANTE B. FELINA') || (divisionChiefs.includes(name) && intervals == 0) || name == 'RODANTE B. FELINA' || name == 'LIBERTY B. DAITIA' || sdiv !== division) ? 'flex-end' : 'space-around' }" v-if="aor == 0">
           
-          <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD'">
+          <div class="inner-container2" v-if="(!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD') && sdiv == division ">
             <p class="recoz">Recommended by:</p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== `${API_BASE_URL}/storage/null`" @contextmenu.prevent/>
             <p class="value"
