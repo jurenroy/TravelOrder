@@ -428,7 +428,7 @@ export default {
     populateFields(travelOrderId) {
       const selectedForm = this.formData.find(form => form.travel_order_id === travelOrderId);
       if (selectedForm) {
-        this.name_id = selectedForm.name_id === 79 ? 78 : selectedForm.name_id;
+        this.name_id = selectedForm.name_id > 78 ? selectedForm.name_id-1 : selectedForm.name_id;
         this.position_id = selectedForm.position_id;
         this.departure = selectedForm.departure;
         this.destination = selectedForm.destination;

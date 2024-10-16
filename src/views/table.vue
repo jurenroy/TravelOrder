@@ -55,7 +55,7 @@
           <img class="`imgsearch" style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../assets/search.png">
           <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name">
         </div>
-        <button v-if="mawala && [2, 15, 27, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
+        <button v-if="mawala && [2, 15, 24, 76, 39].includes(acc.name_id)" class="Btn" @click="downloadCSV">
           <div class="sign">
             <img style=" height: 40px; width:40px;" src="../assets/download_excel.png">
           </div>
@@ -84,7 +84,7 @@
             <tbody>
               <tr v-for="item in reversedFormData" :key="item.id">
                 <td>{{ padWithZeroes(item.to_num) }} - {{ yearToday }}</td>
-                <td>{{ getName(parseInt(item.name_id) === 79 ? 78 : parseInt(item.name_id)) }}</td>
+                <td>{{ getName(parseInt(item.name_id) > 78 ? parseInt(item.name_id)-1 : parseInt(item.name_id)) }}</td>
                 <td>{{ item.departure }}</td>
                 <td>{{ item.destination }}</td>
                 <td>{{ item.purpose }}</td>
@@ -96,7 +96,7 @@
                 </td>
                 <td v-else style="color: green; ">
 
-                  <p v-if="(![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77,79].includes(item.name_id) && item.initial !== null) || ([15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1) || ([2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1)"
+                  <p v-if="(![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77,79,66].includes(item.name_id) && item.initial !== null) || ([15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1) || ([2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1)"
                     style="color: green; margin-top: -8px;margin-bottom: -1px">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
                     {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }} <span v-if="[15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1">by RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1">by DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
@@ -346,7 +346,7 @@ export default {
             headers.join(','),
             ...yearData[yearKey].map(item => [
               `${this.padWithZeroes(item.to_num)}  -  ${this.yearToday}`,
-              this.getName(item.name_id),
+              this.getName(item.name_id > 78 ? parseInt(item.name_id)-1 : item.name_id),
               `${new Date(item.date).toLocaleDateString('en-US')}`,
               `${new Date(item.departure).toLocaleDateString('en-US')}`,
               item.destination,
