@@ -33,9 +33,14 @@
               required
             />
           </div>
+          <div class="password-requirements">
+            <label :class="{ valid: hasUppercase }">Uppercase</label>
+            <label :class="{ valid: hasLowercase }">Lowercase</label>
+            <label :class="{ valid: hasNumber }">Number</label>
+          </div>
           <div class="form-actions">
             <button type="button" class="skip-button" @click="skip">Skip</button>
-            <button type="submit" class="submit-button">Change Password</button>
+            <button type="submit" class="submit-button" :disabled="!isPasswordValid">Change Password</button>
           </div>
         </form>
       </div>
@@ -171,10 +176,35 @@ export default {
     // Remove the event listener when the component is destroyed
     window.removeEventListener('keydown', this.handleKeyDown);
   },
+  computed: {
+    hasUppercase() {
+      return /[A-Z]/.test(this.password);
+    },
+    hasLowercase() {
+      return /[a-z]/.test(this.password);
+    },
+    hasNumber() {
+      return /[0-9]/.test(this.password);
+    },
+    isPasswordValid() {
+      return this.hasUppercase && this.hasLowercase && this.hasNumber;
+    },
+  },
 };
 </script>
 
 <style>
+.password-requirements{
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+}
+.password-requirements label {
+  color: red; /* default color for invalid */
+}
+.password-requirements label.valid {
+  color: green; /* color for valid */
+}
 .frontcontainer {
 
   display: flex;

@@ -8,6 +8,10 @@
 
       <div class="content">
         <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
+        <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+        <button style="font-size: 12px;" @click="focusTextarea('Within WFP')" v-if="acc.name_id == 76"> Within WFP </button>
+        <button style="font-size: 12px;" @click="focusTextarea('Not within WFP')" v-if="acc.name_id == 76"> Not within WFP </button>
+        </div>
         <div class="butokz">
           <button @click="postNote">Save</button>
           <button @click="closeNote">Cancel</button>
@@ -291,6 +295,10 @@ export default {
     window.removeEventListener('storage', this.updateVerifiedOTPs);
   },
   methods: {
+    focusTextarea(text) {
+    this.noteText = text;
+    this.$refs.noteInput.focus();
+  },
     edit(travelOrderId) {
       this.selectedTravelOrderIdEdit = travelOrderId;
       this.$emit('edit-travel-order', travelOrderId); // Emit the selected travel order ID
