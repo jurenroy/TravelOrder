@@ -786,12 +786,13 @@ export default {
           return true; // If no selection, return all
         });
       }else if (this.acc.type_id == 2) {
-
         return this.formData.filter(form => {
           if (this.selectedStatus === 'Me') {
             return form.name_id === this.acc.name_id;
           } else if (this.selectedStatus === 'Pending') {
             return form.name_id === this.acc.name_id && form.signature2 == null;
+          } else if (this.selectedStatus === 'Done' && this.acc.name_id == 24) {
+            return form.to_num !== 0;
           } else if (this.selectedStatus === 'Done') {
             return form.name_id === this.acc.name_id && form.signature2 !== null;
           } 
