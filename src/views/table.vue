@@ -9,8 +9,8 @@
       <div class="content">
         <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
         <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-        <button style="font-size: 12px;" @click="focusTextarea('Within WFP')" v-if="acc.name_id == 76"> Within WFP </button>
-        <button style="font-size: 12px;" @click="focusTextarea('Not within WFP')" v-if="acc.name_id == 76"> Not within WFP </button>
+        <button style="font-size: 12px;" @click="focusTextarea('Within WFP')" v-if="acc.name_id == 37"> Within WFP </button>
+        <button style="font-size: 12px;" @click="focusTextarea('Not within WFP')" v-if="acc.name_id == 37"> Not within WFP </button>
         </div>
         <div class="butokz">
           <button @click="postNote">Save</button>
@@ -779,7 +779,7 @@ export default {
             // return (form.note == null) || (this.members.some(memberArray => memberArray.includes(form.name_id) && form.initial !== null && form.note == null))
             return (form.note !== null && form.initial !== null && form.signature1 === null && form.intervals == 0 && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) || (form.division_id === this.sub.division_id && form.initial == null && form.intervals == 1 && form.name_id !== this.sub.name_id)
           } else if (this.selectedStatus === 'Done' && this.acc.name_id == 15) {
-            return (form.note !== null && form.signature1 !== null && form.intervals == 0 && form.division_id === this.sub.division_id) || (this.sub.name_id == form.sname && form.signature2 !== null) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id) || (form.intervals == 1 && ![15,20,21,48,45].includes(form.name_id) && form.note !== null && form.signature1 !== null);
+            return (form.note !== null && form.signature1 !== null && form.intervals == 0 && form.division_id === this.sub.division_id) || (this.sub.name_id == form.sname && form.signature2 !== null) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id) || (form.intervals == 1 && ![15,20,21,48,45].includes(form.name_id) && form.note !== null && form.signature1 !== null) || form.to_num !== 0;;
           }else if (this.selectedStatus === 'Done') {
             return (form.note !== null && form.signature1 !== null && form.intervals == 0 && form.division_id === this.sub.division_id) || (this.sub.name_id == form.sname && form.signature2 !== null) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id);
           }

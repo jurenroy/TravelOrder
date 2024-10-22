@@ -166,7 +166,7 @@
             <p class="aproz">Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== `${API_BASE_URL}/storage/null` && aor == 0" @contextmenu.prevent/>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== `${API_BASE_URL}/storage/null`" @contextmenu.prevent/>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
               v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
