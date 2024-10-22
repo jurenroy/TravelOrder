@@ -247,7 +247,7 @@ export default {
       selectedStatus: 'Me',
       optionsEmp: ['Pending', 'Done', 'All'],
       options: ['Pending', 'Done', 'Me'],
-      sectionChiefIds: [39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47],
+      sectionChiefIds: [39, 2, 3, 8, 42, 34, 29, 36, 11, 5, 47],
       members: [
         [23, 25, 35, 70, 64],
         [30, 7, 26, 18, 67, 49, 24],
@@ -257,7 +257,7 @@ export default {
         [41, 46, 1, 28],
         [38, 9, 65],
         [44, 22, 61, 27],
-        [31, 11],
+        [31],
         [16, 63, 19],
         [12, 14, 72, 73]
       ],

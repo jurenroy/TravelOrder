@@ -80,10 +80,10 @@
             is necessary and is connected with the function of the official/employee of this Division/Section/Unit.</p>
         </div>
       </div>
-        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: ((division == 'ORD' && intervals == 0 && name !== 'RODANTE B. FELINA') || (divisionChiefs.includes(name) && intervals == 0) || name == 'RODANTE B. FELINA' || name == 'LIBERTY B. DAITIA' || (signature2 !== `${API_BASE_URL}/storage/null` && sdiv && sdiv !== division))  ? 'flex-end' : 'space-around' }" v-if="aor == 0">
+        <div class="outer-container" :style="{ marginTop: '-30px', justifyContent: ((division == 'ORD' && intervals == 0 && name !== 'RODANTE B. FELINA') || (divisionChiefs.includes(name) && intervals == 0) || name == 'RODANTE B. FELINA' || name == 'LIBERTY B. DAITIA' || (sdiv - 1 == divisionNames.indexOf(division)))  ? 'flex-end' : 'space-around' }" v-if="aor == 0">
           
-          <div class="inner-container2" v-if="((!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD') && !(signature2 !== `${API_BASE_URL}/storage/null` && sdiv && sdiv !== division))">
-            <p class="recoz">Recommended by:</p>
+          <div class="inner-container2" v-if="((!divisionChiefs.includes(name) && intervals == 0 && division !== 'ORD') && (sdiv - 1 !== divisionNames.indexOf(division)))">
+            <p class="recoz">Recommended by: </p>
             <img :src="signature1" class="signatiz" v-if="signature1 !== `${API_BASE_URL}/storage/null`" @contextmenu.prevent/>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }">
@@ -100,7 +100,7 @@
             <p style="margin-top: -10px;">CHEIF AO</p>
           </div>
 
-          <div class="inner-container2" :style="{ marginRight: (division == 'ORD' && intervals == 0) || (divisionChiefs.includes(name) && intervals == 0) || (signature2 !== `${API_BASE_URL}/storage/null` && sdiv && sdiv !== division) ? '120px' : '0px' }" v-if="name !== 'RODANTE B. FELINA'">
+          <div class="inner-container2" :style="{ marginRight: (division == 'ORD' && intervals == 0) || (divisionChiefs.includes(name) && intervals == 0) || (sdiv - 1 == divisionNames.indexOf(division)) ? '120px' : '0px' }" v-if="name !== 'RODANTE B. FELINA'">
             <p class="aproz">Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
@@ -166,10 +166,10 @@
             <p class="aproz">Approved by:</p>
             <p style="margin-top: -15px;" v-if="sname !== 20 && sname !== null">By Authority of the OIC, Regional
               Director:</p>
-            <img :src="signature2" class="signatiz" v-if="signature2 !== `${API_BASE_URL}/storage/null` && aor == 0" @contextmenu.prevent/>
+            <img :src="signature2" class="signatiz" v-if="signature2 !== `${API_BASE_URL}/storage/null`" @contextmenu.prevent/>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
-              v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA</p>
+              v-if="sdiv == 5 || sdiv == null">RODANTE B. FELINA </p>
             <p class="value"
               :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
               v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
@@ -287,7 +287,8 @@ export default {
         'JANICE B. FUROG',
         'ALVIN M. VILLANUEVA',
         'RODANTE B. FELINA'
-      ]
+      ],
+      divisionNames: ["MMD", "FAD", "GD", "MSESDD", "ORD"]
     };
   },
   mounted() {
