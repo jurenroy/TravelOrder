@@ -140,7 +140,7 @@
                     Approved <span v-if="item.sname !== 20">by: {{ getName(item.sname) }}</span> 
                   </p>
                 </td>
-                <td style="display: flex; justify-content: center;" v-if="item.name_id == acc.name_id">
+                <td style="display: flex; justify-content: center;" v-if="item.name_id == acc.name_id || acc.name_id == 20">
                   <button v-if="selectedTravelOrderIdEdit != item.travel_order_id"
                     @click="edit(item.travel_order_id)">Edit</button>
                   <img src="/src/assets/canceledit.png" v-if="selectedTravelOrderIdEdit == item.travel_order_id" @click="closeEdit"
