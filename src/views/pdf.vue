@@ -217,11 +217,15 @@
           <p style="font-weight: bold; text-align: center;">{{ name }}</p>
           <p style="text-align: center;">Official Employee</p>
         </div>
-        <div class="cueare">
-        <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" class="bigz" @contextmenu.prevent>
-        <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" class="centz" @contextmenu.prevent>
+        <div>
+          <div class="cueare">
+            <p class="footerz">MGB-X-FAD-FO-033</p>
+          <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" class="bigz" @contextmenu.prevent>
+          <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" class="centz" @contextmenu.prevent>
+          <p class="qrquote" style="font-size: 9px;">This is an official Travel Order approved digitally and generated from <br/>the MGB-X Online Travel Order. No original signature is required.</p>
+          </div>
         </div>
-        <p class="footerz">MGB-X-FAD-FO-033</p>
+        
       </div>
     </div>
   </div>
@@ -314,7 +318,7 @@ export default {
   },
   methods: {
     async generateQRCode() {
-      const textToEncode = `MGBX TRAVEL ORDER \nTRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}\n${this.name}`;
+      const textToEncode = `MGBX TRAVEL ORDER \nTRAVEL ORDER NO. ${this.padWithZeroes(this.to_num)}-${this.yearToday}\n${this.name}\nDate of Travel: ${this.departure} - ${this.arrival}\n Destinatation: ${this.destination}\n Purpose:${this.purpose}`;
       try {
         this.qrCodeUrl = await QRCode.toDataURL(textToEncode);
       } catch (err) {
@@ -671,20 +675,22 @@ button {
 }
 
 .footerz{
-  text-align: left; margin-top: 30px; margin-left: 6%;
+  text-align: left; margin-left: 6%; 
 }
 
 .cueare{
-  display: flex;
+  display: flex; flex-direction: column; position: absolute; bottom: 0;
 }
 
 .bigz{
-  height: 100px; width: 100px; position: absolute; margin-top: 50px;
+  height: 100px; width: 100px; margin-left: 40px; margin-bottom: 5px; margin-top: -20px;
 }
 .centz{
-  height: 50px; width: 50px; position: absolute; margin-top: 75px; margin-left: 26px;
+  height: 50px; width: 50px;  margin-top: -75px; margin-left: 66px;
 }
-
+.qrquote {
+    margin-top: 20px;
+}
 @media screen and (max-width: 768px) {
   .label-value-row2{
     font-size: 18px;
@@ -840,10 +846,10 @@ button {
   width: auto;
 }
 .bigz{
-  height: 60px; width: 60px; position: absolute; margin-top: 540px; margin-left: 20px;
+  height: 60px; width: 60px;  margin-top: 540px; margin-left: 20px;
 }
 .centz{
-  height: 30px; width: 30px; position: absolute; margin-top: 555px; margin-left: 37px;
+  height: 30px; width: 30px;  margin-top: 555px; margin-left: 37px;
 }
 
 }
