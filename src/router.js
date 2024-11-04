@@ -6,7 +6,8 @@ import dashboard from './views/dashboard.vue';
 import leaveform from './views/leaveform.vue'
 import leavepdf from './views/leavepdf.vue';
 import Leavepdfview from './views/leavepdfview.vue';
-import ictsrf from './views/ictsrf/dashboard.vue'
+import ictsrf from './views/ictsrf/dashboard.vue';
+import rso from './views/rso/dashboard.vue';
 
 
 const routes = [
@@ -31,6 +32,12 @@ const routes = [
     path: '/ICTSRF',
     name: 'ICTSRF',
     component: ictsrf,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/rso',
+    name: 'rso',
+    component: rso,
     meta: { requiresAuth: true }
   },
   {
@@ -59,6 +66,8 @@ router.beforeEach((to, from, next) => {
     document.title = 'MGB Leave Form';
   } else if (to.name === 'ICTSRF' ) {
     document.title = 'MGB ICT Request Form';
+  } else if (to.name === 'rso' ) {
+    document.title = 'MGB Special Order';
   } else {
     document.title = 'MGB Application Form';
   }  

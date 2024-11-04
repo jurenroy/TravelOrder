@@ -693,12 +693,8 @@ export default {
             this.formData = response.data.filter(form => form.name_id == this.acc.name_id ||
               members.includes(form.name_id) && form.initial === null
             );
-
           }
-          else if (this.acc.name_id == 37) {
-            this.formData = response.data.filter(form => form.name_id == this.acc.name_id || form.note == null && form.initial !== null);
-            this.siga = false
-          } else if (this.acc.type_id == 1) {
+          else if (this.acc.type_id == 1) {
             this.formData = response.data;
             this.siga = false
           }

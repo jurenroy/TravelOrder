@@ -15,6 +15,7 @@
       <Notification/>
       <button class="frontbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
       <button class="frontbutton" @click="navigateTo('ICTSRF')">ICT Service Request Form</button>
+      <button class="frontbutton" @click="navigateTo('rso')">Special Order Viewer</button>
       <button class="frontbutton" @click="openLink">Document Tracking System</button>
     </div>
   </div>
