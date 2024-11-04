@@ -861,6 +861,8 @@ button {
   .a4-container {
     border: none;
     margin-top: -20px;
+    height: calc(100vh - 40px); /* Adjust height to fit one page */
+    overflow: hidden; /* Prevent content overflow */
   }
   @page {
     size: A4;
