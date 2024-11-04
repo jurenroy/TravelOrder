@@ -74,7 +74,7 @@
             <td v-for="(signatory, index) in signatories" :key="'name-' + index">
               <div>
                 {{ !servicedBy && index == 1 ?  'ICT' :getName(signatory.name)}}<br />
-                Printed Name {{ index }}
+                Printed Name 
               </div>
             </td>
           </tr>
