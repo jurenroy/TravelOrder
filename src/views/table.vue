@@ -254,8 +254,8 @@ export default {
         [43, 40],
         [32, 50, 71],
         [33, 6],
-        [41, 46, 1, 28],
-        [38, 9, 65],
+        [41, 46, 28],
+        [38, 9, 65, 1],
         [44, 22, 61, 27],
         [31],
         [16, 63, 19],
@@ -678,7 +678,7 @@ export default {
             pendingCount += formData.filter(form => {
               return (
                 (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 === null) ||
-                (form.division_id === 5 && form.note !== null && form.signature2 === null)
+                (form.division_id === 5 && form.note !== null && form.signature2 === null && form.name_id !== 20) || ([15,21,45,48].includes(form.name_id) && form.signature2 == null && form.name_id !== this.sub.name_id)
               );
             }).length;
           }
@@ -759,11 +759,11 @@ export default {
           }  else if (this.selectedStatus === 'Pending' && this.acc.name_id !== 20) {
             return (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null) || (this.sub.division_id === form.division_id && form.note !== null && form.signature1 == null && form.signature2 == null) || (form.note !== null && form.signature2 == null && [15,21,48,45].includes(form.name_id)) || (form.division_id === this.sub.division_id && form.initial == null && form.intervals == 1 && form.name_id !== this.sub.name_id);
           } else if (this.selectedStatus === 'Pending' && this.acc.name_id == 20) {
-            return (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null) || ([15,21,45,48].includes(form.name_id) && form.initial == null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id);
+            return (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null && form.name_id !== 20) || ([15,21,45,48].includes(form.name_id) && form.initial == null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id) ||  ([15,21,45,48].includes(form.name_id) && form.signature2 == null && form.name_id !== this.sub.name_id);
           } else if (this.selectedStatus === 'Done' && this.acc.name_id !== 20) {
             return (form.note !== null && form.signature1 !== null && form.signature2 !== null && this.sub.name_id == form.sname) || (this.sub.division_id === form.division_id && form.signature1 !== null) || (this.sub.name_id == form.sname) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id);
           } else if (this.selectedStatus === 'Done' && this.acc.name_id == 20) {
-            return (form.note !== null && form.signature1 !== null && form.signature2 !== null) || (form.division_id === 5 && form.note !== null && form.signature2 !== null) || ([15,21,45,48].includes(form.name_id) && form.initial !== null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id);
+            return (form.note !== null && form.signature1 !== null && form.signature2 !== null) || (form.division_id === 5 && form.note !== null && form.signature2 !== null) || ([15,21,45,48].includes(form.name_id) && form.initial !== null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id) || ([15,21,45,48].includes(form.name_id) && form.signature2 !== null && form.name_id !== this.sub.name_id);
           }
           return true; // If no selection, return all
         });
