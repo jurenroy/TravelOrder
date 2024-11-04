@@ -109,7 +109,14 @@ export default {
               (form.division_id === 5 && form.note !== null && form.signature2 === null)
             );
           }).length;
-        }
+        }else {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 === null) ||
+                (form.division_id === 5 && form.note !== null && form.signature2 === null && form.name_id !== 20) || ([15,21,45,48].includes(form.name_id) && form.signature2 == null && form.name_id !== this.sub.name_id)
+              );
+            }).length;
+          }
       } else if (acc.type_id === 3) {
         if (acc.name_id === 15) {
           pendingCount += formData.filter(form => {

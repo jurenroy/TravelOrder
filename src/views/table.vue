@@ -35,7 +35,7 @@
 
 
   <div style="display: flex; flex-direction: column;">
-     <h2 style="display: flex; flex-direction: row; align-self: center;" class="hist">History for: 
+     <h2 style="display: flex; flex-direction: row; align-self: center;" class="hist">History for:
         <select v-model="selectedStatus" id="status" class="styled-select">
           <option v-for="option in options" :key="option" :value="option">
             {{ option }}
@@ -96,14 +96,14 @@
                 <td>{{ item.date }}</td>
                 <td v-if="item.initial === null" style="color: red;">
                   <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                  For Initial by: <span v-if="[15,21,45,48].includes(item.name_id)">RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1">DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
+                  For Initial by: <span v-if="[15,21,45,48].includes(item.name_id)">RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1">DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
                 </td>
                 <td v-else style="color: green; ">
 
-                  <p v-if="(![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77,79,66].includes(item.name_id) && item.initial !== null) || ([15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1) || ([2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1)"
+                  <p v-if="(![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77,79,66].includes(item.name_id) && item.initial !== null) || ([15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1) || ([2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1)"
                     style="color: green; margin-top: -8px;margin-bottom: -1px">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                    {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }} <span v-if="[15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1">by RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47].includes(item.name_id) && item.intervals == 1">by DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
+                    {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }} <span v-if="[15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1">by RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1">by DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
                   </p>
 
 
@@ -383,17 +383,19 @@ export default {
       link.click();
       document.body.removeChild(link);
     },
-
-
     viewNotez(nutz, numx) {
-      this.viewNote = true,
-        this.noteText = nutz
+      this.viewNote = true
+      this.noteText = nutz
+      if ([15, 20, 21, 45, 48, 37,76].includes(this.acc.name_id)) {
+          this.noteText += "\n" + this.getName(this.acc.name_id) + ": ";
+      }
+
       this.notenum = numx
     },
     openNote(numz) {
       this.addNote = true,
         this.notenum = numz
-      this.noteText = ''
+      this.noteText = this.getName(this.acc.name_id) + ": "
     },
     closeNote() {
       this.addNote = false,
@@ -402,8 +404,7 @@ export default {
     },
     postNote() {
       const formData = new FormData();
-      formData.append('note', this.noteText);
-
+        formData.append('note', this.noteText)
       axios.post(`${API_BASE_URL}/update_form/${this.notenum}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -678,7 +679,7 @@ export default {
             pendingCount += formData.filter(form => {
               return (
                 (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 === null) ||
-                (form.division_id === 5 && form.note !== null && form.signature2 === null)
+                (form.division_id === 5 && form.note !== null && form.signature2 === null && form.name_id !== 20) || ([15,21,45,48].includes(form.name_id) && form.signature2 == null && form.name_id !== this.sub.name_id)
               );
             }).length;
           }
@@ -759,11 +760,11 @@ export default {
           }  else if (this.selectedStatus === 'Pending' && this.acc.name_id !== 20) {
             return (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null) || (this.sub.division_id === form.division_id && form.note !== null && form.signature1 == null && form.signature2 == null) || (form.note !== null && form.signature2 == null && [15,21,48,45].includes(form.name_id)) || (form.division_id === this.sub.division_id && form.initial == null && form.intervals == 1 && form.name_id !== this.sub.name_id);
           } else if (this.selectedStatus === 'Pending' && this.acc.name_id == 20) {
-            return (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null) || ([15,21,45,48].includes(form.name_id) && form.initial == null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id);
+            return (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null && form.name_id !== 20) || ([15,21,45,48].includes(form.name_id) && form.initial == null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id) || ([15,21,45,48].includes(form.name_id) && form.signature2 == null && form.name_id !== this.sub.name_id) ;
           } else if (this.selectedStatus === 'Done' && this.acc.name_id !== 20) {
             return (form.note !== null && form.signature1 !== null && form.signature2 !== null && this.sub.name_id == form.sname) || (this.sub.division_id === form.division_id && form.signature1 !== null) || (this.sub.name_id == form.sname) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id);
           } else if (this.selectedStatus === 'Done' && this.acc.name_id == 20) {
-            return (form.note !== null && form.signature1 !== null && form.signature2 !== null) || (form.division_id === 5 && form.note !== null && form.signature2 !== null) || ([15,21,45,48].includes(form.name_id) && form.initial !== null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id);
+            return (form.note !== null && form.signature1 !== null && form.signature2 !== null) || (form.division_id === 5 && form.note !== null && form.signature2 !== null) || ([15,21,45,48].includes(form.name_id) && form.initial !== null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id) || ([15,21,45,48].includes(form.name_id) && form.signature2 !== null && form.name_id !== this.sub.name_id);
           }
           return true; // If no selection, return all
         });

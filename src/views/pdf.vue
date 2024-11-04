@@ -225,7 +225,6 @@
           <p class="qrquote" style="font-size: 9px;">This is an official Travel Order approved digitally and generated from <br/>the MGB-X Online Travel Order. No original signature is required.</p>
           </div>
         </div>
-        
       </div>
     </div>
   </div>
@@ -675,7 +674,7 @@ button {
 }
 
 .footerz{
-  text-align: left; margin-left: 6%; 
+  text-align: left; margin-left: 6%; margin-top: 20px;
 }
 
 .cueare{
@@ -691,6 +690,7 @@ button {
 .qrquote {
     margin-top: 20px;
 }
+
 @media screen and (max-width: 768px) {
   .label-value-row2{
     font-size: 18px;
@@ -860,6 +860,7 @@ button {
   }
   .a4-container {
     border: none;
+    margin-top: -20px;
   }
   @page {
     size: A4;
@@ -870,16 +871,21 @@ button {
     top: 0;
     left: 0;
     width: 100%;
-    height: 101%;
+    height: 100%;
     z-index: -1;
     /* Place the photo behind other content */
   }
   .label-value-row2{
     font-size: 18px;
-
   }
   .label2{
     font-size: 18px;
+  }
+  .cueare{
+  position: fixed; bottom: 20;
+  }
+  .bigz{
+    margin-top: 0px;
   }
 }
 
