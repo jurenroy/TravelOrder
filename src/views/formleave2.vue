@@ -97,18 +97,16 @@
         <!-- Inclusive Dates -->
         <div class="form-row">
           <div class="form-group">
-            <label for="Inclusive Date">Inclusive Date</label>    
+            <label for="Inclusive Date">Inclusive Date ({{ weekdaysCountWithSuffix }})</label>    
             <!-- Handle single date or date range -->
             <!-- Conditional display for single date range or selected date -->
             <div style="display: flex; flex-direction: row;">
               <div v-if="!isSingleDate && startDate && !endDate && selectedDate" style="display: flex; flex-direction: row; position: absolute;">
-              <p style="margin-left: 10px; margin-top: 10px;">{{formattedDateRange}}</p>
-              <p style="margin-top: 10px; margin-left: 10px;">{{ weekdaysCountWithSuffix }}</p>
+              <p style="margin-left: 10px; margin-top: 10px;user-select: none;pointer-events: none; position: relative;">{{formattedDateRange}}</p>
               </div>
             
             <div v-if="!isSingleDate && startDate && endDate" style="display: flex; flex-direction: row; position: absolute;">
-              <p style="margin-left: 10px; margin-top: 10px;">{{formattedDateRange}}</p>
-              <p style="margin-top: 10px; margin-left: 10px;">{{ weekdaysCountWithSuffix }}</p>
+              <p style="margin-left: 10px; margin-top: 10px;user-select: none;pointer-events: none; position: relative;">{{formattedDateRange}}</p>
             </div>
               <input type="date" id="date-input" v-model="selectedDate" @change="handleDateChange" style="outline: none; color: transparent; height: fit-content;" required/>
             </div>
