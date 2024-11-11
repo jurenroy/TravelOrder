@@ -1,18 +1,18 @@
 <template>
   <div style="display: flex; justify-content: center">
   <div class="frontcontainer">
+    <h1>MGBXPress Desk</h1>
     <img src="../assets/background_image.png" class="frontpic">
     <div class="textzxc">
-      <p class="p1">Republic of the Philipines</p>
+      <p class="p1">Republic of the Philippines</p>
       <p class="p2">Department of Environment and Natural Resources</p>
       <p class="p3">Mines and Geosciences Bureau</p>
-      <p class="p4">Regional Office No.X</p>
-      <p>MGB Application Form</p>
+      <p class="p4">Regional Office No. X</p>
+      
     </div>
     
     <div class="hakdogzzz">
-      <button class="frontbutton" @click="navigateTo('TravelOrder')">Travel Order Form</button>
-      <Notification/>
+      <button class="frontbutton" @click="navigateTo('TravelOrder')">Travel Order Form <Notification/></button>
       <button class="frontbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
       <button class="frontbutton" @click="navigateTo('ICTSRF')">ICT Service Request Form</button>
       <button class="frontbutton" @click="navigateTo('rso')">Special Order Viewer</button>
@@ -227,15 +227,17 @@ export default {
 .hakdogzzz {
   margin-top: 5px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .frontpic {
   margin: 30px;
   height: 250px;
   width: auto;
+  margin-top: -20px;
 }
 .textzxc{
   display: flex;

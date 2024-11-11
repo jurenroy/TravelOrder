@@ -2,7 +2,7 @@
   <div class="note" v-if="certif">
     <div class="title-bar">
       <div class="title">LEAVE CREDITS</div>
-      <div class="close-icon" @click="certification">X</div>
+      <div class="close-icon" @click="certification(certinum)">X</div>
     </div>
 
     <div class="content">
@@ -45,19 +45,19 @@
         </div>
         <div style="margin-left: 20px; margin-top: 10px;">
           <div style="display: flex; flex-direction: row; margin-top: -5px;">
-            <input readonly
+            <input 
               style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
               v-model="withpay">
             <p style="font-size: 10px;">days with pay</p>
           </div>
           <div style="display: flex; flex-direction: row; margin-top: -5px;">
-            <input readonly
+            <input 
               style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
               v-model="withoutpay">
             <p>days without pay</p>
           </div>
           <div style="display: flex; flex-direction: row; margin-top: -5px;">
-            <input readonly
+            <input 
               style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
               v-model="othersSpecify">
             <p>others (Specify)</p>
@@ -74,10 +74,10 @@
       </div>
 
       <div class="butokz">
-        <button @click="postCertification"
-        :disabled="this.leavecredits == '' || this.totalvacation == '' || this.totalsick == '' || this.lessvacation == '' || this.lesssick == '' || this.balancevacation == '' || this.balancesick == '' "
-        :style="{ cursor:this.leavecredits == '' || this.totalvacation == '' || this.totalsick == '' || this.lessvacation == '' || this.lesssick == '' || this.balancevacation == '' || this.balancesick == '' ? 'not-allowed' : 'pointer' }"
+        <button @click="postCertification" v-if="[76,24].includes(acc.name_id)"
          >Save</button>
+         <button @click="postCertification" v-if="[76,2].includes(acc.name_id)"
+         >Certify</button>
         <button @click="certification(certinum)">Cancel</button>
       </div>
     </div>
@@ -188,8 +188,8 @@
       </div>
 
       <div class="butokz">
-        <button @click="postApproval" :disabled="approveLeavetype < 1 || approveLeavetype.length === 0"
-          :style="{ cursor: approveLeavetype < 1 || approveLeavetype.length === 0 ? 'not-allowed' : 'pointer' }">{{
+        <button @click="postApproval" :disabled="(approveLeavetype < 1 || approveLeavetype.length === 0) || (approveLeavetype < 1 || approveLeavetype.includes(2))"
+          :style="{ cursor: (approveLeavetype < 1 || approveLeavetype.length === 0) || (approveLeavetype < 1 || approveLeavetype.includes(2) && !text2) ? 'not-allowed' : 'pointer' }">{{
             approveLeavetype == 2 ? 'disapprove' : 'approve' }}</button>
         <button @click="approve(apronum)">Cancel</button>
       </div>
@@ -217,7 +217,13 @@
 
   <div style="display: flex; flex-direction: column;">
 
-    <h2 style="display: flex; flex-direction: column; align-items: center;" class="hist">History</h2>
+    <h2 style="display: flex; flex-direction: row; align-self: center; margin-top: 40px; margin-bottom: 10px;" class="hist">History
+    <select v-model="selectedStatus" id="status" class="styled-select">
+          <option v-for="option in options" :key="option" :value="option">
+            {{ option }}
+          </option>
+        </select> 
+      </h2>
     <div v-if="load" class="loadings">
       <img src='../assets/loading.gif' width="auto" height="100px" />
     </div>
@@ -261,52 +267,6 @@
               <td>{{ item.dates }} ({{ item.days }})</td>
               <td>{{ item.commutation }}</td>
               <td>{{ formattedDate(item.date) }}</td>
-              <!-- <td v-if="item.initial === null" style="color: red;">
-                <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                For Initial
-              </td>
-              <td v-else style="color: green; ">
-
-                <p v-if="![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20].includes(item.name_id) && item.initial !== null"
-                  style="color: green; margin-top: -8px;margin-bottom: -1px">
-                  <img src="../assets/check.png" style="height: 10px; width: 10px;">
-
-                </p>
-
-
-                <p v-if="item.note === null" style="color: red; margin-top: 1px; margin-bottom: -15px">
-                  <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                  To be Noted
-                </p>
-                <p v-else style="color: green; margin-top: 2px; margin-bottom: -15px;">
-                  <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                  Noted
-                </p>
-
-                <p v-if="(item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 === null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1 && aor == 1)"
-                  style="color: red; margin-bottom: -15px;">
-                  <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                  For Recommendation
-                </p>
-
-                <p v-if="(item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id)) || (item.signature1 !== null && item.note !== null && [15, 21, 45, 48].includes(item.name_id) && item.intervals == 1)"
-                  style="color: green; margin-bottom: -15px;">
-                  <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                  Recommended
-                </p>
-
-
-                <p v-if="(item.signature2 === null && item.signature1 !== null || (([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 === null && item.note !== null)))"
-                  style="color: red;">
-                  <img src="../assets/close.png" style="height: 10px; width: 10px;">
-                  For Approval
-                </p>
-                <p v-if="item.signature2 !== null && item.signature1 !== null && item.note !== null || ([15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59].includes(item.name_id) && item.signature2 !== null)"
-                  style="color: green;">
-                  <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                  Approved
-                </p>
-              </td> -->
 
               <td style="display: flex; justify-content: center;">
                 <button 
@@ -316,9 +276,10 @@
                   style="width: 40px; height: 40px; cursor: pointer;" />
               </td>
 
-              <td style="display: flex; justify-content: center;" v-if="acc.name_id == 24 || acc.name_id == 2">
+              <td style="display: flex; justify-content: center;" v-if="[2,24,76].includes(acc.name_id)">
                 <button 
-                  @click="certification(item.leaveform_id)"
+                v-if="((item.asof || item.tevl || item.tesl || item.ltavl || item.ltasl || item.bvl || item.vsl || item.dayswpay || item.dayswopay || item.others) && item.certification == null && acc.name_id == 2) || acc.name_id == 24"
+                  @click="certification(item.leaveform_id, item.asof, item.tevl, item.tesl, item.ltavl, item.ltasl, item.bvl, item.vsl, item.dayswpay, item.dayswopay, item.others)"
                   :style="{
                     color: certinum === item.leaveform_id ? 'white' : 'black',
                     backgroundColor: certinum === item.leaveform_id ? 'black' : 'white',
@@ -328,8 +289,8 @@
                   Certification
                 </button>
               </td>
-              <td style="display: flex; justify-content: center;" v-if="siga">
-                <button 
+              <td style="display: flex; justify-content: center;" v-if="[15,21,45,48].includes(acc.name_id)">
+                <button v-if="!item.recommendation && getDivisionGroup(sub.name_id)"
                   @click="recommendation(item.leaveform_id)"
                   :style="{
                     color: reconum === item.leaveform_id ? 'white' : 'black',
@@ -340,7 +301,7 @@
                   Recommend
                 </button>
               </td>
-              <td style="display: flex; justify-content: center;" v-if="siga1">
+              <td style="display: flex; justify-content: center;" v-if="(sub.name_id == bus.name_id) && !item.appsig">
                 <button 
                   @click="approve(item.leaveform_id)"
                   :style="{
@@ -352,32 +313,6 @@
                   Approve
                 </button>
               </td>
-
-
-              <!-- <td v-if="siga && item.note !== null && item.signature1 == null && item.name_id !== acc.name_id"
-                    style="display: flex; justify-content: center;"><button
-                      @click="signature1(item.leaveform_id)">Recommend</button></td> -->
-
-              <!-- <td
-                    v-if="acc.name_id == 20 && item.note !== null && item.signature1 == null && item.aor == 1 && [15, 21, 45, 48].includes(item.name_id)"
-                    style="display: flex; justify-content: center;"><button
-                      @click="signature11(item.leaveform_id, item.name_id)">Recommend</button></td>
-  
-                  <td
-                    v-if="((siga1 && item.note !== null) && ((item.signature1 !== null && item.division_id !== 5 && item.note !== null) || (item.signature1 === null && item.division_id === 5 && item.note !== null)) && item.name_id !== acc.name_id)"
-                    style="display: flex; justify-content: center;"><button
-                      @click="signature2(item.leaveform_id)">Approve</button></td> -->
-
-
-              <!-- <td
-                    v-if="isSectionChief(acc.name_id) && selectedTravelOrderId != item.leaveform_id && item.initial === null"
-                    style="display: flex; justify-content: center;">
-                    <button @click="initialize(item.leaveform_id)">
-                      Initial
-                    </button>
-                    <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id" @click="close"
-                      style="width: 40px; height: 40px; cursor: pointer;" />
-                  </td> -->
             </tr>
           </tbody>
         </table>
@@ -418,6 +353,8 @@ export default {
   },
   data() {
     return {
+      selectedStatus: 'Me',
+      options: ['Pending', 'Done', 'Me'],
       sectionChiefIds: [39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47],
       members: [
         [23, 25, 35, 70, 64],
@@ -460,24 +397,24 @@ export default {
       approvetype: [1, 2],
       recommendationLeavetype: [],
       approveLeavetype: [],
+      leavecredits: '',
       totalvacation: '',
       totalsick: '',
       lessvacation: '',
       lesssick: '',
       balancevacation: '',
       balancesick: '',
+      withpay: '',
+      withoutpay: '',
+      othersSpecify: '',
       text: '',
       rows: 1,
-      leavecredits: '',
       appr: false,
       text2: '',
       certinum: 0,
       reconum: 0,
       apronum: 0,
-      withpay: '',
-      withoutpay: '',
-      othersSpecify: ''
-
+      
     };
   },
   created() {
@@ -510,18 +447,40 @@ export default {
 
     postCertification() {
       const formData = new FormData();
-      formData.append('asof', '' + this.leavecredits); // Replace with your actual data properties
-      formData.append('tevl', '' + this.totalvacation);
-      formData.append('tesl', '' + this.totalsick);
-      formData.append('ltavl', '' + this.lessvacation);
-      formData.append('ltasl', '' + this.lesssick);
-      formData.append('bvl', '' + this.balancevacation);
-      formData.append('vsl', '' + this.balancesick);
-      formData.append('dayswpay', this.withpay);
-      formData.append('dayswopay', this.withoutpay);
-      formData.append('others', '' + this.othersSpecify);
-      formData.append('certification', 'this.certification');
 
+      if (this.leavecredits) {
+        formData.append('asof', '' + this.leavecredits);
+      }
+      if (this.totalvacation) {
+        formData.append('tevl', '' + this.totalvacation);
+      }
+      if (this.totalsick) {
+        formData.append('tesl', '' + this.totalsick);
+      }
+      if (this.lessvacation) {
+        formData.append('ltavl', '' + this.lessvacation);
+      }
+      if (this.lesssick) {
+        formData.append('ltasl', '' + this.lesssick);
+      }
+      if (this.balancevacation) {
+        formData.append('bvl', '' + this.balancevacation);
+      }
+      if (this.balancesick) {
+        formData.append('vsl', '' + this.balancesick);
+      }
+      if (this.withpay) {
+        formData.append('dayswpay', this.withpay);
+      }
+      if (this.withoutpay) {
+        formData.append('dayswopay', this.withoutpay);
+      }
+      if (this.othersSpecify) {
+        formData.append('others', '' + this.othersSpecify);
+      }
+      if (this.acc.name_id == 2) {
+        formData.append('certification', this.acc.signature);
+      }
 
       axios.post(`${API_BASE_URL}/updateleave_form/${this.certinum}`, formData, {
         headers: {
@@ -541,6 +500,7 @@ export default {
           this.withoutpay = ''
           this.othersSpecify = ''
           this.certif = false
+          this.certinum = 0
         
       }).catch(error => {
         console.error('Error:', error);
@@ -552,7 +512,7 @@ export default {
       const formData = new FormData();
       formData.append('reco', this.recommendationLeavetype);
       formData.append('recodesc', this.text);
-      formData.append('recommendation', this.recommendation);
+      formData.append('recommendation', this.acc.signature);
 
       axios.post(`${API_BASE_URL}/updateleave_form/${this.reconum}`, formData, {
         headers: {
@@ -573,8 +533,13 @@ export default {
     // Method to post approval
     postApproval() {
       const formData = new FormData();
-      formData.append('disapproved', this.text2);
-      formData.append('approval', this.approval);
+      if (this.approveLeavetype.includes(1)){
+        formData.append('approval', this.approveLeavetype);
+      }else{
+        formData.append('disapproved', this.text2);
+      }
+      formData.append('appsig', this.acc.signature);
+      formData.append('appby', this.acc.name_id);
 
       axios.post(`${API_BASE_URL}/updateleave_form/${this.apronum}`, formData, {
         headers: {
@@ -649,15 +614,6 @@ export default {
         await new Promise(resolve => setTimeout(resolve, 1000), this.verifiedOTPs = localStorage.getItem('verifiedOTPs'));
       }
     },
-
-    // padWithZeroes(travel_order_id) {
-    //   const idString = travel_order_id.toString();
-    //   if (idString.length < 4) {
-    //     return '0'.repeat(4 - idString.length) + idString;
-    //   } else {
-    //     return idString;
-    //   }
-    // },
     fetchAccounts() {
       axios.get(`${API_BASE_URL}/get_accounts_json`)
         .then(response => {
@@ -673,7 +629,12 @@ export default {
           console.error('Error fetching data:', error);
         });
     },
-
+    getDivisionGroup(division_id) {
+      // Filter employees by division_id and map to the name_id
+      return this.employees
+        .filter(emp => emp.division_id === division_id)
+        .map(emp => emp.name_id);
+    },
     fetchData() {
       this.load = true
       axios.get(`${API_BASE_URL}/get_leave_json`)
@@ -684,41 +645,8 @@ export default {
           this.bus = this.employees.find(emp => emp.rd !== null)
           this.csvformdata = response.data
 
-          if (this.sectionChiefIds.includes(this.acc.name_id)) {
-            console.log(this.acc.name_id)
-            const index = this.sectionChiefIds.indexOf(this.acc.name_id);
-            console.log(index)
-            const members = this.members[index];
-            console.log(this.members[index])
-            this.formData = response.data.filter(form => form.name_id == this.acc.name_id ||
-              members.includes(form.name_id) && form.initial === null
-            );
-          }
-          else if (this.acc.type_id == 1) {
-            this.formData = response.data;
-            this.siga = false
-          }
-          else if (this.acc.type_id == 2) {
-            this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
-            this.siga = false
-          } else if (this.bus.name_id == this.sub.name_id) {
-            if (this.acc.name_id !== 20) {
-              this.siga = true
-            } else {
-              this.siga = false
-            }
-            this.formData = response.data.filter(form => ((form.signature2 === null && form.signature1 !== null && form.note !== null && !(form.aor == 1 && [15, 21, 45, 48].includes(form.name_id))) || (form.division_id === 5 && form.signature2 == null && form.note !== null) || (form.division_id !== 5 && form.signature1 == null && form.note !== null && this.acc.name_id !== 20 && form.division_id == this.bus.division_id) || form.name_id == 20) || ([15, 21, 45, 48].includes(form.name_id) && form.aor == 1 && form.signature1 == null && form.intervals === 0));
-            this.siga1 = true
-
-          } else if (this.acc.type_id == 3) {
-            const division_id = this.employees.find(name => name.name_id == this.acc.name_id).division_id;
-            this.formData = response.data.filter(form => (form.division_id == division_id && form.signature1 === null && this.sub.name_id !== 20 && form.note !== null) || form.name_id === this.acc.name_id);
-            this.siga = true
-            if (this.sub.name_id == 20) {
-              this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
-              this.siga = false
-            }
-          }
+          this.formData = response.data
+        
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -759,7 +687,7 @@ export default {
       this.selectedTravelOrderId = 0
     },
 
-    certification(leaveformID) {
+    certification(leaveformID, asof, tevl, tesl, ltavl, ltasl, bvl, vsl, dayswpay, dayswopay, others) {
       // this.certif = !this.certif
       if (this.certif == false && this.certinum == 0){
         this.certif = true
@@ -771,16 +699,16 @@ export default {
         this.certif = true
         this.certinum = leaveformID
       }
-      this.leavecredits = ''
-      this.totalvacation = ''
-      this.totalsick = ''
-      this.lessvacation = ''
-      this.lesssick = ''
-      this.balancevacation = ''
-      this.balancesick = ''
-      this.withpay = ''
-      this.withoutpay = ''
-      this.othersSpecify = ''
+      this.leavecredits = asof ?? ''
+      this.totalvacation = tevl ?? ''
+      this.totalsick = tesl ?? ''
+      this.lessvacation = ltavl ?? ''
+      this.lesssick = ltasl ?? ''
+      this.balancevacation = bvl ?? ''
+      this.balancesick = vsl ?? ''
+      this.withpay =  dayswpay ?? ''
+      this.withoutpay = dayswopay ?? ''
+      this.othersSpecify = others ?? ''
     },
 
     recommendation(leaveformID) {
@@ -824,9 +752,73 @@ export default {
   },
 
   computed: {
-
+    filteredData() {
+      if ([24].includes(this.acc.name_id)) {
+       
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          } else if (this.selectedStatus === 'Pending') {
+            return [form.asof, form.tevl, form.tesl, form.ltavl, form.ltasl, form.bvl, form.vsl, form.dayswpay, form.dayswopay, form.others].every(val => val == null);
+          } else if (this.selectedStatus === 'Done') {
+            return form.asof || form.tevl || form.tesl || form.ltavl || form.ltasl || form.bvl || form.vsl || form.dayswpay || form.dayswopay || form.others
+          }
+          return true; // If no selection, return all
+        });
+      }else if ([2].includes(this.acc.name_id)){
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          } else if (this.selectedStatus === 'Pending') {
+            return (form.asof || form.tevl || form.tesl || form.ltavl || form.ltasl || form.bvl || form.vsl || form.dayswpay || form.dayswopay || form.others) && form.certification == null
+          } else if (this.selectedStatus === 'Done') {
+            return form.certification
+          }
+          return true; // If no selection, return all
+        });
+      }else if (this.bus.name_id === this.sub.name_id) {
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          } else if (this.selectedStatus === 'Pending' && (this.acc.name_id == 20 || this.acc.name_id == 76)) {
+            return (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+          } else if (this.selectedStatus === 'Pending' && this.acc.name_id !== 20) {
+            return (this.getDivisionGroup(this.sub.name_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+          } else if (this.selectedStatus === 'Done' && (this.acc.name_id == 20 || this.acc.name_id == 76)) {
+            return form.appsig
+          } else if (this.selectedStatus === 'Done' && this.acc.name_id !== 20) {
+            return (this.getDivisionGroup(this.sub.name_id).includes(form.name_id) && form.recommendation) || form.appsig
+          } 
+          return true; // If no selection, return all
+        });
+      }else if (this.acc.type_id == 3){
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          } else if (this.selectedStatus === 'Pending') {
+            return this.getDivisionGroup(this.sub.name_id).includes(form.name_id) && !form.recommendation
+            // return this.getDivisionGroup(this.sub.division_id).includes(form.name_id)
+          } else if (this.selectedStatus === 'Done') {
+            return this.getDivisionGroup(this.sub.name_id).includes(form.name_id) && form.recommendation
+          }
+          return true; // If no selection, return all
+        });
+      }else if (this.acc.type_id == 2) {
+        return this.formData.filter(form => {
+          if (this.selectedStatus === 'Me') {
+            return form.name_id === this.acc.name_id;
+          } else if (this.selectedStatus === 'Pending') {
+            return form.name_id === this.acc.name_id && (!form.approval || !form.disapproved);
+          } else if (this.selectedStatus === 'Done') {
+            return form.name_id === this.acc.name_id && (form.approval || form.disapproved);
+          } 
+          return true; // If no selection, return all
+        });
+      }
+      return this.formData; // Return all if not section chief
+    },
     reversedFormData() {
-      let data = this.formData.slice().reverse(); // Make a copy of the original data
+      let data = this.filteredData.slice().reverse(); // Make a copy of the original data
 
       if (this.searchQuery !== '') {
         data = data.filter(item => {
@@ -1067,6 +1059,29 @@ button:hover {
   background-color: black;
   color: white;
 }
+.styled-select {
+  appearance: none;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  width: 100px;
+  font-weight: bold;
+  margin-top: -5px;
+  margin-left: 5px;
+}
+
+.styled-select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.styled-select option {
+  padding: 10px;
+  font-weight: bold;
+}
 
 @media screen and (max-width: 768px) {
   .Btn {
@@ -1112,7 +1127,8 @@ button:hover {
   .search,
   .note,
   .sign,
-  .Btn {
+  .Btn,
+  .butokz {
     display: none !important;
   }
 

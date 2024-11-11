@@ -87,7 +87,7 @@
             </thead>
             <tbody>
               <tr v-for="item in reversedFormData" :key="item.id">
-                <td>{{ padWithZeroes(item.to_num) }} - {{ yearToday }}</td>
+                <td>{{ padWithZeroes(item.to_num) }} - {{ item.date.slice(0,4) }}</td>
                 <td>{{ getName(parseInt(item.name_id) > 78 ? parseInt(item.name_id)-1 : parseInt(item.name_id)) }}</td>
                 <td>{{ item.departure }}</td>
                 <td>{{ item.destination }}</td>
@@ -100,10 +100,10 @@
                 </td>
                 <td v-else style="color: green; ">
 
-                  <p v-if="(![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77,79,66].includes(item.name_id) && item.initial !== null) || ([15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1) || ([2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1)"
+                  <p v-if="(![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77,79,66,72,73].includes(item.name_id) && item.initial !== null) || ([15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1) || ([2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1)"
                     style="color: green; margin-top: -8px;margin-bottom: -1px">
                     <img src="../assets/check.png" style="height: 10px; width: 10px;">
-                    {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }} <span v-if="[15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1">by RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1">by DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
+                    {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }} <span v-if="[15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1">by RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47,17,72,73].includes(item.name_id) && item.intervals == 1">by DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
                   </p>
 
 
@@ -259,7 +259,7 @@ export default {
         [44, 22, 61, 27],
         [31],
         [16, 63, 19],
-        [12, 14, 72, 73]
+        [12, 14]
       ],
       yearToday: new Date().getFullYear(),
       formData: [],

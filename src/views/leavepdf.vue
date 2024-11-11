@@ -721,7 +721,7 @@ export default {
             position: '',
             positions: [],
             employees: [],
-            name_id: '',
+            name_id: localStorage.getItem('nameId'),
             salary: '',
             division: '',
             signatories: [
@@ -1044,7 +1044,7 @@ export default {
 
             try {
                 const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
-                this.accounts = response.data;
+                this.accounts = response.data.find();
             } catch (error) {
                 console.error('Error fetching accounts:', error);
             }
@@ -1053,24 +1053,9 @@ export default {
         async fetchNames() {
             try {
                 const response = await axios.get(`${API_BASE_URL}/get_names_json`);
-                this.names = response.data;
+                this.names = response.data.find(nem => nem.name_id == parseInt(this.name_id));
+                console.log(this.names)
 
-
-                const account = this.accounts.find(acc => acc.account_id === parseInt(this.accountIdz));
-
-                if (account) {
-                    const nameId = account.name_id;
-                    this.name_id = account.name_id;
-                    const foundName = this.names.find(name => name.name_id === nameId);
-                    if (foundName) {
-                        this.name = foundName;
-                        this.nameLoaded = true;
-                    } else {
-                        // Handle case where name is not found
-                    }
-                } else {
-                    // Handle case where account is not found
-                }
             } catch (error) {
                 console.error('Error fetching names:', error);
             }
@@ -1087,8 +1072,10 @@ export default {
             fetch(`${API_BASE_URL}/get_employees_json/`)
                 .then(response => response.json())
                 .then(data => {
-                    this.employees = data.filter(det => det.name_id == this.name_id);
-                    this.division = this.employees[0].division_id
+                    this.employees = data.find(det => det.name_id == this.name_id);
+                    console.log(this.employees)
+
+                    this.division = this.employees.division_id
                     if (this.division == 1) {
                         {
                             this.reco = this.signatories[0]
@@ -1139,8 +1126,8 @@ export default {
             fetch(`${API_BASE_URL}/get_positions_json/`)
                 .then(response => response.json())
                 .then(data => {
-                    this.positions = data.filter(detz => detz.position_id == this.employees[0].position_id);
-                    this.position = this.positions[0].position_name
+                    this.positions = data.find(detz => detz.position_id == this.employees.position_id);
+                    this.position = this.positions.position_name
                 })
                 .catch(error => {
                     console.error('Error fetching positions:', error);

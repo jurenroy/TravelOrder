@@ -144,8 +144,8 @@ export default {
 .notification-container {
   padding: 20px;
   position: absolute;
-  margin-left: 260px;
-  margin-top: -60px;
+  margin-left: 240px;
+  margin-top: -110px;
 }
 
 .header {
@@ -164,9 +164,8 @@ export default {
 
 @media (max-width: 768px) {
   .notification-container {
-    margin-left: 290px;
-    margin-top: -300px;
+    margin-left: 240px;
+    margin-top: -110px;
   }
-
 }
 </style>

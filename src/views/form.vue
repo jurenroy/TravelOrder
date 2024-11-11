@@ -106,7 +106,6 @@
           <a class="formcorrect1">
             Please wait for a moment....
           </a>
-
         </div>
 
         <div v-else-if="loadis" class="loadid">

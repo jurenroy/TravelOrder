@@ -1,9 +1,9 @@
 <template>
-    <div style="display: flex; flex-direction: row;">
+    <div style="display: flex; flex-direction: row;" class="leverage">
    <img v-if="leaveshowhome" @click="navigatez"
      style="cursor: pointer; height: 30px; width: 30px; margin-top: -6px; margin-right: 5px;"
      src="../assets/dashboard.png" title="Back to Dashboard">
-   <label v-if="leaveshowhome" @click="navigatez"
+   <label v-if="leaveshowhome" @click="navigatez" 
      style="cursor: pointer;">Back to Dashboard</label>
    </div>
 
@@ -52,7 +52,7 @@
                    <p style="margin-right: 5px">5. SALARY:
                        <input readonly
                            style="height: 10px; width: 100px; outline: none; border: none; border-bottom: 1px solid black; font-size: 10px; "
-                           v-model="salary" @input="formatCurrency"  />
+                           v-model="formattedSalary"/>
                    </p>
                </div>
            </div>
@@ -254,7 +254,7 @@
 
                                <div>
                                    <input readonly
-                                       style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       style="height: 10px; width: 150px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
                                        :disabled="![0, 5].some(value => selectedLeavetype.includes(value))  || !vacationleavedetails.includes(1)"
                                        v-model="vacation1"
                                       >
@@ -277,7 +277,7 @@
 
                                <div>
                                    <input readonly
-                                       style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       style="height: 10px; width: 150px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
                                        :disabled="![0, 5].some(value => selectedLeavetype.includes(value)) || !vacationleavedetails.includes(2)"
                                        v-model="vacation2"
                                       >
@@ -301,7 +301,7 @@
 
                                <div>
                                    <input readonly
-                                       style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       style="height: 10px; width: 150px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
                                        :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(1)"
                                        v-model="sick1"
                                       >
@@ -324,7 +324,7 @@
 
                                <div>
                                    <input readonly
-                                       style="height: 10px; width: 100px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       style="height: 10px; width: 150px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
                                        :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(2)"
                                        v-model="sick2"
                                       >
@@ -482,6 +482,10 @@
                            </div>
 
                        </div>
+                       <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;">
+                        <img :src="signature3" class="signatizz" v-if="signature3" 
+                             style="width: auto; height: 80px; position: absolute; margin-top: -55px;" @contextmenu.prevent />
+                        </div>
                        <input readonly disabled
                            style="border:1px solid black; border:none; outline:none; border-bottom:1.5px solid black; width:330px; position: relative; left:35px;" />
                        <p style="text-align: center;">(Signature of Applicant)</p>
@@ -528,6 +532,10 @@
                                </div>
                            </div>
                        </div>
+                       <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;">
+                        <img :src="signature2" class="signatizz" v-if="signature2"
+                             style="width: auto; height: 80px; position: absolute; margin-top: -15px;" @contextmenu.prevent />
+                        </div>
                        <p
                            style="text-align: center; margin-top: 15px; border: none; outline: none; width: auto; z-index: 9; font-size: 10px; font-weight: bold;">
                            {{ secch }}
@@ -562,11 +570,16 @@
                            </label>
                            <p>For disapproval due to:</p>
                        </div>
+                       
 
                        <textarea @keydown.enter.prevent v-model="text" id="myTextarea" :rows="rows"
                           
                            disabled readonly
-                           style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 350px; margin-left: 20px; font-size: 10px; text-decoration: underline;"></textarea>
+                           style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 350px; margin-left: 20px; font-size: 10px; text-decoration: underline; margin-bottom: 30px;"></textarea>
+                           <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;">
+                        <img :src="signature1" class="signatizz" v-if="signature1"
+                             style="width: auto; height: 80px; position: absolute; margin-top: -35px;" @contextmenu.prevent />
+                        </div>
                        <p style="text-align: center;margin-bottom: -20px;z-index: 9;">{{ reco }}</p>
 
                        <p
@@ -611,14 +624,25 @@
                    </div>
                </div>
                <div>
+                <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;">
+                        <img :src="signature" class="signatizz" v-if="signature"
+                             style="width: auto; height: 80px; position: absolute; margin-top: -35px;" @contextmenu.prevent />
+                        </div>
                    <p style="text-align: center">{{ rd }}</p>
                    <p style="text-align: center">{{ rdpos }}</p>
                </div>
            </div>
-          <div class="leavebuttonss">
+           <div>
+          <div class="cueare">
+          <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" class="bigz" @contextmenu.prevent>
+          <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" class="centz" @contextmenu.prevent>
+          <p class="qrquote" style="font-size: 9px;">This is an official Leave Form approved digitally and generated from <br/>the MGB-X Online Leave Form. No original signature is required.</p>
+          </div>
+        </div>
+          <!-- <div class="leavebuttonss">
               <button class="leavebutton" @click="submitForm"> Submit
            </button>
-          </div> 
+          </div>  -->
        </div>
 
    </div>
@@ -631,7 +655,9 @@ import image2 from '../assets/bago.png'
 import axios from 'axios';
 import { isaddleave } from './leaveform.vue';
 import { showleavehome } from './leaveform.vue';
-import { API_BASE_URL } from '../config'
+import { API_BASE_URL } from '../config';
+import mgbx from '../assets/mgbx.png'
+import QRCode from 'qrcode'
 
 export default {
     props: {
@@ -642,6 +668,8 @@ export default {
     },
    data() {
        return {
+        qrCodeUrl: '',
+      imageSrc: mgbx,
         leaveForms:[],
            leaveshowhome:true,
            image1: image1,
@@ -706,8 +734,10 @@ export default {
            withoutpay: '',
            othersSpecify: '',
            leavecredits:'',
-
-
+           signature: '',
+           signature1: '',
+           signature2: '',
+           signature3: '',
            accounts: [],
            accountIdz: localStorage.getItem('accountId'),
            name: [],
@@ -814,8 +844,8 @@ export default {
    mounted() {
        this.fetchAccounts();
        this.fetchNames();
-       this.fetchLeaveForms(this.leaveform_id);
        this.fetchemployee();
+       this.fetchLeaveForms(this.leaveform_id);
        this.comparePosition();
    },
 
@@ -823,12 +853,22 @@ export default {
         navigatez(){
             window.location.pathname = '/leaveform';
         },
+        async generateQRCode() {
+      const textToEncode = `MGBX LEAVE FORM`;
+      try {
+        this.qrCodeUrl = await QRCode.toDataURL(textToEncode);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+        
        async fetchAccounts() {
 
            try {
                const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
 
-               this.accounts = response.data;
+               this.accounts = response.data  
+
            } catch (error) {
                console.error('Error fetching accounts:', error);
            }
@@ -854,8 +894,48 @@ export default {
            fetch(`${API_BASE_URL}/get_employees_json/`)
                .then(response => response.json())
                .then(data => {
-                   this.employees = data.filter(det => det.name_id == this.name_id);
-                   this.division = this.employees[0].division_id
+                   this.employees = data
+               })
+               .catch(error => {
+                   console.error('Error fetching employees:', error);
+               });
+           // Fetch positions data
+           fetch(`${API_BASE_URL}/get_positions_json/`)
+               .then(response => response.json())
+               .then(data => {
+                   this.positions = data
+               })
+               .catch(error => {
+                   console.error('Error fetching positions:', error);
+               });
+       },
+       fetchLeaveForms(leaveformID) {
+      axios.get(`${API_BASE_URL}/get_leave_json`)
+        .then(response => {
+
+            this.selectedLeavetype = []; // Ensure it's cleared before setting a new type
+            this.vacationleavedetails = []; // Ensure it's cleared before setting a new type
+            this.vacation1 = []; // Ensure it's cleared before setting a new type
+            this.vacation2 = []; // Ensure it's cleared before setting a new type
+
+            this.sickleavedetails = []; // Ensure it's cleared before setting a new type
+            this.sick1 = []; // Ensure it's cleared before setting a new type
+            this.sick2 = []; // Ensure it's cleared before setting a new type
+
+            this.studyleavedetails = []; // Ensure it's cleared before setting a new type
+            this.otherPurpose = []; // Ensure it's cleared before setting a new type
+
+            
+          this.leaveForms = response.data.find(libporm => libporm.leaveform_id == leaveformID);
+
+          
+          if (this.leaveForms){
+            this.comparePosition()
+            this.name_id = this.leaveForms.name_id
+            
+
+            this.division = this.employees.find(emp => emp.name_id == this.leaveForms.name_id).division_id
+
                    if (this.division == 1) {
                        {
                            this.reco = this.signatories[0]
@@ -898,79 +978,47 @@ export default {
                        this.rd = ''
                        this.rdpos = ''
                    }
-               })
-               .catch(error => {
-                   console.error('Error fetching employees:', error);
-               });
-           // Fetch positions data
-           fetch(`${API_BASE_URL}/get_positions_json/`)
-               .then(response => response.json())
-               .then(data => {
-                   this.positions = data
-               })
-               .catch(error => {
-                   console.error('Error fetching positions:', error);
-               });
-       },
-       fetchLeaveForms(leaveformID) {
-      axios.get(`${API_BASE_URL}/get_leave_json`)
-        .then(response => {
 
-            this.selectedLeavetype = []; // Ensure it's cleared before setting a new type
-            this.vacationleavedetails = []; // Ensure it's cleared before setting a new type
-            this.vacation1 = []; // Ensure it's cleared before setting a new type
-            this.vacation2 = []; // Ensure it's cleared before setting a new type
-
-            this.sickleavedetails = []; // Ensure it's cleared before setting a new type
-            this.sick1 = []; // Ensure it's cleared before setting a new type
-            this.sick2 = []; // Ensure it's cleared before setting a new type
-
-            this.studyleavedetails = []; // Ensure it's cleared before setting a new type
-            this.otherPurpose = []; // Ensure it's cleared before setting a new type
-
+            this.signature3 =`${API_BASE_URL}`+"/storage/"+`${this.accounts.find(acc=>acc.name_id==this.name_id).signature}`
+            this.signature2 = this.leaveForms.certification ?  `${API_BASE_URL}`+"/storage/"+`${this.leaveForms.certification}` : null
+            this.signature1 = this.leaveForms.recommendation ? `${API_BASE_URL}`+"/storage/"+`${this.leaveForms.recommendation}` : null
+            this.signature = this.leaveForms.appsig ? `${API_BASE_URL}`+"/storage/"+`${this.leaveForms.appsig}` : null
             
-          this.leaveForms = response.data.filter(libporm => libporm.leaveform_id == leaveformID);
-          console.log(this.leaveForms);
-          
-          if (this.leaveForms){
-            this.comparePosition()
-            this.name_id = this.leaveForms[0].name_id
-            
-            this.salary = this.leaveForms[0].applicant
-            this.datetoday =this.trimDate(this.leaveForms[0].date)
-            this.dayszz = this.leaveForms[0].days
-            this.dateszz = this.leaveForms[0].dates
+            this.salary = this.leaveForms.applicant
+            this.datetoday =this.trimDate(this.leaveForms.date)
+            this.dayszz = this.leaveForms.days
+            this.dateszz = this.leaveForms.dates
 
-            if (this.leaveForms[0].commutation == "Not Requested"){
+            if (this.leaveForms.commutation == "Not Requested"){
                 this.commutationLeavetype = [1];
-            }else if (this.leaveForms[0].commutation == "Requested"){
+            }else if (this.leaveForms.commutation == "Requested"){
                 this.commutationLeavetype = [2];
             }
 
 
-            this.leavecredits = this.leaveForms[0].asof
-            this.totalvacation = this.leaveForms[0].tevl
-            this.totalsick = this.leaveForms[0].tesl
-            this.lessvacation = this.leaveForms[0].ltavl
-            this.lesssick = this.leaveForms[0].ltasl
-            this.balancevacation = this.leaveForms[0].bvl
-            this.balancesick = this.leaveForms[0].vsl
-            this.withpay = this.leaveForms[0].dayswpay
-            this.withoutpay = this.leaveForms[0].dayswopay
-            this.othersSpecify = this.leaveForms[0].others
+            this.leavecredits = this.leaveForms.asof
+            this.totalvacation = this.leaveForms.tevl
+            this.totalsick = this.leaveForms.tesl
+            this.lessvacation = this.leaveForms.ltavl
+            this.lesssick = this.leaveForms.ltasl
+            this.balancevacation = this.leaveForms.bvl
+            this.balancesick = this.leaveForms.vsl
+            this.withpay = this.leaveForms.dayswpay
+            this.withoutpay = this.leaveForms.dayswopay
+            this.othersSpecify = this.leaveForms.others
 
-            if(this.leaveForms[0].reco == "1"){
+            if(this.leaveForms.reco == "1"){
                 this.recommendationLeavetype.push(1);
-            }else if(this.leaveForms[0].reco == "2"){
+            }else if(this.leaveForms.reco == "2"){
                 this.recommendationLeavetype.push(2);
-                this.text = this.leaveForms[0].recodesc
+                this.text = this.leaveForms.recodesc
             }
 
-            if (this.leaveForms[0].disapproved){
-                this.text2 = this.leaveForms[0].disapproved
+            if (this.leaveForms.disapproved){
+                this.text2 = this.leaveForms.disapproved
             }
 
-            const nameId = this.leaveForms[0].name_id
+            const nameId = this.leaveForms.name_id
             const foundName = this.names.find(name => name.name_id === nameId);
                    if (foundName) {
                        this.name = foundName;
@@ -979,31 +1027,31 @@ export default {
                        // Handle case where name is not found
                    }
 
-            if (this.leaveForms[0].type == 'Vacation Leave'){
+            if (this.leaveForms.type == 'Vacation Leave'){
                 this.selectedLeavetype = [0];
-            }else if (this.leaveForms[0].type == 'Mandatory/Forced Leave'){
+            }else if (this.leaveForms.type == 'Mandatory/Forced Leave'){
                 this.selectedLeavetype = [1];
-            }else if (this.leaveForms[0].type == 'Sick Leave'){
+            }else if (this.leaveForms.type == 'Sick Leave'){
                 this.selectedLeavetype = [2];
-            }else if (this.leaveForms[0].type == 'Maternity Leave'){
+            }else if (this.leaveForms.type == 'Maternity Leave'){
                 this.selectedLeavetype = [3];
-            }else if (this.leaveForms[0].type == 'Paternity Leave'){
+            }else if (this.leaveForms.type == 'Paternity Leave'){
                 this.selectedLeavetype = [4];
-            }else if (this.leaveForms[0].type == 'Special Privilege Leave'){
+            }else if (this.leaveForms.type == 'Special Privilege Leave'){
                 this.selectedLeavetype = [5];
-            }else if (this.leaveForms[0].type == 'Solo Parent Leave'){
+            }else if (this.leaveForms.type == 'Solo Parent Leave'){
                 this.selectedLeavetype = [6];
-            }else if (this.leaveForms[0].type == 'Study Leave'){
+            }else if (this.leaveForms.type == 'Study Leave'){
                 this.selectedLeavetype = [7];
-            }else if (this.leaveForms[0].type == '10-Day VAWC Leave'){
+            }else if (this.leaveForms.type == '10-Day VAWC Leave'){
                 this.selectedLeavetype = [8];
-            }else if (this.leaveForms[0].type == 'Rehabilitation Privilege'){
+            }else if (this.leaveForms.type == 'Rehabilitation Privilege'){
                 this.selectedLeavetype = [9];
-            }else if (this.leaveForms[0].type == 'Special Leave Benefits for Women'){
+            }else if (this.leaveForms.type == 'Special Leave Benefits for Women'){
                 this.selectedLeavetype = [10];
-            }else if (this.leaveForms[0].type == 'Special Emergency(Calamity) Leave'){
+            }else if (this.leaveForms.type == 'Special Emergency(Calamity) Leave'){
                 this.selectedLeavetype = [11];
-            }else if (this.leaveForms[0].type == 'Adoption Leave Leave'){
+            }else if (this.leaveForms.type == 'Adoption Leave Leave'){
                 this.selectedLeavetype = [12];
             }else{
                 
@@ -1011,54 +1059,54 @@ export default {
 
 
 
-            if (this.leaveForms[0].detail.startsWith('Within the Philippines,')) {
+            if (this.leaveForms.detail.startsWith('Within the Philippines,')) {
                 if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
                     this.vacationleavedetails.push(1);
-                    this.vacation1 = this.leaveForms[0].detail.replace('Within the Philippines,', '').trim();
+                    this.vacation1 = this.leaveForms.detail.replace('Within the Philippines,', '').trim();
                     return 'Within the Philippines, ' + this.vacation1;
                 }
-            } else if (this.leaveForms[0].detail.startsWith('Abroad(Specify),')) {
+            } else if (this.leaveForms.detail.startsWith('Abroad(Specify),')) {
                 if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
                     this.vacationleavedetails.push(2);
-                    this.vacation2 = this.leaveForms[0].detail.replace('Abroad(Specify),', '').trim();
+                    this.vacation2 = this.leaveForms.detail.replace('Abroad(Specify),', '').trim();
                     return 'Abroad(Specify), ' + this.vacation2;
                 }
-            } else if (this.leaveForms[0].detail.startsWith('In Hospital (Specify Illness),')) {
+            } else if (this.leaveForms.detail.startsWith('In Hospital (Specify Illness),')) {
                 if (this.selectedLeavetype.includes(2)) {
                     this.sickleavedetails.push(1);
-                    this.sick1 = this.leaveForms[0].detail.replace('In Hospital (Specify Illness),', '').trim();
+                    this.sick1 = this.leaveForms.detail.replace('In Hospital (Specify Illness),', '').trim();
                     return 'In Hospital (Specify Illness), ' + this.sick1;
                 }
-            } else if (this.leaveForms[0].detail.startsWith('Out Patient (Specify Illness),')) {
+            } else if (this.leaveForms.detail.startsWith('Out Patient (Specify Illness),')) {
                 if (this.selectedLeavetype.includes(2)) {
                     this.sickleavedetails.push(2);
-                    this.sick2 = this.leaveForms[0].detail.replace('Out Patient (Specify Illness),', '').trim();
+                    this.sick2 = this.leaveForms.detail.replace('Out Patient (Specify Illness),', '').trim();
                     return 'Out Patient (Specify Illness), ' + this.sick2;
                 }
-            } else if (this.leaveForms[0].detail.startsWith(`Completion of Master's Degree,`)) {
+            } else if (this.leaveForms.detail.startsWith(`Completion of Master's Degree,`)) {
                 if (this.selectedLeavetype.includes(7)) {
                     this.studyleavedetails.push(1);
-                    this.otherPurpose = this.leaveForms[0].detail.replace(`Completion of Master's Degree,`, '').trim();
+                    this.otherPurpose = this.leaveForms.detail.replace(`Completion of Master's Degree,`, '').trim();
                     return `Completion of Master's Degree, ` + this.otherPurpose;
                 }
-            } else if (this.leaveForms[0].detail.startsWith('BAR/Board Examination Review Other,')) {
+            } else if (this.leaveForms.detail.startsWith('BAR/Board Examination Review Other,')) {
                 if (this.selectedLeavetype.includes(7)) {
                     this.studyleavedetails.push(2);
-                    this.otherPurpose = this.leaveForms[0].detail.replace('BAR/Board Examination Review Other,', '').trim();
+                    this.otherPurpose = this.leaveForms.detail.replace('BAR/Board Examination Review Other,', '').trim();
                     return 'BAR/Board Examination Review Other, ' + this.otherPurpose;
                 }
-            } else if (this.leaveForms[0].detail === this.leaveforwoman) {
+            } else if (this.leaveForms.detail === this.leaveforwoman) {
                 if (this.selectedLeavetype.includes(10)) {
                     return this.leaveforwoman;
                 }
-            } else if (this.leaveForms[0].detail === "Monetization of Leave Credits") {
+            } else if (this.leaveForms.detail === "Monetization of Leave Credits") {
                 this.terminalleave = [0];
                 this.monetization = [0];
                 if (this.monetization.includes(1)) {
                      // Example push
                     return 'Monetization of Leave Credits';
                 }
-            } else if (this.leaveForms[0].detail === 'Terminal Leave') {
+            } else if (this.leaveForms.detail === 'Terminal Leave') {
                 this.terminalleave = [1];
                 this.monetization = [1];
                 if (this.monetization.includes(2)) {
@@ -1067,20 +1115,21 @@ export default {
                 }
             }
 
+            
+
           }
+          this.generateQRCode()
+          
         })
         .catch(error => {
           console.error('Error fetching leave forms:', error);
         });
     },
     comparePosition() {
-      if (this.leaveForms.length > 0 && this.positions.length > 0) {
-        const leaveForm = this.leaveForms[0];
-        console.log(leaveForm.position_id)
+      if (this.leaveForms && this.positions.length > 0) {
+        const leaveForm = this.leaveForms;
         const positionsh = this.positions[leaveForm.position_id-1];
         this.position = positionsh.position_name
-        console.log(this.position)
-        
       }
       return null;
     },
@@ -1092,10 +1141,10 @@ export default {
     },
 
        updateRows() {
-           this.rows = this.text.length / 63 + 1
+           this.rows = this.text ? this.text.length / 63 + 1 : 1
        },
        updateRows2() {
-           this.rows2 = this.text2.length / 63 + 1
+           this.rows2 = this.text2 ? this.text2.length / 63 + 1 : 1
        },
        handleDateChange() {
            const selectedDate = new Date(this.selectedDate);
@@ -1144,6 +1193,17 @@ export default {
 
    computed: {
 
+    formattedSalary: {
+      get() {
+        // Add commas to the salary value
+        return this.salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      },
+      set(newValue) {
+        // Remove commas when the value is changed manually
+        this.salary = parseInt(newValue.replace(/,/g, ""), 10);
+      }
+    },
+
        weekdaysCountWithSuffix: {
            get() {
                return `${this.weekdaysCount} ${this.weekdaysCount === 1 ? 'Day' : 'Days'}`;
@@ -1173,11 +1233,6 @@ export default {
                return `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}, ${startDate.getFullYear()}`;
            }
        },
-       // formattedEndDate() {
-       //     if (!this.endDate) return '';
-       //     const endDate = new Date(this.endDate);
-       //     return `${endDate.toLocaleString('en-US', { month: 'long' })} ${endDate.getDate()}, ${endDate.getFullYear()}`;
-       // },
 
        formattedDateRange() {
            if (!this.startDate) return '';
@@ -1326,6 +1381,51 @@ export default {
    position: relative;
    top: 2px;
 }
+
+.cueare{
+  display: flex; flex-direction: column; position: absolute; bottom: 0; right: 0;
+}
+
+.bigz{
+  height: 80px; width: 80px; margin-left: 165px; margin-bottom: 5px; margin-top: -40px; position: absolute;
+}
+.centz{
+  height: 40px; width: 40px;  margin-top: -20px; margin-left: 190px; position: absolute;
+}
+.qrquote {
+    margin-top: 55px; margin-right: 10px;margin-bottom: 20px;
+}
+
+@media print {
+    .leverage{
+        display: none !important;
+    }
+    .qrquote {
+    margin-top: 50px;
+    }
+    .a4-container {
+    border: none;
+    height: calc(100vh - 40px); /* Adjust height to fit one page */
+    overflow: hidden; /* Prevent content overflow */
+    position: relative; /* Allows for precise positioning */
+    top: -100px; /* Move the container down by 20mm */
+  }
+  @page {
+    size: A4;
+    margin: 5%;
+  }
+  .a4-photo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* Place the photo behind other content */
+  }
+
+}
+
 
 
 </style>

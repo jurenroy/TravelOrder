@@ -1,16 +1,16 @@
 <template>
   <headers v-if="showHeader1" class="headz"  @toggleEdit="handleEditToggle" @toggleLogout="handleLogoutToggle"/>
   <headers1 v-if="showHeader2" class="headx"/>
-  <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showleavehome && acc.signature !== null">
+  <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showleavehome && acc.signature !== null" class="leverage">
     <img src="../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
     <p style="margin-left:10px; font-size: 20px; margin-top: 9px; cursor: pointer;" @click="$router.push('/')">Home</p>
   </div>
   <div class="titlez" v-if="!isregisclick && !employeelisleave && !leaveedit && acc.signature !== null">
       <div>
-         <p class="travel" v-if="!isaddleave">Leave Form</p>
+         <p class="travel">Leave Form</p>
       </div>
-      <div class="navigationz" v-if="!isaddleave">
-         <button class="addleave" @click="toggleForm">Add Leave</button>
+      <div class="navigationz">
+         <button class="addleave" @click="toggleForm">{{ isaddleave ? 'Close Form' : 'Add Form'}}</button>
          <button v-if="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="regleave" @click="toggleRegistration">{{'Registration' }}</button>
          <button v-if="!isVisible && acc.type_id == 1" class="emploleave" @click="employeelst">{{'Employee List' }}</button>
       </div>
@@ -22,65 +22,12 @@
    <editpage v-if="leaveedit" :show="leaveedit" @handleBack2="handleBack2"/>
    <signature v-if="acc.signature === null" />
    <leavetable v-if="!isaddleave && !isregisclick && !employeelisleave && !leaveedit && acc.signature !== null" />
-   <leavepdf v-if="(isaddleave && !leaveedit)"/>
    <leavelogout v-if="isleavelogoutClicked" :show="isleavelogoutClicked" @handleNo="handleNo"/>
-  <!-- <div>
-    
-    <div style="flex-direction: column; justify-content: center;">
-      
-    </div>
-    <div style="flex-direction: column; justify-content: center;" >
-      
-    </div>
-    <div style="flex-direction: column; justify-content: center;" >
-      
-    </div>
-    <div style="flex-direction: column; justify-content: center;" >
-      
-    </div>
-    <div>
-      
-      <div v-if="!isregisclick">
-        <div v-if="!employeelisleave">
-          <div class="sigleave">
-            
-            <div v-else>
-              <div v-if="!isregisclick">
-                <div v-show="!isaddleave"
-                  style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                  <div class="tra">
-                    <p class="travel">Leave Form</p>
-                  </div>
-                  <div>
-                    <button v-show="!isaddleave" class="addleave" @click="toggleForm">Add Form</button>
-                    <button v-show="!isaddleave && acc.type_id == 1 && acc.name_id == 76" class="regleave"
-                      @click="toggleRegistration">{{
-      'Registration' }}</button>
-                    <button v-show="!isaddleave && acc.type_id == 1" class="emploleave" @click="employeelst">{{
-      'Employee List' }}</button>
-                  </div>
-                  <div>
-                    
-                  </div>
-
-                </div>
-                <div style="display: flex; justify-content: center;" v-if="(isaddleave && !leaveedit)">
-                  
-                </div>
-                
-              </div>
-            </div>
-          </div>
-          <div class="logssssleave" v-if="isleavelogoutClicked">
-            
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
+   <leaveleave v-if="(isaddleave && !leaveedit)"/>
 </template>
 
 <script setup>
+import leaveleave from './formleave2.vue'
 import employeelist from './employeelist.vue';
 import regis from './regis.vue';
 import editpage from './editpage.vue';
@@ -92,7 +39,7 @@ import leavelogout from '../components/logout.vue'
 import { showEdit } from '../components/heder.vue';
 import addleaveform from '../views/addleaveform.vue'
 import { hideedit } from '../components/heder.vue';
-import leavepdf from './leavepdf.vue';
+
 
 const handleBack = () => {
   isregisclick.value = false; // Close the popup
@@ -135,7 +82,7 @@ const showleavehome = ref(true)
 
 // visible sa  Add form
 const toggleForm = () => {
-  isaddleave.value = true
+  isaddleave.value = !isaddleave.value
   showEdit.value = false
   showleavehome.value = false
 };
@@ -353,6 +300,12 @@ export {
   }
 
   .tra {
+    display: none !important;
+  }
+  .leverage{
+    display: none !important;
+  }
+  .travel{
     display: none !important;
   }
 }

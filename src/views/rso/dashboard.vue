@@ -10,7 +10,6 @@
          <p class="travel" >Special Order</p>
       </div>
       <div class="navigationz" >
-         <button class="add" @click="toggleForm">{{ isVisible ? 'Close Form' : 'Add Form'}}</button>
          <button v-if="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="reg" @click="toggleRegistration">{{'Registration' }}</button>
          <button v-if="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{'Employee List' }}</button>
       </div>

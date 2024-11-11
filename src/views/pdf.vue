@@ -208,7 +208,7 @@
 
         <p style="letter-spacing: 5px; text-align: center; margin-top: -25px;">AUTHORIZATION</p>
         <p style="text-align: justify; margin-top: -10px; margin-left: 6%; width: 88%; text-indent: 3em;">I hereby
-          authorize the Accountant top deduct the corresponding amount of the unliquidated cash advance from my
+          authorize the Accountant to deduct the corresponding amount of the unliquidated cash advance from my
           succeeding salary for my failure to liquidate this travel within twenty(20) days upon return to my permanent
           official station pursuant to Commision on Audit(COA) Circular No. 2012-004 dated November 28, 2012.</p>
         <div class="inner-containerz" style="align-self: flex-end; margin-right: 6%; ">
@@ -248,12 +248,12 @@ export default {
   },
   data() {
     return {
-      yearToday: new Date().getFullYear(), // Get the current year
+      date: '',
+      yearToday: '', // Get the current year
       name: '',
       position: '',
       departure: '',
       destination: '',
-      date: '',
       division: '',
       station: '',
       arrival: '',
@@ -437,6 +437,7 @@ export default {
         this.departure = selectedForm.departure;
         this.destination = selectedForm.destination;
         this.date = selectedForm.date;
+        this.yearToday = selectedForm.date.slice(0, 4);
         this.division_id = selectedForm.division_id;
         this.station = selectedForm.station;
         this.arrival = selectedForm.arrival;
@@ -453,8 +454,6 @@ export default {
         this.signature1 = `${API_BASE_URL}/storage/${selectedForm.signature1}`;
         this.signature2 = `${API_BASE_URL}/storage/${selectedForm.signature2}`;
         this.signature3 = `${API_BASE_URL}/storage/null`;
-
-
         const nameDetails = this.names[this.name_id - 1];
         if (nameDetails) {
           this.name = `${nameDetails.first_name.toUpperCase()} ${nameDetails.middle_init.toUpperCase()} ${nameDetails.last_name.toUpperCase()}`;
