@@ -7,8 +7,8 @@
      style="cursor: pointer;">Back to Dashboard</label>
    </div>
 
-   <div class="a4-container">
-       <div class="a4-content">
+   <div class="a4-containerz">
+       <div class="a4-contentz">
            <div style="display: flex; flex-direction: row; justify-content: center;">
                <img :src="image1" alt="Background Image" class="pic1">
                <div style="text-align: center;">
@@ -633,10 +633,10 @@
                </div>
            </div>
            <div>
-          <div class="cueare">
-          <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" class="bigz" @contextmenu.prevent>
-          <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" class="centz" @contextmenu.prevent>
-          <p class="qrquote" style="font-size: 9px;">This is an official Leave Form approved digitally and generated from <br/>the MGB-X Online Leave Form. No original signature is required.</p>
+          <div class="cuearez">
+          <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" class="bigzz" @contextmenu.prevent>
+          <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" class="centzz" @contextmenu.prevent>
+          <p class="qrquotez" style="font-size: 9px;">This is an official Leave Form approved digitally and generated from <br/>the MGB-X Online Leave Form. No original signature is required.</p>
           </div>
         </div>
           <!-- <div class="leavebuttonss">
@@ -1333,7 +1333,7 @@ export default {
    stroke-dashoffset: -262.2723388671875;
 }
 
-.a4-container {
+.a4-containerz {
    position: relative;
    width: 210mm;
    height: 296mm;
@@ -1342,7 +1342,7 @@ export default {
    border: 1px solid #ccc;
 }
 
-.a4-content {
+.a4-contentz {
    height: 295mm;
 }
 
@@ -1382,17 +1382,17 @@ export default {
    top: 2px;
 }
 
-.cueare{
+.cuearez{
   display: flex; flex-direction: column; position: absolute; bottom: 0; right: 0;
 }
 
-.bigz{
+.bigzz{
   height: 80px; width: 80px; margin-left: 165px; margin-bottom: 5px; margin-top: -40px; position: absolute;
 }
-.centz{
-  height: 40px; width: 40px;  margin-top: -20px; margin-left: 190px; position: absolute;
+.centzz{
+  height: 40px; width: 40px;  margin-top: -15px; margin-left: 190px; position: absolute;
 }
-.qrquote {
+.qrquotez {
     margin-top: 55px; margin-right: 10px;margin-bottom: 20px;
 }
 
@@ -1403,12 +1403,13 @@ export default {
     .qrquote {
     margin-top: 50px;
     }
-    .a4-container {
+    .a4-containerz {
     border: none;
     height: calc(100vh - 40px); /* Adjust height to fit one page */
+    max-height: 100%;
     overflow: hidden; /* Prevent content overflow */
-    position: relative; /* Allows for precise positioning */
-    top: -100px; /* Move the container down by 20mm */
+    position: absolute; /* Allows for precise positioning */
+    top: 0px; /* Move the container down by 20mm */
   }
   @page {
     size: A4;
