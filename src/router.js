@@ -1,57 +1,84 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import highway from './views/highway.vue';
-import frontpage from './views/frontpage.vue';
-import dashboard from './views/dashboard.vue';
-import leaveform from './views/leaveform.vue'
-import leavepdf from './views/leavepdf.vue';
-import Leavepdfview from './views/leavepdfview.vue';
+// import dashboard from './views/dashboard.vue';
+// import leaveform from './views/leaveform.vue'
 import ictsrf from './views/ictsrf/dashboard.vue';
 import rso from './views/rso/dashboard.vue';
 
+import Layout from './views/layout/Layout.vue';
+import Dashboard from './views/dashboard/Dashboard.vue';
+import Services from './views/services/Services.vue';
+import TravelOrder from './views/travelorder/Dashboard.vue';
+import LeaveForm from './views/leaveform/Dashboard.vue'
 
 const routes = [
   {
-    path: '/',
-    component: highway,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/leaveform',
-    name: 'LeaveForm',
-    component: leaveform,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/travelorder',
-    name: 'TravelOrder',
-    component: dashboard,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/ICTSRF',
-    name: 'ICTSRF',
-    component: ictsrf,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/rso',
-    name: 'rso',
-    component: rso,
-    meta: { requiresAuth: true }
-  },
-  {
-    path: '/pdf',
-    name: 'PDF',
-    component: leavepdf,
-    meta: { requiresAuth: false }
-  },
-  {
-    path: '/pdfz',
-    name: 'PDF',
-    component: Leavepdfview,
-    meta: { requiresAuth: false }
-  },
+      path: '/',
+      component: Layout,
+      meta: { requiresAuth: false },
+      children: [
+      {
+        path: '/',
+        name: 'dashboard',
+        component: Dashboard,
+        meta: { requiresAuth: false }
+      },
+      {
+        path: '/services',
+        name: 'services',
+        component: Services,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/travelorder',
+        name: 'TravelOrder',
+        component: TravelOrder,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/leaveform',
+        name: 'LeaveForm',
+        component: LeaveForm,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/ICTSRF',
+        name: 'ICTSRF',
+        component: ictsrf,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/rso',
+        name: 'rso',
+        component: rso,
+        meta: { requiresAuth: true }
+      },
+      ]
+    },
+  // {
+  //   path: '/leaveform',
+  //   name: 'LeaveForm',
+  //   component: leaveform,
+  //   meta: { requiresAuth: true }
+  // },
+  // {
+  //   path: '/travelorder',
+  //   name: 'TravelOrder',
+  //   component: dashboard,
+  //   meta: { requiresAuth: true }
+  // },
+  // {
+  //   path: '/ICTSRF',
+  //   name: 'ICTSRF',
+  //   component: ictsrf,
+  //   meta: { requiresAuth: true }
+  // },
+  // {
+  //   path: '/rso',
+  //   name: 'rso',
+  //   component: rso,
+  //   meta: { requiresAuth: true }
+  // },
 ];
 
 const router = createRouter({
@@ -68,6 +95,8 @@ router.beforeEach((to, from, next) => {
     document.title = 'MGB ICT Request Form';
   } else if (to.name === 'rso' ) {
     document.title = 'MGB Special Order';
+  } else if (to.name === 'services' ){
+    document.title = 'MGBXPress Desk';
   } else {
     document.title = 'MGB Application Form';
   }  

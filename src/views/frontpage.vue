@@ -207,7 +207,6 @@ export default {
   color: green; /* color for valid */
 }
 .frontcontainer {
-
   display: flex;
   flex-direction: column;
   justify-content: center;

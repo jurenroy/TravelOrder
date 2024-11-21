@@ -1,22 +1,6 @@
 <template>
-      <!-- <div class="radio-input" v-if="admin.includes(parseInt(nameId))">
-        <label>
-          <input value="services" v-model="selectedView" type="radio" />
-          <span>Manage Services</span>
-        </label>
-        <label>
-          <input value="feedback" v-model="selectedView" type="radio" />
-          <span>Manage Feedback</span>
-        </label>
-        <span class="selection"></span>
-      </div> -->
-      
-  
-      <div class="scrollable-table">
-        <div class="services-section" v-if="selectedView === 'services'">
-          <!-- Status Filter -->
-          <div class="status-filter">
-            <label>Status:</label>
+      <div class="status-filter">
+            <h1>Request Status:</h1>
             <select v-model="selectedStatus">
               <option value="all">All</option>
               <option value="">Pending</option>
@@ -26,6 +10,10 @@
               <option value="done">Done</option>
             </select>
           </div>
+  
+          <div class="outer">
+      <div class="scrollable-table">
+          <!-- Status Filter -->
           <table>
             <thead>
               <tr>
@@ -50,58 +38,18 @@
                     <p>{{ service.feedback_filled == 0 ? 'Not yet' : 'Done' }} </p>
                     <button class="action-button" @click="openFeedback(service.id)" v-if="service.id !== feedbackView && service.feedback_filled == 0">Feedback</button> 
                     <button class="action-button" @click="cancelFeedback()" v-if="service.id == feedbackView && service.feedback_filled == 0">Cancel Feedback</button>
-                    <button class="action-button" @click="viewFeedback(service.id)" v-if="service.id !== selectedFeedbackView && service.feedback_filled == 1">View</button>
-                    <button class="action-button" @click="closeFeedback()" v-if="service.id == selectedFeedbackView && service.feedback_filled == 1">Close Feeback</button>
+                    <!-- <button class="action-button" @click="viewFeedback(service.id)" v-if="service.id !== selectedFeedbackView && service.feedback_filled == 1">View</button>
+                    <button class="action-button" @click="closeFeedback()" v-if="service.id == selectedFeedbackView && service.feedback_filled == 1">Close Feeback</button> -->
                   </div>
                   
                 </td>
                 <td class="actions">
                   <button class="action-button" @click="editService(service)" v-if="admin.includes(parseInt(nameId))">Edit </button>
-                  <button class="action-button" @click="deleteService(service.id)" v-if="admin.includes(parseInt(nameId))">Delete</button>
+                  <!-- <button class="action-button" @click="deleteService(service.id)" v-if="admin.includes(parseInt(nameId))">Delete</button> -->
                   <button class="action-button" @click="approveService(service.id)" v-if="nameId == 36 && service.approvedBy == null">Approve</button>
                   <button class="action-button" @click="disapproveService(service.id)" v-if="nameId == 36 && service.approvedBy == null && service.remarks !== 'Disapproved'">Dissapprove</button>
                   <button class="action-button" @click="viewService(service.id)" v-if="service.id !== selectedview">View</button>
                   <button class="action-button" @click="closeView()" v-if="service.id == selectedview">Close View</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-  
-        <div class="feedback-section" v-if="selectedView === 'feedback'">
-          <table>
-            <thead>
-              <tr>
-                <th>Feedback ID</th>
-                <th>Reference ID</th>
-                <th>Date</th>
-                <th>Evaluations</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="feedback in feedbacks" :key="feedback.feedbackid">
-                <td>{{ feedback.feedbackid }}</td>
-                <td @mouseover="showPopup(feedback.referenceid)" @mouseleave="hidePopup">
-                  {{ feedback.referenceid }}
-                  <div v-if="popupVisible && currentReferenceId === feedback.referenceid" class="popup">
-                    <h2>Service Request Details</h2>
-                    <div class="popup-content">
-                      <p><strong>Service Request No:</strong> {{ getServiceDetails(feedback.referenceid).serviceRequestNo }}</p>
-                      <p><strong>Date:</strong> {{ getServiceDetails(feedback.referenceid).date }}</p>
-                      <p><strong>Type of Service:</strong> {{ getServiceDetails(feedback.referenceid).typeOfService }}</p>
-                      <p><strong>Note:</strong> {{ getServiceDetails(feedback.referenceid).note }}</p>
-                      <p><strong>Requested by:</strong> {{ getName(getServiceDetails(feedback.referenceid).requestedBy) }}</p>
-                      <p><strong>Email:</strong> {{ getServiceDetails(feedback.referenceid).email }}</p>
-                    </div>
-                  </div>
-                </td>
-                <td>{{ feedback.date }}</td>
-                <td>{{ feedback.evaluation1 }}, {{ feedback.evaluation2 }}, {{ feedback.evaluation3 }}, {{ feedback.evaluation4 }}</td>
-                <td class="actions">
-                  <button class="action-button" @click="editFeedback(feedback.feedbackid)">Edit</button>
-                  <button class="action-button" @click="deleteFeedback(feedback.feedbackid)">Delete</button>
-                  <button class="action-button" @click="viewFeedback(feedback.feedbackid)">View</button>
                 </td>
               </tr>
             </tbody>
@@ -127,8 +75,8 @@
           </select>
         </div>
         <div class="button-group">
-          <button class="action-button" @click="updateService">Update</button>
-          <button class="action-button" @click="editPopupVisible = false">Cancel</button>
+          <button class="action-button2" @click="updateService">Update</button>
+          <button class="action-button2" @click="editPopupVisible = false">Cancel</button>
         </div>
       </div>
     
@@ -136,15 +84,18 @@
       <div class="popup">
         <h2>{{ confirmationMessage }}</h2>
         <div class="button-group">
-          <button class="action-button" @click="handleConfirm">Yes</button>
-          <button class="action-button" @click="handleCancel">No</button>
+          <button class="action-button2" @click="handleConfirm">Yes</button>
+          <button class="action-button2" @click="handleCancel">No</button>
         </div>
       </div>
     </div>
 
-    <ICTSRFview :id="selectedview" v-if="selectedview !== 0"/>
     <feedback :id="feedbackView" v-if="feedbackView !== 0" @cancelled="handleCancellation"/>
+
+    <div class="formview">
+    <ICTSRFview :id="selectedview" v-if="selectedview !== 0"/>
     <ICTSFFview :id="selectedFeedbackView" v-if="selectedFeedbackView !== 0"/>
+  </div>
   </template>
   
     
@@ -182,7 +133,7 @@
     const fetchServices = async () => {
       try {
         const response = await axios.get('http://202.137.117.84:8011/services/');
-        services.value = response.data;
+        services.value = response.data.sort((a, b) => b.id - a.id);
       } catch (error) {
         console.error('Error fetching services:', error);
       }
@@ -333,33 +284,6 @@
       fetchNames();
     });
 
-    // const approveService = async (id) => {
-    //   console.log('approve service:', id);
-    //   try {
-    //     await axios.post(`http://202.137.117.84:8011/services/update/${id}`, {
-    //       approvedBy: nameId
-    //     });
-    //     // Refresh services after updating
-    //     await fetchServices();
-    //     editPopupVisible.value = false; // Close the popup after updating
-    //   } catch (error) {
-    //     console.error('Error updating service:', error);
-    //   }
-    // };
-
-    // const disapproveService = async (id) => {
-    //   console.log('disapprove service:', id);
-    //   try {
-    //     await axios.post(`http://202.137.117.84:8011/services/update/${id}`, {
-    //       remarks: 'Disapproved'
-    //     });
-    //     // Refresh services after updating
-    //     await fetchServices();
-    //     editPopupVisible.value = false; // Close the popup after updating
-    //   } catch (error) {
-    //     console.error('Error updating service:', error);
-    //   }
-    // };
     const isPopupVisible = ref(false);
 const confirmationMessage = ref('');
 const selectedServiceId = ref(null);
@@ -415,10 +339,12 @@ const handleCancel = () => {
       // router.push(`/ictsrfv/${id}`); // Navigate to service view
     //   window.open(`/ictsrfv/${id}`, '_blank'); // Open in a new tab
      selectedview.value = id
+     viewFeedback(id)
     };
     // Function to close the view (optional since toggle handles this)
     const closeView = () => {
       selectedview.value = 0;
+      closeFeedback()
     };
     
     const editFeedback = (id) => {
@@ -480,12 +406,32 @@ const handleCancel = () => {
     padding: 10px; 
   }
   select {
-    padding: 0.75em;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-size: 1em;
-    width: auto;
+    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    border: 2px solid #000000;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    transition: background-color 0.3s ease, border 0.3s ease;
+    margin-left: 20px;
+    font-weight: bolder;
+  }
+  option {
+    background-color: #DDC7AD;
+    color: black;
+    font-weight: bolder;
+  }
+  option:hover {
+  background-color: #ff0000;  /* Adjust the color for hover effect */
+  color: #ff0000; /* Change text color on hover */
+}
+option:checked{
+    background-color: #92785b;
+  }
+  select:hover {
+    background-color: #8e8e8e !important;  /* Force hover effect */
+    color: #fff !important;  /* Change text color on hover */
   }
   
   .radio-input {
@@ -552,28 +498,58 @@ const handleCancel = () => {
   }
     
   table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    width: 100%; /* Ensures the table spans full width */
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+  }
 
-th,
-td {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
+  th, td {
+    padding: 12px 18px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+    font-family: 'Arial', sans-serif;
+  }
 
-th {
-  background-color: #f2f2f2;
-  position: sticky;
-  top: -2px;
-}
+  thead {
+    background: linear-gradient(180deg, #ccb59b, #92785b);
+    color: rgb(0, 0, 0);
+    position: sticky; /* This makes the header sticky */
+    top: 0; /* This keeps the header at the top */
+    z-index: 10; /* Make sure it's above the table rows */
+  }
 
-.scrollable-table {
-  max-height: 630px;
-  overflow-y: auto;
-  margin: 15px;
-}
+  thead th {
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+  .scrollable-table {
+    width: 100%; /* Table takes full width */
+    overflow-x: auto;
+    max-height: 700px;
+    overflow-y: auto;
+  }
+  .outer {
+    width: 100%;
+    max-width: 100%; /* Ensure it takes full width */
+    margin-top: 10px;
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Enable horizontal scrolling on smaller screens */
+  }
+
 
 .feedback{
   display: flex;
@@ -590,19 +566,29 @@ th {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50px;
+    height: max-content;
   }
   
   .action-button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
+    border-radius: 10px;
+    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    border: solid black 2px;
+    padding: 10px 20px;
+    color: rgb(0, 0, 0);
     cursor: pointer;
     transition: background 0.3s;
     margin: 0 5px;
-    height: 30px;
+    height: fit-content;
+  }
+  .action-button2 {
+    border-radius: 10px;
+    background-color: #000;
+    padding: 10px 20px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    transition: background 0.3s;
+    margin: 0 5px;
+    height: fit-content;
   }
   
   .action-button:hover {
@@ -614,7 +600,7 @@ th {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #ffffff; /* Background color */
+    background: linear-gradient(150deg, #DDC7AD, #92785b);
     border-radius: 12px; /* Rounded corners */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Subtle shadow */
     padding: 20px; /* Padding for inner content */
@@ -628,7 +614,7 @@ th {
   .popup h2 {
     margin: 0 0 15px; /* Margin below the title */
     font-size: 20px; /* Title font size */
-    color: #27b9c2; /* Accent color for the title */
+    color: #000000; /* Accent color for the title */
     text-align: center; /* Center title */
   }
   
@@ -651,7 +637,8 @@ th {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #f8f9fa; /* Light background */
+    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    border: solid black 2px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     padding: 20px;
@@ -681,11 +668,47 @@ th {
     display: flex;
     justify-content: space-between; /* Evenly space buttons */
     margin-top: 20px; /* Space above buttons */
+
   }
   
   .button-group .action-button {
-    flex: 1; /* Make buttons take equal space */
-    margin: 0 5px; /* Space between buttons */
+    background-color: #000;
+    border-radius: 8px;
+    color: white;
+    font-size: 20px;
+    font-weight: bolder;
+    border: solid black 2px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: fit-content;
+  }
+  .button-group .action-button:hover {
+    padding: 18px 40px;
+    font-size: 15px;
+    font-weight: 700;
+    background-color: #000000;
+    color: rgb(255, 255, 255);
+    border: solid black 2px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+    font-family: 'Playfair Display', serif;
+  }
+  button:hover {
+    background-color: #6d6c6c;
+    transform: translateY(-3px);
+  }
+  .status-filter{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-left: 30px;
+  }
+  .status-filter select{
+    height: 50px;
   }
     
     @media (max-width: 600px) {
@@ -717,6 +740,25 @@ th {
       .edit-popup{
         top: 30%;
       }
+    }
+
+    @media print{
+      .outer, .status-filter{
+        display: none;
+      }
+      .formview{
+        margin-left: -15%;
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        align-self: center;
+      }
+      .formelements{
+        margin-top: -10px;
+      }
+
     }
     </style>
     

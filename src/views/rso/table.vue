@@ -1,49 +1,50 @@
 <template>
-    <div style="display: flex; flex-direction: column;">
-     <h2 style="display: flex; flex-direction: row; align-self: center;" class="hist">History for: 
-        <select v-model="selectedStatus" id="status" class="styled-select">
-          <option v-for="option in options" :key="option" :value="option">
-            {{ option }}
-          </option>
-        </select> 
-      </h2>
-    <div v-if="load" class="loadings">
-      <img src='../../assets/loading.gif' width="auto" height="100px" />
-    </div>
-    <div style="display: flex; flex-direction: column; margin-top: 0px;">
-
-      <div class="search" style="display: flex; flex-direction: row; justify-content: space-between; align-items: end; margin-top: 15px; margin-bottom: 10px; height: 35px; ">
-        <div v-if="mawala "
-          style="display: flex; border: 2px solid black; border-radius: 5px; align-items: center; height: 30px;position: relative;">
-          <img class="`imgsearch" style=" height: 20px; width:20px; position: relative; padding-left: 5px;" src="../../assets/search.png">
-          <input class="pholder" type="text" v-model="searchQuery" placeholder="Search SO number or Name">
+    <div class="luxury-container">
+        <h2 class="luxury-title">
+          History for:
+          <select v-model="selectedStatus" id="status" class="luxury-select">
+            <option v-for="option in options" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select> 
+        </h2>
+    
+        <div v-if="load" class="luxury-loading">
+          <img src='../../assets/loading.gif' alt="Loading..." />
         </div>
-      </div>
-    </div>
+    
+        <div class="luxury-search-container">
+          <div class="luxury-search-bar">
+            <div v-if="mawala" class="luxury-search-box">
+              <img class="luxury-search-icon" src="../../assets/search.png" alt="Search" />
+              <input class="luxury-search-input" type="text" v-model="searchQuery" placeholder="Search TO number or Name" />
+            </div>
+          </div>
+        </div>
     
     <div v-if="mawala" class="outer">
         <div class="scrollable-table">
           <table>
             <thead>
               <tr>
-                <th style="text-align: center; " @click="sortData('rso_number')">rso_number 
+                <th style="text-align: center; " @click="sortData('rso_number')">RSO Number
                   <span :style="{ color: sortOrder === 'asc' ? 'green' : sortOrder === 'desc' ? 'red' : 'black', fontWeight: 'bold' }" v-if="sortKey == 'rso_number'">
                 {{ sortOrder === 'asc' ? '↑' : sortOrder === 'desc' ? '↓' : '' }}
                 </span>
                 </th>
-                <th style="text-align: center;" @click="sortData('rso_date')">rso_date
+                <th style="text-align: center;" @click="sortData('rso_date')">RSO Date
                   <span :style="{ color: sortOrder === 'asc' ? 'green' : sortOrder === 'desc' ? 'red' : 'black', fontWeight: 'bold' }" v-if="sortKey == 'rso_date'">
                 {{ sortOrder === 'asc' ? '↑' : sortOrder === 'desc' ? '↓' : '' }}
                 </span>
                 </th>
-                <th style="text-align: center;">rso_subject</th>
-                <th style="text-align: center;" @click="sortData('scheduled_dates')">scheduled_dates
+                <th style="text-align: center;">RSO Subject</th>
+                <th style="text-align: center;" @click="sortData('scheduled_dates')">Scheduled Dates
                   <span :style="{ color: sortOrder === 'asc' ? 'green' : sortOrder === 'desc' ? 'red' : 'black', fontWeight: 'bold' }" v-if="sortKey == 'scheduled_dates'">
                 {{ sortOrder === 'asc' ? '↑' : sortOrder === 'desc' ? '↓' : '' }}
                 </span>
                 </th>
-                <th style="text-align: center;">assigned_personnel</th>
-                <th style="text-align: center;">scan_copy_url</th>
+                <th style="text-align: center;">Assigned Personnel</th>
+                <th style="text-align: center;">Scan Copy Link</th>
               </tr>
             </thead>
             <tbody>
@@ -53,7 +54,7 @@
                 <td>{{ item.rso_subject }}</td>
                 <td>{{ item.scheduled_dates}}</td>
                 <td>{{ item.assigned_personnel}}</td>
-                <td><button @click="openFile(item.scan_copy_url)">open file</button></td>                
+                <td class="status-actions"><button @click="openFile(item.scan_copy_url)">open file</button></td>                
               </tr>
             </tbody>
           </table>
@@ -296,7 +297,132 @@ export default {
 </script>
 
 <style scoped>
+.luxury-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-family: 'Garamond', serif; /* Elegant, classic serif font */
+    color: #1a1a1a;
+  }
 
+  /* History Title Styling */
+  .luxury-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    font-family: 'Playfair Display', serif; /* Elegant serif font for headings */
+    font-weight: 600;
+    color: #212121;
+    letter-spacing: 1px;
+    margin-bottom: -30px;
+    flex-direction: row;
+  }
+
+  /* Custom Select Box */
+  .luxury-title select {
+    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    border: 2px solid #000000;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    transition: background-color 0.3s ease, border 0.3s ease;
+    margin-left: 20px;
+    font-weight: bolder;
+  }
+  .luxury-title option{
+    background-color: #DDC7AD;
+    color: black;
+    font-weight: bolder;
+  }
+  /* Hover effect for option (may not work in all browsers) */
+.luxury-title option:hover {
+  background-color: #ff0000;  /* Adjust the color for hover effect */
+  color: #ff0000; /* Change text color on hover */
+}
+
+  .luxury-title option:checked{
+    background-color: #92785b;
+  }
+
+  .luxury-title select:hover {
+    background-color: #8e8e8e !important;  /* Force hover effect */
+    color: #fff !important;  /* Change text color on hover */
+  }
+
+  .luxury-notification-count {
+    background-color: #fbbd08;
+    color: white;
+    border-radius: 50%;
+    padding: 6px 12px;
+    font-weight: bold;
+    font-size: 14px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Loading Indicator Styling */
+  .luxury-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+  }
+
+  .luxury-loading img {
+    width: 120px;
+    height: auto;
+  }
+
+  /* Search Section Styling */
+  .luxury-search-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+  }
+
+  .luxury-search-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .luxury-search-box {
+    display: flex;
+    align-items: center;
+    background-color: #f4f4f4;
+    border-radius: 25px;
+    padding: 8px 15px;
+    border: 1px solid #d1d1d1;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+  }
+
+  .luxury-search-icon {
+    height: 20px;
+    width: 20px;
+    margin-right: 10px;
+  }
+
+  .luxury-search-input {
+    border: none;
+    outline: none;
+    padding: 12px 15px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    background-color: transparent;
+    width: 250px;
+    border-radius: 25px;
+  }
+
+  .luxury-search-input::placeholder {
+    color: #b1b1b1;
+  }
 .notification-count {
   margin-top: -10px;
   margin-left: -10px;
@@ -391,35 +517,93 @@ export default {
 
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-}
+    width: 100%; /* Ensures the table spans full width */
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+  }
 
-th,
-td {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
+  th, td {
+    padding: 12px 18px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+    font-family: 'Arial', sans-serif;
+  }
 
-th {
-  background-color: #f2f2f2;
-  position: sticky;
-  top: -2px;
-}
+  thead {
+    background: linear-gradient(180deg, #ccb59b, #92785b);
+    color: rgb(0, 0, 0);
+    position: sticky; /* This makes the header sticky */
+    top: 0; /* This keeps the header at the top */
+    z-index: 10; /* Make sure it's above the table rows */
+  }
 
-.scrollable-table {
-  max-height: 630px;
-  overflow-y: auto;
-  margin: 15px;
-}
+  thead th {
+    font-size: 16px;
+    font-weight: 600;
+  }
 
-.outer {
-  border: 1px solid black;
-  box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
-  border-radius: 5px;
-  width: 100%;
-}
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+  .scrollable-table {
+    width: 100%; /* Table takes full width */
+    overflow-x: auto;
+    max-height: 690px;
+    overflow-y: auto;
+  }
+  
+  .outer {
+    width: 100%;
+    max-width: 100%; /* Ensure it takes full width */
+    margin-top: 10px;
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Enable horizontal scrolling on smaller screens */
+  }
+
+  tr td.status-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  tr td.status-actions button {
+    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    border-radius: 8px;
+    color: rgb(0, 0, 0);
+    font-size: 14px;
+    font-weight: bolder;
+    border: solid black 2px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  tr td.status-actions button:hover {
+    background-color: #4a76d7;
+    transform: translateY(-2px);
+  }
+
+  tr td.status-actions .action-icon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: opacity 0.3s ease;
+  }
+
+  tr td.status-actions .action-icon:hover {
+    opacity: 0.7;
+  }
 
 
 .loadings {

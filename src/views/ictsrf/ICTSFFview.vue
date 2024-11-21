@@ -251,6 +251,7 @@ onMounted(() => {
     margin: 0 auto;
     font-family: Arial, sans-serif;
     box-sizing: border-box;
+    margin-top: -10px;
   }
   
   .outer-div {

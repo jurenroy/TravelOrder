@@ -289,6 +289,7 @@ onMounted(() => {
     margin: 0 auto;
     font-family: Arial, sans-serif;
     box-sizing: border-box;
+    margin-top: -10px;
   }
   
   .outer-div {
@@ -360,7 +361,7 @@ onMounted(() => {
     flex: 7; /* 70% of the space */
     padding: 0.5em;
     border: 1px solid #000000;
-    height: 15px;
+    height: fit-content;
     text-align: left;
   }
   
@@ -369,7 +370,7 @@ onMounted(() => {
     padding: 0.5em;
     border: 1px solid #000000;
     border-left: #ffffff;
-    height: 15px;
+    height: fit-content;
     text-align: left;
   }
   
@@ -380,7 +381,7 @@ onMounted(() => {
     border-top: #ffffff;
     text-align: left;
     margin-bottom: 0.3rem;
-    height: 15px;
+    height: fit-content;
     font-size: 11px;
     font-weight: bold;
   }

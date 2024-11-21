@@ -1,8 +1,8 @@
 <template>
   <div class="feedback-container" :style="{marginTop: serviceRequests.length < '20%' ? '50%' : (!isFeedbackEnabled ? '10%' : '5%')}">
-    <h1>ICT Service Feedback Form</h1>
+    <h1 style="margin-top: -10px; margin-bottom: 10px;">ICT Service Feedback Form</h1>
     <form @submit.prevent="handleSubmit">
-      <div>
+      <div >
         <label>Requested by: {{ getName(requesters.requestedBy) }}</label>
         <label>{{ requesters.typeOfService }} - {{ formatDate(requesters.date) }}</label>
       </div>
@@ -171,24 +171,25 @@ onMounted(() => {
 
 <style scoped>
 .feedback-container {
-  background: linear-gradient(135deg, #ffffff, #f0f0f0);
+  background: linear-gradient(30deg, #DDC7AD, #92785b);
   border-radius: 15px;
-  padding: 1em;
-  width: 100%;
-  max-width: 800px;
-  margin: 2em auto;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  width: 90%;
+  max-width: 1000px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  border: 2px solid #000000;
   font-family: 'Roboto', sans-serif;
-  top: 50%; /* Center vertically */
+  top: 40%; /* Center vertically */
   left: 50%; /* Center horizontally */
   transform: translate(-50%, -50%); /* Adjust for the element's size */
   z-index: 1000; /* Ensure it's on top of other content */
   position: absolute;
+
 }
 
 h1 {
   font-family: 'Playfair Display', serif;
-  color: #333;
+  color: #000000;
   margin-bottom: 1.5em;
   font-size: 2.5em;
   font-weight: 700;
@@ -200,7 +201,7 @@ h1 {
 
 label {
   font-size: 1.1em;
-  color: #555;
+  color: #000000;
   margin-bottom: 0.5em;
   display: block;
   font-weight: 600;
@@ -220,7 +221,7 @@ label {
 }
 
 input[type="radio"] {
-  accent-color: #007bff;
+  accent-color: #000000;
   width: 1.5em;
   height: 1.5em;
 }
@@ -304,19 +305,20 @@ select {
 }
 
 /* Media query for mobile devices */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .feedback-container {
     padding: 1em;
     width: 92%;
     margin: 0;
+    top: 52%;
   }
 
   h1 {
-    font-size: 1.8em;
+    font-size: 1.5em;
   }
 
   .feedback-group {
-    margin-bottom: 1.5em;
+    margin-bottom: 0em;
   }
 
   .checkbox-group {
@@ -335,7 +337,7 @@ select {
   }
 
   .choice-label {
-    margin-left: 0.3em; 
+    margin-left: 0.1em; 
   }
 
   button {

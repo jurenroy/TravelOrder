@@ -143,29 +143,73 @@ export default {
 <style scoped>
 .notification-container {
   padding: 20px;
-  position: absolute;
-  margin-left: 240px;
-  margin-top: -110px;
+  position: relative;
+  margin-left: 230px;
+  margin-top: -90px;
 }
 
 .header {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  font-family: 'Playfair Display', serif; /* Elegant font */
 }
 
 .notification-count {
-  background-color: red;
+  background: linear-gradient(145deg, #646363, #000000); /* Luxurious gold gradient */
   color: white;
-  border-radius: 50%;
-  padding: 5px 10px;
-  margin-left: 10px;
+  font-size: 18px;
   font-weight: bold;
+  border-radius: 50%;
+  padding: 10px 15px;
+  text-align: center;
+  min-width: 40px;
+  min-height: 40px;
+  line-height: 1;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  animation: pulse 1.5s infinite ease-in-out; /* Subtle pulse effect */
 }
 
+/* Pulse effect */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Responsive styling for smaller screens */
 @media (max-width: 768px) {
   .notification-container {
-    margin-left: 240px;
-    margin-top: -110px;
+    margin-left: 90%;
+    margin-top: -25%;
+  }
+
+  .notification-count {
+    font-size: 16px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-container {
+    margin-left: 90%;
+    margin-top: -55%;
+  }
+
+  .notification-count {
+    font-size: 14px;
+    padding: 6px 10px;
   }
 }
 </style>

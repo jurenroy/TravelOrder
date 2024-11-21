@@ -1,17 +1,7 @@
 <template>
-   <headers v-if="showHeader1" class="headz" @toggleEdit="handleEditToggle" @toggleLogout="handleLogoutToggle"/>
-   <headers1 v-if="showHeader2" class="headx"/>
-   <div style=" position: relative; top: 80px; left: 10px; display: flex; flex-direction: row;" v-if="showhome" class="homerun">
-      <img src="../../assets/home.png" style="height: 30px; width: 30px; cursor: pointer;" @click="$router.push('/')">
-      <p style="margin-left:10px; font-size: 20px; margin-top: 9px; cursor: pointer;" @click="$router.push('/')">Home</p>
-    </div>
    <div class="titlez" v-if="!isRegistrationClicked && !employeelis && !isEdits">
       <div>
          <p class="travel" >Special Order</p>
-      </div>
-      <div class="navigationz" >
-         <button v-if="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="reg" @click="toggleRegistration">{{'Registration' }}</button>
-         <button v-if="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{'Employee List' }}</button>
       </div>
    </div>
    <tablez class="tablex" v-if="!isVisible && !isRegistrationClicked && !isEdits && !employeelis"/>
@@ -28,10 +18,8 @@
 <script setup>
 
 
-import headers from '../../components/heder.vue'
+
 import signature from '../../components/signature.vue'
-import headers1 from '../../components/heder2.vue'
-import addforms from './../form.vue';
 import tablez from './table.vue';
 import registrationform from './../regis.vue';
 import employeelist from '../../views/employeelist.vue'
@@ -181,91 +169,15 @@ export {
    margin-top: 10px;
 }
 
-.add {
-   margin-top: -19px;
-   margin-bottom: 13px;
-   height: auto;
-   width: 150px;
-   padding: 5px;
-   border-radius: 10px;
-   font-size: 20px;
-   font-weight: bold;
-   box-shadow: 7px 7px 12px black;
-   cursor: pointer;
-}
-
-.back {
-   margin-top: -19px;
-   height: auto;
-   width: 95px;
-   padding: 5px;
-   border-radius: 10px;
-   font-size: 20px;
-   font-weight: bold;
-   cursor: pointer;
-}
-
-.reg {
-   margin-top: -19px;
-   margin-bottom: 13px;
-   margin-left: 20px;
-   height: auto;
-   width: 150px;
-   padding: 5px;
-   border-radius: 10px;
-   font-size: 20px;
-   font-weight: bold;
-   box-shadow: 7px 7px 12px black;
-   cursor: pointer;
-}
-
-.emplo {
-   margin-top: -19px;
-   margin-bottom: 13px;
-   margin-left: 20px;
-   height: auto;
-   width: 160px;
-   padding: 5px;
-   border-radius: 10px;
-   font-size: 20px;
-   font-weight: bold;
-   box-shadow: 7px 7px 12px black;
-   cursor: pointer;
-}
-
-.logssss {
-   flex-direction: column;
-   justify-content: center;
-   top: 0px;
-   width: auto
-}
-
 .sig {
    margin-top: 100px;
 
 }
 
-.navigationz{
-   display: flex;
-   flex-direction: row;
-}
-
-.formz{
-   display: flex;
-   justify-content:center; 
-   margin-top: 0px;
-}
-
-.regiz{
-   display: flex;
-   justify-content:center; 
-   margin-top: 0px;
-}
 .titlez{
    display: flex; 
    flex-direction: column; 
    align-items: center; 
-   margin-top: 100px;
 }
 
 

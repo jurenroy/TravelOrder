@@ -1,7 +1,7 @@
 <template>
     <div class="titlez" v-if="!isRegistrationClicked && !employeelis && !isEdits">
-       <div>
-          <p class="travel" >ICT Request Form</p>
+       <div style="margin-top: -100px;">
+          <p class="travel" >Travel Order</p>
        </div>
        <div class="navigationz" >
           <button class="add" @click="toggleForm">{{ isVisible ? 'Close Form' : 'Add Form'}}</button>
@@ -21,10 +21,9 @@
  
  
  <script setup>
-
  import signature from '../../components/signature.vue'
- import addforms from './form.vue';
- import tablez from './table.vue';
+ import addforms from './Form.vue';
+ import tablez from './Table.vue';
  import registrationform from '../regis.vue';
  import employeelist from '../employeelist.vue'
  import logsss from '../../components/logout.vue'
@@ -32,23 +31,25 @@
  import { showEdit } from '../../components/heder.vue';
  import { isleavelogoutClicked, isregisclick } from '../leaveform.vue';
  import Help from '../../components/help/helpdata.vue'; // Adjust the path if necessary
-
+ 
  const handleBack = () => {
-  isRegistrationClicked.value = false; // Close the popup
-};
-const handleBack2 = () => {
-   console.log('yawa')
-   isEdits.value = false; // Close the popup
-};
-const handleNo = () => {
-   isButssClicked.value = false; // Close the popup
-};
-const handleEditToggle = () => {
-   isEdits.value = true; // Close the popup
-};
-const handleLogoutToggle = () => {
-   isButssClicked.value = true; // Close the popup
-};
+   isRegistrationClicked.value = false; // Close the popup
+ };
+ 
+ const handleBack2 = () => {
+    isEdits.value = false; // Close the popup
+ };
+ 
+ const handleNo = () => {
+    isButssClicked.value = false; // Close the popup
+ };
+ 
+ const handleEditToggle = () => {
+    isEdits.value = true; // Close the popup
+ };
+ const handleLogoutToggle = () => {
+    isButssClicked.value = true; // Close the popup
+ };
  </script>
  
  
@@ -57,7 +58,6 @@ const handleLogoutToggle = () => {
  import axios from 'axios';
  import { showleavehome } from '../leaveform.vue';
  import { API_BASE_URL } from '../../config'
- 
  
  const accountId = localStorage.getItem('accountId');
  const isVisible = ref(false);
@@ -289,6 +289,7 @@ const handleLogoutToggle = () => {
     display: flex; 
     flex-direction: column; 
     align-items: center; 
+    margin-top: 100px;
  }
  
  
@@ -319,9 +320,6 @@ const handleLogoutToggle = () => {
     }
     .empeee{
        margin-right: 0px;
-    }
-    .travel{
-        font-size: 35px;
     }
  }
  

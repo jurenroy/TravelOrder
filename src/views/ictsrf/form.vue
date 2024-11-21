@@ -1,6 +1,5 @@
 <template>
     <div class="form-container">
-      <h2 style="align-self: center;">Fill Up Form</h2>
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
           <label for="requested-by">Requested By</label>
@@ -166,14 +165,16 @@ const loadis = ref(false);
   <style scoped>
   /* Luxurious styles for the ICT Service Request Form view */
   .form-container {
-    background: linear-gradient(135deg, #ffffff, #f0f0f0);
-    border-radius: 15px;
-    padding: 2em;
-    max-width: 800px;
     margin: 2em auto;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     font-family: 'Roboto', sans-serif;
     flex-direction: column;
+    width: 90%;
+    max-width: 1000px;
+    background: linear-gradient(30deg, #DDC7AD, #92785b);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    border: 2px solid #000000; 
   }
   
   h1 {
@@ -220,25 +221,24 @@ const loadis = ref(false);
   }
   
   button {
-    padding: 0.75em 2em;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
+    padding: 18px 40px;
+    font-size: 18px;
+    font-weight: 700;
+    background-color: #000000;
+    color: rgb(255, 255, 255);
+    border: solid black 2px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 1.1em;
     transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+    font-family: 'Playfair Display', serif;
   }
   
   button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
+    background-color: #6d6c6c;
+    transform: translateY(-3px);
   }
-  
-  button:active {
-    background-color: #004094;
-    transform: translateY(0);
-  }
+
   .error {
   width: fit-content;
   justify-self: center;
