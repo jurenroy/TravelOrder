@@ -1,48 +1,27 @@
 <template>
-  <div class="una">
-    <div class="imagediv1" @click="navigatefront">
-      <img class="ima" src="../assets/logo.png" alt="Description of the image" >
-      <img class="ima ims" src="../assets/republic.png" alt="Description of the image" >
-      <img class="ima" src="../assets/bago.png" alt="Description of the image" >
+  <div class="OIC" v-if="(setEmployee === name.name_id || name.name_id === 76)">
+    <div class="status-row">
+      <h1>Status:</h1>
+      <h1 :style="{ color: setEmployee == selectedEmployee ? 'black' : 'red' }">
+        {{ setEmployee === 20 ? 'Regional Director' : 'OIC' }}
+      </h1>
     </div>
 
-    <div class="damn"
-      v-if="routerzz == 'TravelOrder' && (setEmployee === name.name_id || name.name_id === 76)">
-      <h1 style="position: fixed; margin-left:-90px ; margin-top: 3px;">Status:</h1>
-
-      <div v-if="setEmployee !== null && setEmployee !== ''">
-        <h1 :style="{ position: 'fixed', marginTop: '3px', color: setEmployee == selectedEmployee ? 'black' : 'red' }"
-          v-if="setEmployee === 20">In</h1>
-        <h1 :style="{ position: 'fixed', marginTop: '3px', color: setEmployee == selectedEmployee ? 'black' : 'red' }"
-          v-else>Sub</h1>
-      </div>
-      <button style="position: fixed; margin-top: 9px; margin-left: 280px; height: 30px;"
-        v-if="setEmployee !== selectedEmployee" @click="setAccount">Save Changes</button>
-      <select v-model="setEmployee" style="position: fixed; margin-top: 39px; margin-left: -40px;"
-        v-if="setEmployee !== name.name_id || name.name_id === 76">
+    <div v-if="setEmployee !== null && setEmployee !== ''">
+      <!-- Conditional rendering for 'In' or 'Sub' text can be handled here -->
+    </div>
+    
+    <div class="action-row">
+      
+      <select v-model="setEmployee" v-if="setEmployee !== name.name_id || name.name_id === 76">
         <option v-for="employee in employees" :key="employee.employee_id" :value="employee.name_id">
           {{ getName(employee.name_id) }}
         </option>
       </select>
+      <button v-if="setEmployee !== selectedEmployee" @click="setAccount">
+        Save Changes
+      </button>
     </div>
-    <div class="editnames" style="height: 90px;">
-      <div>
-        <text class="ima2 usew" v-if="Usernames" @click="showEdits" style="user-select: none;">{{ name.first_name }} {{
-        name.middle_init }} {{ name.last_name }} <img v-if="Usernames" src="../assets/down.png"
-            style="position: relative; width: 25px; height: 25px;top: 7px "></text>
-
-        <div v-if="showEdit" style="height: auto; width:auto ; position: relative; top: 5px;left: 10px; ">
-          <div
-            style="border:2px solid black; border-radius: 10px; padding:5px;  background-color: white; width: 60px; height:auto; position: relative; display: flex; flex-direction: column;">
-            <button class="editbut" v-if="hideedit" @click="toggleEdit">Edit</button>
-            <button class="logoutbut" @click="toggleLogout">Logout</button>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-
   </div>
 </template>
 
@@ -77,11 +56,6 @@ const nameLoaded = ref(false)
 const selectedEmployee = ref(null);
 const setEmployee = ref(null);
 const routerzz = localStorage.getItem('routerz')
-
-
-
-
-
 
 const setAccount = async () => {
   try {
@@ -255,144 +229,48 @@ export default {
 </script>
 
 <style>
-.una {
-  background-color: white;
-  display: flex;
-  height: 70px;
-  position: fixed;
+  .OIC {
+  position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid black;
-  box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
-}
-
-.imagediv1 {
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  align-items: center;
-}
-
-.editnames {
-
-  position: relative;
-  top: 30px;
-  left: -30px;
-}
-
-.imagediv3 {
-  display: flex;
-  align-items: center;
-  height: inherit;
-}
-
-.ima {
-  height: 50px;
-  width: 50px;
-  margin-top: -5px;
-  margin-left: 5px;
-  cursor: pointer;
-}
-
-.ima2 {
-
-  cursor: pointer;
-}
-
-.imabut {
-  margin-right: 30px;
-}
-
-
-.tes {
+  flex-direction: row;
   justify-content: center;
-  position: relative;
-  top: 6px;
-  left: 35px;
+  align-items: center;
+  width: auto;
 }
 
-
-
-.imabut {
-  border-radius: 10px;
-  font-size: 13px;
-  width: 60px;
-  height: 40px;
+.OIC h1,
+.OIC button,
+.OIC select {
+  margin: 5px 0;
 }
 
-.editbut {
-  border-radius: 5px;
-  font-size: 13px;
-  margin-bottom: 4px;
-  width: 60px;
-  position: relative;
-
-}
-
-.logoutbut {
-  border-radius: 5px;
-  font-size: 13px;
-  width: 60px;
-  position: relative;
-
-}
-
-.ims {
-  width: 160px;
-}
-
-.usew {
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  font-size: 15px
-}
-
-.damn{
+.OIC .status-row,
+.OIC .action-row {
   display: flex;
-  margin-top: 2px;
-  margin-left:-100px ;
-  height: inherit;
-  width: 250px;
+  align-items: center;
   justify-content: center;
+  z-index: 1999;
+}
+
+.OIC .status-row h1,
+.OIC .action-row button,
+.OIC .action-row select {
+  margin-right: 10px; /* Space between items in each row */
 }
 
 @media (max-width: 768px) {
-
-  .imabut,
-  .ima,
-  .ima2 {
-    margin-right: 0px;
-    height: 30px;
-    width: auto;
-  }
-
-  .ims {
-    width: 145.9px;
-  }
-
-  .imabut {
-    border-radius: 10px;
-    font-size: 13px;
-    width: 50px;
-    height: 30px;
-    margin-right: 1px;
-
-  }
-
-  .usew {
-    margin-right: -1px;
-    font-size: 10px;
-  }
-  .damn{
+  .OIC {
     display: none;
   }
-
 }
 
 @media print {
-  .una {
+  .OIC {
     display: none !important;
   }
 }
+
 </style>

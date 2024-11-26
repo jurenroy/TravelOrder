@@ -5,6 +5,7 @@
       <h1>{{ title }}</h1>
     </div>
 
+    <Heder/>
     <!-- Navigation container with links -->
     <nav class="nav-container">
       <nav class="nav" :class="{ 'is-open': isMenuOpen }">
@@ -36,12 +37,14 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Logout from '../logout/Logout.vue';
 import Login from '../login/Login.vue';
+import Heder from '../heder.vue';
 
 export default {
   name: 'Header',
   components: {
     Logout,
-    Login
+    Login,
+    Heder
   },
   setup() {
     const title = ref('MGBXPress Desk');

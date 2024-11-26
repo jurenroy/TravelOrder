@@ -169,7 +169,7 @@
           
           <!-- Signature Actions -->
           <td v-if="(siga && item.note !== null && item.signature1 == null && ![15, 21, 45, 48].includes(item.name_id) && item.division_id !== 5 && item.intervals == 0) || (acc.name_id == 15 && item.note !== null && item.signature1 == null && item.intervals == 1)" class="status-actions">
-            <button @click="signature1(item.travel_order_id)">Recommend</button>
+            <button @click="signature1(item.travel_order_id)">{{ sub.name_id === bus.name_id ? 'Approve' : 'Recommend' }}</button>
           </td>
 
           <td v-if="acc.name_id == 20 && item.note !== null && item.signature1 == null && item.intervals == 1 && [15, 21, 45, 48].includes(item.name_id)" class="status-actions">
@@ -578,6 +578,9 @@ export default {
       if (this.otpStatus) {
         const formData = new FormData();
       formData.append('signature1', this.acc.signature);
+      if (this.sub.name_id == this.bus.name_id){
+        formData.append('signature2', this.acc.signature);
+      }
 
       axios.post(`${API_BASE_URL}/update_form/${form_id}`, formData, {
         headers: {
