@@ -691,7 +691,7 @@ export default {
             this.formData = response.data
             this.siga = true
             if (this.sub.name_id == 20) {
-              this.formData = response.data.filter(form => form.name_id == this.acc.name_id);
+              this.formData = response.data
               this.siga = false
             }
           }
@@ -882,12 +882,17 @@ export default {
             // return (form.note == null) || (this.members.some(memberArray => memberArray.includes(form.name_id) && form.initial !== null && form.note == null))
             console.log(this.formData)
             return (form.note !== null && form.initial !== null && form.signature1 === null && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) || (form.aor == 0 && form.intervals == 1 && [21,48,45].includes(form.name_id) && form.note !== null && form.signature1 == null) || (form.intervals == 1 && ![15,20,21,48,45].includes(form.name_id) && form.note !== null && form.signature1 == null) || (form.division_id === this.sub.division_id && form.initial == null && form.name_id !== this.sub.name_id)
+          } else if (this.selectedStatus === 'Pending' && this.acc.name_id == 20) {
+            // return (form.note == null) || (this.members.some(memberArray => memberArray.includes(form.name_id) && form.initial !== null && form.note == null))
+            return (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null && form.name_id !== this.sub.name_id) || ([15,21,45,48].includes(form.name_id) && form.initial == null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id) || ([15,21,45,48].includes(form.name_id) && form.signature2 == null && form.name_id !== this.sub.name_id);
           } else if (this.selectedStatus === 'Pending') {
             // return (form.note == null) || (this.members.some(memberArray => memberArray.includes(form.name_id) && form.initial !== null && form.note == null))
             return (form.note !== null && form.initial !== null && form.signature1 === null && form.intervals == 0 && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) || (form.division_id === this.sub.division_id && form.initial == null && form.intervals == 1 && form.name_id !== this.sub.name_id)
           } else if (this.selectedStatus === 'Done' && this.acc.name_id == 15) {
             return (form.note !== null && form.signature1 !== null && form.intervals == 0 && form.division_id === this.sub.division_id) || (this.sub.name_id == form.sname && form.signature2 !== null) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id) || (form.intervals == 1 && ![15,20,21,48,45].includes(form.name_id) && form.note !== null && form.signature1 !== null) || form.to_num !== 0;;
-          }else if (this.selectedStatus === 'Done') {
+          } else if (this.selectedStatus === 'Done' && this.acc.name_id == 20) {
+            return (form.note !== null && form.signature1 !== null && form.signature2 !== null) || (form.division_id === 5 && form.note !== null && form.signature2 !== null) || ([15,21,45,48].includes(form.name_id) && form.initial !== null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id) || ([15,21,45,48].includes(form.name_id) && form.signature2 !== null && form.name_id !== this.sub.name_id);
+          } else if (this.selectedStatus === 'Done') {
             return (form.note !== null && form.signature1 !== null && form.intervals == 0 && form.division_id === this.sub.division_id) || (this.sub.name_id == form.sname && form.signature2 !== null) || (form.division_id === this.sub.division_id && form.initial !== null && form.intervals == 1 && form.name_id !== this.sub.name_id);
           }
           return true; // If no selection, return all

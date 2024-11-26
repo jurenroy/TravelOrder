@@ -1,7 +1,10 @@
 <template>
   <Dashboard />
   <div class="services">
-    <button class="servicesbutton" @click="navigateTo('TravelOrder')">Travel Order Form</button>
+    <div class="notificationcontainer">
+      <button class="servicesbutton" @click="navigateTo('TravelOrder')">Travel Order Form </button> 
+      <TravelOrderNotification class="luxury-notification-count"/>
+    </div>
     <button class="servicesbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
     <button class="servicesbutton" @click="navigateTo('ICTSRF')">ICT Service Request Form</button>
     <button class="servicesbutton" @click="navigateTo('rso')">Special Order Viewer</button>
@@ -77,6 +80,23 @@ const openLink = () => {
   transform: scale(1.02);
 }
 
+.luxury-notification-count {
+    background-color: #fb0808;
+    color: white;
+    border-radius: 100%;
+    padding: 6px 12px;
+    font-weight: bold;
+    font-size: 20px;
+    border: solid black 2px;
+    position: relative;
+    top: -30px;
+    right: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+.notificationcontainer{
+  margin-right: -45px;
+}
+
 
 @media (max-width: 768px) {
   .services {
@@ -86,6 +106,21 @@ const openLink = () => {
 
   .servicesbutton {
     width: 85%;
+  }
+  .notificationcontainer{
+    margin-right: -15%;
+    width: 100%;
+  }
+}
+@media (max-width: 390px) {
+  .luxury-notification-count {
+   margin-left: 0%;
+   margin-top: 130%;
+   position: absolute;
+  }
+  .notificationcontainer{
+    margin-right: -15%;
+    width: 100%;
   }
 }
 </style>
