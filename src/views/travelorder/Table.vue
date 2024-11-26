@@ -778,8 +778,7 @@ export default {
           if (acc.name_id !== 20) {
             pendingCount += formData.filter(form => {
               return (
-                (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 === null) ||
-                (form.division_id === 5 && form.note !== null && form.signature2 === null)
+                ((form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null) || (this.sub.division_id === form.division_id && form.note !== null && form.signature1 == null && form.signature2 == null) || (form.note !== null && form.signature2 == null && [15,21,48,45].includes(form.name_id)) || (form.division_id === this.sub.division_id && form.initial == null && form.intervals == 1 && form.name_id !== this.sub.name_id)) && form.name_id !== 20
               );
             }).length;
           } else {
@@ -1123,15 +1122,16 @@ export default {
   }
 
   .luxury-notification-count {
-    background-color: #fbbd08;
+    background-color: #fb0808;
     color: white;
-    border-radius: 50%;
+    border-radius: 100%;
     padding: 6px 12px;
     font-weight: bold;
-    font-size: 14px;
-    position: absolute;
-    top: -10px;
-    right: -10px;
+    font-size: 20px;
+    border: solid black 2px;
+    position: relative;
+    top: -30px;
+    right: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
 
