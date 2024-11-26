@@ -192,7 +192,7 @@
             <img src="/src/assets/close_note.png" @click="closeNote()" class="action-icon"/>
           </td>
 
-          <td v-if="(siga1 && item.note !== null && item.name_id !== 20 && item.signature2 === null) && ((item.signature1 !== null && item.division_id !== 5) || (item.signature1 === null && item.division_id === 5) || (item.signature1 !== null && item.division_id === 5 && item.intervals == 1)|| ([15, 21, 45, 48].includes(item.name_id)))" class="status-actions">
+          <td v-if="((siga1 && item.note !== null && item.name_id !== 20 && item.signature2 === null) && ((item.signature1 !== null && item.division_id !== 5) || (item.signature1 === null && item.division_id === 5) || (item.signature1 !== null && item.division_id === 5 && item.intervals == 1)|| ([15, 21, 45, 48].includes(item.name_id)))) || acc.name_id == 20" class="status-actions">
             <button @click="signature2(item.travel_order_id)">Approve</button>
           </td>
 
