@@ -580,6 +580,8 @@ export default {
       formData.append('signature1', this.acc.signature);
       if (this.sub.name_id == this.bus.name_id){
         formData.append('signature2', this.acc.signature);
+        formData.append('sname', this.sub.name_id);
+      formData.append('sdiv', this.sub.division_id);
       }
 
       axios.post(`${API_BASE_URL}/update_form/${form_id}`, formData, {
