@@ -219,6 +219,9 @@
               {{ option }}
             </option>
           </select> 
+          <span v-if="pendingCount !== 0" class="luxury-notification-count">
+            {{ pendingCount }}
+          </span>
         </h2>
     
         <div v-if="load" class="luxury-loading">
@@ -778,13 +781,62 @@
       updateVisibleItems() {
         this.visibleItems = this.formData.slice(0, 20);
       },
+      countPendingNotifications(formData, acc) {
+      let pendingCount = 0;
+
+      if (acc.name_id === 24) {
+        pendingCount += formData.filter(form => {
+        return [form.asof, form.tevl, form.tesl, form.ltavl, form.ltasl, form.bvl, form.vsl, form.dayswpay, form.dayswopay, form.others].every(val => val == null)
+      }).length;
+      } else if (acc.name_id === 2) {
+          pendingCount += formData.filter(form => {
+            return (form.asof || form.tevl || form.tesl || form.ltavl || form.ltasl || form.bvl || form.vsl || form.dayswpay || form.dayswopay || form.others) && form.certification == null;
+          }).length;
+      } else if (this.bus.name_id === this.sub.name_id) {
+          if (acc.name_id !== 20) {
+            pendingCount += formData.filter(form => {
+              return (
+                (this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+              );
+            }).length;
+          } else {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+              );
+            }).length;
+          }
+      } else if (acc.type_id === 3) {
+          if (acc.name_id === 20) {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+              );
+            }).length;
+          } else {
+            pendingCount += formData.filter(form => {
+              return (
+                this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation
+              );
+            }).length;
+          }
+      } else if (this.acc.type_id == 2) {
+          pendingCount += formData.filter(form => {
+            return form.name_id === this.acc.name_id && (!form.approval || !form.disapproved)
+          }).length;
+      }        
+      return pendingCount;
+    },
   
     },
   
     computed: {
+      pendingCount() {
+      console.log(this.countPendingNotifications(this.formData, this.acc))
+      return this.countPendingNotifications(this.formData, this.acc);
+    },
       filteredData() {
         if ([24].includes(this.acc.name_id)) {
-         
           return this.formData.filter(form => {
             if (this.selectedStatus === 'Me') {
               return form.name_id === this.acc.name_id;
@@ -825,9 +877,12 @@
           return this.formData.filter(form => {
             if (this.selectedStatus === 'Me') {
               return form.name_id === this.acc.name_id;
+            } else if (this.selectedStatus === 'Pending' && (this.acc.name_id == 20)) {
+              return (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
             } else if (this.selectedStatus === 'Pending') {
               return this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation
-              // return this.getDivisionGroup(this.sub.division_id).includes(form.name_id)
+            } else if (this.selectedStatus === 'Done'&& (this.acc.name_id == 20)) {
+              return form.appsig
             } else if (this.selectedStatus === 'Done') {
               return this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && form.recommendation
             }
@@ -946,15 +1001,16 @@
   }
 
   .luxury-notification-count {
-    background-color: #fbbd08;
+    background-color: #fb0808;
     color: white;
-    border-radius: 50%;
+    border-radius: 100%;
     padding: 6px 12px;
     font-weight: bold;
-    font-size: 14px;
-    position: absolute;
-    top: -10px;
-    right: -10px;
+    font-size: 20px;
+    border: solid black 2px;
+    position: relative;
+    top: -30px;
+    right: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   }
 

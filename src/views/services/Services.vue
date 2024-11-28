@@ -5,7 +5,10 @@
       <button class="servicesbutton" @click="navigateTo('TravelOrder')">Travel Order Form </button> 
       <TravelOrderNotification class="luxury-notification-count"/>
     </div>
-    <button class="servicesbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
+    <div class="notificationcontainer">
+      <button class="servicesbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
+      <LeaveFormNotification class="luxury-notification-count"/>
+    </div>
     <button class="servicesbutton" @click="navigateTo('ICTSRF')">ICT Service Request Form</button>
     <button class="servicesbutton" @click="navigateTo('rso')">Special Order Viewer</button>
     <button class="servicesbutton" @click="openLink">Document Tracking System</button>
@@ -17,6 +20,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import Dashboard from '../dashboard/Dashboard.vue';
 import TravelOrderNotification from '../../components/notifications/travelorder.vue';
+import LeaveFormNotification from '../../components/notifications/leaveform.vue';
 
 const router = useRouter();
 
@@ -110,17 +114,11 @@ const openLink = () => {
   .notificationcontainer{
     margin-right: -15%;
     width: 100%;
+    margin-bottom: -5%;
   }
-}
-@media (max-width: 390px) {
   .luxury-notification-count {
-   margin-left: 0%;
-   margin-top: 130%;
-   position: absolute;
-  }
-  .notificationcontainer{
-    margin-right: -15%;
-    width: 100%;
+   margin-left: 85%;
+   top: -70px;
   }
 }
 </style>
