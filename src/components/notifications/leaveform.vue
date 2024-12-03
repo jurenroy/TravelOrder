@@ -76,31 +76,33 @@ export default {
           pendingCount += formData.filter(form => {
             return (form.asof || form.tevl || form.tesl || form.ltavl || form.ltasl || form.bvl || form.vsl || form.dayswpay || form.dayswopay || form.others) && form.certification == null;
           }).length;
-      } else if (this.bus.name_id === this.sub.name_id) {
-          if (acc.name_id !== 20) {
-            pendingCount += formData.filter(form => {
-              return (
-                (this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
-              );
-            }).length;
-          } else {
-            pendingCount += formData.filter(form => {
-              return (
-                (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
-              );
-            }).length;
-          }
-      } else if (acc.type_id === 3) {
+      } 
+      // else if (this.bus.name_id === this.sub.name_id) {
+      //     if (acc.name_id !== 20) {
+      //       pendingCount += formData.filter(form => {
+      //         return (
+      //           (this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+      //         );
+      //       }).length;
+      //     } else {
+      //       pendingCount += formData.filter(form => {
+      //         return (
+      //           ((form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig) ) && form.name_id !== acc.name_id
+      //         );
+      //       }).length;
+      //     }
+      // } 
+      else if (acc.type_id === 3) {
           if (acc.name_id === 20) {
             pendingCount += formData.filter(form => {
               return (
-                (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+                (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig)
               );
             }).length;
           } else {
             pendingCount += formData.filter(form => {
               return (
-                this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation
+                (this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation && form.certification) && form.name_id !== acc.name_id
               );
             }).length;
           }

@@ -269,7 +269,7 @@
                     <img src="../../assets/check.png" alt="Approved Recommendation" class="status-icon">
                     <p class="status-approved">Ceritified</p>
                   </div>
-                  <div v-if="item.certification && !this.getDivisionGroup(5).includes(item.name_id)">
+                  <div v-if="item.certification && (!this.getDivisionGroup(5).includes(item.name_id) && ![15,21,45,48].includes(item.name_id))">
                     <div v-if="!item.recommendation" class="statusrow">
                       <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
                       <p class="status-pending">For Recommendation</p>
@@ -283,7 +283,7 @@
                       <p class="status-pending">not Recommended</p>
                     </div>
                   </div>
-                  <div v-if="item.recommendation || this.getDivisionGroup(5).includes(item.name_id)">
+                  <div v-if="item.recommendation || (this.getDivisionGroup(5).includes(item.name_id) && item.certification) || ([15,21,45,48].includes(item.name_id) && item.certification)">
                     <div v-if="!item.appsig" class="statusrow">
                       <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
                       <p class="status-pending">For Approval</p>
@@ -301,7 +301,14 @@
                 <td class="status-actions">
                   <button 
                     v-if="selectedTravelOrderId != item.leaveform_id"
-                    @click="openPDF(item.leaveform_id)">PDF</button>
+                    @click="openPDF(item.leaveform_id, false)">PDF</button>
+                  <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id && ChiefPDF != true" @click="close"
+                    style="width: 40px; height: 40px; cursor: pointer;" />
+                </td>
+                <td class="status-actions" v-if="[15,20,21,45,48].includes(item.name_id) && ChiefPDF !== false">
+                  <button 
+                    v-if="selectedTravelOrderId != item.leaveform_id"
+                    @click="openPDF(item.leaveform_id, true)">Chief PDF</button>
                   <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id" @click="close"
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
@@ -319,7 +326,7 @@
                   </button>
                 </td>
                 <td v-if="[15,21,45,48].includes(acc.name_id)" class="status-actions">
-                  <button v-if="!item.recommendation && getDivisionGroup(sub.division_id)"
+                  <button v-if="!item.recommendation && getDivisionGroup(sub.division_id) && item.name_id !== acc.name_id"
                     @click="recommendation(item.leaveform_id)"
                     :style="{
                       color: reconum === item.leaveform_id ? 'white' : 'black',
@@ -330,7 +337,7 @@
                     Recommend
                   </button>
                 </td>
-                <td v-if="((sub.division_id == bus.name_id) && !item.appsig)" class="status-actions">
+                <td v-if="((sub.division_id == bus.name_id || acc.name_id == 20) && !item.appsig)" class="status-actions">
                   <button 
                     @click="approve(item.leaveform_id)"
                     :style="{
@@ -355,13 +362,13 @@
         <button @click="printzz">Download as PDF</button>
         <button @click="close">Close PDF</button>
       </div> -->
-      <pdf :leaveform_id="selectedTravelOrderId"></pdf>
+      <pdf :leaveform_id="selectedTravelOrderId" :isChief="ChiefPDF"></pdf>
     </div>
   </template>
     
   <script>
   import axios from 'axios';
-  import pdf from './PDF.vue'
+  import pdf from './PDF.vue';
   import otpz from '../../components/otp.vue';
   import { API_BASE_URL } from '../../config'
   import { useAuthStore } from '../../store/auth';
@@ -385,20 +392,6 @@
       return {
         selectedStatus: 'Me',
         options: ['Pending', 'Done', 'Me'],
-        sectionChiefIds: [39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47],
-        members: [
-          [23, 25, 35, 70, 64],
-          [30, 7, 26, 18, 67, 49, 24],
-          [43, 40],
-          [32, 50, 71],
-          [33, 6],
-          [41, 46, 1, 28],
-          [38, 9, 65],
-          [44, 22, 61, 27],
-          [31, 11],
-          [16, 63, 19],
-          [12, 14, 72, 73]
-        ],
         yearToday: new Date().getFullYear(),
         formData: [],
         names: {},
@@ -432,8 +425,8 @@
         totalsick: '',
         lessvacation: '',
         lesssick: '',
-        balancevacation: '',
-        balancesick: '',
+        // balancevacation: '',
+        // balancesick: '',
         withpay: '',
         withoutpay: '',
         othersSpecify: '',
@@ -444,7 +437,7 @@
         certinum: 0,
         reconum: 0,
         apronum: 0,
-        
+        ChiefPDF: ''
       };
     },
     created() {
@@ -554,6 +547,7 @@
           this.recommendationLeavetype.length = 0
           this.text = ''
           this.recoms = false
+          this.reconum = 0
           
         }).catch(error => {
           console.error('Error:', error);
@@ -581,6 +575,7 @@
           this.text2 = ''
           this.approveLeavetype.length = 0
           this.appr = false
+          this.apronum = 0
         }).catch(error => {
           console.error('Error:', error);
         });
@@ -708,8 +703,9 @@
         }
         return 'Unknown';
       },
-      openPDF(travelOrderId) {
+      openPDF(travelOrderId, chief) {
         this.selectedTravelOrderId = travelOrderId;
+        this.ChiefPDF = chief
         useAuthStore().updateVerifiedOTPs('false');
         localStorage.setItem('verifiedOTPs', 'false');
         setTimeout(() => {
@@ -718,6 +714,7 @@
       },
       close() {
         this.selectedTravelOrderId = 0
+        this.ChiefPDF = ''
       },
   
       certification(leaveformID, asof, tevl, tesl, ltavl, ltasl, bvl, vsl, dayswpay, dayswopay, others) {
@@ -792,31 +789,33 @@
           pendingCount += formData.filter(form => {
             return (form.asof || form.tevl || form.tesl || form.ltavl || form.ltasl || form.bvl || form.vsl || form.dayswpay || form.dayswopay || form.others) && form.certification == null;
           }).length;
-      } else if (this.bus.name_id === this.sub.name_id) {
-          if (acc.name_id !== 20) {
-            pendingCount += formData.filter(form => {
-              return (
-                (this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
-              );
-            }).length;
-          } else {
-            pendingCount += formData.filter(form => {
-              return (
-                (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
-              );
-            }).length;
-          }
-      } else if (acc.type_id === 3) {
+      } 
+      // else if (this.bus.name_id === this.sub.name_id) {
+      //     if (acc.name_id !== 20) {
+      //       pendingCount += formData.filter(form => {
+      //         return (
+      //           ((this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)) && form.name_id !== acc.name_id
+      //         );
+      //       }).length;
+      //     } else {
+      //       pendingCount += formData.filter(form => {
+      //         return (
+      //           (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig)
+      //         );
+      //       }).length;
+      //     }
+      // }
+       else if (acc.type_id === 3) {
           if (acc.name_id === 20) {
             pendingCount += formData.filter(form => {
               return (
-                (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+                (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig)
               );
             }).length;
           } else {
             pendingCount += formData.filter(form => {
               return (
-                this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation
+                (this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation && form.certification) && form.name_id !== acc.name_id
               );
             }).length;
           }
@@ -863,9 +862,9 @@
             if (this.selectedStatus === 'Me') {
               return form.name_id === this.acc.name_id;
             } else if (this.selectedStatus === 'Pending' && (this.acc.name_id == 20 || this.acc.name_id == 76)) {
-              return (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+              return (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig)
             } else if (this.selectedStatus === 'Pending' && this.acc.name_id !== 20) {
-              return (this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+              return ((this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)) && form.name_id !== acc.name_id
             } else if (this.selectedStatus === 'Done' && (this.acc.name_id == 20 || this.acc.name_id == 76)) {
               return form.appsig
             } else if (this.selectedStatus === 'Done' && this.acc.name_id !== 20) {
@@ -878,9 +877,9 @@
             if (this.selectedStatus === 'Me') {
               return form.name_id === this.acc.name_id;
             } else if (this.selectedStatus === 'Pending' && (this.acc.name_id == 20)) {
-              return (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)
+              return (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig)
             } else if (this.selectedStatus === 'Pending') {
-              return this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation
+              return this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation && form.certification && form.name_id !== this.sub.name_id
             } else if (this.selectedStatus === 'Done'&& (this.acc.name_id == 20)) {
               return form.appsig
             } else if (this.selectedStatus === 'Done') {
@@ -912,13 +911,17 @@
         }
         return data;
       },
-      balancevacation() {
-        return this.lessvacation > 0 ? this.totalvacation - this.lessvacation : this.totalvacation;
-      },
-      // Calculate balance sick
-      balancesick() {
-        return this.lesssick > 0 ? this.totalsick - this.lesssick : this.totalsick;
-      }
+      // Calculate balance vacation and round to 3 decimal places
+  balancevacation() {
+    let balance = this.lessvacation > 0 ? this.totalvacation - this.lessvacation : this.totalvacation;
+    return Math.round(balance * 1000) / 1000;  // Round to 3 decimal places
+  },
+
+  // Calculate balance sick and round to 3 decimal places
+  balancesick() {
+    let balance = this.lesssick > 0 ? this.totalsick - this.lesssick : this.totalsick;
+    return Math.round(balance * 1000) / 1000;  // Round to 3 decimal places
+  }
     },
   
   

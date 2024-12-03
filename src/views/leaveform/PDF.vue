@@ -568,8 +568,12 @@
                           
                            disabled readonly
                            style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 350px; margin-left: 20px; font-size: 10px; text-decoration: underline; margin-bottom: 30px;"></textarea>
-                           <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;">
+                           <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;" v-if="!isChief">
                         <img :src="signature1" class="signatizz" v-if="signature1"
+                             style="width: auto; height: 80px; position: absolute; margin-top: -45px;" @contextmenu.prevent />
+                        </div>
+                        <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;" v-if="isChief">
+                        <img :src="signature" class="signatizz" v-if="signature"
                              style="width: auto; height: 80px; position: absolute; margin-top: -35px;" @contextmenu.prevent />
                         </div>
                        <p style="text-align: center;margin-bottom: -20px;z-index: 9;">{{ reco }}</p>
@@ -617,7 +621,7 @@
                </div>
                <div>
                 <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;">
-                        <img :src="signature" class="signatizz" v-if="signature"
+                        <img :src="signature" class="signatizz" v-if="signature && !isChief"
                              style="width: auto; height: 80px; position: absolute; margin-top: -35px;" @contextmenu.prevent />
                         </div>
                    <p style="text-align: center">{{ rd }}</p>
@@ -653,6 +657,10 @@ export default {
     props: {
       leaveform_id: {
         type: String,
+        required: true,
+      },
+      isChief: {
+        type: Boolean,
         required: true,
       },
     },
@@ -760,7 +768,7 @@ export default {
     leaveform_id(newVal) {
       // Check if the new value is not null, then populate fields
       if (newVal !== null) {
-        this.fetchLeaveForms(newVal);
+        this.fetchLeaveForms(newVal, this.isChief);
       }
     },
        text() {
@@ -835,7 +843,7 @@ export default {
        this.fetchAccounts();
        this.fetchNames();
        this.fetchemployee();
-       this.fetchLeaveForms(this.leaveform_id);
+       this.fetchLeaveForms(this.leaveform_id, this.isChief);
        this.comparePosition();
    },
 
@@ -844,7 +852,7 @@ export default {
             window.location.pathname = '/leaveform';
         },
         async generateQRCode() {
-      const textToEncode = `MGBX LEAVE FORM`;
+      const textToEncode = `MGBX LEAVE FORM ${this.name.first_name} ${this.name.middle_init} ${this.name.last_name}` ;
       try {
         this.qrCodeUrl = await QRCode.toDataURL(textToEncode);
       } catch (err) {
@@ -926,30 +934,51 @@ export default {
 
             this.division = this.employees.find(emp => emp.name_id == this.leaveForms.name_id).division_id
 
-                   if (this.division == 1) {
+                    if ([15, 21, 45, 48].includes(this.name_id)) {
+                       this.reco = this.isChief ?  this.signatories[4] : ''
+                       this.recopost = this.isChief ?  this.designations[4] : ''
+                       this.rd = this.isChief ? '' : this.signatories[4]
+                       this.rdpos = this.isChief ?  '' : this.designations[4]
+                   } else if (this.name_id == 20) {
+                       this.reco = ''
+                       this.recopost = ''
+                       this.rd = ''
+                       this.rdpos = ''
+                   }
+                   else if (this.division == 1) {
                        {
                            this.reco = this.signatories[0]
                            this.recopost = this.designations[0]
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
                        }
                    } else if (this.division == 2) {
                        {
                            this.reco = this.signatories[1]
                            this.recopost = this.designations[1]
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
                        }
                    } else if (this.division == 3) {
                        {
                            this.reco = this.signatories[2]
                            this.recopost = this.designations[2]
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
                        }
                    } else if (this.division == 4) {
                        {
                            this.reco = this.signatories[3]
                            this.recopost = this.designations[3]
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
                        }
                    } else if (this.division == 5) {
                        {
                            this.reco = ''
                            this.recopost = ''
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
                        }
                    } else {
                        this.reco = ''
@@ -957,17 +986,7 @@ export default {
                        this.rd = ''
                        this.rdpos = ''
                    }
-                   if ([15, 21, 45, 48].includes(this.name_id)) {
-                       this.reco = this.signatories[4]
-                       this.recopost = this.designations[4]
-                       this.rd = ''
-                       this.rdpos = ''
-                   } else if (this.name_id == 20) {
-                       this.reco = ''
-                       this.recopost = ''
-                       this.rd = ''
-                       this.rdpos = ''
-                   }
+                   
 
             this.signature3 =`${API_BASE_URL}`+"/storage/"+`${this.accounts.find(acc=>acc.name_id==this.name_id).signature}`
             this.signature2 = this.leaveForms.certification ?  `${API_BASE_URL}`+"/storage/"+`${this.leaveForms.certification}` : null
@@ -1377,10 +1396,10 @@ export default {
 }
 
 .bigzz{
-  height: 80px; width: 80px; margin-left: 165px; margin-bottom: 5px; margin-top: -40px; position: absolute;
+  height: 100px; width: 100px; margin-left: 145px; margin-bottom: 5px; margin-top: -57px; position: absolute;
 }
 .centzz{
-  height: 40px; width: 40px;  margin-top: -15px; margin-left: 190px; position: absolute;
+  height: 30px; width: 30px;  margin-top: -18px; margin-left: 185px; position: absolute; opacity: 50%;
 }
 .qrquotez {
     margin-top: 55px; margin-right: 10px;margin-bottom: 20px;
