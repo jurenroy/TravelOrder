@@ -624,8 +624,11 @@
                         <img :src="signature" class="signatizz" v-if="signature && !isChief"
                              style="width: auto; height: 80px; position: absolute; margin-top: -35px;" @contextmenu.prevent />
                         </div>
-                   <p style="text-align: center">{{ rd }}</p>
-                   <p style="text-align: center">{{ rdpos }}</p>
+                        <p v-if="rd !== ''" style="text-align: center; background-color: white; color: black;">{{ rd }}</p>
+                        <p v-else style="text-align: center; background-color: white; color: transparent;">&nbsp;</p>
+                                            
+                        <p v-if="rdpos !== ''" style="text-align: center; background-color: white; color: black;">{{ rdpos }}</p>
+                        <p v-else style="text-align: center; background-color: white; color: transparent;">&nbsp;</p>
                </div>
            </div>
            <div>
