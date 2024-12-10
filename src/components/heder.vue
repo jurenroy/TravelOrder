@@ -239,6 +239,7 @@ export default {
   justify-content: center;
   align-items: center;
   width: auto;
+  z-index: 999;
 }
 
 .OIC h1,
