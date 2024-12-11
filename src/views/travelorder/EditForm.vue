@@ -437,6 +437,7 @@
   display: flex;
   justify-content: center;
   margin-top: -90px;
+  z-index: 20;
 }
 
 .luxury-form-wrapper {
@@ -448,6 +449,7 @@
   border-radius: 15px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   border: 2px solid #000000;
+  z-index: 20;
 }
 
 .luxury-form-title {
