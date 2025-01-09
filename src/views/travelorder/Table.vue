@@ -28,9 +28,9 @@
       </div>
 
       <div class="note-body">
-        <textarea v-model="noteText" rows="4" readonly class="notetextarea"></textarea>
+        <textarea v-model="noteText" rows="4" :readonly="!(siga || siga1 || acc.name_id == 76 || acc.name_id == 37 || acc.name_id == 23 || acc.name_id == 64)" class="notetextarea"></textarea>
         <div class="note-footer">
-          <button class="save-btn" @click="postNote" v-if="siga || siga1 || acc.name_id == 76 || acc.name_id == 37">Save</button>
+          <button class="save-btn" @click="postNote" v-if="siga || siga1 || acc.name_id == 76 || acc.name_id == 37 || acc.name_id == 23 || acc.name_id == 64">Save</button>
           <button class="cancel-btn" @click="closeNote">Close</button>
         </div>
       </div>
@@ -176,7 +176,7 @@
             <button @click="signature11(item.travel_order_id, item.name_id)">Recommends CAO</button>
           </td>
 
-          <td v-if="item.travel_order_id !== notenum && item.note == null && (acc.name_id == 37)" class="status-actions">
+          <td v-if="item.travel_order_id !== notenum && item.note == null && (acc.name_id == 37 || acc.name_id == 76)" class="status-actions">
             <button @click="openNote(item.travel_order_id)">Add Note</button>
           </td>
 
@@ -379,7 +379,18 @@ export default {
       return [15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59,77].includes(item.name_id) && item.signature2 !== null
     },
     focusTextarea(text) {
-    this.noteText = text;
+    //this.noteText += text;
+    const adminText1 = "KAYSHE JOY F. PELINGON: Not within WFP";
+    const adminText2 = "KAYSHE JOY F. PELINGON: Within WFP";
+
+    // Check if the noteText already contains either of the admin texts
+    if (this.noteText.includes(adminText1) || this.noteText.includes(adminText2)) {
+        // If it does, replace the existing text with the new text
+        this.noteText = 'KAYSHE JOY F. PELINGON: ' + text;
+    } else {
+        // If it doesn't, append the new text
+        this.noteText += text;
+    }
     this.$refs.noteInput.focus();
   },
     edit(travelOrderId) {
@@ -484,7 +495,7 @@ export default {
     viewNotez(nutz, numx) {
       this.viewNote = true
       this.noteText = nutz
-      if ([15, 20, 21, 45, 48, 37,76].includes(this.acc.name_id)) {
+      if ([15, 20, 21, 45, 48, 37,76, 23, 64].includes(this.acc.name_id)) {
           this.noteText += "\n" + this.getName(this.acc.name_id) + ": ";
       }
       this.notenum = numx
@@ -675,6 +686,9 @@ export default {
           } else if (this.acc.name_id == 37) {
             this.formData = response.data
             this.siga = false
+          } else if ([23, 64].includes(this.acc.name_id)) {
+            this.formData = response.data
+            this.siga = false
           } else if (this.acc.type_id == 1) {
             this.formData = response.data;
             this.siga = false
@@ -776,7 +790,11 @@ export default {
           pendingCount += formData.filter(form => {
             return form.note === null && form.initial !== null;
           }).length;
-      } else if (this.bus.name_id === this.sub.name_id) {
+      } else if (acc.name_id === 23 || acc.name_id === 64) {
+          pendingCount += formData.filter(form => {
+            return (form.note && form.note.includes('KAYSHE JOY F. PELINGON:')) && !(form.note && (form.note.includes('MARY ASHLEY S. GADRINAB:') || form.note.includes('DULCE A. GUALBERTO:')));
+          }).length;
+      }else if (this.bus.name_id === this.sub.name_id) {
           if (acc.name_id !== 20) {
             pendingCount += formData.filter(form => {
               return (
@@ -867,6 +885,17 @@ export default {
           }
           return true; // If no selection, return all
         });
+      }else if ([23, 64].includes(this.acc.name_id)) {
+          return this.formData.filter(form => {
+              if (this.selectedStatus === 'Me') {
+                  return form.name_id === this.acc.name_id;
+              } else if (this.selectedStatus === 'Pending') {
+                  return (form.note && form.note.includes('KAYSHE JOY F. PELINGON:')) && !(form.note && (form.note.includes('MARY ASHLEY S. GADRINAB:') || form.note.includes('DULCE A. GUALBERTO:')));
+              } else if (this.selectedStatus === 'Done') {
+                  return form.note && (form.note.includes('MARY ASHLEY S. GADRINAB:') || form.note.includes('DULCE A. GUALBERTO:'));
+              }
+              return true; // If no selection, return all
+          });
       }else if (this.bus.name_id === this.sub.name_id) {
         return this.formData.filter(form => {
           if (this.selectedStatus === 'Me') {
