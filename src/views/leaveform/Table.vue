@@ -1,4 +1,5 @@
 <template>
+  <editform v-if="selectedTravelOrderIdEdit > 0" :leaveFormId="selectedTravelOrderIdEdit" @cancel-edit="closeEdit"></editform>
     <div class="note" v-if="certif">
       <div class="title-bar">
         <div class="title">LEAVE CREDITS</div>
@@ -298,6 +299,10 @@
                     </div>  
                   </div>
                 </td>
+                <td class="status-actions" v-if="item.name_id == acc.name_id || acc.name_id == 76">
+                  <button v-if="selectedTravelOrderIdEdit != item.leaveform_id" @click="edit(item.leaveform_id)">Edit</button>
+                  <img src="/src/assets/canceledit.png" v-if="selectedTravelOrderIdEdit == item.leaveform_id" @click="closeEdit" class="action-icon"/>
+                </td>
                 <td class="status-actions">
                   <button 
                     v-if="selectedTravelOrderId != item.leaveform_id"
@@ -370,6 +375,7 @@
   import axios from 'axios';
   import pdf from './PDF.vue';
   import otpz from '../../components/otp.vue';
+  import editform from './EditForm.vue';
   import { API_BASE_URL } from '../../config'
   import { useAuthStore } from '../../store/auth';
   
@@ -381,7 +387,8 @@
     },
     components: {
       pdf,
-      otpz
+      otpz,
+      editform,
     },
     mounted() {
       this.fetchAccounts();
@@ -397,6 +404,7 @@
         names: {},
         employees: {},
         selectedTravelOrderId: 0,
+        selectedTravelOrderIdEdit: 0,
         accountId: localStorage.getItem('accountId'),
         acc: [],
         imageUrl: '',
@@ -461,6 +469,13 @@
       formattedDate(dateTime) {
         return dateTime.split(' ')[0];
       },
+      edit(travelOrderId) {
+      this.selectedTravelOrderIdEdit = travelOrderId;
+      this.$emit('edit-travel-order', travelOrderId); // Emit the selected travel order ID
+    },
+    closeEdit(){
+      this.selectedTravelOrderIdEdit = 0
+    },
       printzz() {
         window.print();
       },
