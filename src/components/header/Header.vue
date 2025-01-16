@@ -47,7 +47,7 @@ export default {
     Heder
   },
   setup() {
-    const title = ref('MGBXPress Desk');
+    const title = ref('MGBxPORTAL');
     const isLoggedIn = ref(localStorage.getItem('isLoggedIn') === 'true');
     const isMenuOpen = ref(true);
     const isMobile = ref(false);
