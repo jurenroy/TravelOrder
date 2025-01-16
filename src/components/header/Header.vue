@@ -29,6 +29,7 @@
   <Login v-if="showLogin" :login="showLogin" @closeLogin="closeLoginModal"/>
   <!-- Logout Confirmation Popup -->
   <Logout v-if="isLogoutClicked" :show="isLogoutClicked" @handleNo="handleNo" @handleYes="handleLogout"/>
+  <TravelOrderNotification/>
 
 </template>
 
@@ -38,13 +39,15 @@ import { useRouter } from 'vue-router';
 import Logout from '../logout/Logout.vue';
 import Login from '../login/Login.vue';
 import Heder from '../heder.vue';
+import TravelOrderNotification from '../../components/notifications/travelorder.vue';
 
 export default {
   name: 'Header',
   components: {
     Logout,
     Login,
-    Heder
+    Heder,
+    TravelOrderNotification
   },
   setup() {
     const title = ref('MGBxPORTAL');

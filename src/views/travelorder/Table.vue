@@ -243,6 +243,13 @@ export default {
     this.fetchAccounts();
     this.fetchEmployees();
     this.fetchNames();
+    this.fetchInterval = setInterval(() => {
+      this.fetchAccounts(); // Fetch accounts every minute
+      if (this.pendingCount > 0){this.playSound()}
+    }, 60000); // 60000 milliseconds = 1 minute
+  },
+  beforeDestroy() {
+    clearInterval(this.fetchInterval); // Clear the interval when the component is destroyed
   },
   data() {
     return {
@@ -287,7 +294,8 @@ export default {
       bus: 0,
       searchQuery: '',
       csvformdata: [],
-      isVisible: true
+      isVisible: true,
+      fetchInterval: null, // To store the interval ID
     };
   },
   methods: {
