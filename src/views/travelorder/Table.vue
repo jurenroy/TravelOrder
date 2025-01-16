@@ -158,7 +158,7 @@
               <span v-if="item.sname !== 20">by: {{ getName(item.sname) }}</span>
             </p>
           </td>
-          <td class="status-actions" v-if="item.name_id == acc.name_id || item.name_id == 20">
+          <td class="status-actions" v-if="item.name_id == acc.name_id || acc.name_id == 20">
             <button v-if="selectedTravelOrderIdEdit != item.travel_order_id" @click="edit(item.travel_order_id)">Edit</button>
             <img src="/src/assets/canceledit.png" v-if="selectedTravelOrderIdEdit == item.travel_order_id" @click="closeEdit" class="action-icon"/>
           </td>
@@ -251,7 +251,7 @@ export default {
       options: ['Pending', 'Done', 'Me'],
       sectionChiefIds: [39, 2, 3, 8, 42, 34, 29, 36, 11, 5, 47],
       members: [
-        [23, 25, 35, 70, 64],
+        [23, 25, 35, 70, 64], 
         [30, 7, 26, 18, 67, 49, 24],
         [43, 40],
         [32, 50, 71],
