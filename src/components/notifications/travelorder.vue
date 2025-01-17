@@ -93,16 +93,16 @@ methods: {
       } else if (acc.name_id === 48) {
         pendingCount += formData.filter(form => {
           return (
-            (memberGroup.includes(form.name_id) && form.initial === null) ||
-            (form.division_id === this.sub.division_id && form.initial === null && form.intervals === 1 && form.name_id !== this.sub.name_id)
-          );
-        }).length;
-      } else {
-        pendingCount += formData.filter(form => {
-          return memberGroup.includes(form.name_id) && form.initial === null && form.intervals === 0;
-        }).length;
-      }
-    } else if (acc.name_id === 37) {
+              (memberGroup.includes(form.name_id) && form.initial === null) ||
+              (form.division_id === this.sub.division_id && form.initial === null && form.intervals === 1 && form.name_id !== this.sub.name_id)
+              );
+            }).length;
+          } else {
+            pendingCount += formData.filter(form => {
+              return memberGroup.includes(form.name_id) && form.initial === null && form.intervals === 0;
+          }).length;
+        }
+      } else if (acc.name_id === 37) {
       pendingCount += formData.filter(form => {
         return form.note === null && form.initial !== null;
       }).length;
@@ -123,15 +123,28 @@ methods: {
           }).length;
         }
     } else if (acc.type_id === 3) {
-      if (acc.name_id === 15) {
-        pendingCount += formData.filter(form => {
-          return (
-            (form.note !== null && form.initial !== null && form.signature1 === null && form.intervals === 0 && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) ||
-            (form.division_id === this.sub.division_id && form.initial === null && form.name_id !== this.sub.name_id)
-          );
-        }).length;
-      }
-    } else if (acc.type_id === 2) {
+          if (acc.name_id === 15) {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.note !== null && form.initial !== null && form.signature1 === null && form.intervals === 0 && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) ||
+                (form.division_id === this.sub.division_id && form.initial === null && form.name_id !== this.sub.name_id)
+              );
+            }).length;
+          }else if (acc.name_id === 20) {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.division_id !== 5 && form.note !== null && form.signature1 !== null && form.signature2 == null) || (form.division_id === 5 && form.note !== null && form.signature2 == null && form.name_id !== this.sub.name_id) || ([15,21,45,48].includes(form.name_id) && form.initial == null && form.intervals == 1 && form.aor == 1 && form.name_id !== this.sub.name_id) || ([15,21,45,48].includes(form.name_id) && form.signature2 == null && form.name_id !== this.sub.name_id)
+              );
+            }).length;
+          } else {
+            pendingCount += formData.filter(form => {
+              return (
+                (form.note !== null && form.initial !== null && form.signature1 === null && form.intervals === 0 && form.division_id === this.sub.division_id && form.name_id !== this.sub.name_id) ||
+                (form.division_id === this.sub.division_id && form.initial === null && form.name_id !== this.sub.name_id)
+              );
+            }).length;
+          }
+      } else if (acc.type_id === 2) {
       pendingCount += formData.filter(form => {
         return form.name_id === acc.name_id && form.signature2 === null;
       }).length;
@@ -142,9 +155,12 @@ methods: {
     if (!this.audio) {
       this.audio = new Audio(notificationSound); // Use the imported audio file
     }
+    if (this.pendingCount > 0){
     this.audio.play().catch(error => {
-      console.error('Error playing sound:', error);
-    });
+          console.error('Error playing sound:', error);
+        });
+    }
+    
   },
 },
 mounted() {
