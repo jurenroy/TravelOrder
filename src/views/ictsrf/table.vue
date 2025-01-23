@@ -31,7 +31,7 @@
                 <td>{{ service.serviceRequestNo }}</td>
                 <td>{{ formatDate(service.date) }}</td>
                 <td>{{ getName(service.requestedBy) }}</td>
-                <td>{{ service.typeOfService }}</td>
+                <td>{{ service.typeOfService }}, <br>{{ service.note }}</td>
                 <td>{{ service.remarks ? service.remarks : 'Pending' }} {{ service.approvedBy || service.remarks == 'Disapproved'? '' : '(Not yet Approved)' }}</td>
                 <td>
                   <div class="feedback">
@@ -44,6 +44,10 @@
                   
                 </td>
                 <td class="actions">
+                  <button class="action-button" @click="openNote(service.id)" v-if="admin.includes(parseInt(nameId)) && notenum !== service.id && !service.ictnote">Add note</button>
+                  <button class="action-button" @click="viewNotez(service.ictnote, service.id)" v-if="admin.includes(parseInt(nameId)) && service.ictnote && notenum !== service.id">View note</button>
+                  <button class="action-button" @click="closeNote()" v-if="admin.includes(parseInt(nameId)) && notenum == service.id">Close {{ viewNote ? 'view': '' }} note</button>
+
                   <button class="action-button" @click="editService(service)" v-if="admin.includes(parseInt(nameId))">Edit </button>
                   <!-- <button class="action-button" @click="deleteService(service.id)" v-if="admin.includes(parseInt(nameId))">Delete</button> -->
                   <button class="action-button" @click="approveService(service.id)" v-if="nameId == 36 && service.approvedBy == null">Approve</button>
@@ -90,6 +94,37 @@
       </div>
     </div>
 
+    <div class="note-modal" v-if="addNote">
+      <div class="note-header">
+        <span class="note-title">Add Note</span>
+        <div class="close-btn" @click="closeNote">×</div>
+      </div>
+
+      <div class="note-body">
+        <textarea v-model="noteText" rows="4" placeholder="Enter your note here..." class="notetextarea"></textarea>
+        <div class="note-footer">
+          <button class="save-btn" @click="postNote">Save</button>
+          <button class="cancel-btn" @click="closeNote">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-modal" v-if="viewNote">
+      <div class="note-header">
+        <span class="note-title">View Note</span>
+        <div class="close-btn" @click="closeNote">×</div>
+      </div>
+
+      <div class="note-body">
+        <textarea v-model="noteText" rows="4" :readonly="!(admin.includes(parseInt(nameId)))" class="notetextarea"></textarea>
+        <div class="note-footer">
+          <button class="save-btn" @click="postNote" v-if="admin.includes(parseInt(nameId))">Save</button>
+          <button class="cancel-btn" @click="closeNote">Close</button>
+        </div>
+      </div>
+    </div>
+
+
     <feedback :id="feedbackView" v-if="feedbackView !== 0" @cancelled="handleCancellation"/>
 
     <div class="formview">
@@ -105,6 +140,7 @@
     import ICTSRFview from './ICTSRFview.vue';
     import ICTSFFview from './ICTSFFview.vue';
     import feedback from './feedbackform.vue'
+    import { API_BASE_URL } from '@/config';
     // import { useRouter } from 'vue-router';
     
     // const router = useRouter();
@@ -125,6 +161,11 @@
     const feedbackView = ref(0)
     const selectedFeedbackView = ref(0)
 
+    const addNote = ref(false)
+    const viewNote = ref(false)
+    const notenum = ref(0)
+    const noteText = ref('')
+
     const handleCancellation = (id) => {
     console.log('Cancel clicked, ID set to:', id);
     feedbackView.value = id
@@ -132,7 +173,7 @@
     
     const fetchServices = async () => {
       try {
-        const response = await axios.get('http://202.137.117.84:8011/services/');
+        const response = await axios.get(`${API_BASE_URL}/services/`);
         services.value = response.data.sort((a, b) => b.id - a.id);
       } catch (error) {
         console.error('Error fetching services:', error);
@@ -142,7 +183,7 @@
     
     const fetchFeedbacks = async () => {
       try {
-        const response = await axios.get('http://202.137.117.84:8011/feedbacks/');
+        const response = await axios.get(`${API_BASE_URL}/feedbacks/`);
         feedbacks.value = response.data;
       } catch (error) {
         console.error('Error fetching feedbacks:', error);
@@ -225,7 +266,7 @@
       const updatedStatus = selectedStatusForEdit.value ? selectedStatusForEdit.value.charAt(0).toUpperCase() + selectedStatusForEdit.value.slice(1) : null;
       const serviceBy = selectedServiceBy.value; // Get the selected servicedBy
       try {
-        await axios.post(`http://202.137.117.84:8011/services/update/${serviceToEdit.value.id}`, {
+        await axios.post(`${API_BASE_URL}/services/update/${serviceToEdit.value.id}`, {
           remarks: updatedStatus,
           servicedBy: serviceBy
         });
@@ -246,12 +287,42 @@
     day: 'numeric',
   });
 };
+
+    const viewNotez = (nutz, numx) => {
+      viewNote.value = true
+      noteText.value = nutz
+      notenum.value = numx
+    };
+    const openNote = (numz) => {
+      addNote.value = true,
+      notenum.value = numz
+      noteText.value = ""
+    };
+    const closeNote = () => {
+      addNote.value = false,
+      viewNote.value = false,
+      notenum.value = 0
+    };
+    const postNote = () => {
+      const formData = new FormData();
+        formData.append('ictnote', noteText.value)
+      axios.post(`${API_BASE_URL}/services/update/${notenum.value}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(() => {
+        fetchServices();
+      }).catch(error => {
+        console.error('Error:', error);
+      });
+      closeNote()
+    };
   
     const names = ref([]);
   
     const fetchNames = async () => {
     try {
-      const namesResponse = await axios.get('http://202.137.117.84:8011/get_names_json');
+      const namesResponse = await axios.get(`${API_BASE_URL}/get_names_json`);
       // names.value = namesResponse.data;
       // Process names: Sort by last name, format in uppercase
       names.value = namesResponse.data
@@ -307,11 +378,11 @@ const handleConfirm = async () => {
   if (selectedServiceId.value) {
     try {
       if (isApproving.value) {
-        await axios.post(`http://202.137.117.84:8011/services/update/${selectedServiceId.value}`, {
+        await axios.post(`${API_BASE_URL}/services/update/${selectedServiceId.value}`, {
           approvedBy: nameId,
         });
       } else {
-        await axios.post(`http://202.137.117.84:8011/services/update/${selectedServiceId.value}`, {
+        await axios.post(`${API_BASE_URL}/services/update/${selectedServiceId.value}`, {
           remarks: 'Disapproved',
         });
       }
@@ -709,6 +780,148 @@ option:checked{
   }
   .status-filter select{
     height: 50px;
+  }
+
+  .note-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    width: 400px;
+    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease-out;
+    border: solid black 2px;
+  }
+
+  .note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    font-size: 20px;
+    color: #000000;
+  }
+
+  .note-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000; /* Elegant gold */
+  }
+
+  .close-btn {
+    font-size: 50px;
+    cursor: pointer;
+    color: #000000;
+    border-radius: 20px;
+    padding: 10px 20px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .close-btn:hover {
+    opacity: 1;
+  }
+
+  .note-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .notetextarea {
+    width: 100%;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: #404040;
+    color: #fff;
+    font-size: 16px;
+    resize: none;
+    box-sizing: border-box;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .notetextarea:focus {
+    outline: none;
+    box-shadow: inset 0 2px 10px rgba(255, 215, 0, 0.5); /* Gold focus */
+  }
+
+  .note-options {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .option-btn {
+    background-color: transparent;
+    color: #000000;
+    border: 1px solid #000000;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .option-btn:hover {
+    background-color: #000000;
+    color: #ffffff;
+  }
+
+  .note-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .save-btn, .cancel-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .save-btn {
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+  }
+
+  .save-btn:hover {
+    transform: scale(1.05);
+    background-color: #2e2e2e;
+    color: #ffffff;
+  }
+
+  .cancel-btn {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #000000;
+  }
+
+  .cancel-btn:hover {
+    background-color: #000000;
+    color: #ffffff;
+    transform: scale(1.05);
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
     
     @media (max-width: 600px) {
