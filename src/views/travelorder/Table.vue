@@ -158,7 +158,7 @@
               <span v-if="item.sname !== 20">by: {{ getName(item.sname) }}</span>
             </p>
           </td>
-          <td class="status-actions" v-if="item.name_id == acc.name_id || acc.name_id == 20">
+          <td class="status-actions" v-if="item.name_id == acc.name_id || acc.name_id == 20 || acc.name_id == 76">
             <button v-if="selectedTravelOrderIdEdit != item.travel_order_id" @click="edit(item.travel_order_id)">Edit</button>
             <img src="/src/assets/canceledit.png" v-if="selectedTravelOrderIdEdit == item.travel_order_id" @click="closeEdit" class="action-icon"/>
           </td>

@@ -98,7 +98,7 @@
               <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px'}">
                 LIBERTY B. DAITIA</p>
-              <p style="margin-top: -10px;">CHEIF AO</p>
+              <p style="margin-top: -10px;">CHIEF AO</p>
             </div>
   
             <div class="inner-container2" :style="{ marginRight: (division == 'ORD' && intervals == 0) || (divisionChiefs.includes(name) && intervals == 0) || (sdiv - 1 == divisionNames.indexOf(division)) ? '120px' : '0px' }" v-if="name !== 'RODANTE B. FELINA'">
@@ -127,7 +127,7 @@
   
             <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA'">
               <p class="aproz">Approved by:</p>
-              <img :src="signature2" class="signatiz" v-if="signature2 !== `${API_BASE_URL}/storage/null` && aor == 0" @contextmenu.prevent/>
+              <img :src="signature2" class="signatiz" v-if="signature2 !== `${API_BASE_URL}/storage/null` && aor == 0 && 2==1" @contextmenu.prevent/>
               <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
               >HENRY A. ADORNADO, PhD</p>
@@ -160,7 +160,7 @@
               <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px'}">
                 LIBERTY B. DAITIA</p>
-              <p style="margin-top: -10px;">CHEIF AO</p>
+              <p style="margin-top: -10px;">CHIEF AO</p>
             </div>
   
             <div class="inner-container2" :style="{ marginRight: (division == 'ORD' && intervals == 0) || divisionChiefs.includes(name) ? '120px' : '0px' }" v-if="((divisionChiefs.includes(name) && intervals == 0) || !divisionChiefs.includes(name)) && name != 'RODANTE B. FELINA'">

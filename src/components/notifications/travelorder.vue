@@ -28,9 +28,8 @@ data() {
     ],
     acc: [], // This will be populated with account data
     formData: [],
-    employees: {},
-    bus: 0, // Assuming this will be set in your logic
-    sub: 0, // Assuming this will be set in your logic
+    bus: {}, // Assuming this will be set in your logic
+    sub: {}, // Assuming this will be set in your logic
     fetchInterval: null, // To store the interval ID
   };
 },
@@ -51,28 +50,16 @@ methods: {
     axios.get(`${API_BASE_URL}/get_accounts_json`)
       .then(response => {
         this.acc = response.data.find(result => result.account_id == this.accountId);
-        this.fetchEmployees()
         this.fetchData()
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
   },
-  fetchEmployees() {
-      axios.get(`${API_BASE_URL}/get_employees_json`)
-        .then(response => {
-          this.employees = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching employeess:', error);
-        });
-    },
   fetchData() {
     fetch(`${API_BASE_URL}/get_forms_json`)
       .then(response => response.json())
       .then(data => {
-        this.sub = this.employees.find(emp => emp.name_id == this.acc.name_id)
-        this.bus = this.employees.find(emp => emp.rd !== null)
         this.formData = data;
         // Set acc based on your logic
       })
@@ -165,14 +152,14 @@ methods: {
     return pendingCount;
   },
   playSound() {
-    if (!this.audio) {
-      this.audio = new Audio(notificationSound); // Use the imported audio file
-    }
-    if (this.pendingCount > 0){
-    this.audio.play().catch(error => {
-          console.error('Error playing sound:', error);
-        });
-    }
+    //if (!this.audio) {
+    //  this.audio = new Audio(notificationSound); // Use the imported audio file
+    //}
+    //if (this.pendingCount > 0){
+    //this.audio.play().catch(error => {
+    //      console.error('Error playing sound:', error);
+    //    });
+    //}
     
   },
 },
@@ -180,7 +167,9 @@ mounted() {
   this.fetchAccounts()
   this.fetchInterval = setInterval(() => {
       this.fetchAccounts(); // Fetch accounts every minute
-      if (this.pendingCount > 0){this.playSound()}
+      if (this.pendingCount > 0){
+        //this.playSound()
+        }
     }, 60000); // 60000 milliseconds = 1 minute
   },
   beforeDestroy() {
