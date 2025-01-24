@@ -312,7 +312,7 @@ export default {
       //init pair 3
     },
     isInitialized(item) {
-      return (![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77,79,66,72,73].includes(item.name_id) && item.initial !== null) || ([15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1) || ([2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1)
+      return (![39, 2, 3, 8, 42, 34, 29, 36, 48, 5, 47, 15, 45, 21, 52, 51, 13, 10, 37, 62, 53, 75, 4, 56, 58, 55, 60, 59, 20,77,79,66,72,73,78].includes(item.name_id) && item.initial !== null) || ([15,21,45,48].includes(item.name_id) && item.aor == 1 && item.intervals == 1) || ([2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1)
       //init pair 1
     },
     initializedByRD(item) {

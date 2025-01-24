@@ -694,12 +694,21 @@ export const rso =
       position: "Unknown"
     },
   {
-      name_id: 79,
+      name_id: 78,
       first_name: "AMINAH - JEHAN",
       middle_init: "D.",
       last_name: "PANTAO",
       id_number: 79,
       full_name: "Aminah - Jehan Pantao",
+      position: "Unknown"
+    },
+    {
+      name_id: 79,
+      first_name: "SALVACION",
+      middle_init: "N.",
+      last_name: "NARANJO",
+      id_number: 51,
+      full_name: "Salvacion Naranjo",
       position: "Unknown"
     }
   ]
