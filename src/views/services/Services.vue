@@ -12,6 +12,8 @@
     <button class="servicesbutton" @click="navigateTo('ICTSRF')">ICT Service Request Form</button>
     <button class="servicesbutton" @click="navigateTo('rso')">Special Order Viewer</button>
     <button class="servicesbutton" @click="openLink">Document Tracking System</button>
+    <button class="servicesbutton" @click="navigateTo('requestform')">Request Form</button>
+
   </div>
 </template>
 

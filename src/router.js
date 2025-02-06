@@ -9,7 +9,8 @@ import Layout from './views/layout/Layout.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
 import Services from './views/services/Services.vue';
 import TravelOrder from './views/travelorder/Dashboard.vue';
-import LeaveForm from './views/leaveform/Dashboard.vue'
+import LeaveForm from './views/leaveform/Dashboard.vue';
+import RequestForm from './views/requestform/dashboard.vue'
 
 const routes = [
   {
@@ -53,6 +54,12 @@ const routes = [
         component: rso,
         meta: { requiresAuth: true }
       },
+      {
+        path: '/requestform',
+        name: 'requestform',
+        component: RequestForm,
+        meta: { requiresAuth: true}
+      }
       ]
     },
   // {
@@ -97,6 +104,8 @@ router.beforeEach((to, from, next) => {
     document.title = 'MGB Special Order';
   } else if (to.name === 'services' ){
     document.title = 'MGBXPress Desk';
+  } else if (to.name === 'requestform'){
+    document.title = 'RequestForm';
   } else {
     document.title = 'MGB Application Form';
   }  

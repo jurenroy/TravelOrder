@@ -47,6 +47,7 @@
   
   <script setup>
   import { ref, computed, onMounted } from 'vue';
+  
   import axios from 'axios';
 
   const nameId = localStorage.getItem('nameId');
