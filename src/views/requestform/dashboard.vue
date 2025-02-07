@@ -21,7 +21,13 @@
  
  
  <script setup>
+ import signature from '../../components/signature.vue'
  import Addforms from "./requestform.vue";
+ import registrationform from '../regis.vue';
+ import tablez from './Table.vue';
+ import employeelist from '../employeelist.vue';
+ import editss from '../editpage.vue';
+ import { showEdit } from '../../components/heder.vue';
 
 
 

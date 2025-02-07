@@ -1,3 +1,119 @@
+<script setup>
+import axios from 'axios';
+import { onMounted, ref } from 'vue';
+import { API_BASE_URL } from '@/config';
+
+const form = ref({
+  name_id: '',
+  division_id: '',
+  date: '', // Format the date here
+  documents: []
+  
+});
+
+const selectedName = ref(null);
+const division = ref('');
+const names = ref([]);
+const employees = ref([]);
+const divisions = ref([]);
+const pleaseWait = ref(false);
+const loading = ref(false);
+const formDisable = ref(false);
+const documents = ref([
+  { name: 'Service Record', checked: false },
+  { name: 'Certificate of Employment', checked: false },
+  { name: 'Certificate of Employment with Compensation', checked: false },
+  { name: 'Office Clearance', checked: false },
+  { name: 'LBP BC List ', checked: false },
+  { name: 'Certificate of Leave Credits', checked: false },
+  { name: 'Photocopy of Travel Order', checked: false },
+  { name: 'Others', checked: false }
+]);
+
+const fetchData = async () => {
+  try {
+    const [namesRes, employeesRes, divisionsRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/get_names_json/`).then(res => res.json()),
+      fetch(`${API_BASE_URL}/get_employees_json/`).then(res => res.json()),
+      fetch(`${API_BASE_URL}/get_divisions_json/`).then(res => res.json())
+    ]);
+    names.value = namesRes;
+    employees.value = employeesRes;
+    divisions.value = divisionsRes;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
+
+const fetchSelectedEmployee = () => {
+  const selectedEmployee = employees.value.find(emp => emp.name_id === selectedName.value);
+  if (selectedEmployee) {
+    form.value.name_id = selectedName.value;
+    form.value.division_id = selectedEmployee.division_id;
+    division.value = findDivisionName(selectedEmployee.division_id);
+  } else {
+    form.value.name_id = '';
+    form.value.division_id = '';
+    division.value = '';
+  }
+};
+
+const findDivisionName = (divisionId) => {
+  const divisionItem = divisions.value.find(div => div.division_id === divisionId);
+  return divisionItem ? divisionItem.division_name : '';
+};
+
+const handleSubmit = async () => {
+  form.value.documents = documents.value.filter(doc => doc.checked).map(doc => doc.name);
+  
+  if (!form.value.name_id || !form.value.division_id || form.value.documents.length === 0) {
+    alert('Please fill all required fields and select at least one document.');
+    return;
+  }
+console.log(form.value);
+  pleaseWait.value = true;
+  loading.value = true;
+  formDisable.value = true;
+
+  try {
+    const response = await axios.post(`${API_BASE_URL}/submit_request`, form.value);
+
+    // Check if the response status is not OK (2xx)
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error('Failed to submit request');
+    }
+
+    alert('Request submitted successfully!');
+    form.value.documents = [];
+    documents.value.forEach(doc => (doc.checked = false));
+    
+  } catch (error) {
+    console.error('Submission error:', error);
+    alert('Error submitting request. Please try again.');
+  } finally {
+    pleaseWait.value = false;
+    loading.value = false;
+    formDisable.value = false;
+  }
+};
+
+// Function to format the date
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  form.value.date = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+};
+onMounted(() => {
+  fetchData();
+  formatDate(new Date());
+});
+</script>
+
 <template>
   <div class="outer">
     <div class="form-container">
@@ -59,107 +175,7 @@
   </div>
 </template>
 
-<script setup>
-import { onMounted, ref } from 'vue';
-import { API_BASE_URL } from '@/config';
 
-const form = ref({
-  name_id: '',
-  division_id: '',
-  date: new Date().toISOString().slice(0, 10),
-  documents: []
-});
-
-const selectedName = ref(null);
-const division = ref('');
-const names = ref([]);
-const employees = ref([]);
-const divisions = ref([]);
-const pleaseWait = ref(false);
-const loading = ref(false);
-const formDisable = ref(false);
-const documents = ref([
-  { name: 'Service Record', checked: false },
-  { name: 'Certificate of Employment', checked: false },
-  { name: 'Certificate of Employment with Compensation', checked: false },
-  { name: 'Office Clearance', checked: false },
-  { name: 'LBP BC List ', checked: false },
-  { name: 'Certificate of Leave Credits', checked: false },
-  { name: 'Photocopy of Travel Order', checked: false },
-  { name: 'Others', checked: false }
-]);
-
-const fetchData = async () => {
-  try {
-    const [namesRes, employeesRes, divisionsRes] = await Promise.all([
-      fetch(`${API_BASE_URL}/get_names_json/`).then(res => res.json()),
-      fetch(`${API_BASE_URL}/get_employees_json/`).then(res => res.json()),
-      fetch(`${API_BASE_URL}/get_divisions_json/`).then(res => res.json())
-    ]);
-    names.value = namesRes;
-    employees.value = employeesRes;
-    divisions.value = divisionsRes;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  }
-};
-
-const fetchSelectedEmployee = () => {
-  const selectedEmployee = employees.value.find(emp => emp.name_id === selectedName.value);
-  if (selectedEmployee) {
-    form.value.name_id = selectedName.value;
-    form.value.division_id = selectedEmployee.division_id;
-    division.value = findDivisionName(selectedEmployee.division_id);
-  } else {
-    form.value.name_id = '';
-    form.value.division_id = '';
-    division.value = '';
-  }
-};
-
-const findDivisionName = (divisionId) => {
-  const divisionItem = divisions.value.find(div => div.division_id === divisionId);
-  return divisionItem ? divisionItem.division_name : '';
-};
-
-const handleSubmit = async () => {
-  form.value.documents = documents.value.filter(doc => doc.checked).map(doc => doc.name);
-  if (!form.value.name_id || !form.value.division_id || form.value.documents.length === 0) {
-    alert('Please fill all required fields and select at least one document.');
-    return;
-  }
-
-  pleaseWait.value = true;
-  loading.value = true;
-  formDisable.value = true;
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/submit_request`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form.value)
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to submit request');
-    }
-    alert('Request submitted successfully!');
-    form.value.documents = [];
-    documents.value.forEach(doc => (doc.checked = false));
-  } catch (error) {
-    console.error('Submission error:', error);
-    alert('Error submitting request. Please try again.');
-  } finally {
-    pleaseWait.value = false;
-    loading.value = false;
-    formDisable.value = false;
-  }
-};
-
-onMounted(() => {
-  fetchData();
-});
-</script>
 
 
 <style scoped>
