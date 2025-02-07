@@ -124,7 +124,7 @@
 
 
 <script>
-import { ref } from 'vue';
+
 import axios from 'axios';
 import { API_BASE_URL } from '../config'
 
@@ -181,7 +181,7 @@ export default {
       if (this.departure && this.arrival) {
         const departureDate = new Date(this.departure);
         const arrivalDate = new Date(this.arrival);
-        const currentDate = new Date();
+      
         const timeDifference = arrivalDate - departureDate;
         const dayDifference = timeDifference / (1000 * 3600 * 24);
 
