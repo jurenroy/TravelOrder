@@ -17,10 +17,9 @@
           <table>
             <thead>
               <tr>
-                <th>Request No</th>
-                <th>Date</th>
-                <th>Requested By</th>
-                <th>Type of Service</th>
+                <th>Name</th>
+                <th>Date & Time</th>
+                <th>Document Requested</th>
                 <th>Status</th>
                 <th>Has feedback?</th>
                 <th>Actions</th>
@@ -28,15 +27,19 @@
             </thead>
             <tbody>
               <tr v-for="service in filteredServices" :key="service.id">
-                <td>{{ service.serviceRequestNo }}</td>
-                <td>{{ formatDate(service.date) }}</td>
-                <td>{{ getName(service.requestedBy) }}</td>
+                <td>{{ getName(service.nameId) }}</td>
+                <td>{{ formatDate(service.dateTime) }}</td>
                 <td>{{ service.typeOfService }}, <br>{{ service.note }}</td>
                 <td>{{ service.remarks ? service.remarks : 'Pending' }} {{ service.approvedBy || service.remarks == 'Disapproved'? '' : '(Not yet Approved)' }}</td>
-                <td>
+               
+                  <td>
+              <ul>
+                <li v-for="(doc, docIndex) in service.documents" :key="docIndex">{{ doc }}</li>
+              </ul>
+          
                   <div class="feedback">
                     <p>{{ service.feedback_filled == 0 ? 'Not yet' : 'Done' }} </p>
-                    <button class="action-button" @click="openFeedback(service.id)" v-if="service.id !== feedbackView && service.feedback_filled == 0">Feedback</button> 
+               
                     <button class="action-button" @click="cancelFeedback()" v-if="service.id == feedbackView && service.feedback_filled == 0">Cancel Feedback</button>
                     <!-- <button class="action-button" @click="viewFeedback(service.id)" v-if="service.id !== selectedFeedbackView && service.feedback_filled == 1">View</button>
                     <button class="action-button" @click="closeFeedback()" v-if="service.id == selectedFeedbackView && service.feedback_filled == 1">Close Feeback</button> -->
@@ -47,12 +50,10 @@
                   <button class="action-button" @click="openNote(service.id)" v-if="admin.includes(parseInt(nameId)) && notenum !== service.id && !service.ictnote">Add note</button>
                   <button class="action-button" @click="viewNotez(service.ictnote, service.id)" v-if="admin.includes(parseInt(nameId)) && service.ictnote && notenum !== service.id">View note</button>
                   <button class="action-button" @click="closeNote()" v-if="admin.includes(parseInt(nameId)) && notenum == service.id">Close {{ viewNote ? 'view': '' }} note</button>
-
                   <button class="action-button" @click="editService(service)" v-if="admin.includes(parseInt(nameId))">Edit </button>
                   <!-- <button class="action-button" @click="deleteService(service.id)" v-if="admin.includes(parseInt(nameId))">Delete</button> -->
                   <button class="action-button" @click="approveService(service.id)" v-if="nameId == 36 && service.approvedBy == null">Approve</button>
                   <button class="action-button" @click="disapproveService(service.id)" v-if="nameId == 36 && service.approvedBy == null && service.remarks !== 'Disapproved'">Dissapprove</button>
-                  <button class="action-button" @click="viewService(service.id)" v-if="service.id !== selectedview">View</button>
                   <button class="action-button" @click="closeView()" v-if="service.id == selectedview">Close View</button>
                 </td>
               </tr>
@@ -276,14 +277,15 @@
   };
   
   const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  if (!dateString) return 'N/A';
+  try {
+    const date = parseISO(dateString);
+    return format(date, 'YYYY-MM-DD HH:mm:ss'); // e.g., October 01, 2023
+  } catch (error) {
+    console.error('Error parsing date:', error);
+    return 'Invalid Date';
+  }
 };
-
     const viewNotez = (nutz, numx) => {
       viewNote.value = true
       noteText.value = nutz
@@ -316,6 +318,9 @@
   
     const names = ref([]);
   
+
+
+    
     const fetchNames = async () => {
     try {
       const namesResponse = await axios.get(`${API_BASE_URL}/get_names_json`);
@@ -337,19 +342,24 @@
   
   // Get name by employee ID
   const getName = (nameId) => {
-    const name = names.value.find(name => name.name_id === nameId);
-    if (name) {
-      return `${name.first_name} ${name.middle_init} ${name.last_name}`;
+    const foundName = names.value.find(item => item.name_id === nameId);
+    if (foundName) {
+        return `${foundName.first_name} ${foundName.middle_init} ${foundName.last_name}`;
     }
-    return 'Invalid Ferson';
-  };
+    const alternateName = names.value.find(item => item.id === nameId);
+    if (alternateName) {
+        return `${alternateName.first_name} ${alternateName.middle_init} ${alternateName.last_name}`;
+    }
+    return 'Invalid Person';
+};
+
     
     // Fetch data when component is mounted
     onMounted(() => {
-      fetchServices();
-      fetchFeedbacks();
-      fetchNames();
-    });
+    fetchServices();
+    fetchFeedbacks();
+    fetchNames(); // Ensure this is called
+});
 
     const isPopupVisible = ref(false);
 const confirmationMessage = ref('');

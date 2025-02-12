@@ -1,6 +1,5 @@
 <template>
   <div class="form-container">
-    
     <form @submit.prevent="handleSubmit">
       <h2 class="title">REQUEST SLIP FORM</h2>
       <h4 class="subtitle">(Administrative Section - Procurement/Property)</h4>
@@ -20,9 +19,9 @@
           <input type="text" id="division" v-model="division" readonly />
         </div>
         <div class="info-item">
-  <label for="dateToday">Date & Time:</label>
-  <input type="text" id="dateToday" v-model="dateTime" readonly />
-</div>
+          <label for="dateToday">Date & Time:</label>
+          <input type="text" id="dateToday" v-model="dateTime" readonly />
+        </div>
       </div>
       <table class="request-table">
         <thead>
@@ -31,48 +30,52 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(document, index) in documents" :key="index">
-  <td>
-    <label class="container">
-      <input type="checkbox" :id="`document-${index}`" @change="updateTimeRequested(index, $event.target.checked)" />
-      <svg viewBox="0 0 64 64" height="2em" width="2em">
-        <path 
-          d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" 
-          pathLength="575.0541381835938" class="path">
-        </path>
-      </svg>
-      <span>{{ document.name }}</span>
-    </label>
+          <tr v-for="(doc, index) in documents" :key="doc.name">
+            <td>
+              <label class="container">
+                <input type="checkbox" :id="`document-${index}`" v-model="doc.checked" />
+                <svg viewBox="0 0 64 64" height="2em" width="2em">
+                  <path 
+                    d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" 
+                    pathLength="575.0541381835938" class="path">
+                  </path>
+                </svg>
+                <span>{{ doc.name }}</span>
+              </label>
 
-    <!-- Show input box when "Others" is checked -->
-    <input 
-      v-if="document.name === 'Others' && document.checked" 
-      type="text" 
-      v-model="otherDocumentText" 
-      placeholder="Please specify..." 
-      class="others-input"
-    />
-  </td>
-</tr>
+              <!-- Show input box when "Others" is checked -->
+              <input 
+                v-if="doc.name === 'Others' && doc.checked" 
+                type="text" 
+                v-model="otherDocumentText" 
+                placeholder="Please specify..." 
+                class="others-input"
+              />
+            </td>
+          </tr>
         </tbody>
       </table>
       <div class="button-container">
-        <button type="submit" :disabled="!isValid">Submit</button>
+        <button type="submit" :disabled="formDisable">Submit</button>
+      </div>
+
+      <div v-if="pleaseWait" class="formcorrect">
+        <p>Submitted!! Please wait for a moment...</p>
+      </div>
+      <div v-else-if="loading" class="loading">
+        <div class="loader"></div>
       </div>
     </form>
   </div>
 </template>
 
-
 <script setup>
-
-
 import { onMounted, ref } from 'vue';
 import { API_BASE_URL } from '@/config';
 import axios from 'axios';
 
-// Form data
 const dateTime = ref("");
+const otherDocumentText = ref(""); // New ref for the "Others" input text
 
 const updateDateTime = () => {
   const now = new Date();
@@ -85,128 +88,140 @@ const updateDateTime = () => {
   const minutes = now.getMinutes().toString().padStart(2, '0');
   const seconds = now.getSeconds().toString().padStart(2, '0'); // Seconds captured once
 
-  dateTime.value = `${year}/${day}/${month} ${hours}:${minutes}:${seconds}`;
+  dateTime.value = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  form.value.date = dateTime.value
 };
 
-// Call updateDateTime only when the form is opened
-onMounted(() => {
-  updateDateTime();
+const form = ref({
+  name_id: '',
+  division_id: '',
+  date: '', // Format the date here
+  documents: []
 });
 
-// Reactive variables
-const selectedName = ref();
-const division_id = ref();
-const division = ref();
+const selectedName = ref(null);
+const division = ref('');
 const names = ref([]);
 const employees = ref([]);
 const divisions = ref([]);
-
-// Reactive variables for documents
+const pleaseWait = ref(false);
+const loading = ref(false);
+const formDisable = ref(false);
 const documents = ref([
-  { name: 'Purchase Request - Requisition and Issue Slip', timeRequested: '' },
-  { name: 'Inspection and Acceptance Report for items purchased thru Petty Cash', timeRequested: '' },
-  { name: 'Inventory Custodian Slip', timeRequested: '' },
-  { name: 'Property Acknowledgement Receipt', timeRequested: '' },
-  { name: 'Gate Pass', timeRequested: '' },
-  { name: 'PO Fuel', timeRequested: '' },
-  { name: 'Property Return Slip', timeRequested: '' },
-  { name: 'R&M of Motor Vehicles', timeRequested: '' },
-  { name: 'Job Order for Furniture & Fixtures, Lightings, Plumbing, & A/C', timeRequested: '' },
-  { name: 'Others', timeRequested: '' },
+  { name: 'Purchase Request - Requisition and Issue Slip', checked: false },
+  { name: 'Certificate of Employment with Compensation', checked: false },
+  { name: 'Inventory Custodian Slip ', checked: false },
+  { name: 'Property Acknowledgement Receipt', checked: false },
+  { name: 'Gate Pass ', checked: false },
+  { name: 'PO Fuel', checked: false },
+  { name: 'Property Return Slip', checked: false },
+  { name: 'R&M of Motor Vehicles', checked: false },
+  { name: 'Job Order for Furniture & Fixtures, Lightings, Plumbing, & A/C', checked: false },
+  { name: 'Others', checked: false }
 ]);
 
-const isValid = ref(false);
-
-// Handle form submission
-const handleSubmit = async () => {
-  if (!form.value.name_id || !form.value.division_id) {
-    isValid.value = false;
-    return;
-  }
-  isValid.value = true;
-
+const fetchData = async () => {
   try {
-    const response = await axios.post('${API_BASE_URL}/submit_request', form.value)
-    // Replace with your actual API call
-    console.log('Form submitted with:', form.value);
-    // Reset form or take other actions
+    const [namesRes, employeesRes, divisionsRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/get_names_json/`).then(res => res.json()),
+      fetch(`${API_BASE_URL}/get_employees_json/`).then(res => res.json()),
+      fetch(`${API_BASE_URL}/get_divisions_json/`).then(res => res.json())
+    ]);
+    names.value = namesRes;
+    employees.value = employeesRes;
+    divisions.value = divisionsRes;
   } catch (error) {
-    console.error('Error submitting form:', error);
+    console.error('Error fetching data:', error);
   }
 };
 
 const fetchSelectedEmployee = () => {
-      if (selectedName.value) {
-        const selectedEmployee = employees.value.find(employee => employee.name_id === selectedName.value);
-        if (selectedEmployee) {
-          division_id.value = selectedEmployee.division_id;
-          division.value = findDivisionName(selectedEmployee.division_id);
-        } else {
-          // Handle case where employee is not found
-          division_id.value = null;
-          division.value = null;
-        }
-      } else {
-        // Reset values if no name is selected
-        division_id.value = null;
-        division.value = null;
-      }
-    };
-
-const findDivisionName = (divisionId) => {
-      const divisionItem = divisions.value.find(div => div.division_id === divisionId); // Assuming you have a divisions array
-      return divisionItem ? divisionItem.division_name : null;
-    };
-
-const fetchData = () => {
-  fetch(`${API_BASE_URL}/get_names_json/`)
-        .then(response => response.json())
-        .then(data => {
-          names.value = data;
-        })
-        .catch(error => {
-          console.error('Error fetching employees:', error);
-        });
-
-  fetch(`${API_BASE_URL}/get_employees_json/`)
-        .then(response => response.json())
-        .then(data => {
-          employees.value = data;
-        })
-        .catch(error => {
-          console.error('Error fetching employees:', error);
-        });
-
-// Fetch divisions data
-      fetch(`${API_BASE_URL}/get_divisions_json/`)
-        .then(response => response.json())
-        .then(data => {
-          divisions.value = data;
-        })
-        .catch(error => {
-          console.error('Error fetching divisions:', error);
-        });
-}
-
-const otherDocumentText = ref("");
-
-
-const updateTimeRequested = (index, isChecked) => {
-  documents.value[index].timeRequested = isChecked ? new Date().toISOString() : '';
-  documents.value[index].checked = isChecked; // Track if checkbox is checked
-
-  // Clear "Others" input if unchecked
-  if (documents.value[index].name === "Others" && !isChecked) {
-    otherDocumentText.value = "";
+  const selectedEmployee = employees.value.find(emp => emp.name_id === selectedName.value);
+  if (selectedEmployee) {
+    form.value.name_id = selectedName.value;
+    form.value.division_id = selectedEmployee.division_id;
+    division.value = findDivisionName(selectedEmployee.division_id);
+  } else {
+    form.value.name_id = '';
+    form.value.division_id = '';
+    division.value = '';
   }
 };
 
+const findDivisionName = (divisionId) => {
+  const divisionItem = divisions.value.find(div => div.division_id === divisionId);
+  return divisionItem ? divisionItem.division_name : '';
+};
 
-  onMounted(() => {
-    fetchData()
-  });
+const handleSubmit = async () => {
+  console.log(form.value.documents)
+    // Include the "Others" document if specified
+    if (otherDocumentText.value) {
+        form.value.documents.push(otherDocumentText.value);
+    }
 
+    // Filter checked documents
+    form.value.documents = documents.value
+  .filter(doc => doc.checked)
+  .map(doc => ({
+    type: doc.name,
+    name_id: null,
+    datetime: null
+  }));
+    
+    // Validate required fields
+    if (!form.value.name_id || !form.value.division_id || form.value.documents.length === 0) {
+        alert('Please fill all required fields and select at least one document.');
+        return;
+    }
+    
+    console.log('Payload being sent:', form.value);
+    pleaseWait.value = true;
+    loading.value = true;
+    formDisable.value = true;
+
+    try {
+        const response = await axios.post(`${API_BASE_URL}/FADRFsubmit_request`, form.value);
+
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error('Failed to submit request');
+        }
+
+        alert('Request submitted successfully!');
+        // Reset form state
+        form.value.documents = [];
+        documents.value.forEach(doc => (doc.checked = false));
+        otherDocumentText.value = ""; // Reset the "Others" input text
+        
+    } catch (error) {
+        console.error('Submission error:', error);
+        alert('Error submitting request. Please try again.');
+    } finally {
+        pleaseWait.value = false;
+        loading.value = false;
+        formDisable.value = false;
+    }
+};
+
+// Function to format the date
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  form.value.date = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+};
+
+onMounted(() => {
+  fetchData();
+  updateDateTime();
+});
 </script>
+
+
 
 
 <style scoped>
