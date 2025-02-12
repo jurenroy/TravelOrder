@@ -272,7 +272,7 @@ select, input {
 .title::after {
   content: "";
   display: block;
-  width: 60%;
+  width: 100%;
   height: 4px;
   background: #000000; /* Darker accent */
   margin: 10px auto;
