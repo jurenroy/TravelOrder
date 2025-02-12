@@ -65,7 +65,12 @@
           <tbody>
           <tr v-for="(item, index) in formData" :key="index">
             <td>{{ getName(item.name_id) }}</td>
-            <td>{{ Array.isArray(item.documents) ? item.documents.join(', ') : 'No documents requested' }}</td>
+            <td>
+              <span v-if="Array.isArray(item.documents) && item.documents.length">
+                {{ item.documents.join(', ') }} <!-- Join the document names with a comma -->
+              </span>
+              <span v-else>No documents requested</span>
+            </td>
             <td>{{ item.date }}</td>
             <td>{{ item.status }}</td>
             <td>
@@ -117,6 +122,7 @@ export default {
       viewNote: false,
       noteText: '',
       searchQuery: '',
+      documents: [],
     };
   },
   mounted() {
@@ -124,6 +130,7 @@ export default {
     this.fetchEmployees();
     this.fetchNames();
     this.fetchData(); // Fetch the form data when the component is mounted
+    this.fetchDocuments();
   },
   methods: {
     focusTextarea(text) {
@@ -164,21 +171,40 @@ export default {
           console.error('Error fetching data:', error);
         });
     },
+
     fetchData() {
   this.load = true;
   axios.get(`${API_BASE_URL}/get_request`)
     .then(response => {
       this.mawala = true;
       this.load = false;
-      this.formData = response.data; // Store the fetched form data
+
+      // Parse the documents field for each item
+      this.formData = response.data.map(item => {
+        return {
+          ...item,
+          documents: item.documents ? JSON.parse(item.documents) : [] // Parse the documents string into an array
+        };
+      });
+
+      // Log the formData to check the structure
       console.log(this.formData);
     })
     .catch(error => {
       console.error('Error fetching data:', error);
       this.load = false;
     });
-
-    },
+    this.formData = response.data.map(item => {
+  return {
+    ...item,
+    documents: item.documents ? JSON.parse(item.documents).map(doc => {
+      // Extracting the document name from the string
+      const match = doc.match(/document: (.*?),/);
+      return match ? match[1].trim() : 'Unknown Document';
+    }) : []
+  };
+});
+},
     fetchNames() {
       axios.get(`${API_BASE_URL}/get_names_json`)
         .then(response => {
@@ -208,6 +234,15 @@ export default {
     padWithZeroes(travel_order_id) {
       const idString = travel_order_id.toString();
       return idString.padStart(4, '0');
+    },
+    fetchDocuments() {
+      axios.get(`${API_BASE_URL}/get_request`)
+        .then(response => {
+          this.documents = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching documents:', error);
+        });
     },
     
    
