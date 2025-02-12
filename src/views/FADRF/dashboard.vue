@@ -1,12 +1,11 @@
 <template>
     <div class="titlez" v-if="!isRegistrationClicked && !employeelis && !isEdits">
        <div>
-          <p class="travel" >Request Slip Form</p>
+          <p class="travel" >Procurement Request Form</p>
        </div>
        <div class="navigationz" >
           <button class="add" @click="toggleForm">{{ isVisible ? 'Close Form' : 'Add Form'}}</button>
-          <button v-if="!isVisible && acc.type_id == 1 && acc.name_id == 76" class="reg" @click="toggleRegistration">{{'Registration' }}</button>
-          <button v-if="!isVisible && acc.type_id == 1" class="emplo" @click="employeelst">{{'Employee List' }}</button>
+          
        </div>
     </div>
     <tablez class="tablex" v-if="!isVisible && !isRegistrationClicked && !isEdits && !employeelis"/>
@@ -22,15 +21,15 @@
  
  <script setup>
  import signature from '../../components/signature.vue'
- import Addforms from "./requestform.vue";
- import registrationform from '../regis.vue';
+ import addforms from './Form.vue';
  import tablez from './table.vue';
- import employeelist from '../employeelist.vue';
- import editss from '../editpage.vue';
+ import registrationform from '../regis.vue';
+ import employeelist from '../employeelist.vue'
+ import logsss from '../../components/logout.vue'
+ import editss from '../editpage.vue'
  import { showEdit } from '../../components/heder.vue';
-
-
-
+ import { isleavelogoutClicked, isregisclick } from '../leaveform.vue';
+ import Help from '../../components/help/helpdata.vue'; // Adjust the path if necessary
  const handleBack = () => {
   isRegistrationClicked.value = false; // Close the popup
 };

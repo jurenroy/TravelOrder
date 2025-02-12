@@ -10,6 +10,7 @@ import Dashboard from './views/dashboard/Dashboard.vue';
 import Services from './views/services/Services.vue';
 import TravelOrder from './views/travelorder/Dashboard.vue';
 import LeaveForm from './views/leaveform/Dashboard.vue';
+import FADRF from './views/FADRF/dashboard.vue';
 import RequestForm from './views/requestform/dashboard.vue'
 
 const routes = [
@@ -59,6 +60,12 @@ const routes = [
         name: 'requestform',
         component: RequestForm,
         meta: { requiresAuth: true}
+      },
+      {
+        path: '/FADRF',
+        name: 'FADRF',
+        component: FADRF,
+        meta: { requiresAuth: true }
       }
       ]
     },
@@ -106,6 +113,8 @@ router.beforeEach((to, from, next) => {
     document.title = 'MGBXPress Desk';
   } else if (to.name === 'requestform'){
     document.title = 'RequestForm';
+  } else if (to.name === 'FADRF' ){
+    document.title = 'FADREQUESTFORM';
   } else {
     document.title = 'MGB Application Form';
   }  

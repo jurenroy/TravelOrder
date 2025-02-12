@@ -122,56 +122,56 @@ onMounted(() => {
         <h4 class="subtitle">(Administrative Section)</h4>
 
         <div class="info-container">
-          <div class="info-item">
-            <label for="name">Name:</label>
-            <select v-model="selectedName" id="name" required @change="fetchSelectedEmployee">
-              <option disabled value="">Select a name</option>
-              <option v-for="option in names" :key="option.name_id" :value="option.name_id">
-                {{ option.last_name }}, {{ option.first_name }} {{ option.middle_init }}
-              </option>
-            </select>           
-          </div>
-          <div class="info-item">
-            <label for="division">Division:</label>
-            <input type="text" v-model="division" required readonly>
-          </div>
-          <div class="info-item">
-            <label for="dateToday">Date and Time:</label>
-            <input type="text" id="dateToday" v-model="form.date" readonly />
-          </div>
-        </div>
-
-        <table class="request-table">
-          <thead>
-            <tr>
-              <th>DOCUMENT(S) REQUESTED</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(doc, index) in documents" :key="doc.name">
-              <td>
-                <label>
-                  <input type="checkbox" v-model="doc.checked" />
-                  {{ doc.name }}
-                </label>
-                <input v-if="doc.name === 'Others' && doc.checked" v-model="othersText" type="text" placeholder="Specify other document" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="button-container">
-          <button type="submit" :disabled="formDisable">Submit</button>
-        </div>
-
-        <div v-if="pleaseWait" class="formcorrect">
-          <p>Submitted!! Please wait for a moment...</p>
-        </div>
-        <div v-else-if="loading" class="loading">
-          <div class="loader"></div>
-        </div>
-      </form>
+      <div class="info-item">
+        <label for="name">Name:</label>
+        <select v-model="selectedName" id="name" required @change="fetchSelectedEmployee">
+          <option disabled value="">Select a name</option>
+          <option v-for="option in names" :key="option.name_id" :value="option.name_id">
+            {{ option.last_name }}, {{ option.first_name }} {{ option.middle_init }}
+          </option>
+        </select>           
+      </div>
+      <div class="info-item">
+        <label for="division">Division:</label>
+        <input type="text" v-model="division" required readonly>
+      </div>
+      <div class="info-item">
+        <label for="dateToday">Date and Time:</label>
+        <input type="text" id="dateToday" v-model="form.date" readonly />
+      </div>
     </div>
+
+    <table class="request-table">
+      <thead>
+        <tr>
+          <th>DOCUMENT(S) REQUESTED</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(doc, index) in documents" :key="doc.name">
+          <td>
+            <label>
+              <input type="checkbox" v-model="doc.checked" />
+              {{ doc.name }}
+            </label>
+            <input v-if="doc.name === 'Others' && doc.checked" v-model="othersText" type="text" placeholder="Specify other document" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="button-container">
+      <button type="submit" :disabled="formDisable">Submit</button>
+    </div>
+
+    <div v-if="pleaseWait" class="formcorrect">
+      <p>Submitted!! Please wait for a moment...</p>
+    </div>
+    <div v-else-if="loading" class="loading">
+      <div class="loader"></div>
+    </div>
+  </form>
+</div>
   </div>
 </template>
 
