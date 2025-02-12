@@ -59,6 +59,7 @@
               <th style="text-align: center;">Document Requested</th>
               <th style="text-align: center;">Date & Time</th>
               <th style="text-align: center;">Status</th>
+              <th style="text-align: center;">Rating</th>
               <th style="text-align: center;">Action</th>
             </tr>
           </thead>
@@ -74,8 +75,14 @@
             <td>{{ item.date }}</td>
             <td>{{ item.status }}</td>
             <td>
-              <button @click="edit(item)">Edit</button>
+              <button @click="rate(item)">Rating</button>
             </td>
+            <td>    
+              <button @click="edit(item)">Edit</button>
+              <button @click="view(item)">View</button>
+              <button @click="add(item)">Add Note</button>
+            </td>
+           
           </tr>
           <h1 style="text-align: center; margin-bottom: 0px;" v-if="formData.length == 0">NO MATCH FOUND</h1>
         </tbody>
@@ -457,15 +464,18 @@ export default {
     height: 75px;
   }
   
+  
   button {
-    background-color: white;
-    border: 1px solid black;
-    color: black;
+    border-radius: 10px;
+    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    border: solid black 2px;
     padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
+    color: rgb(0, 0, 0);
     cursor: pointer;
-    width: fit-content;
+    transition: background 0.3s;
+    margin: 0 5px;
+    height: fit-content;
+    
   }
   
   button:hover {

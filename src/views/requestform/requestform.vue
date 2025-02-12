@@ -21,14 +21,14 @@ const pleaseWait = ref(false);
 const loading = ref(false);
 const formDisable = ref(false);
 const documents = ref([
-  { name: 'Service Record', checked: false },
-  { name: 'Certificate of Employment', checked: false },
-  { name: 'Certificate of Employment with Compensation', checked: false },
-  { name: 'Office Clearance', checked: false },
-  { name: 'LBP BC List ', checked: false },
-  { name: 'Certificate of Leave Credits', checked: false },
-  { name: 'Photocopy of Travel Order', checked: false },
-  { name: 'Others', checked: false }
+  { name: 'SERVICE RECORD', checked: false },
+  { name: 'CERTIFICATE OF EMPLOYMENT', checked: false },
+  { name: 'CERTIFICATE OF EMPLOYMENT WITH COMPENSATION', checked: false },
+  { name: 'OFFICE CLEARANCE', checked: false },
+  { name: 'LBP BC LIST ', checked: false },
+  { name: 'CERTIFICATE OF LEAVE CREDITS', checked: false },
+  { name: 'PHOTOCOPY OF TRAVEL ORDER', checked: false },
+  { name: 'OTHERS', checked: false }
 ]);
 
 const fetchData = async () => {
@@ -77,7 +77,7 @@ const handleSubmit = async () => {
     // Filter checked documents
     form.value.documents = documents.value
     .filter(doc => doc.checked)
-    .map(doc => (`document: ${doc.name}, name_id: null, datetime: null`));
+    .map(doc => (` ${doc.name}`));
     // .map(doc => ({'document_name': doc.name, name_id: null, datetime: null}));
   
   if (!form.value.name_id || !form.value.division_id || form.value.documents.length === 0) {
@@ -168,7 +168,14 @@ onMounted(() => {
               <input type="checkbox" v-model="doc.checked" />
               {{ doc.name }}
             </label>
-            <input v-if="doc.name === 'Others' && doc.checked" v-model="othersText" type="text" placeholder="Specify other document" />
+            <input 
+                  v-if="doc.name === 'Others' && doc.checked" 
+                  type="text" 
+                  v-model="otherDocumentText" 
+                  placeholder="Please specify..." 
+                  class="others-input"
+                />
+            
           </td>
         </tr>
       </tbody>
