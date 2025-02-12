@@ -194,16 +194,6 @@ export default {
       console.error('Error fetching data:', error);
       this.load = false;
     });
-    this.formData = response.data.map(item => {
-  return {
-    ...item,
-    documents: item.documents ? JSON.parse(item.documents).map(doc => {
-      // Extracting the document name from the string
-      const match = doc.match(/document: (.*?),/);
-      return match ? match[1].trim() : 'Unknown Document';
-    }) : []
-  };
-});
 },
     fetchNames() {
       axios.get(`${API_BASE_URL}/get_names_json`)
