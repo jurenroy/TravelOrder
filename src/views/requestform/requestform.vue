@@ -11,7 +11,7 @@ const form = ref({
   
 });
 
-const otherDocumentText = ref('');
+const otherDocumentText = ref("");
 const selectedName = ref(null);
 const division = ref('');
 const names = ref([]);
@@ -169,13 +169,12 @@ onMounted(() => {
               {{ doc.name }}
             </label>
             <input 
-                  v-if="doc.name === 'Others' && doc.checked" 
+                  v-if="doc.name === 'OTHERS' && doc.checked" 
                   type="text" 
                   v-model="otherDocumentText" 
                   placeholder="Please specify..." 
                   class="others-input"
                 />
-            
           </td>
         </tr>
       </tbody>

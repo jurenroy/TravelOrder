@@ -51,6 +51,9 @@
     </div>
 
     <div v-if="mawala" class="outer">
+      <div v-if="showRatingPopup">
+        <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
+      </div>
       <div class="scrollable-table">
         <table>
           <thead>
@@ -64,28 +67,29 @@
             </tr>
           </thead>
           <tbody>
-          <tr v-for="(item, index) in formData" :key="index">
-            <td>{{ getName(item.name_id) }}</td>
-            <td>
-              <span v-if="Array.isArray(item.documents) && item.documents.length">
-                {{ item.documents.join(', ') }} <!-- Join the document names with a comma -->
-              </span>
-              <span v-else>No documents requested</span>
-            </td>
-            <td>{{ item.date }}</td>
-            <td>{{ item.status }}</td>
-            <td>
-              <button @click="rate(item)">Rating</button>
-            </td>
-            <td>    
-              <button @click="edit(item)">Edit</button>
-              <button @click="view(item)">View</button>
-              <button @click="add(item)">Add Note</button>
-            </td>
-           
-          </tr>
-          <h1 style="text-align: center; margin-bottom: 0px;" v-if="formData.length == 0">NO MATCH FOUND</h1>
-        </tbody>
+            <tr v-for="(item, index) in formData" :key="index">
+              <td>{{ getName(item.name_id) }}</td>
+              <td>
+                <span v-if="Array.isArray(item.documents) && item.documents.length">
+                  {{ item.documents.join(', ') }}
+                </span>
+                <span v-else>No documents requested</span>
+              </td>
+              <td>{{ item.date }}</td>
+              <td>{{ item.status }}</td>
+              <td>
+                <span v-if="item.rating !== null">{{ item.rating }}</span>
+                <span v-else>No Rating</span>
+              </td>
+              <td>
+                <button @click="openRatingPopup(item)">Rating</button>
+                <button @click="edit(item)">Edit</button>
+                <button @click="view(item)">View</button>
+                <button @click="add(item)">Add Note</button>
+              </td>
+            </tr>
+            <h1 style="text-align: center; margin-bottom: 0px;" v-if="formData.length == 0">NO REQUEST FOUND</h1>
+          </tbody>
         </table>
       </div>
     </div>
@@ -96,7 +100,7 @@
       <button @click="printzz">Download as PDF</button>
       <button @click="close">Close PDF</button>
     </div>
-    <pdf :travel_order_id="selectedTravelOrderId"></pdf>
+    <pdf :travel_order_id="selectedTravelOrderId"></ pdf>
   </div>
 </template>
 
@@ -105,16 +109,20 @@ import axios from 'axios';
 import pdf from './../pdf.vue';
 import editform from './../editform.vue';
 import otpz from '../../components/otp.vue';
+import RatingPopup from './rating.vue';
 import { API_BASE_URL } from '@/config';
 
 export default {
   components: {
     pdf,
-    otpz,
+    otpz, 
+    RatingPopup,
     editform,
   },
   data() {
     return {
+      showRatingPopup: false,
+      currentItem: null,
       selectedStatus: 'Me',
       options: ['Pending', 'Done', 'Me'],
       yearToday: new Date().getFullYear(),
@@ -136,13 +144,41 @@ export default {
     this.fetchAccounts();
     this.fetchEmployees();
     this.fetchNames();
-    this.fetchData(); // Fetch the form data when the component is mounted
+    this.fetchData(); 
     this.fetchDocuments();
   },
   methods: {
     focusTextarea(text) {
       this.noteText = text;
       this.$refs.noteInput.focus();
+    },
+    openRatingPopup(item) {
+      this.currentItem = item; 
+      this.showRatingPopup = true;
+    },
+    handleRating(rating) {
+  const payload = {
+    rating: rating // Only send the rating
+  };
+  console.log('Payload:', payload);
+
+
+  // Use the existing update endpoint
+  axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
+    .then(response => {
+      if (response.status === 200) {
+        alert('Rating submitted successfully!');
+        this.currentItem.rating = rating; 
+        console.log('Submitting rating for request ID:', this.currentItem.id);
+      }
+    })
+    .catch(error => {
+      console.error('Error submitting rating:', error);
+      alert('Failed to submit rating. Please try again.');
+    })
+    .finally(() => {
+      this.showRatingPopup = false; 
+    });
     },
     closeEdit() {
       this.selectedTravelOrderIdEdit = 0;
@@ -178,30 +214,28 @@ export default {
           console.error('Error fetching data:', error);
         });
     },
-
     fetchData() {
-  this.load = true;
-  axios.get(`${API_BASE_URL}/get_request`)
-    .then(response => {
-      this.mawala = true;
-      this.load = false;
+      this.load = true;
+      axios.get(`${API_BASE_URL}/get_request`)
+        .then(response => {
+          this.mawala = true;
+          this.load = false;
 
-      // Parse the documents field for each item
-      this.formData = response.data.map(item => {
-        return {
-          ...item,
-          documents: item.documents ? JSON.parse(item.documents) : [] // Parse the documents string into an array
-        };
-      });
+          this.formData = response.data.map(item => {
+            return {
+              ...item,
+              documents: item.documents ? JSON.parse(item.documents) : [],
+              rating: item.rating || null
+            };
+          });
 
-      // Log the formData to check the structure
-      console.log(this.formData);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-      this.load = false;
-    });
-},
+          console.log(this.formData);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          this.load = false;
+        });
+    },
     fetchNames() {
       axios.get(`${API_BASE_URL}/get_names_json`)
         .then(response => {
@@ -241,15 +275,13 @@ export default {
           console.error('Error fetching documents:', error);
         });
     },
-    
-   
   },
   computed: {
     pendingCount() {
       return this.formData.filter(form => form.note === null && form.initial !== null).length;
     },
     reversedFormData() {
-      return this.formData.slice().reverse().filter(item => {
+      return this.formData.slice().reverse().filter (item => {
         return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
       });
     },
@@ -475,7 +507,7 @@ export default {
     transition: background 0.3s;
     margin: 0 5px;
     height: fit-content;
-    
+    justify-content: center;    
   }
   
   button:hover {
