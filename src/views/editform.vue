@@ -3,7 +3,6 @@
       <div class="first">
         <div class="second">
           <p class="form">Editing Form </p>
-  
           <div class="inside">
             <div style="display: flex; flex-direction: column;  width: 100%;">
               <label class="n">Name:</label>
