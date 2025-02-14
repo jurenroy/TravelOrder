@@ -68,7 +68,7 @@
           </thead>
           <tbody>
             <tr v-for="(item, index) in formData" :key="index">
-              <td>{{ getName(item.name_id) }}</td>
+              <td>{{ getName(item.name_id) }} </td>
               <td>
                 <span v-if="Array.isArray(item.documents) && item.documents.length">
                   {{ item.documents.join(', ') }}
@@ -78,11 +78,12 @@
               <td>{{ item.date }}</td>
               <td>{{ item.status }}</td>
               <td>
-                <span v-if="item.rating !== null">{{ item.rating }}</span>
-                <span v-else>No Rating</span>
+                <span v-if="item.rating !== null">    <span v-for="n in item.rating" :key="n">⭐</span>
+                </span>
+                <button v-else @click="openRatingPopup(item)">Rating</button>
               </td>
+
               <td>
-                <button @click="openRatingPopup(item)">Rating</button>
                 <button @click="edit(item)">Edit</button>
                 <button @click="view(item)">View</button>
                 <button @click="add(item)">Add Note</button>
@@ -122,7 +123,7 @@ export default {
   data() {
     return {
       showRatingPopup: false,
-      currentItem: null,
+      currentItem: '',
       selectedStatus: 'Me',
       options: ['Pending', 'Done', 'Me'],
       yearToday: new Date().getFullYear(),
@@ -156,20 +157,17 @@ export default {
       this.currentItem = item; 
       this.showRatingPopup = true;
     },
+    
     handleRating(rating) {
   const payload = {
-    rating: rating // Only send the rating
+    rating: rating 
   };
-  console.log('Payload:', payload);
-
-
   // Use the existing update endpoint
   axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
     .then(response => {
       if (response.status === 200) {
         alert('Rating submitted successfully!');
         this.currentItem.rating = rating; 
-        console.log('Submitting rating for request ID:', this.currentItem.id);
       }
     })
     .catch(error => {

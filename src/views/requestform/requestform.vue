@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { API_BASE_URL } from '@/config';
 
 const form = ref({
@@ -10,6 +10,8 @@ const form = ref({
   documents: []
   
 });
+
+
 
 const otherDocumentText = ref("");
 const selectedName = ref(null);
@@ -30,6 +32,10 @@ const documents = ref([
   { name: 'PHOTOCOPY OF TRAVEL ORDER', checked: false },
   { name: 'OTHERS', checked: false }
 ]);
+// Watch for changes in otherDocumentText and capitalize it
+watch(otherDocumentText, (newValue) => {
+      otherDocumentText.value = newValue.toUpperCase(); // Automatically capitalize the input
+    });
 
 const fetchData = async () => {
   try {
@@ -71,8 +77,15 @@ const handleSubmit = async () => {
   console.log(form.value.documents)
     // Include the "Others" document if specified
     if (otherDocumentText.value) {
-        form.value.documents.push(otherDocumentText.value);
+    const othersDocument = documents.value.find(doc => doc.name === "OTHERS");
+    if (othersDocument) {
+        othersDocument.name = otherDocumentText.value; // Update the name
     }
+}
+
+    console.log(form.value.documents)
+
+    console.log(otherDocumentText.value)
 
     // Filter checked documents
     form.value.documents = documents.value
