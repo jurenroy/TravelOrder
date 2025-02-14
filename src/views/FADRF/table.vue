@@ -51,6 +51,9 @@
     </div>
 
     <div v-if="mawala" class="outer">
+      <div v-if="showRatingPopup">
+        <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
+      </div>
       <div class="scrollable-table">
         <table>
           <thead>
@@ -64,7 +67,7 @@
             </tr>
           </thead>
           <tbody>
-          <tr v-for="(item, index) in formData" :key="index">
+          <tr v-for="(item, index) in reversedFormData" :key="index">
             <td>{{ getName(item.name_id) }}</td>
             <td>
               <span v-if="Array.isArray(item.documents) && item.documents.length">
@@ -75,16 +78,18 @@
             <td>{{ item.date }}</td>
             <td>{{ item.status }}</td>
             <td>
-              <button @click="rate(item)">Rating</button>
-            </td>
+                <span v-if="item.rating !== null">    <span v-for="n in item.rating" :key="n">⭐</span>
+                </span>
+                <button v-else @click="openRatingPopup(item)">Rating</button>
+              </td>
             <td>    
-              <button @click="edit(item)">Edit</button>
+              <button @click="openEditDetails(item)">Edit</button>
               <button @click="view(item)">View</button>
               <button @click="add(item)">Add Note</button>
             </td>
            
           </tr>
-          <h1 style="text-align: center; margin-bottom: 0px;" v-if="formData.length == 0">NO MATCH FOUND</h1>
+          <h1 style="text-align: center; margin-bottom: 0px;" v-if="reversedFormData.length == 0">NO MATCH FOUND</h1>
         </tbody>
         </table>
       </div>
@@ -106,15 +111,18 @@ import pdf from './../pdf.vue';
 import editform from './../editform.vue';
 import otpz from '../../components/otp.vue';
 import { API_BASE_URL } from '@/config';
-
+import RatingPopup from './Rating.vue';
 export default {
   components: {
     pdf,
     otpz,
     editform,
+    RatingPopup,
   },
   data() {
     return {
+      showRatingPopup: false,
+      currentItem: '',
       selectedStatus: 'Me',
       options: ['Pending', 'Done', 'Me'],
       yearToday: new Date().getFullYear(),
@@ -146,6 +154,34 @@ export default {
     },
     closeEdit() {
       this.selectedTravelOrderIdEdit = 0;
+    },
+    openRatingPopup(item) {
+      this.currentItem = item; 
+      this.showRatingPopup = true;
+    },
+    handleRating(rating) {
+  const payload = {
+    rating: rating 
+  };
+  // Use the existing update endpoint
+  axios.post(`${API_BASE_URL}/FADRFupdate_request/${this.currentItem.id}`, payload)
+    .then(response => {
+      if (response.status === 200) {
+        alert('Rating submitted successfully!');
+        this.currentItem.rating = rating; 
+      }
+    })
+    .catch(error => {
+      console.error('Error submitting rating:', error);
+      alert('Failed to submit rating. Please try again.');
+    })
+    .finally(() => {
+      this.showRatingPopup = false; 
+    });
+    },
+    openEditDetails(item) {
+      this.selectedItem = item;
+      this.showEditDetails = true;
     },
     printzz() {
       window.print();
@@ -229,9 +265,13 @@ export default {
       return 'Unknown';
     },
     padWithZeroes(travel_order_id) {
-      const idString = travel_order_id.toString();
-      return idString.padStart(4, '0');
-    },
+  if (travel_order_id === undefined || travel_order_id === null) {
+    console.warn('travel_order_id is undefined or null');
+    return ''; // or return a default value, e.g., '0000'
+  }
+  const idString = travel_order_id.toString();
+  return idString.padStart(4, '0');
+},
     fetchDocuments() {
       axios.get(`${API_BASE_URL}/get_request`)
         .then(response => {
@@ -244,19 +284,22 @@ export default {
     
    
   },
+  
   computed: {
-    pendingCount() {
-      return this.formData.filter(form => form.note === null && form.initial !== null).length;
-    },
-    reversedFormData() {
-      return this.formData.slice().reverse().filter(item => {
-        return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
-      });
-    },
-    canSaveNote() {
-      return this.siga || this.siga1 || this.acc.name_id == 76 || this.acc.name_id == 37;
-    },
+  pendingCount() {
+    return this.formData.filter(form => form.note === null && form.initial !== null).length;
   },
+  reversedFormData() {
+  return this.formData.slice().reverse().filter(item => {
+    const paddedToNum = this.padWithZeroes(item.to_num);
+    return paddedToNum.includes(this.searchQuery) || 
+           String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
+  });
+},
+  canSaveNote() {
+    return this.siga || this.siga1 || this.acc.name_id == 76 || this.acc.name_id == 37;
+  },
+},
 };
 </script>
   
@@ -374,7 +417,7 @@ export default {
   td {
     border: 1px solid #dddddd;
     text-align: left;
-    padding: 8px;
+    padding: 10px;
   }
   
   th {
@@ -413,6 +456,7 @@ export default {
   }
   
   .loadings1 {
+
     height: 20px;
     width: 100%;
     text-align: center;
