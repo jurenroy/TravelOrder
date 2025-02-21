@@ -89,6 +89,13 @@ export default {
   color: gold;
 }
 
+.star {
+    color: white;
+  }
+  
+  .star.active {
+    color: gold;
+  } 
 
 
 .popup-buttons {

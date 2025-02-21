@@ -1,35 +1,5 @@
 <template>
   <editform v-if="selectedTravelOrderIdEdit > 0" :travelOrderId="selectedTravelOrderIdEdit" @cancel-edit="closeEdit"></editform>
-  <div class="note" v-if="addNote">
-    <div class="title-bar">
-      <div class="title">Add note</div>
-      <div class="close-icon" @click="closeNote">X</div>
-    </div>
-    <div class="content">
-      <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
-      <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
-        <button style="font-size: 12px;" @click="focusTextarea('Within WFP')" v-if="acc.name_id == 37"> Within WFP </button>
-        <button style="font-size: 12px;" @click="focusTextarea('Not within WFP')" v-if="acc.name_id == 37"> Not within WFP </button>
-      </div>
-      <div class="butokz">
-        <button @click="postNote">Save</button>
-        <button @click="closeNote">Cancel</button>
-      </div>
-    </div>
-  </div>
-  <div class="note" v-if="viewNote">
-    <div class="title-bar">
-      <div class="title">View note</div>
-    </div>
-    <div class="content">
-      <textarea v-model="noteText" rows="3"></textarea>
-      <div class="butokz">
-        <button @click="postNote" v-if="canSaveNote">Save</button>
-        <button @click="closeNote">Close</button>
-      </div>
-    </div>
-  </div>
-
   <div style="display: flex; flex-direction: column;">
     <h2 style="display: flex; flex-direction: row; align-self: center;" class="hist">History for:
       <select v-model="selectedStatus" id="status" class="styled-select">
@@ -46,7 +16,7 @@
     <div class="search" style="display: flex; flex-direction: row; justify-content: space-between; align-items: end; margin-top: 15px; margin-bottom: 10px; height: 35px;">
       <div v-if="mawala" style="display: flex; border: 2px solid black; border-radius: 5px; align-items: center; height: 30px; position: relative;">
         <img class="imgsearch" style="height: 20px; width:20px; position: relative; padding-left: 5px;" src="../../assets/search.png">
-        <input class="pholder" type="text" v-model="searchQuery" placeholder="Search TO number or Name">
+        <input class="pholder" type="text" v-model="searchQuery" placeholder="Search To number or Name">
       </div>
     </div>
 
@@ -54,7 +24,14 @@
       <div v-if="showRatingPopup">
         <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
       </div>
-      <div class="scrollable-table">
+
+      <div v-if="selectedItemForEdit">
+  <EditForm :item="selectedItemForEdit" @cancel-edit="closeEditForm"></EditForm>
+      </div>
+
+      
+      <div class="scrollable-table" >
+        
         <table>
           <thead>
             <tr>
@@ -75,6 +52,7 @@
               </span>
               <span v-else>No documents requested</span>
             </td>
+            
             <td>{{ item.date }}</td>
             <td>{{ item.status }}</td>
             <td>
@@ -82,27 +60,33 @@
                 </span>
                 <button v-else @click="openRatingPopup(item)">Rating</button>
               </td>
-            <td>    
-              <button @click="openEditDetails(item)">Edit</button>
-              <button @click="view(item)">View</button>
-              <button @click="add(item)">Add Note</button>
-            </td>
-           
+              
+        <td>
+
+        <button @click="openEditForm">Edit</button>
+        <status-modal v-if="showModal" :formDisable="isFormDisabled" @close="closeModal"  @submit="handleStatusSubmit"/>
+       
+        <button @click="generatePDF(item)">View PDF</button>
+  
+        <button @click="add(item)">Add Note</button>
+        
+        </td>
           </tr>
           <h1 style="text-align: center; margin-bottom: 0px;" v-if="reversedFormData.length == 0">NO MATCH FOUND</h1>
         </tbody>
         </table>
+  
+    <Note
+      v-if="addNote || viewNote"
+      @close-note="closeNote"
+      @post-note="postNote"
+      @focus-textarea="focusTextarea"
+    />  
+
       </div>
     </div>
   </div>
 
-  <div v-show="selectedTravelOrderId" class="prent full-screen">
-    <div class="buttons">
-      <button @click="printzz">Download as PDF</button>
-      <button @click="close">Close PDF</button>
-    </div>
-    <pdf :travel_order_id="selectedTravelOrderId"></pdf>
-  </div>
 </template>
 
 <script>
@@ -112,16 +96,84 @@ import editform from './../editform.vue';
 import otpz from '../../components/otp.vue';
 import { API_BASE_URL } from '@/config';
 import RatingPopup from './Rating.vue';
+import EditForm from './EditForm.vue';
+import PDF from './PDF.vue';
+import { jsPDF } from 'jspdf';
+import Note from './Note.vue';
+import { ref, watch } from 'vue';
+import denrLogo from '@/assets/background_image.png'
+
 export default {
   components: {
+    jsPDF,
+    PDF,
     pdf,
     otpz,
     editform,
     RatingPopup,
+    EditForm,
+    Note,
+  },
+
+
+  setup() {
+    const documents = ref([
+      { name: 'PURCHASE REQUEST - REQUISITION AND ISSUE SLIP', checked: false },
+      { name: 'CERTIFICATE OF EMPLOYMENT WITH COMPENSATION', checked: false },
+      { name: 'INVENTORY CUSTODIAN SLIP', checked: false },
+      { name: 'PROPERTY ACKNOWLEDGEMENT RECEIPT', checked: false },
+      { name: 'GATE PASS', checked: false },
+      { name: 'PO FUEL', checked: false },
+      { name: 'PROPERTY RETURN SLIP', checked: false },
+      { name: 'R&M OF MOTOR VEHICLES', checked: false },
+      { name: 'JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C', checked: false },
+      { name: 'Others', checked: false }
+    ]);
+
+    // Assuming item is passed as a prop or fetched from somewhere
+    const item = {
+      documents: ['PURCHASE REQUEST - REQUISITION AND ISSUE SLIP', 'CERTIFICATE OF EMPLOYMENT WITH COMPENSATION' , 'INVENTORY CUSTODIAN SLIP',
+      'PROPERTY ACKNOWLEDGEMENT RECEIPT','GATE PASS','PO FUEL','PROPERTY RETURN SLIP','R&M OF MOTOR VEHICLES','JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C', 'Others'] // Example documents
+    };
+    const selectedDocument = ref(''); // This should be updated based on your form logic
+
+    
+
+    const requestedDocuments = ['Service Record', 'Certificate of Employment'];
+// Watch for changes in the selected document
+watch(selectedDocument, (newValue) => {
+      // Uncheck all checkboxes first
+      documents.value.forEach((doc) => {
+        doc.checked = false;
+      });
+
+      const selectedDoc = documents.value.find(doc => doc.name === newValue);
+      if (selectedDoc) {
+        selectedDoc.checked = true; // Check the corresponding checkbox
+      }
+});
+    // Function to check the documents based on the item.documents
+    const checkDocuments = () => {
+      documents.value.forEach(doc => {
+        doc.checked = item.documents.includes(doc.name);
+      });
+    };
+
+    // Call the function to set the initial checked state
+    checkDocuments();
+
+    return {
+      documents,
+      selectedDocument, 
+    };
   },
   data() {
     return {
+      addNote: false,
+      logoPath: denrLogo,
+      selectedItemForEdit: null,
       showRatingPopup: false,
+      showPdfModal: false,
       currentItem: '',
       selectedStatus: 'Me',
       options: ['Pending', 'Done', 'Me'],
@@ -138,6 +190,28 @@ export default {
       noteText: '',
       searchQuery: '',
       documents: [],
+      selectedTravelOrderIdEdit: null,
+      selectedTravelOrderId: null,
+      requestor: '',
+      divisions: [],
+      date: '',
+      documents: [
+      { id: 'PURCHASE REQUEST - REQUISITION AND ISSUE SLIP', checked: false },
+      { id: 'CERTIFICATE OF EMPLOYMENT WITH COMPENSATION', checked: false },
+      { id: 'INVENTORY CUSTODIAN SLIP', checked: false },
+      { id: 'PROPERTY ACKNOWLEDGEMENT RECEIPT', checked: false },
+      { id: 'GATE PASS', checked: false },
+      { id: 'PO FUEL', checked: false },
+      { id: 'PROPERTY RETURN SLIP', checked: false },
+      { id: 'R&M OF MOTOR VEHICLES', checked: false },
+      { id: 'JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C', checked: false },
+      { id: 'OTHERS', checked: false }
+      ],
+      
+      selectedDocuments: [],
+      timeRequested: '',
+      dateTimeReleased: '',
+      rating: null,
     };
   },
   mounted() {
@@ -146,12 +220,464 @@ export default {
     this.fetchNames();
     this.fetchData(); // Fetch the form data when the component is mounted
     this.fetchDocuments();
+    this.fetchDivisions();
   },
   methods: {
+    fetchDivisions() {
+    axios.get(`${API_BASE_URL}/get_divisions_json`) // Adjust the endpoint as necessary
+      .then(response => {
+        this.divisions = response.data; // Store the fetched divisions
+      })
+      .catch(error => {
+        console.error('Error fetching divisions:', error);
+      });
+  },
+
+  generatePDF(item) {
+  this.$nextTick(() => {
+    const printableElement = document.createElement("div");
+    printableElement.id = "printableArea";
+    printableElement.style.padding = "20px";
+    printableElement.style.fontFamily = "Arial, sans-serif";
+    printableElement.style.textAlign = "center";
+
+    
+    // Make sure documents is an array
+    const requestedDocs = Array.isArray(item.documents) ? item.documents : JSON.parse(item.documents || '[]');
+    
+    // Extract the time from the date string
+    // Assuming item.date is in a format like "YYYY-MM-DD HH:MM:SS" or contains time information
+    let timeRequested = "";
+    try {
+      const dateObj = new Date(item.date);
+      if (!isNaN(dateObj.getTime())) {
+        // Format time as HH:MM AM/PM
+        timeRequested = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+    } catch (e) {
+      console.error("Error parsing date:", e);
+    }
+
+    let othersText = "";
+if (item.otherDocuments) {
+  othersText = item.otherDocuments; // If directly storing the text in this property
+} else if (typeof item.documents === 'string' && item.documents.includes('Others:')) {
+  // Alternative: if you're storing it as "Others: TEXTHERE" in the documents array
+  const othersMatch = item.documents.match(/Others:\s*(.+?)(?:,|$)/);
+  if (othersMatch && othersMatch[1]) {
+    othersText = othersMatch[1].trim();
+  }
+}
+    
+    // Function to generate rating option HTML based on current rating
+    const generateRatingOption = (value, label) => {
+  // Only parse and apply rating if it exists and is not null/undefined/empty
+  const hasRating = item.rating !== undefined && item.rating !== null && item.rating !== '';
+  const currentRating = hasRating ? parseInt(item.rating) : null;
+  const isSelected = hasRating && currentRating === value;
+  
+  // Add revision text only for Very dissatisfied rating (value 1)
+  const revisionText = value === 1 ? '<span style="margin-left: 370px; font-weight: normal;">revised document Feb 2025</span>' : '';
+  
+  return `
+    <div class="rating-option ${isSelected ? 'selected' : ''}">
+      <span class="star ${isSelected ? 'filled' : 'empty'}">${isSelected ? '★' : '☆'}</span>
+      <strong>${value} - ${label}</strong>
+      ${revisionText}
+    </div>
+  `;
+};
+
+
+    
+    printableElement.innerHTML = `
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="logo-section">
+              <img src="${this.logoPath}" alt="DENR Logo" class="logo">
+              <div class="title-section">
+                <h3>Republic of the Philippines</h3>
+                <h4>Department of Environment and Natural Resources</h4>
+                <h4>MINES AND GEOSCIENCES BUREAU</h4>
+                <h4>Regional Office No. X</h4>
+                <p>DENR-X Compound, Puntod, Cagayan de Oro City</p>
+                <p>Telefax Nos. (088) 856-2110;(088) 856-1331; Email: region10@mgb.gov.ph</p>
+              </div>
+            </div>
+            <div class="certification-section">
+              <div class="certification-images">
+                <img src="/api/placeholder/50/50" alt="ISO Certification">
+                <img src="/api/placeholder/50/50" alt="Quality Certification">
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-title">REQUEST SLIP FORM</div>
+          <div class="admin-section">(Administrative Section)</div>
+          
+          <div class="form-content">
+            <table>
+              <tr class="form-row">
+                <td><strong>Requestor:</strong></td>
+                <td>${this.getName(item.name_id)}</td>
+                <td rowspan="3"></td>
+              </tr>
+              <tr class="form-row">
+                <td><strong>Division:</strong></td>
+                <td>${this.findDivisionName(item.division_id)}</td>
+              </tr>
+              <tr class="form-row">
+                <td><strong>Date & Time:</strong></td>
+                <td>${item.date}</td>
+              </tr>
+              
+              <tr class="documents-header">
+                <td colspan="2">DOCUMENT(S) REQUESTED</td>
+                <td style="width: 20%;">Time Requested</td>
+                <td style="width: 30%;">Date and Time Released</td>
+              </tr>
+
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? 'checked' : ''} /></td>
+                <td>PURCHASE REQUEST - REQUISITION AND ISSUE SLIP</td>
+                <td>${requestedDocs.includes('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? 'checked' : ''} /></td>
+                <td>CERTIFICATE OF EMPLOYMENT WITH COMPENSATION</td>
+                <td>${requestedDocs.includes('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('INVENTORY CUSTODIAN SLIP') ? 'checked' : ''} /></td>
+                <td>INVENTORY CUSTODIAN SLIP</td>
+                <td>${requestedDocs.includes('INVENTORY CUSTODIAN SLIP') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? 'checked' : ''} /></td>
+                <td>PROPERTY ACKNOWLEDGEMENT RECEIPT</td>
+                <td>${requestedDocs.includes('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('GATE PASS') ? 'checked' : ''} /></td>
+                <td>GATE PASS</td>
+                <td>${requestedDocs.includes('GATE PASS') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('PO FUEL') ? 'checked' : ''} /></td>
+                <td>PO FUEL</td>
+                <td>${requestedDocs.includes('PO FUEL') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('PROPERTY RETURN SLIP') ? 'checked' : ''} /></td>
+                <td>PROPERTY RETURN SLIP</td>
+                <td>${requestedDocs.includes('PROPERTY RETURN SLIP') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('R&M OF MOTOR VEHICLES') ? 'checked' : ''} /></td>
+                <td>R&M OF MOTOR VEHICLES</td>
+                <td>${requestedDocs.includes('R&M OF MOTOR VEHICLES') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? 'checked' : ''} /></td>
+                <td>JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C</td>
+                <td>${requestedDocs.includes('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+<tr class="documents-row">
+  <td><input type="checkbox" ${requestedDocs.includes('Others') ? 'checked' : ''} /></td>
+  <td>Others: ${othersText ? othersText : '_______________________________'}</td>
+  <td>${requestedDocs.includes('Others') ? timeRequested : ''}</td>
+  <td></td>
+</tr>
+              
+<tr>
+  <td colspan="4" class="rating-label">RATING</td>
+</tr>
+<tr class="rating-row">
+  <td colspan="4">
+    ${generateRatingOption(4, 'Very Satisfied')}
+    ${generateRatingOption(3, 'Satisfied')}
+    ${generateRatingOption(2, 'Dissatisfied')}
+    ${generateRatingOption(1, 'Very dissatisfied')}
+  </td>
+</tr>
+            </table>
+          </div>
+        </div>
+      </body>
+
+      <style scoped>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          color: #000;
+        }
+        
+        .container {
+          width: 100%;
+          max-width: 800px;
+          margin: 0 auto;
+          border: 1px solid #ccc;
+        }
+        
+        .header {
+          display: flex;
+          border-bottom: 1px solid #ccc;
+          padding: 10px;
+        }
+        
+        .logo-section {
+          display: flex;
+          width: 70%;
+        }
+        
+        .logo {
+          width: 100px;
+          height: 100px;
+        }
+        
+        .title-section {
+          padding-left: 10px;
+          line-height: 1.2;
+        }
+        
+        .title-section h3, .title-section h4 {
+          margin: 0;
+        }
+        
+        .title-section h3 {
+          font-weight: normal;
+        }
+        
+        .title-section h4 {
+          color: #000080;
+        }
+        
+        .title-section p {
+          margin: 5px 0;
+          font-size: 13px;
+        }
+        
+        .certification-section {
+          width: 30%;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+        }
+        
+        .certification-images img {
+          height: 50px;
+        }
+        
+        .form-title {
+          text-align: center;
+          font-weight: bold;
+          font-size: 18px;
+          margin: 10px 0;
+        }
+        
+        .admin-section {
+          text-align: center;
+          margin-bottom: 10px;
+          font-style: italic;
+        }
+        
+        .form-content {
+          width: 100%;
+        }
+        
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        
+        td {
+          border: 1px solid #ccc;
+          padding: 5px 10px;
+        }
+        
+        .form-row td:first-child {
+          width: 20%;
+          font-weight: bold;
+        }
+        
+        .form-row td:nth-child(2) {
+          width: 50%;
+          border-bottom: 1px solid #000;
+        }
+        
+        .form-row td:last-child {
+          width: 30%;
+        }
+        
+        .documents-header td {
+          font-weight: bold;
+          text-align: center;
+        }
+        
+        .documents-row td:first-child {
+          width: 5%;
+          text-align: center;
+        }
+        
+        .documents-row td:nth-child(2) {
+          width: 50%;
+        }
+        
+        .checkbox {
+          width: 15px;
+          height: 15px;
+          border: 1px solid #000;
+          display: inline-block;
+        }
+        
+        .rating-row td {
+          padding: 0;
+        }
+        
+        .rating-label {
+          font-weight: bold;
+          padding: 5px 10px;
+        }
+        
+        .star {
+          display: inline-block;
+          margin-right: 5px;
+          color: #000080;
+        }
+        
+        .rating-option {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+        padding-left: 60px; /* Add space on the left for the revision text */
+
+        }
+        .rating-option.selected {
+          font-weight: bold;
+        }
+        
+        .star.filled {
+          color: black;
+        }
+        
+        .star.empty {
+          color: #ccc;
+        }
+      </style>
+    `;
+
+    document.body.appendChild(printableElement);
+    
+    // Create an iframe for printing
+    const printFrame = document.createElement('iframe');
+    printFrame.style.display = 'none'; // Hide the iframe
+    document.body.appendChild(printFrame); // Append it to the body
+
+    // Prepare the content for the iframe
+    const printDocument = printFrame.contentWindow.document;
+    printDocument.open();
+    printDocument.write(`
+      <html>
+        <head>
+          <title>Print Request Slip</title>
+          <style>
+            body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+            h2 { margin-bottom: 10px; }
+          </style>
+        </head>
+        <body>${printableElement.innerHTML}</body>
+      </html>
+    `);
+    printDocument.close();
+
+    // Focus on the iframe and trigger print
+    printFrame.contentWindow.focus();
+    printFrame.contentWindow.print();
+
+    // Clean up: remove the iframe after printing
+    printFrame.parentNode.removeChild(printFrame);
+
+    // Remove the printable element from the document
+    document.body.removeChild(printableElement);
+  });
+},
+
+
+
+
     focusTextarea(text) {
       this.noteText = text;
       this.$refs.noteInput.focus();
     },
+    submitStatus() {
+    if (this.status) {
+      this.$emit("submit", this.status);
+    }
+    this.cancelEdit(); // Close modal after submission
+  },
+  cancelEdit() {
+    this.$emit("close-modal"); // Notify parent to hide modal
+  },
+    openEditForm(item) {
+    this.selectedItemForEdit = item; // Set the selected item for edit
+  },
+  closeEditForm() {
+    this.selectedItemForEdit = null; // Reset the selected item for edit
+  },
+  AddNewNote(item) {
+    this.selectedItemForEdit = item; // Set the selected item for edit
+  },
+  closeAddNewNote() {
+    this.selectedItemForEdit = null; // Reset the selected item for edit
+  },
+    
+  view(item) {
+      // Implement the view functionality for the selected item
+      console.log('Viewing item:', item);
+  },
+  add(item) {
+  this.addNote = true;
+  this.selectedItem = item;
+  console.log('Adding note for item:', item);
+},
+  saveNote(noteText) {
+      // Implement the logic to save the note
+      // You can use the `selectedItem` to associate the note with the correct item
+      console.log('Saving note:', noteText);
+      // Call an API or update the data in your component
+    },
+    closeNote() {
+      this.addNote = false;
+    },
+    closePdfModal() {
+    this.showPdfModal = false;
+  },
+  getPdfUrl(travelOrderId) {
+    return `${API_BASE_URL}/get_pdf/${travelOrderId}`;
+  },
+  printPDF() {
+    this.$nextTick(() => {
+      const iframe = this.$refs.pdfFrame;
+      if (iframe) {
+        iframe.contentWindow.print();
+      }
+    });
+  },
+
+
+
+
     closeEdit() {
       this.selectedTravelOrderIdEdit = 0;
     },
@@ -163,6 +689,7 @@ export default {
   const payload = {
     rating: rating 
   };
+
   // Use the existing update endpoint
   axios.post(`${API_BASE_URL}/FADRFupdate_request/${this.currentItem.id}`, payload)
     .then(response => {
@@ -264,6 +791,13 @@ export default {
       }
       return 'Unknown';
     },
+    findDivisionName(division_Id) {
+  if (this.divisions && this.divisions.length > 0) {
+    const division = this.divisions.find(div => div.division_id === division_Id);
+    return division?.division_name || 'UNKNOWN';
+  }
+  return 'UNKNOWN';
+},
     padWithZeroes(travel_order_id) {
   if (travel_order_id === undefined || travel_order_id === null) {
     console.warn('travel_order_id is undefined or null');
@@ -519,7 +1053,72 @@ export default {
     height: 75px;
   }
   
-  
+  .request-slip-container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo img {
+  max-width: 100px;
+}
+
+.request-slip-form {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+.document-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+}
+
+.document-item input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.rating-options label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-actions {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
   button {
     border-radius: 10px;
     background: linear-gradient(150deg, #DDC7AD, #b3844f);
