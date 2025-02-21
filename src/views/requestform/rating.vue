@@ -2,6 +2,7 @@
   <div class="rating-popup">
     <div class="popup-content">
       <h2>Rate this Request</h2>
+      
       <div class="stars">
         <span
           v-for="s in 4"
@@ -12,9 +13,11 @@
           >★</span
         >
       </div>
+      
       <div class="selected-label">{{ getLabel(rating) }}</div>
       <div class="buttons">
         <button @click="submitRating">Submit </button>
+        
         <button @click="$emit('close')">Cancel</button>
       </div>
     </div>
@@ -33,6 +36,10 @@ export default {
       this.rating = star;
     },
     submitRating() {
+      if (this.rating === 0) {
+        alert("Please select a rating");
+        return;
+      }
       this.$emit("submit", this.rating);
     },
     getLabel(star) {

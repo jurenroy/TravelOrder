@@ -73,7 +73,7 @@ const findDivisionName = (divisionId) => {
 const handleSubmit = async () => {
   console.log(documents.value)
     // Clear the documents array first
-    form.value.documents = [];
+    //form.value.documents = [];//
   console.log(form.value.documents)
     // Include the "Others" document if specified
     if (otherDocumentText.value) {
@@ -91,7 +91,7 @@ const handleSubmit = async () => {
     form.value.documents = documents.value
     .filter(doc => doc.checked)
     .map(doc => (` ${doc.name}`));
-    // .map(doc => ({'document_name': doc.name, name_id: null, datetime: null}));
+    //.map(doc => ({ name: doc.name, name_id: null, datetime: null }));
   
   if (!form.value.name_id || !form.value.division_id || form.value.documents.length === 0) {
     alert('Please fill all required fields and select at least one document.');

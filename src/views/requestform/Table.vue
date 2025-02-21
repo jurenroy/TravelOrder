@@ -54,6 +54,13 @@
       <div v-if="showRatingPopup">
         <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
       </div>
+
+      <EditDetailsPopup 
+        v-if="showEditDetailsPopup" 
+        :documents="currentItem.documents" 
+        @submit="handleEditDetails" 
+        @close="showEditDetailsPopup = false"   
+      />
       <div class="scrollable-table">
         <table>
           <thead>
@@ -68,26 +75,36 @@
           </thead>
           <tbody>
             <tr v-for="(item, index) in formData" :key="index">
-              <td>{{ getName(item.name_id) }} </td>
+              <td>{{ getName(item.name_id) }}</td>
               <td>
                 <span v-if="Array.isArray(item.documents) && item.documents.length">
-                  {{ item.documents.join(', ') }}
+                  <span v-for="(doc, docIndex) in item.documents" :key="docIndex">
+                    {{ getDocumentName(doc) }} <br>
+                  </span>
                 </span>
                 <span v-else>No documents requested</span>
               </td>
               <td>{{ item.date }}</td>
-              <td>{{ item.status }}</td>
               <td>
-                <span v-if="item.rating !== null">    <span v-for="n in item.rating" :key="n">⭐</span>
+                <span v-if="Array.isArray(item.documents) && item.documents.length">
+                  <span v-for="(doc, docIndex) in item.documents" :key="'remarks-' + docIndex">
+                    {{ doc.remarks || 'No remarks' }} <br>
+                  </span>
                 </span>
-                <button v-else @click="openRatingPopup(item)">Rating</button>
+                <span v-else>No remarks</span>
+              </td>
+              <td>
+                <span v-if="item.rating !== null">
+                  <span v-for="n in item.rating" :key="n">⭐</span>
+                </span>
+                <button v-else @click="openRatingPopup(item)" :disabled="item.rating===0">Rating</button>
               </td>
 
               <td>
-                <button @click="edit(item)">Edit</button>
+                <button @click="openEditDetailsPopup(item)">Edit</button>
                 <button @click="view(item)">View</button>
                 <button @click="add(item)">Add Note</button>
-              </td>
+              </td> 
             </tr>
             <h1 style="text-align: center; margin-bottom: 0px;" v-if="formData.length == 0">NO REQUEST FOUND</h1>
           </tbody>
@@ -101,7 +118,7 @@
       <button @click="printzz">Download as PDF</button>
       <button @click="close">Close PDF</button>
     </div>
-    <pdf :travel_order_id="selectedTravelOrderId"></ pdf>
+    <pdf :travel_order_id="selectedTravelOrderId"></pdf>
   </div>
 </template>
 
@@ -112,6 +129,7 @@ import editform from './../editform.vue';
 import otpz from '../../components/otp.vue';
 import RatingPopup from './rating.vue';
 import { API_BASE_URL } from '@/config';
+import EditDetailsPopup from './EditDetailsPopup.vue';
 
 export default {
   components: {
@@ -119,10 +137,12 @@ export default {
     otpz, 
     RatingPopup,
     editform,
+    EditDetailsPopup,
   },
   data() {
     return {
       showRatingPopup: false,
+      showEditDetailsPopup: false,
       currentItem: '',
       selectedStatus: 'Me',
       options: ['Pending', 'Done', 'Me'],
@@ -157,26 +177,58 @@ export default {
       this.currentItem = item; 
       this.showRatingPopup = true;
     },
-    
-    handleRating(rating) {
+    getDocumentName(doc) {
+  if (!doc) return "No document";
+  return typeof doc === "object" ? doc.name || "Unknown" : doc;
+},
+
+    getReleasedStatus(doc) {
+  return doc.remarks?.trim() === 'Released' ? 'Released' : 'Unreleased';
+},
+
+    openEditDetailsPopup(item) {
+      this.currentItem = item; 
+      this.showEditDetailsPopup = true; 
+    },
+    handleEditDetails(updatedDocuments) {
+  if (!this.currentItem || !this.currentItem.id) {
+    alert("No current item selected for update.");
+    return;
+  }
+
   const payload = {
-    rating: rating 
+    documents: updatedDocuments,
+    remarks: updatedDocuments.map(doc => doc.remarks).join(', ') // Join remarks for storage
   };
-  // Use the existing update endpoint
+
   axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
     .then(response => {
       if (response.status === 200) {
-        alert('Rating submitted successfully!');
-        this.currentItem.rating = rating; 
+        alert("Remarks updated successfully!");
+        this.currentItem.documents = updatedDocuments; 
       }
     })
     .catch(error => {
-      console.error('Error submitting rating:', error);
-      alert('Failed to submit rating. Please try again.');
-    })
-    .finally(() => {
-      this.showRatingPopup = false; 
+      console.error("Error updating documents:", error);
+      alert("Failed to update documents. Please try again.");
     });
+},
+    handleRating(rating) {
+      const payload = { rating: rating };
+      axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
+        .then(response => {
+          if (response.status === 200) {
+            alert('Rating submitted successfully!');
+            this.currentItem.rating = rating; 
+          }
+        })
+        .catch(error => {
+          console.error('Error submitting rating:', error);
+          alert('Failed to submit rating. Please try again.');
+        })
+        .finally(() => {
+          this.showRatingPopup = false; 
+        });
     },
     closeEdit() {
       this.selectedTravelOrderIdEdit = 0;
@@ -213,18 +265,22 @@ export default {
         });
     },
     fetchData() {
-      this.load = true;
       axios.get(`${API_BASE_URL}/get_request`)
         .then(response => {
           this.mawala = true;
           this.load = false;
 
           this.formData = response.data.map(item => {
-            return {
-              ...item,
-              documents: item.documents ? JSON.parse(item.documents) : [],
-              rating: item.rating || null
-            };
+          const documents = item.documents ? JSON.parse(item.documents) : [];
+
+          return {
+            ...item,
+            documents: documents.map(doc => ({
+              name: doc.name || doc, 
+              remarks: doc.remarks?.trim() ? doc.remarks : 'No Remarks'
+            })),
+            rating: item.rating || null
+          };
           });
 
           console.log(this.formData);
@@ -258,7 +314,7 @@ export default {
         const { first_name, middle_init, last_name } = name;
         return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
       }
-      return 'Unknown';
+      return 'Unknown'; 
     },
     padWithZeroes(travel_order_id) {
       const idString = travel_order_id.toString();
@@ -279,7 +335,7 @@ export default {
       return this.formData.filter(form => form.note === null && form.initial !== null).length;
     },
     reversedFormData() {
-      return this.formData.slice().reverse().filter (item => {
+      return this.formData.slice().reverse().filter(item => {
         return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
       });
     },
