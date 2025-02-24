@@ -1,36 +1,41 @@
 <template>
-    <div class="note-popup">
-      <div class="popup-content">
-        <h3>Add New Note</h3>
-        <textarea v-model="note" placeholder="Write your note here..." rows="4"></textarea>
-        <div class="popup-buttons">
-          <button @click="submitRating">Submit</button>
-          <button @click="$emit('close-note')">Cancel</button>
-        </div>
+  <div class="note-popup">
+    <div class="popup-content">
+      <h3>{{ note ? "Edit Note" : "Add Note" }}</h3>
+      <textarea v-model="note" placeholder="Write your note here..." rows="4"></textarea>
+      <div class="popup-buttons">
+        <button @click="saveNote">Save</button>
+        <button @click="$emit('close-note')">Cancel</button>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        note: '',
-      };
+  </div>
+</template>
+
+<script>
+export default {
+  props: ["initialNote"],
+  data() {
+    return {
+      note: this.initialNote || "", // Keep existing note
+    };
+  },
+  methods: {
+    saveNote() {
+      if (this.note.trim() !== "") {
+        this.$emit("save-note", this.note);
+      } else {
+        alert("Note cannot be empty.");
+      }
     },
-    methods: {
-      addNewNote() {
-        if (this.note.trim() !== '') {
-          this.$emit('submit', this.note);
-          this.note = ''; // Clear the note field after submission
-        }
-      },
+  },
+  watch: {
+    initialNote(newVal) {
+      this.note = newVal; // Ensure the note updates correctly when reopened
     },
-    mounted() {
-      this.note = ''; // Reset the note field when the popup is opened
-    },
-  };
-  </script>
+  },
+};
+</script>
+
   
   <style scoped>
   .note-popup {
