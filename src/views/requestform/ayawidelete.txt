@@ -1,4 +1,37 @@
+Table vue
+
 <template>
+  <editform v-if="selectedTravelOrderIdEdit > 0" :travelOrderId="selectedTravelOrderIdEdit" @cancel-edit="closeEdit"></editform>
+  <div class="note" v-if="addNote">
+    <div class="title-bar">
+      <div class="title">Add note</div>
+      <div class="close-icon" @click="closeNote">X</div>
+    </div>
+    <div class="content">
+      <textarea v-model="noteText" rows="3" placeholder="Enter your note here"></textarea>
+      <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+        <button style="font-size: 12px;" @click="focusTextarea('Within WFP')" v-if="acc.name_id == 37"> Within WFP </button>
+        <button style="font-size: 12px;" @click="focusTextarea('Not within WFP')" v-if="acc.name_id == 37"> Not within WFP </button>
+      </div>
+      <div class="butokz">
+        <button @click="postNote">Save</button>
+        <button @click="closeNote">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div class="note" v-if="viewNote">
+    <div class="title-bar">
+      <div class="title">View note</div>
+    </div>
+    <div class="content">
+      <textarea v-model="noteText" rows="3"></textarea>
+      <div class="butokz">
+        <button @click="postNote" v-if="canSaveNote">Save</button>
+        <button @click="closeNote">Close</button>
+      </div>
+    </div>
+  </div>
+
   <div style="display: flex; flex-direction: column;">
     <h2 style="display: flex; flex-direction: row; align-self: center;" class="hist">History for:
       <select v-model="selectedStatus" id="status" class="styled-select">
@@ -71,45 +104,47 @@
 
               <td>
                 <button @click="openEditDetailsPopup(item)">Edit</button>
-                <button @click="generatePDF(item)">View PDF</button>
-                <button @click="add(item)">View Note</button>
+                <button @click="view(item)">View</button>
+                <button @click="add(item)">Add Note</button>
               </td> 
             </tr>
             <h1 style="text-align: center; margin-bottom: 0px;" v-if="formData.length == 0">NO REQUEST FOUND</h1>
           </tbody>
         </table>
-        <Note
-          v-if="addNote"
-          :initialNote="currentItem.note || ''" 
-          @close-note="closeNote"
-          @save-note="saveNote"
-         />
       </div>
     </div>
+  </div>
+
+  <div v-show="selectedTravelOrderId" class="prent full-screen">
+    <div class="buttons">
+      <button @click="printzz">Download as PDF</button>
+      <button @click="close">Close PDF</button>
+    </div>
+    <pdf :travel_order_id="selectedTravelOrderId"></pdf>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import pdf from './../pdf.vue';
 import editform from './../editform.vue';
+import otpz from '../../components/otp.vue';
 import RatingPopup from './rating.vue';
 import { API_BASE_URL } from '@/config';
 import EditDetailsPopup from './EditDetailsPopup.vue';
-import Note from './Note.vue';
 
 export default {
   components: {
+    pdf,
+    otpz, 
     RatingPopup,
     editform,
     EditDetailsPopup,
-    Note,
   },
-
-
   data() {
     return {
       showRatingPopup: false,
-      showEditDetailsPopup: false, 
+      showEditDetailsPopup: false,
       currentItem: '',
       selectedStatus: 'Me',
       options: ['Pending', 'Done', 'Me'],
@@ -144,44 +179,6 @@ export default {
       this.currentItem = item; 
       this.showRatingPopup = true;
     },
-    add(item) {
-      this.addNote = true; 
-      this.noteText = item.note || "";
-      this.currentItem = item; 
-    },
-    saveNote(updatedNote) {
-  if (!this.currentItem || !this.currentItem.id) return;
-
-  axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, {
-    note: updatedNote,
-  })
-  .then(() => {
-    this.currentItem.note = updatedNote;
-    alert("Note saved successfully!");
-  })
-  .catch(error => {
-    console.error("Error updating note:", error);
-    alert("Failed to update note.");
-  });
-},
-    closeNote() {
-      this.addNote = false; // Hide the Add Note popup
-      this.viewNote = false;
-    },
-    postNote(note) {
-      const formData = new FormData();
-      formData.append('note', note);
-      axios.post(`${API_BASE_URL}/update_form/${this.notenum}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(() => {
-        this.fetchData();
-        this.closeNote();
-      }).catch(error => {
-        console.error('Error:', error);
-      });
-    },
     getDocumentName(doc) {
   if (!doc) return "No document";
   return typeof doc === "object" ? doc.name || "Unknown" : doc;
@@ -203,26 +200,14 @@ export default {
 
   const payload = {
     documents: updatedDocuments,
-    remarks: updatedDocuments.map(doc => doc.remarks).join(', ') 
+    remarks: updatedDocuments.map(doc => doc.remarks).join(', ') // Join remarks for storage
   };
 
   axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
     .then(response => {
       if (response.status === 200) {
         alert("Remarks updated successfully!");
-
-        // Update local state
-        this.formData = this.formData.map(item => {
-          if (item.id === this.currentItem.id) {
-            return {
-              ...item,
-              documents: updatedDocuments
-            };
-          }
-          return item;
-        });
-
-        this.showEditDetailsPopup = false;
+        this.currentItem.documents = updatedDocuments; 
       }
     })
     .catch(error => {
@@ -257,37 +242,20 @@ export default {
       this.addNote = false;
       this.viewNote = false;
     },
-    postNote(note) {
-  if (!this.currentItem || !this.currentItem.id) {
-    alert("No request selected.");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('note', note);
-
-  axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
-  .then(response => {
-    if (response.status === 200) {
-      alert("Note added successfully!");
-
-      // Update the frontend state
-      this.formData = this.formData.map(item =>
-        item.id === this.currentItem.id ? { ...item, note } : item
-      );
-
-      this.closeNote();
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert("Failed to submit note. Please try again.");
-  });
-},
+    postNote() {
+      const formData = new FormData();
+      formData.append('note', this.noteText);
+      axios.post(`${API_BASE_URL}/update_form/${this.notenum}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(() => {
+        this.fetchData();
+        this.closeNote();
+      }).catch(error => {
+        console.error('Error:', error);
+      });
+    },
     fetchAccounts() {
       axios.get(`${API_BASE_URL}/get_accounts_json`)
         .then(response => {
@@ -299,38 +267,31 @@ export default {
         });
     },
     fetchData() {
-  axios.get(`${API_BASE_URL}/get_request`)
-    .then(response => {
-      this.mawala = true;
-      this.load = false;
-      console.log("Fetched Data:", response.data); // Debugging
+      axios.get(`${API_BASE_URL}/get_request`)
+        .then(response => {
+          this.mawala = true;
+          this.load = false;
 
-      this.formData = response.data.map(item => {
-        let documents = [];
+          this.formData = response.data.map(item => {
+          const documents = item.documents ? JSON.parse(item.documents) : [];
 
-        try {
-          documents = item.documents ? JSON.parse(item.documents) : [];
-        } catch (error) {
-          console.error("Error parsing documents JSON:", error);
-        }
+          return {
+            ...item,
+            documents: documents.map(doc => ({
+              name: doc.name || doc, 
+              remarks: doc.remarks?.trim() ? doc.remarks : 'No Remarks'
+            })),
+            rating: item.rating || null
+          };
+          });
 
-        return {
-          ...item,
-          documents: documents.map(doc => ({
-            name: doc.name || doc, 
-            remarks: doc.remarks?.trim() ? doc.remarks : 'No Remarks'
-          })),
-          rating: item.rating || null
-        };
-      });
-
-      console.log("Processed FormData:", this.formData);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-      this.load = false;
-    });
-},
+          console.log(this.formData);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          this.load = false;
+        });
+    },
     fetchNames() {
       axios.get(`${API_BASE_URL}/get_names_json`)
         .then(response => {
@@ -380,301 +341,135 @@ export default {
         return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
       });
     },
+    canSaveNote() {
+      return this.siga || this.siga1 || this.acc.name_id == 76 || this.acc.name_id == 37;
+    },
   },
 };
 </script>
-  
-  
-  
-  <style scoped>
-  
-  .notification-count {
-    margin-top: -10px;
-    margin-left: -10px;
-    background-color: red;
-    color: white;
-    border-radius: 50%;
-    width: 20px; /* Adjust size */
-    height: 20px; /* Adjust size */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 12px; /* Adjust font size */
-  }
-  
-  .pholder {
-    padding: 5px;
-    border-radius: none;
-    border: none;
-    outline: none;
-  }
-  
-  
-  
-  .Btn {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 50px;
-    height: 50px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition-duration: .3s;
-    border: 2px solid black;
-    margin-bottom: 2px;
-    background-color: white;
-  
-  }
-  .sign {
-    width: 100%;
-    transition-duration: .3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    left: 1px;
-  }
-  
-  
-  .text {
-    position: absolute;
-    right: 0%;
-    width: 0%;
-    opacity: 0;
-    color: black;
-    font-size: 1.2em;
-    font-weight: 500;
-    transition-duration: .3s;
-  }
-  
-  .Btn:hover {
-    background-color: white;
-    width: 230px;
-    border: 2px solid black;
-    border-radius: 5px;
-    transition-duration: .3s;
-    position: relative;
-  
-  }
-  
-  .Btn:hover .text {
-    opacity: 1;
-    width: 70%;
-    transition-duration: .3s;
-    padding-right: 10px;
-  }
-  
-  
-  .Btn:hover .sign {
-    width: 30%;
-    transition-duration: .3s;
-    position: relative;
-    left: -15px;
-  }
-  
-  
-  .Btn:active {
-    transform: translate(2px, 2px);
-  }
-  
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th,
-  td {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-    position: sticky;
-    top: -2px;
-  }
-  
-  .scrollable-table {
-    max-height: 630px;
-    overflow-y: auto;
-    margin: 15px;
-  }
-  
-  .outer {
-    border: 1px solid black;
-    box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
-    border-radius: 5px;
-    width: 100%;
-  }
-  
-  
-  .loadings {
-    top: 0;
-    left: 0;
-    width: fit-content;
-    justify-self: center;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    margin: 10px auto;
-    border-radius: 10px;
-  }
-  
-  .loadings1 {
-    height: 20px;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .loadings1,
-  .loadings2 {
-    font-weight: bold;
-    font-size: 20px;
-  }
-  
-  .note {
-    width: 300px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 20px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 100;
-  }
-  
-  
-  .title-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .butokz {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 20px;
-  }
-  
-  .title {
-    font-size: 20px;
-    font-weight: bold;
-  }
-  
-  .close-icon {
-    cursor: pointer;
-    font-size: 20px;
-    color: #333;
-  }
-  
-  .content {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  textarea {
-    width: 100%;
-    resize: vertical;
-    height: 75px;
-  }
-  
-  
-  button {
-    border-radius: 10px;
-    background: linear-gradient(150deg, #DDC7AD, #92785b);
-    border: solid black 2px;
-    padding: 10px 20px;
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    transition: background 0.3s;
-    margin: 0 5px;
-    height: fit-content;
-    justify-content: center;    
-  }
-  
-  button:hover {
-    background-color: black;
-    color: white;
-  }
-  
-  .styled-select {
-    appearance: none;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-    width: 100px;
-    font-weight: bold;
-    margin-top: -5px;
-    margin-left: 5px;
-  }
-  
-  .styled-select:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  .styled-select option {
-    padding: 10px;
-    font-weight: bold;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .Btn{
-      margin-right: 20px;
+
+//////////////////////////////////////////////////////
+
+edit EditDetailsPopup
+
+
+<template>
+  <div class="edit-action-popup">
+    <div class="popup-content">
+      <h2> Document Remarks</h2>
+      <div v-for="(document, index) in documents" :key="index" class="document-status">
+        <span>{{ document.name }}</span>
+        <!-- Single button to toggle between Release and Unrelease -->
+        <button @click="toggleRemarks(index)">
+          {{ document.remarks === 'Released' ? 'Unrelease' : 'Release' }}
+        </button>
+        <span v-if="document.remarks === 'Released'" class="status-indicator">Released</span>
+        <span v-if="document.remarks === 'Unreleased'" class="status-indicator">Unreleased</span>
+      </div>
+      <div class="status-summary">
+        <p>Status: {{ getOverallRemarks() }}</p>
+      </div>
+      <div class="close-button" @click="closePopup">X</div> <!-- Close button -->
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    documents: {
+      type: Array,
+      required: true
     }
-  
-   .prent {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: fit-content;
-      height: 100%; 
-      max-height: 1000px; 
-      z-index: 9999; 
-      height: 100vh;
-      background-color: white;
-    }
-    .prent .buttons{
-      display: flex;
-      justify-content: space-evenly;
-      margin-top: 70px;
-      margin-bottom: 10px;
-    }
-  
-  }
-  
-  @media print {
-    .outer {
-      display: none !important;
-    }
-  
-    .hist {
-      display: none !important;
-    }
-  
-    .content,
-    .search,
-    .note,
-    .sign,
-    .Btn,
-    .dropdown {
-      display: none !important;
-    }
-    .buttons{
-      display: none !important;
+  },
+  methods: {
+    toggleRemarks(index) {
+      // Check the current state of the remarks
+      const currentRemark = this.documents[index].remarks;
+
+      // Toggle the remarks of the document
+      this.documents[index].remarks = currentRemark === 'Released' ? 'Unreleased' : 'Released';
+
+      // Show an alert based on the new state
+      if (this.documents[index].remarks === 'Released') {
+        alert(`Document "${this.documents[index].name}" has been released.`);
+      } else {
+        alert(`Document "${this.documents[index].name}" has been unreleased.`);
+      }
+
+      // Emit the updated documents to the parent component
+      this.emitUpdatedDocuments();
+    },
+    getOverallRemarks() {
+      console.log(this.documents)
+      const totalDocuments = this.documents.length;
+      const releasedCount = this.documents.filter(doc => doc.remarks === 'Released').length;
+
+      if (releasedCount === totalDocuments && totalDocuments > 0) {
+        return 'All documents released';
+      } else {
+        return `${releasedCount}/${totalDocuments} documents`;
+      }
+
+      
+    },
+    emitUpdatedDocuments() {
+      // Emit the updated documents to the parent component
+      this.$emit('submit', this.documents);
+    },
+    closePopup() {
+      // Emit an event to close the popup without submitting
+      this.$emit('close');
     }
   }
-  </style>
+};      
+</script>
+
+<style scoped>
+.edit-action-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.document-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.status-summary {
+  margin-top: 20px;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+.status-indicator {
+  color: green; /* Change color as needed */
+  margin-left: 10px;
+}
+.close-button {
+  cursor: pointer;
+  color: red; /* Change color as needed */
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: right; /* Align to the right */
+}
+</style>
+

@@ -1,20 +1,34 @@
 <template>
-  <div class="edit-action-popup">
-    <div class="popup-content">
-      <h2> Document Remarks</h2>
-      <div v-for="(document, index) in documents" :key="index" class="document-status">
-        <span>{{ document.name }}</span>
-        <!-- Single button to toggle between Release and Unrelease -->
-        <button @click="toggleRemarks(index)">
-          {{ document.remarks === 'Released' ? 'Unrelease' : 'Release' }}
-        </button>
-        <span v-if="document.remarks === 'Released'" class="status-indicator">Released</span>
-        <span v-if="document.remarks === 'Unreleased'" class="status-indicator">Unreleased</span>
+  <div class="document-remarks-overlay">
+    <div class="document-remarks-modal">
+      <div class="document-remarks-header">
+        <h2>Document Remarks</h2>
+        <button class="close-button" @click="closePopup">✕</button>
       </div>
-      <div class="status-summary">
-        <p>Status: {{ getOverallRemarks() }}</p>
+      <div class="document-list">
+        <div v-for="(document, index) in documents" :key="index" class="document-item">
+          <span class="document-name">{{ document.name }}</span>
+          <div class="document-controls">
+            <button 
+              class="toggle-button"
+              :class="{ 'released': document.remarks === 'Released' }"
+              @click="toggleRemarks(index)"
+            >
+              {{ document.remarks === 'Released' ? 'Unrelease' : 'Release' }}
+            </button>
+            <span 
+              class="status-badge"
+              :class="{ 'released': document.remarks === 'Released' }"
+            >
+              {{ document.remarks }}
+            </span>
+          </div>
+        </div>
       </div>
-      <div class="close-button" @click="closePopup">X</div> <!-- Close button -->
+      <div class="overall-status">
+        <span class="status-label">Overall Status</span>
+        <span class="status-badge">{{ getOverallRemarks() }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -71,49 +85,162 @@ export default {
 </script>
 
 <style scoped>
-.edit-action-popup {
+.document-remarks-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
   z-index: 1000;
 }
-
-.popup-content {
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
-  text-align: center;
+.document-remarks-modal {
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 28rem;
+  width: 100%;
+  padding: 1.5rem;
+  animation: slideUp 0.3s ease-out;
 }
-
-.document-status {
+.document-remarks-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px 0;
+  margin-bottom: 1.5rem;
 }
-
-.status-summary {
-  margin-top: 20px;
-}
-
-.buttons {
-  margin-top: 20px;
-}
-.status-indicator {
-  color: green; /* Change color as needed */
-  margin-left: 10px;
+.document-remarks-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
 }
 .close-button {
+  background: none;
+  border: none;
+  color: #6B7280;
   cursor: pointer;
-  color: red; /* Change color as needed */
-  font-weight: bold;
-  margin-top: 10px;
-  text-align: right; /* Align to the right */
+  font-size: 1.5rem;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+.close-button:hover {
+  color: #374151;
+}
+.document-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.document-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #050a13;
+  border-radius: 0.75rem;
+  transition: border-color 0.2s;
+}
+.document-item:hover {
+  border-color: #E5E7EB;
+}
+.document-name {
+  font-weight: 500;
+  color: #000000;
+}
+.document-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.toggle-button {
+  font-size: 17px;
+  background: transparent;
+  border: none;
+  padding: 0.3em 0.2em;
+  color: black;
+  text-transform: uppercase;
+  position: relative;
+  transition: 0.5s ease;
+  cursor: pointer;
+  border: rgb(202, 201, 201) 2px solid;
+}
+.toggle-button:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: gray;
+  transition: 0.5s ease;
+}
+.toggle-button:hover{
+  color: #1e1e2b;
+  transition-delay: 0.5s;
+}
+.toggle-button:hover::before{
+  width: 100%;
+}
+.toggle-button:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 0;
+  width: 100%;
+  background-color: #ffc506;
+  transition: 0.4s ease;
+  z-index: -1;
+}
+
+.toggle-button:hover::after {
+  height: 100%;
+  transition-delay: 0.4s;
+  color: aliceblue;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: #f1a979ec;
+  color: #000000;
+}
+.status-badge.released {
+  background-color: #13d671;
+  color: #000000;
+}
+.overall-status {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #000000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.status-label {
+  font-size: 0.875rem;
+  color: #6B7280;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
