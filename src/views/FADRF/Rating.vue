@@ -62,78 +62,96 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(126, 71, 9, 0.856);
-  padding: 60px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgb(218, 131, 0);
-  z-index: 1000;
-  text-align: center;
-}
-
-.popup-content {
-  color: #f0eaea;
-}
-
-.star-rating {
-  font-size: 24px;
-  color: #f0eaea;
-  cursor: pointer;
-}
-
-.star-rating span {
-  margin: 5px;
-  transition: color 0.3s;
-}
-
-.star-rating .filled {
-  color: gold;
-}
-
-.star {
-    color: white;
-  }
-  
-  .star.active {
-    color: gold;
-  } 
-
-
-.popup-buttons {
+  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+}
+.popup-content {
+  background: linear-gradient(145deg, #fff8f0, #e6d5c3);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1), -8px -8px 20px rgba(255, 255, 255, 0.7);
+  text-align: center;
+  width: 320px;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+}
+h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+.star-rating {
+  font-size: 32px;
+  color: #333129;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
   gap: 10px;
 }
-
+.star {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+.star:hover {
+  transform: scale(1.2);
+}
+.star.active {
+  color: #ff9900;
+}
+.selected-label {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #555;
+}
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  
+}
 .popup-buttons button {
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  border: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
   position: relative;
   overflow: hidden;
-  cursor: pointer;
-  background-color: transparent;
-  border: 2px solid black; /* Added black border */
-  padding: 10px 20px;
-  font-size: 16px;
-  transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+  border: 2px solid black;
 }
-
-.popup-buttons button::before {
+.popup-buttons button:before {
   content: "";
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(162, 123, 92, 0.856);
-  transition: left 0.3s ease-in-out;
-  z-index: -1;
+  background-color: rgba(109, 107, 107, 0.712);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
-
-.popup-buttons button:hover::before {
-  left: 0;
+.popup-buttons button:hover:before {
+  opacity: 1;
 }
-
-.popup-buttons button:hover {
+.submitRating {
+  background-color: #99500c;
   color: white;
-  border-color: rgba(162, 123, 92, 0.856); /* Optional: Change border color on hover */
+}
+.submitRating:hover {
+  background-color: #7a4b23;
+}
+.close-btn {
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  color: #333;
+}
+.close-btn:hover {
+  background-color: #e0e0e0;
 }
 </style>

@@ -1,20 +1,23 @@
 <template>
   <div class="edit-action-popup">
     <div class="popup-content">
-      <h2> Document Remarks</h2>
+      <div class="close-button" @click="closePopup">X</div>
+      <h2>Document Remarks</h2>
       <div v-for="(document, index) in documents" :key="index" class="document-status">
         <span>{{ document.name }}</span>
-        <!-- Single button to toggle between Release and Unrelease -->
-        <button @click="toggleRemarks(index)">
+        <button 
+          @click="toggleRemarks(index)" 
+          :class="{'released': document.remarks === 'Released'}"
+        >
           {{ document.remarks === 'Released' ? 'Unrelease' : 'Release' }}
         </button>
-        <span v-if="document.remarks === 'Released'" class="status-indicator">Released</span>
-        <span v-if="document.remarks === 'Unreleased'" class="status-indicator">Unreleased</span>
+        <span :class="{'status-indicator': true, 'released-text': document.remarks === 'Released'}">
+          {{ document.remarks }}
+        </span>
       </div>
       <div class="status-summary">
         <p>Status: {{ getOverallRemarks() }}</p>
       </div>
-      <div class="close-button" @click="closePopup">X</div> <!-- Close button -->
     </div>
   </div>
 </template>
@@ -73,48 +76,117 @@ export default {
 <style scoped>
 .edit-action-popup {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 999;
+  backdrop-filter: blur(10px);
+}
+.popup-content {
+  background: linear-gradient(145deg, #fff8f0, #e6d5c3);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1), -8px -8px 20px rgba(255, 255, 255, 0.7);
+  text-align: center;
+  width: 1000px;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+  position: relative;
+}
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+.document-status {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  gap: 15px 80px;
+  text-align: left;
+  border-collapse: collapse;
 }
 
-.popup-content {
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
+.document-status div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #99500c;
+}
+
+.document-status button {
+  padding: 10px 20px;
+  min-width: 100px;
+  margin-bottom: 10px;
+  border-radius: 25px;
+  font-size: 16px;
+  border: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid black;
   text-align: center;
 }
 
-.document-status {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 10px 0;
+.document-status button:hover {
+  transform: scale(1.1);
+  background-color: rgba(109, 107, 107, 0.712);
 }
 
+.released-btn {
+  background-color: #2E8B57 !important; /* Green */
+  color: white;
+}
+
+.released-btn:hover {
+  background-color: #1e6b42 !important;
+}
+
+.unreleased-btn {
+  background-color: #99500c !important; /* Brown */
+  color: white;
+}
+
+.unreleased-btn:hover {
+  background-color: #7a4b23 !important;
+}
+
+.status-indicator {
+  color: #99500c;
+  font-weight: bold;
+}
+
+.status-indicator.released-text {
+  color: #2E8B57; /* Green text when Released */
+}
 
 .status-summary {
   margin-top: 20px;
+  font-size: 18px;
+  color: #555;
 }
 
-.buttons {
-  margin-top: 20px;
-}
-.status-indicator {
-  color: green; /* Change color as needed */
-  margin-left: 10px;
-}
 .close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
   cursor: pointer;
-  color: red; /* Change color as needed */
-  font-weight: bold;
-  margin-top: 10px;
-  text-align: right; /* Align to the right */
+  color: #333;
+  font-size: 24px;
+  background: none;
+  border: none;
+  padding: 5px;
+  transition: transform 0.2s ease;
+}
+
+.close-button:hover {
+  transform: scale(1.1);
 }
 </style>

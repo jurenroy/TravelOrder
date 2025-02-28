@@ -43,7 +43,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in formData" :key="index">
+            <tr v-for="(item, index) in reversedFormData" :key="index">
               <td>{{ getName(item.name_id) }}</td>
               <td>
                 <span v-if="Array.isArray(item.documents) && item.documents.length">
@@ -70,17 +70,18 @@
               </td>
 
               <td>
-                <button @click="openEditDetailsPopup(item)">Edit</button>
+                <button v-if="isAdmin" @click="openEditDetailsPopup(item)">Edit</button>
                 <button @click="generatePDF(item)">View PDF</button>
                 <button @click="add(item)">View Note</button>
               </td> 
             </tr>
-            <h1 style="text-align: center; margin-bottom: 0px;" v-if="formData.length == 0">NO REQUEST FOUND</h1>
+            <h1 style="text-align: center; margin-bottom: 0px;" v-if="reversedFormData.length == 0">NO MATCH FOUND</h1>
           </tbody>
         </table>
         <Note
           v-if="addNote"
           :initialNote="currentItem.note || ''" 
+          :isAdmin="isAdmin"
           @close-note="closeNote"
           @save-note="saveNote"
          />
@@ -90,6 +91,7 @@
 </template>
 
 <script>
+
 import axios from 'axios';
 import editform from './../editform.vue';
 import PDF from './PDF.vue';
@@ -98,18 +100,49 @@ import { API_BASE_URL } from '@/config';
 import EditDetailsPopup from './EditDetailsPopup.vue';
 import Note from './Note.vue';
 
+
 export default {
   components: {
-    PDF,
+    name: 'PDF',
+  props: {
+    item: {
+      type: Object,
+      required: true
+    },
+    names: {
+      type: Object,
+      required: true
+    },
+    divisions: {
+      type: Array,
+      required: true
+    },
+    logoPath: {
+      type: String,
+      default: ""
+    },
+    debugMode: {
+      type: Boolean,
+      default: false
+    }
+  },
     RatingPopup,
     editform,
     EditDetailsPopup,
     Note,
+    PDF,
+    props: {
+    data: {
+      type: Object,
+      required: true
+    }
+  },
   },
 
 
   data() {
     return {
+      divisions: [],
       showRatingPopup: false,
       showEditDetailsPopup: false,
       currentItem: '',
@@ -128,19 +161,540 @@ export default {
       noteText: '',
       searchQuery: '',
       documents: [],
-    };
+      name: 'PDF',
+      props: ['data'],
+      parsedDocuments: [],
+      selectedDocuments: [],
+      timeRequested: '',
+      dateTimeReleased: '',
+      rating: null,
+      nameId: localStorage.getItem('nameId'),
+
+  documentList: [
+    'PURCHASE REQUEST - REQUISITION AND ISSUE SLIP',
+    'CERTIFICATE OF EMPLOYMENT WITH COMPENSATION',
+    'INVENTORY CUSTODIAN SLIP',
+    'PROPERTY ACKNOWLEDGEMENT RECEIPT',
+    'GATE PASS',
+    'PO FUEL',
+    'PROPERTY RETURN SLIP',
+    'R&M OF MOTOR VEHICLES',
+    'JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C',
+    'Others'
+  ],
+
+  created() {
+    this.parseRequestedDocuments();
   },
+
+  props: {
+    data: {
+      type: Object,
+      required: true
+    }
+  }
+};
+  },
+  
   mounted() {
     this.fetchAccounts();
     this.fetchEmployees();
     this.fetchNames();
     this.fetchData(); 
+    this.fetchDivisions();
     this.fetchDocuments();
+    console.log(this.data);
   },
+
   methods: {
     focusTextarea(text) {
       this.noteText = text;
       this.$refs.noteInput.focus();
+    },
+
+    getTimeRequested(dateString) {
+      try {
+        const dateObj = new Date(dateString);
+        if (!isNaN(dateObj.getTime())) {
+          // Format time as HH:MM AM/PM
+          return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+      } catch (e) {
+        console.error("Error parsing date:", e);
+      }
+      return 'N/A'; // Return N/A if there's an error
+    },
+    findDivisionName(division_Id) {
+  if (this.divisions && this.divisions.length > 0) {
+    const division = this.divisions.find(div => div.division_id === division_Id);
+    return division?.division_name || 'UNKNOWN';
+  }
+  return 'UNKNOWN';
+},
+
+fetchDivisions() {
+    axios.get(`${API_BASE_URL}/get_divisions_json`) // Adjust the endpoint as necessary
+      .then(response => {
+        this.divisions = response.data; // Store the fetched divisions
+      })
+      .catch(error => {
+        console.error('Error fetching divisions:', error);
+      });
+  },
+  parseRequestedDocuments() {
+      // Make sure documents is an array
+      const requestedDocs = Array.isArray(this.item.documents) ? this.item.documents : JSON.parse(this.item.documents || '[]');
+      
+      // Check each document in our list against the requested documents
+      this.parsedDocuments = this.documentList.map(docName => {
+        return {
+          name: docName,
+          isChecked: requestedDocs.includes(docName)
+        };
+      });
+      
+      // Add "Others" text if available
+      const othersDoc = this.parsedDocuments.find(doc => doc.name === 'Others');
+      if (othersDoc && othersDoc.isChecked) {
+        othersDoc.additionalText = this.getOthersText();
+      }
+      
+      console.log('Parsed Documents:', this.parsedDocuments);
+      return this.parsedDocuments;
+    },
+
+    
+    
+    isDocumentRequested(documentName) {
+      // Parse documents if not already parsed
+      if (this.parsedDocuments.length === 0) {
+        this.parseRequestedDocuments();
+      }
+      
+      // Find the document and return whether it's checked
+      const doc = this.parsedDocuments.find(d => d.name === documentName);
+      return doc ? doc.isChecked : false;
+    },
+    
+    getOthersText() {
+      if (this.item.otherDocuments) {
+        return this.item.otherDocuments;
+      } else if (typeof this.item.documents === 'string' && this.item.documents.includes('Others:')) {
+        const othersMatch = this.item.documents.match(/Others:\s*(.+?)(?:,|$)/);
+        if (othersMatch && othersMatch[1]) {
+          return othersMatch[1].trim();
+        }
+      }
+      return '';
+    },
+    generatePDF(item) {
+  this.$nextTick(() => {
+    const printableElement = document.createElement("div");
+    printableElement.id = "printableArea";
+    printableElement.style.padding = "20px";
+    printableElement.style.fontFamily = "Arial, sans-serif";
+    printableElement.style.textAlign = "center";
+
+        const checkDocuments = () => {
+      documents.value.forEach(doc => {
+        doc.checked = item.documents.includes(doc.name);
+      });
+    };
+    // Make sure documents is an array
+    const requestedDocs = Array.isArray(item.documents) ? item.documents : JSON.parse(item.documents || '[]');
+    
+    // Extract the time from the date string
+    // Assuming item.date is in a format like "YYYY-MM-DD HH:MM:SS" or contains time information
+    let timeRequested = "";
+    try {
+      const dateObj = new Date(item.date);
+      if (!isNaN(dateObj.getTime())) {
+        // Format time as HH:MM AM/PM
+        timeRequested = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+    } catch (e) {
+      console.error("Error parsing date:", e);
+    }
+
+    let othersText = "";
+if (item.otherDocuments) {
+  othersText = item.otherDocuments; // If directly storing the text in this property
+} else if (typeof item.documents === 'string' && item.documents.includes('Others:')) {
+  // Alternative: if you're storing it as "Others: TEXTHERE" in the documents array
+  const othersMatch = item.documents.match(/Others:\s*(.+?)(?:,|$)/);
+  if (othersMatch && othersMatch[1]) {
+    othersText = othersMatch[1].trim();
+  }
+}
+    
+    // Function to generate rating option HTML based on current rating
+    const generateRatingOption = (value, label) => {
+  // Only parse and apply rating if it exists and is not null/undefined/empty
+  const hasRating = item.rating !== undefined && item.rating !== null && item.rating !== '';
+  const currentRating = hasRating ? parseInt(item.rating) : null;
+  const isSelected = hasRating && currentRating === value;
+  
+  // Add revision text only for Very dissatisfied rating (value 1)
+  const revisionText = value === 1 ? '<span style="margin-left: 370px; font-weight: normal;">revised document Feb 2025</span>' : '';
+  
+  return `
+    <div class="rating-option ${isSelected ? 'selected' : ''}">
+      <span class="star ${isSelected ? 'filled' : 'empty'}">${isSelected ? '★' : '☆'}</span>
+      <strong>${value} - ${label}</strong>
+      ${revisionText}
+    </div>
+  `;
+};
+
+
+    
+    printableElement.innerHTML = `
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="logo-section">
+              <img src="${this.logoPath}" alt="DENR Logo" class="logo">
+              <div class="title-section">
+                <h3>Republic of the Philippines</h3>
+                <h4>Department of Environment and Natural Resources</h4>
+                <h4>MINES AND GEOSCIENCES BUREAU</h4>
+                <h4>Regional Office No. X</h4>
+                <p>DENR-X Compound, Puntod, Cagayan de Oro City</p>
+                <p>Telefax Nos. (088) 856-2110;(088) 856-1331; Email: region10@mgb.gov.ph</p>
+              </div>
+            </div>
+            <div class="certification-section">
+              <div class="certification-images">
+                <img src="/api/placeholder/50/50" alt="ISO Certification">
+                <img src="/api/placeholder/50/50" alt="Quality Certification">
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-title">REQUEST SLIP FORM</div>
+          <div class="admin-section">(Administrative Section-Procurement/Property)</div>
+          
+          <div class="form-content">
+            <table>
+              <tr class="form-row">
+                <td><strong>Requestor:</strong></td>
+                <td>${this.getName(item.name_id)}</td>
+                <td rowspan="3"></td>
+              </tr>
+              <tr class="form-row">
+                <td><strong>Division:</strong></td>
+                <td>${this.findDivisionName(item.division_id)}</td>
+              </tr>
+              <tr class="form-row">
+                <td><strong>Date & Time Requested:</strong></td>
+                <td>${item.date}</td>
+              </tr>
+              
+              <tr class="documents-header">
+                <td colspan="2">DOCUMENT(S) REQUESTED</td>
+                <td style="width: 20%;">Date & Time Released</td>
+                <td style="width: 30%;">Released By</td>
+              </tr>
+
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? 'checked' : ''} /></td>
+                <td>PURCHASE REQUEST - REQUISITION AND ISSUE SLIP</td>
+                <td>${requestedDocs.includes('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? 'checked' : ''} /></td>
+                <td>CERTIFICATE OF EMPLOYMENT WITH COMPENSATION</td>
+                <td>${requestedDocs.includes('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('INVENTORY CUSTODIAN SLIP') ? 'checked' : ''} /></td>
+                <td>INVENTORY CUSTODIAN SLIP</td>
+                <td>${requestedDocs.includes('INVENTORY CUSTODIAN SLIP') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? 'checked' : ''} /></td>
+                <td>PROPERTY ACKNOWLEDGEMENT RECEIPT</td>
+                <td>${requestedDocs.includes('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('GATE PASS') ? 'checked' : ''} /></td>
+                <td>GATE PASS</td>
+                <td>${requestedDocs.includes('GATE PASS') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('PO FUEL') ? 'checked' : ''} /></td>
+                <td>PO FUEL</td>
+                <td>${requestedDocs.includes('PO FUEL') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('PROPERTY RETURN SLIP') ? 'checked' : ''} /></td>
+                <td>PROPERTY RETURN SLIP</td>
+                <td>${requestedDocs.includes('PROPERTY RETURN SLIP') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('R&M OF MOTOR VEHICLES') ? 'checked' : ''} /></td>
+                <td>R&M OF MOTOR VEHICLES</td>
+                <td>${requestedDocs.includes('R&M OF MOTOR VEHICLES') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${requestedDocs.includes('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? 'checked' : ''} /></td>
+                <td>JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C</td>
+                <td>${requestedDocs.includes('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? timeRequested : ''}</td>
+                <td></td>
+              </tr>
+<tr class="documents-row">
+  <td><input type="checkbox" ${requestedDocs.includes('Others') ? 'checked' : ''} /></td>
+  <td>Others: ${othersText ? othersText : '_______________________________'}</td>
+  <td>${requestedDocs.includes('Others') ? timeRequested : ''}</td>
+  <td></td>
+</tr>
+              
+<tr>
+  <td colspan="4" class="rating-label">RATING</td>
+</tr>
+<tr class="rating-row">
+  <td colspan="4">
+    ${generateRatingOption(4, 'Very Satisfied')}
+    ${generateRatingOption(3, 'Satisfied')}
+    ${generateRatingOption(2, 'Dissatisfied')}
+    ${generateRatingOption(1, 'Very dissatisfied')}
+  </td>
+</tr>
+            </table>
+          </div>
+        </div>
+      </body>
+
+      <style scoped>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+          color: #000;
+        }
+        
+        .container {
+          width: 100%;
+          max-width: 800px;
+          margin: 0 auto;
+          border: 1px solid #ccc;
+        }
+        
+        .header {
+          display: flex;
+          border-bottom: 1px solid #ccc;
+          padding: 10px;
+        }
+        
+        .logo-section {
+          display: flex;
+          width: 70%;
+        }
+        
+        .logo {
+          width: 100px;
+          height: 100px;
+        }
+        
+        .title-section {
+          padding-left: 10px;
+          line-height: 1.2;
+        }
+        
+        .title-section h3, .title-section h4 {
+          margin: 0;
+        }
+        
+        .title-section h3 {
+          font-weight: normal;
+        }
+        
+        .title-section h4 {
+          color: #000080;
+        }
+        
+        .title-section p {
+          margin: 5px 0;
+          font-size: 13px;
+        }
+        
+        .certification-section {
+          width: 30%;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+        }
+        
+        .certification-images img {
+          height: 50px;
+        }
+        
+        .form-title {
+          text-align: center;
+          font-weight: bold;
+          font-size: 18px;
+          margin: 10px 0;
+        }
+        
+        .admin-section {
+          text-align: center;
+          margin-bottom: 10px;
+          font-style: italic;
+        }
+        
+        .form-content {
+          width: 100%;
+        }
+        
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        
+        td {
+          border: 1px solid #ccc;
+          padding: 5px 10px;
+        }
+        
+        .form-row td:first-child {
+          width: 20%;
+          font-weight: bold;
+        }
+        
+        .form-row td:nth-child(2) {
+          width: 50%;
+          border-bottom: 1px solid #000;
+        }
+        
+        .form-row td:last-child {
+          width: 30%;
+        }
+        
+        .documents-header td {
+          font-weight: bold;
+          text-align: center;
+        }
+        
+        .documents-row td:first-child {
+          width: 5%;
+          text-align: center;
+        }
+        
+        .documents-row td:nth-child(2) {
+          width: 50%;
+        }
+        
+        .checkbox {
+          width: 15px;
+          height: 15px;
+          border: 1px solid #000;
+          display: inline-block;
+        }
+        
+        .rating-row td {
+          padding: 0;
+        }
+        
+        .rating-label {
+          font-weight: bold;
+          padding: 5px 10px;
+        }
+        
+        .star {
+          display: inline-block;
+          margin-right: 5px;
+          color: #000080;
+        }
+        
+        .rating-option {
+        display: flex;
+        align-items: center;
+        margin: 5px 0;
+        padding-left: 60px; /* Add space on the left for the revision text */
+
+        }
+        .rating-option.selected {
+          font-weight: bold;
+        }
+        
+        .star.filled {
+          color: black;
+        }
+        
+        .star.empty {
+          color: #ccc;
+        }
+      </style>
+    `;
+
+    document.body.appendChild(printableElement);
+    
+    // Create an iframe for printing
+    const printFrame = document.createElement('iframe');
+    printFrame.style.display = 'none'; // Hide the iframe
+    document.body.appendChild(printFrame); // Append it to the body
+
+    // Prepare the content for the iframe
+    const printDocument = printFrame.contentWindow.document;
+    printDocument.open();
+    printDocument.write(`
+      <html>
+        <head>
+          <title>Print Request Slip</title>
+          <style>
+            body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+            h2 { margin-bottom: 10px; }
+          </style>
+        </head>
+        <body>${printableElement.innerHTML}</body>
+      </html>
+    `);
+    printDocument.close();
+
+    // Focus on the iframe and trigger print
+    printFrame.contentWindow.focus();
+    printFrame.contentWindow.print();
+
+    // Clean up: remove the iframe after printing
+    printFrame.parentNode.removeChild(printFrame);
+
+    // Remove the printable element from the document
+    document.body.removeChild(printableElement);
+  });
+},
+
+findDivisionName(division_Id) {
+  if (this.divisions && this.divisions.length > 0) {
+    const division = this.divisions.find(div => div.division_id === division_Id);
+    return division?.division_name || 'UNKNOWN';
+  }
+  return 'UNKNOWN';
+},
+
+padWithZeroes(travel_order_id) {
+  if (travel_order_id === undefined || travel_order_id === null) {
+    console.warn('travel_order_id is undefined or null');
+    return ''; // or return a default value, e.g., '0000'
+  }
+  const idString = travel_order_id.toString();
+  return idString.padStart(4, '0');
+},
+    fetchDocuments() {
+      axios.get(`${API_BASE_URL}/get_request`)
+        .then(response => {
+          this.documents = response.data;
+        })
+        .catch(error => {
+          console.error('Error fetching documents:', error);
+        });
     },
     openRatingPopup(item) {
       this.currentItem = item; 
@@ -152,6 +706,10 @@ export default {
       this.currentItem = item; 
     },
     saveNote(updatedNote) {
+      if (!this.isAdmin) {
+    alert("You do not have permission to save notes.");
+    return; // Exit the method if the user is not an admin
+  }
   if (!this.currentItem || !this.currentItem.id) return;
 
   axios.post(`${API_BASE_URL}/FADRFupdate_request/${this.currentItem.id}`, {
@@ -184,6 +742,7 @@ export default {
         console.error('Error:', error);
       });
     },
+  
     getDocumentName(doc) {
   if (!doc) return "No document";
   return typeof doc === "object" ? doc.name || "Unknown" : doc;
@@ -202,7 +761,15 @@ export default {
     alert("No current item selected for update.");
     return;
   }
-
+  const routes = [
+  // other routes...
+  {
+    path: '/pdf',
+    name: 'PDF',
+    component: PDF,
+    props: true // This allows you to pass props to the PDF component
+  }
+];
   const payload = {
     documents: updatedDocuments,
     remarks: updatedDocuments.map(doc => doc.remarks).join(', ') // Join remarks for storage
@@ -294,24 +861,35 @@ export default {
           this.mawala = true;
           this.load = false;
           this.formData = response.data.map(item => {
-          const documents = item.documents ? JSON.parse(item.documents) : [];
-          return {
-            ...item,
-            documents: documents.map(doc => ({
-              name: doc.name || doc, 
-              remarks: doc.remarks?.trim() ? doc.remarks : 'No Remarks'
-            })),
-            rating: item.rating || null
-          };
+        let documents = [];
+
+        try {
+          documents = item.documents ? JSON.parse(item.documents) : [];
+        } catch (error) {
+          console.error("Error parsing documents JSON:", error);
+        }
+
+        return {
+          ...item,
+          documents: documents.map(doc => ({
+            name: doc.name || doc, 
+            remarks: doc.remarks?.trim() ? doc.remarks : 'No Remarks'
+          })),
+          rating: item.rating || null
+        };
+      });
+
+      this.formData = this.formData.filter(item => {
+            return this.nameId === '2' || this.nameId === '76' || item.name_id == this.nameId;
           });
 
-          console.log(this.formData);
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-          this.load = false;
-        });
-    },
+      console.log("Processed FormData:", this.formData);
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+      this.load = false;
+    });
+},
     fetchNames() {
       axios.get(`${API_BASE_URL}/get_names_json`)
         .then(response => {
@@ -339,9 +917,14 @@ export default {
       return 'Unknown'; 
     },
     padWithZeroes(travel_order_id) {
-      const idString = travel_order_id.toString();
-      return idString.padStart(4, '0');
-    },
+    if (travel_order_id === undefined || travel_order_id === null) {
+        console.warn("padWithZeroes received an undefined or null value");
+        return "0000"; // or some default value, depending on your requirements
+    }
+    
+    const idString = travel_order_id.toString();
+    return idString.padStart(4, '0');
+},
     fetchDocuments() {
       axios.get(`${API_BASE_URL}/FADRFget_request`)
         .then(response => {
@@ -356,12 +939,20 @@ export default {
     pendingCount() {
       return this.formData.filter(form => form.note === null && form.initial !== null).length;
     },
+    filteredFormData() {
+      return this.formData; // This can be used in the template for rendering
+    },
+    isAdmin() {
+      return this.nameId === '2' || this.nameId === '76'; // Check if the user is an admin
+    },
     reversedFormData() {
       return this.formData.slice().reverse().filter(item => {
-        return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
+      const paddedToNum = this.padWithZeroes(item.to_num);
+      return paddedToNum.includes(this.searchQuery) || 
+      String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
       });
-    },
-  },
+      },
+},
 };
 </script>
   

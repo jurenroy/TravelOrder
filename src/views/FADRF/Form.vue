@@ -46,11 +46,13 @@ const documents = ref([
 { name: 'JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C', checked: false },  
 { name: 'OTHERS', checked: false }  
 ]);
+
+const nameid = ref(localStorage.getItem('nameId')); 
+
 // Watch for changes in otherDocumentText and capitalize it
 watch(otherDocumentText, (newValue) => {
       otherDocumentText.value = newValue.toUpperCase(); // Automatically capitalize the input
     });
-
 
 const fetchData = async () => {
   try {
@@ -59,9 +61,20 @@ const fetchData = async () => {
       fetch(`${API_BASE_URL}/get_employees_json/`).then(res => res.json()),
       fetch(`${API_BASE_URL}/get_divisions_json/`).then(res => res.json())
     ]);
-    names.value = namesRes;
+
+    if (parseInt(nameid.value) === 2 || parseInt(nameid.value) === 76) {
+      names.value = namesRes; 
+    } else {
+      names.value = namesRes.filter(name => name.name_id === parseInt(nameid.value));
+    }
+
     employees.value = employeesRes;
     divisions.value = divisionsRes;
+
+    if (names.value.length > 0) {
+      selectedName.value = names.value[0].name_id; 
+      fetchSelectedEmployee(); // Fetch the employee details
+    }
   } catch (error) {
     console.error('Error fetching data:', error);
   }
@@ -228,12 +241,7 @@ onMounted(() => {
   </div>
 </template>
 
-
-
 <style scoped>
-
-
-
 .form-container {
   margin: 2em auto;
   font-family: 'Poppins', sans-serif;
