@@ -2,10 +2,16 @@
   <div class="note-popup">
     <div class="popup-content">
       <h3>{{ note ? "Edit Note" : "Add Note" }}</h3>
-      <textarea v-model="note" placeholder="Write your note here..." rows="4"></textarea>
+      <textarea v-model="note" placeholder="Write your note here..."
+       rows="4">
+       :disabled="!isAdmin">
+      </textarea>
       <div class="popup-buttons">
-        <button @click="saveNote">Save</button>
-        <button @click="$emit('close-note')">Cancel</button>
+        <button v-if="isAdmin"  
+          @click="saveNote">
+          Save
+        </button>
+        <button @click="$emit('close-note')">Close</button>
       </div>
     </div>
   </div>
@@ -13,7 +19,7 @@
 
 <script>
 export default {
-  props: ["initialNote"],
+  props: ["initialNote", "isAdmin"],
   data() {
     return {
       note: this.initialNote || "", // Keep existing note
