@@ -25,9 +25,6 @@ const hoverNo = ref(false);   // Reactive state for 'No' button hover effect
 
 const logout = () => {
    authStore.logout();
-   localStorage.setItem('isLoggedIn', 'false');
-   localStorage.removeItem('accountId');
-   localStorage.removeItem('nameId');
    router.push("/");
    // Use setTimeout to ensure the redirection happens before reload
    setTimeout(() => {
@@ -60,6 +57,7 @@ const props = defineProps({
 
 const emit = defineEmits();
 const handleNo = () => {
+   router.push("/");
  emit('handleNo', false);
 };
 </script>
@@ -89,7 +87,7 @@ const handleNo = () => {
 }
 
 .secondlogout {
-   background: linear-gradient(150deg, #DDC7AD, #92785b);
+   background: linear-gradient(150deg, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
    border-radius: 12px;
    padding: 30px 40px;
    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2), 0px 4px 6px rgba(0, 0, 0, 0.15); /* Luxurious shadow */
@@ -128,7 +126,7 @@ const handleNo = () => {
 }
 
 .yeslogout {
-   background-color: #4caf50; /* Green for Yes */
+   background-color: #000000; /* Green for Yes */
    color: white;
 }
 
@@ -143,7 +141,7 @@ const handleNo = () => {
 
 /* Hover effects */
 .yeslogout:hover {
-   background-color: #45a049; /* Darker green */
+   background-color: #363636; /* Darker green */
 }
 
 .nologout:hover {

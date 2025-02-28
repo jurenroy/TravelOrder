@@ -171,7 +171,7 @@ onMounted(() => {
 
 <style scoped>
 .feedback-container {
-  background: linear-gradient(30deg, #DDC7AD, #92785b);
+  background: linear-gradient(150deg, #a1834a, #b8860b); /* Gradient from light gold to dark gold */
   border-radius: 15px;
   padding: 20px;
   width: 90%;
@@ -233,7 +233,7 @@ input[type="radio"] {
 
 button {
   padding: 0.75em 2em;
-  background-color: #007bff;
+  background-color: #858585;
   color: white;
   border: none;
   border-radius: 8px;
@@ -243,7 +243,7 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #5c5c5c;
   transform: translateY(-2px);
 }
 
@@ -270,7 +270,7 @@ button:hover {
 
 .modal-button {
   padding: 0.75em 2em;
-  background-color: #007bff;
+  background-color: #000000;
   color: white;
   border: none;
   border-radius: 8px;
@@ -297,11 +297,12 @@ select {
   display: block;
   margin: 0 auto;
   padding: 10px 20px;
-  background-color: #007BFF;
+  background-color: #000000;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  border: solid rgb(161, 161, 161) 1px;
 }
 
 /* Media query for mobile devices */

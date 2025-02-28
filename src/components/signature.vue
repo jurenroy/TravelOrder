@@ -101,8 +101,9 @@
 import { ref, computed } from 'vue';
 import axios from 'axios';
 import { API_BASE_URL } from '../config'
+import { useAuthStore } from '@/store/auth';
 
-
+const authStore = useAuthStore(); // Use the store
 const uploadedImageUrl = ref('');
 const accountId = localStorage.getItem('accountId');
 const OTPsent = ref(false);
@@ -220,6 +221,11 @@ const submitImage = async () => {
         'Content-Type': 'multipart/form-data'
       }
     });
+    // After successful image upload, call the changeSignature action
+    if (response.status === 200) {
+      authStore.changeSignature(file);  // Call the changeSignature action after success
+      console.log('Image uploaded and signature updated.');
+    }
   } catch (error) {
     console.error('Error uploading image:', error);
   }

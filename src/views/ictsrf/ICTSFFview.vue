@@ -25,7 +25,7 @@
 
         <!-- Evaluation Table -->
         <table class="evaluation-table">
-          <thead>
+          <tbody>
             <tr>
               <th rowspan="2">EVALUATION STATEMENT</th>
               <th colspan="1">Very Satisfied</th>
@@ -39,7 +39,7 @@
               <th>2</th>
               <th>1</th>
             </tr>
-          </thead>
+          </tbody>
           <tbody>
             <tr v-for="(statement, index) in evaluationStatements" :key="index">
               <td>{{ statement.text }}</td>

@@ -64,20 +64,12 @@
               <p>others (Specify)</p>
             </div>
           </div>
-          <!-- <p
-                              style="text-align: center; margin-top: 15px; border: none; outline: none; width: auto; z-index: 9; font-size: 10px; font-weight: bold;">
-                              {{ secch }}
-                          </p>
-                          <p
-                              style="height: 10px; width: 350px; margin-top: -19px; z-index: 1; border: none; border-bottom: 1px solid black;outline: none; margin-left: 20px; font-size: 10px">
-                          </p>
-                          <p style="text-align: center; position: relative; top:-6px; font-size:9px;">{{ secchpos }}</p> -->
         </div>
   
         <div class="butokz">
-          <button @click="postCertification" v-if="[76,24].includes(acc.name_id)" class="save-btn"
+          <button @click="postCertification" v-if="[76,24].includes(this.nameId)" class="save-btn"
            >Save</button>
-           <button @click="postCertification" v-if="[76,2].includes(acc.name_id)" class="save-btn"
+           <button @click="postCertification" v-if="[76,2].includes(this.nameId)" class="save-btn"
            >Certify</button>
           <button @click="certification(certinum)" class="option-btn">Cancel</button>
         </div>
@@ -122,12 +114,6 @@
           <textarea @keydown.enter.prevent v-model="text" id="myTextarea" :rows="rows"
             :class="{ 'not': !recommendationLeavetype.includes(2) }" :disabled="!recommendationLeavetype.includes(2)"
             style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 295px; margin-left: 20px; font-size: 13px"></textarea>
-          <!-- <p style="text-align: center;margin-bottom: -20px;z-index: 9;">{{ reco }}</p>
-  
-          <p
-            style="height: 10px; width: 350px; z-index: 1; border: none; border-bottom: 1px solid black;outline: none; margin-left: 20px; font-size: 10px; color: transparent;">
-          </p>
-          <p style="text-align: center">{{ recopost }}</p> -->
         </div>
   
         <div class="butokz">
@@ -139,10 +125,7 @@
         </div>
       </div>
     </div>
-  
-  
-  
-  
+
   
     <div class="note" v-if="appr">
       <div class="title-bar">
@@ -180,12 +163,6 @@
           <textarea @keydown.enter.prevent v-model="text2" id="myTextarea" :rows="rows"
             :class="{ 'not': !approveLeavetype.includes(2) }" :disabled="!approveLeavetype.includes(2)"
             style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 290px; margin-left: 20px; font-size: 13px;"></textarea>
-          <!-- <p style="text-align: center;margin-bottom: -20px;z-index: 9;">{{ reco }}</p>
-  
-          <p
-            style="height: 10px; width: 350px; z-index: 1; border: none; border-bottom: 1px solid black;outline: none; margin-left: 20px; font-size: 10px; color: transparent;">
-          </p>
-          <p style="text-align: center">{{ recopost }}</p> -->
         </div>
   
         <div class="butokz">
@@ -197,48 +174,43 @@
       </div>
     </div>
   
-    <div class="note" v-if="viewNote">
-      <div class="title-bar">
-        <div class="title">View note</div>
-      </div>
-  
-      <!-- Content -->
-      <div class="content">
-        <textarea v-model="noteText" rows="3"></textarea>
-        <div class="butokz">
-          <button @click="postNote" v-if="siga || siga1 || acc.name_id == 76">Save</button>
-          <button @click="closeNote">Close</button>
-        </div>
-      </div>
-    </div>
-  
-    <div class="luxury-container">
-        <h2 class="luxury-title">
-          History for:
-          <select v-model="selectedStatus" id="status" class="luxury-select">
-            <option v-for="option in options" :key="option" :value="option">
+    <div class="luxury-container" v-if="selectedTravelOrderIdEdit == 0">
+      <div class="luxury-title">    
+        <div class="radio-inputs">
+          <label class="radio" v-for="option in options" :key="option">
+            <input type="radio" name="status" v-model="selectedStatus" :value="option">
+            <span class="name">
               {{ option }}
+              <span class="pending-count" v-if="option == 'Pending'">{{ pendingCount < 9 ? pendingCount : '9+'}}</span>
+            </span>
+          </label>
+        </div>
+        <div>
+          <select v-model="numberOfRows" id="rows">
+            <option v-for="rows in rowOptions" :key="rows" :value="rows">
+              {{ rows }}
             </option>
-          </select> 
-          <span v-if="pendingCount !== 0" class="luxury-notification-count">
-            {{ pendingCount }}
-          </span>
-        </h2>
-    
-        <div v-if="load" class="luxury-loading">
-          <img src='../../assets/loading.gif' alt="Loading..." />
+          </select>
         </div>
-    
-        <div class="luxury-search-container">
-          <div class="luxury-search-bar">
-            <div v-if="mawala" class="luxury-search-box">
-              <img class="luxury-search-icon" src="../../assets/search.png" alt="Search" />
-              <input class="luxury-search-input" type="text" v-model="searchQuery" placeholder="Search TO number or Name" />
-            </div>
+      </div>
+      <div class="luxury-search-bar">
+          <div v-if="mawala" class="luxury-search-box">
+            <img class="luxury-search-icon" src="../../assets/search.png" alt="Search" />
+            <input class="luxury-search-input" type="text" v-model="searchQuery" placeholder="Search TO number or Name" />
           </div>
+
+          <button v-if="mawala && [2, 15, 24, 76, 39].includes(nameId)" class="luxury-btn" @click="downloadCSV">
+            <div class="luxury-btn-icon">
+              <img class="luxury-download-icon" src="../../assets/download_excel.png" alt="Download" />
+            </div>
+            <div class="luxury-btn-text">Download Summary Reports</div>
+          </button>
         </div>
+      </div>
+
+      <div v-if="load" class="loader"></div> <!-- Loader here -->
   
-      <div v-if="mawala" class="outer">
+      <div v-if="mawala && selectedTravelOrderIdEdit == 0" class="outer" >
         <div class="scrollable-table">
           <table>
             <thead>
@@ -270,7 +242,7 @@
                     <img src="../../assets/check.png" alt="Approved Recommendation" class="status-icon">
                     <p class="status-approved">Ceritified</p>
                   </div>
-                  <div v-if="item.certification && (!this.getDivisionGroup(5).includes(item.name_id) && ![15,21,45,48].includes(item.name_id))">
+                  <div v-if="item.certification && (![15,21,45,48].includes(item.name_id))">
                     <div v-if="!item.recommendation" class="statusrow">
                       <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
                       <p class="status-pending">For Recommendation</p>
@@ -284,7 +256,7 @@
                       <p class="status-pending">not Recommended</p>
                     </div>
                   </div>
-                  <div v-if="item.recommendation || (this.getDivisionGroup(5).includes(item.name_id) && item.certification) || ([15,21,45,48].includes(item.name_id) && item.certification)">
+                  <div v-if="item.recommendation || (item.certification) || ([15,21,45,48].includes(item.name_id) && item.certification)">
                     <div v-if="!item.appsig" class="statusrow">
                       <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
                       <p class="status-pending">For Approval</p>
@@ -299,7 +271,7 @@
                     </div>  
                   </div>
                 </td>
-                <td class="status-actions" v-if="item.name_id == acc.name_id || acc.name_id == 76">
+                <td class="status-actions" v-if="item.name_id == this.nameId || this.nameId == 76">
                   <button v-if="selectedTravelOrderIdEdit != item.leaveform_id" @click="edit(item.leaveform_id)">Edit</button>
                   <img src="/src/assets/canceledit.png" v-if="selectedTravelOrderIdEdit == item.leaveform_id" @click="closeEdit" class="action-icon"/>
                 </td>
@@ -317,9 +289,9 @@
                   <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id" @click="close"
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
-                <td v-if="[2,24].includes(acc.name_id)" class="status-actions">
+                <td v-if="[2,24].includes(this.nameId)" class="status-actions">
                   <button 
-                  v-if="((item.asof || item.tevl || item.tesl || item.ltavl || item.ltasl || item.bvl || item.vsl || item.dayswpay || item.dayswopay || item.others) && item.certification == null && acc.name_id == 2) || acc.name_id == 24 || acc.name_id == 76" 
+                  v-if="((item.asof || item.tevl || item.tesl || item.ltavl || item.ltasl || item.bvl || item.vsl || item.dayswpay || item.dayswopay || item.others) && item.certification == null && this.nameId == 2) || this.nameId == 24 || this.nameId == 76" 
                     @click="certification(item.leaveform_id, item.asof, item.tevl, item.tesl, item.ltavl, item.ltasl, item.bvl, item.vsl, item.dayswpay, item.dayswopay, item.others)"
                     :style="{
                       color: certinum === item.leaveform_id ? 'white' : 'black',
@@ -330,8 +302,8 @@
                     Certification
                   </button>
                 </td>
-                <td v-if="[15,21,45,48].includes(acc.name_id)" class="status-actions">
-                  <button v-if="!item.recommendation && getDivisionGroup(sub.division_id) && item.name_id !== acc.name_id"
+                <td v-if="[15,21,45,48].includes(this.nameId)" class="status-actions">
+                  <button v-if="!item.recommendation && item.name_id !== this.nameId"
                     @click="recommendation(item.leaveform_id)"
                     :style="{
                       color: reconum === item.leaveform_id ? 'white' : 'black',
@@ -342,7 +314,7 @@
                     Recommend
                   </button>
                 </td>
-                <td v-if="((sub.division_id == bus.name_id || acc.name_id == 20) && !item.appsig)" class="status-actions">
+                <td v-if="((sub.division_id == bus.name_id || this.nameId == 20) && !item.appsig)" class="status-actions">
                   <button 
                     @click="approve(item.leaveform_id)"
                     :style="{
@@ -361,7 +333,6 @@
           <h1 style="text-align: center; margin-bottom: 0px;" v-if="reversedFormData.length == 0">NO MATCH FOUND</h1>
         </div>
       </div>
-    </div>
     <div v-show="selectedTravelOrderId" class="prent full-screen">
       <!-- <div class="buttons">
         <button @click="printzz">Download as PDF</button>
@@ -374,10 +345,10 @@
   <script>
   import axios from 'axios';
   import pdf from './PDF.vue';
-  import otpz from '../../components/otp.vue';
   import editform from './EditForm.vue';
   import { API_BASE_URL } from '../../config'
   import { useAuthStore } from '../../store/auth';
+  import { usePendingStore } from '@/store/pending';
   
   export default {
     provide() {
@@ -387,26 +358,29 @@
     },
     components: {
       pdf,
-      otpz,
       editform,
     },
     mounted() {
-      this.fetchAccounts();
-      this.fetchEmployees();
       this.fetchNames();
+      this.fetchData();
     },
     data() {
+      const authStore = useAuthStore();
       return {
+        pendingStore: usePendingStore(),
+        numberOfRows: 10,  // Default number of rows to fetch
+        rowOptions: [10, 20, 50, 100, 200, 500, 1000, 5000, 10000], // Options for number of rows to fetch
         selectedStatus: 'Me',
         options: ['Pending', 'Done', 'Me'],
         yearToday: new Date().getFullYear(),
         formData: [],
         names: {},
-        employees: {},
         selectedTravelOrderId: 0,
         selectedTravelOrderIdEdit: 0,
-        accountId: localStorage.getItem('accountId'),
-        acc: [],
+        accountId: authStore.account_id,
+        accountType: authStore.account_type,
+        nameId: authStore.name_id,
+        signature: authStore.signature,
         imageUrl: '',
         siga: '',
         siga1: '',
@@ -456,13 +430,10 @@
       window.removeEventListener('storage', this.updateVerifiedOTPs);
     },
   
-  
     methods: {
-  
       nonumber(event, field) {
         this[field] = event.target.value.replace(/[^\d.+-]/g, '');
       },
-  
       updateRows() {
         this.rows = this.text.length / 63 + 1
       },
@@ -516,8 +487,8 @@
         if (this.othersSpecify) {
           formData.append('others', '' + this.othersSpecify);
         }
-        if (this.acc.name_id == 2) {
-          formData.append('certification', this.acc.signature);
+        if (this.nameId == 2) {
+          formData.append('certification', this.signature);
         }
   
         axios.post(`${API_BASE_URL}/updateleave_form/${this.certinum}`, formData, {
@@ -550,7 +521,7 @@
         const formData = new FormData();
         formData.append('reco', this.recommendationLeavetype);
         formData.append('recodesc', this.text);
-        formData.append('recommendation', this.acc.signature);
+        formData.append('recommendation', this.signature);
   
         axios.post(`${API_BASE_URL}/updateleave_form/${this.reconum}`, formData, {
           headers: {
@@ -577,8 +548,8 @@
         }else{
           formData.append('disapproved', this.text2);
         }
-        formData.append('appsig', this.acc.signature);
-        formData.append('appby', this.acc.name_id);
+        formData.append('appsig', this.signature);
+        formData.append('appby', this.nameId);
   
         axios.post(`${API_BASE_URL}/updateleave_form/${this.apronum}`, formData, {
           headers: {
@@ -595,97 +566,16 @@
           console.error('Error:', error);
         });
       },
-  
-      async signature1(form_id) {
-  
-        this.otp = true;
-  
-        await this.waitForVerifiedOTPs();
-        this.otp = false;
-  
-        const formData = new FormData();
-        formData.append('signature1', this.acc.signature);
-  
-        axios.post(`${API_BASE_URL}/update_form/${form_id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(() => {
-          this.fetchData();
-          this.selectedTravelOrderId = 0;
-          useAuthStore().updateVerifiedOTPs('false');
-          localStorage.setItem('verifiedOTPs', 'false');
-          this.otp = false;
-          window.location.reload();
-        }).catch(error => {
-          console.error('Error:', error);
-        });
-      },
-  
-      async signature2(form_id) {
-        this.otp = true;
-        await this.waitForVerifiedOTPs();
-        this.otp = false;
-  
-        const formData = new FormData();
-        formData.append('signature2', this.acc.signature);
-        formData.append('sname', this.sub.division_id);
-        formData.append('sdiv', this.sub.division_id);
-  
-  
-        axios.post(`${API_BASE_URL}/update_form/${form_id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(() => {
-          this.fetchData();
-          this.selectedTravelOrderId = 0;
-          useAuthStore().updateVerifiedOTPs('false');
-          localStorage.setItem('verifiedOTPs', 'false');
-          this.otp = false;
-          window.location.reload()
-        }).catch(error => {
-          console.error('Error:', error);
-        });
-      },
-  
-      async waitForVerifiedOTPs() {
-        while (this.verifiedOTPs == 'false') {
-          await new Promise(resolve => setTimeout(resolve, 1000), this.verifiedOTPs = localStorage.getItem('verifiedOTPs'));
-        }
-      },
-      fetchAccounts() {
-        axios.get(`${API_BASE_URL}/get_accounts_json`)
-          .then(response => {
-            this.acc = response.data.find(result => result.account_id == this.accountId);
-            this.fetchData()
-            if (this.acc) {
-              this.imageUrl = `${API_BASE_URL}/storage/${this.acc.signature}`;
-            }
-            useAuthStore().updateVerifiedOTPs('false');
-            localStorage.setItem('verifiedOTPs', 'false');
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-          });
-      },
-      getDivisionGroup(division_id) {
-        // Filter employees by division_id and map to the name_id
-        return this.employees
-          .filter(emp => emp.division_id === division_id)
-          .map(emp => emp.name_id);
-      },
       fetchData() {
         this.load = true
-        axios.get(`${API_BASE_URL}/get_leave_json`)
+        axios.get(`${API_BASE_URL}/get_leave_json/${this.nameId}/${this.selectedStatus}/${this.numberOfRows}`)
           .then(response => {
             this.mawala = true;
             this.load = false
-            this.sub = this.employees.find(emp => emp.name_id == this.acc.name_id)
-            this.bus = this.employees.find(emp => emp.rd !== null)
             this.csvformdata = response.data
   
             this.formData = response.data
+            console.log(this.formData)
           
           })
           .catch(error => {
@@ -701,15 +591,6 @@
             console.error('Error fetching names:', error);
           });
       },
-      fetchEmployees() {
-        axios.get(`${API_BASE_URL}/get_employees_json`)
-          .then(response => {
-            this.employees = response.data;
-          })
-          .catch(error => {
-            console.error('Error fetching employeess:', error);
-          });
-      },
       getName(nameId) {
         const name = this.names[nameId - 1];
         if (name) {
@@ -720,9 +601,7 @@
       },
       openPDF(travelOrderId, chief) {
         this.selectedTravelOrderId = travelOrderId;
-        this.ChiefPDF = chief
-        useAuthStore().updateVerifiedOTPs('false');
-        localStorage.setItem('verifiedOTPs', 'false');
+        this.ChiefPDF = chief;
         setTimeout(() => {
         this.printzz();
       }, 500);  // 500 milliseconds = 0.5 seconds
@@ -770,7 +649,6 @@
         }
         this.recommendationLeavetype.length = 0
         this.text = ''
-        // this.reconum = leaveformID
       },
   
       approve(leaveformID) {
@@ -787,141 +665,24 @@
         }
         this.approveLeavetype.length = 0
         this.text2 = ''
-        // this.apronum = leaveformID
       },
   
-      updateVisibleItems() {
-        this.visibleItems = this.formData.slice(0, 20);
-      },
-      countPendingNotifications(formData, acc) {
-      let pendingCount = 0;
-
-      if (acc.name_id === 24) {
-        pendingCount += formData.filter(form => {
-        return [form.asof, form.tevl, form.tesl, form.ltavl, form.ltasl, form.bvl, form.vsl, form.dayswpay, form.dayswopay, form.others].every(val => val == null)
-      }).length;
-      } else if (acc.name_id === 2) {
-          pendingCount += formData.filter(form => {
-            return (form.asof || form.tevl || form.tesl || form.ltavl || form.ltasl || form.bvl || form.vsl || form.dayswpay || form.dayswopay || form.others) && form.certification == null;
-          }).length;
-      } 
-      // else if (this.bus.name_id === this.sub.name_id) {
-      //     if (acc.name_id !== 20) {
-      //       pendingCount += formData.filter(form => {
-      //         return (
-      //           ((this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)) && form.name_id !== acc.name_id
-      //         );
-      //       }).length;
-      //     } else {
-      //       pendingCount += formData.filter(form => {
-      //         return (
-      //           (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig)
-      //         );
-      //       }).length;
-      //     }
-      // }
-       else if (acc.type_id === 3) {
-          if (acc.name_id === 20) {
-            pendingCount += formData.filter(form => {
-              return (
-                (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig)
-              );
-            }).length;
-          } else {
-            pendingCount += formData.filter(form => {
-              return (
-                (this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation && form.certification) && form.name_id !== acc.name_id
-              );
-            }).length;
-          }
-      } else if (this.acc.type_id == 2) {
-          pendingCount += formData.filter(form => {
-            return form.name_id === this.acc.name_id && (!form.approval || !form.disapproved)
-          }).length;
-      }        
-      return pendingCount;
-    },
   
     },
   
     computed: {
-      pendingCount() {
-      console.log(this.countPendingNotifications(this.formData, this.acc))
-      return this.countPendingNotifications(this.formData, this.acc);
+      imageUrl() {
+      return `${this.API_BASE_URL}/storage/${this.signature}`;
     },
-      filteredData() {
-        if ([24].includes(this.acc.name_id)) {
-          return this.formData.filter(form => {
-            if (this.selectedStatus === 'Me') {
-              return form.name_id === this.acc.name_id;
-            } else if (this.selectedStatus === 'Pending') {
-              return [form.asof, form.tevl, form.tesl, form.ltavl, form.ltasl, form.bvl, form.vsl, form.dayswpay, form.dayswopay, form.others].every(val => val == null);
-            } else if (this.selectedStatus === 'Done') {
-              return form.asof || form.tevl || form.tesl || form.ltavl || form.ltasl || form.bvl || form.vsl || form.dayswpay || form.dayswopay || form.others
-            }
-            return true; // If no selection, return all
-          });
-        }else if ([2].includes(this.acc.name_id)){
-          return this.formData.filter(form => {
-            if (this.selectedStatus === 'Me') {
-              return form.name_id === this.acc.name_id;
-            } else if (this.selectedStatus === 'Pending') {
-              return (form.asof || form.tevl || form.tesl || form.ltavl || form.ltasl || form.bvl || form.vsl || form.dayswpay || form.dayswopay || form.others) && form.certification == null
-            } else if (this.selectedStatus === 'Done') {
-              return form.certification
-            }
-            return true; // If no selection, return all
-          });
-        }else if (this.bus.name_id === this.sub.division_id) {
-          return this.formData.filter(form => {
-            if (this.selectedStatus === 'Me') {
-              return form.name_id === this.acc.name_id;
-            } else if (this.selectedStatus === 'Pending' && (this.acc.name_id == 20 || this.acc.name_id == 76)) {
-              return (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig)
-            } else if (this.selectedStatus === 'Pending' && this.acc.name_id !== 20) {
-              return ((this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation) || (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig)) && form.name_id !== acc.name_id
-            } else if (this.selectedStatus === 'Done' && (this.acc.name_id == 20 || this.acc.name_id == 76)) {
-              return form.appsig
-            } else if (this.selectedStatus === 'Done' && this.acc.name_id !== 20) {
-              return (this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && form.recommendation) || form.appsig
-            } 
-            return true; // If no selection, return all
-          });
-        }else if (this.acc.type_id == 3){
-          return this.formData.filter(form => {
-            if (this.selectedStatus === 'Me') {
-              return form.name_id === this.acc.name_id;
-            } else if (this.selectedStatus === 'Pending' && (this.acc.name_id == 20)) {
-              return (form.recommendation && !form.appsig) || (this.getDivisionGroup(5).includes(form.name_id) && form.certification && !form.appsig) || ([15,21,45,48].includes(form.name_id) && form.certification && !form.appsig)
-            } else if (this.selectedStatus === 'Pending') {
-              return this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && !form.recommendation && form.certification && form.name_id !== this.sub.name_id
-            } else if (this.selectedStatus === 'Done'&& (this.acc.name_id == 20)) {
-              return form.appsig
-            } else if (this.selectedStatus === 'Done') {
-              return this.getDivisionGroup(this.sub.division_id).includes(form.name_id) && form.recommendation
-            }
-            return true; // If no selection, return all
-          });
-        }else if (this.acc.type_id == 2) {
-          return this.formData.filter(form => {
-            if (this.selectedStatus === 'Me') {
-              return form.name_id === this.acc.name_id;
-            } else if (this.selectedStatus === 'Pending') {
-              return form.name_id === this.acc.name_id && (!form.approval || !form.disapproved);
-            } else if (this.selectedStatus === 'Done') {
-              return form.name_id === this.acc.name_id && (form.approval || form.disapproved);
-            } 
-            return true; // If no selection, return all
-          });
-        }
-        return this.formData; // Return all if not section chief
-      },
+      pendingCount() {
+      return this.pendingStore.leaveform
+    },
       reversedFormData() {
-        let data = this.filteredData.slice().reverse(); // Make a copy of the original data
+        let data = this.formData.slice().reverse(); // Make a copy of the original data
   
         if (this.searchQuery !== '') {
           data = data.filter(item => {
-            return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
+            return String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
           });
         }
         return data;
@@ -956,6 +717,8 @@
           this.text2 = '';
         }
       },
+      selectedStatus: 'fetchData',
+      numberOfRows: 'fetchData' // Watch for changes in number of rows
     }
   }
   
@@ -963,298 +726,9 @@
   </script>
     
   <style scoped>
-  .luxury-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    font-family: 'Garamond', serif; /* Elegant, classic serif font */
-    color: #1a1a1a;
-  }
-
-  /* History Title Styling */
-  .luxury-title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 28px;
-    font-family: 'Playfair Display', serif; /* Elegant serif font for headings */
-    font-weight: 600;
-    color: #212121;
-    letter-spacing: 1px;
-    margin-bottom: -30px;
-    flex-direction: row;
-  }
-
-  /* Custom Select Box */
-  .luxury-title select {
-    background: linear-gradient(150deg, #DDC7AD, #92785b);
-    border: 2px solid #000000;
-    border-radius: 12px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    color: #333;
-    transition: background-color 0.3s ease, border 0.3s ease;
-    margin-left: 20px;
-    font-weight: bolder;
-  }
-  .luxury-title option{
-    background-color: #DDC7AD;
-    color: black;
-    font-weight: bolder;
-  }
-  /* Hover effect for option (may not work in all browsers) */
-.luxury-title option:hover {
-  background-color: #ff0000;  /* Adjust the color for hover effect */
-  color: #ff0000; /* Change text color on hover */
-}
-
-  .luxury-title option:checked{
-    background-color: #92785b;
-  }
-
-  .luxury-title select:hover {
-    background-color: #8e8e8e !important;  /* Force hover effect */
-    color: #fff !important;  /* Change text color on hover */
-  }
-
-  .luxury-notification-count {
-    background-color: #fb0808;
-    color: white;
-    border-radius: 100%;
-    padding: 6px 12px;
-    font-weight: bold;
-    font-size: 20px;
-    border: solid black 2px;
-    position: relative;
-    top: -30px;
-    right: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Loading Indicator Styling */
-  .luxury-loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 50px;
-  }
-
-  .luxury-loading img {
-    width: 120px;
-    height: auto;
-  }
-
-  /* Search Section Styling */
-  .luxury-search-container {
-    display: flex;
-    flex-direction: column;
-    margin-top: 40px;
-  }
-
-  .luxury-search-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .luxury-search-box {
-    display: flex;
-    align-items: center;
-    background-color: #f4f4f4;
-    border-radius: 25px;
-    padding: 8px 15px;
-    border: 1px solid #d1d1d1;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-  }
-
-  .luxury-search-icon {
-    height: 20px;
-    width: 20px;
-    margin-right: 10px;
-  }
-
-  .luxury-search-input {
-    border: none;
-    outline: none;
-    padding: 12px 15px;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    color: #333;
-    background-color: transparent;
-    width: 250px;
-    border-radius: 25px;
-  }
-
-  .luxury-search-input::placeholder {
-    color: #b1b1b1;
-  }
-  .pholder {
-    padding: 5px;
-    border-radius: none;
-    border: none;
-    outline: none;
-  }
-  
-  
-  
-  .Btn {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    width: 50px;
-    height: 50px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition-duration: .3s;
-    border: 2px solid black;
-    margin-bottom: 2px;
-    background-color: white;
-  
-  }
-  
-  
-  
-  
-  .sign {
-    width: 100%;
-    transition-duration: .3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    left: 1px;
-  }
-  
-  
-  .text {
-    position: absolute;
-    right: 0%;
-    width: 0%;
-    opacity: 0;
-    color: black;
-    font-size: 1.2em;
-    font-weight: 500;
-    transition-duration: .3s;
-  }
-  
-  .Btn:hover {
-    background-color: white;
-    width: 230px;
-    border: 2px solid black;
-    border-radius: 5px;
-    transition-duration: .3s;
-    position: relative;
-  
-  }
-  
-  .Btn:hover .text {
-    opacity: 1;
-    width: 70%;
-    transition-duration: .3s;
-    padding-right: 10px;
-  }
-  
-  
-  .Btn:hover .sign {
-    width: 30%;
-    transition-duration: .3s;
-    position: relative;
-    left: -15px;
-  }
-  
-  
-  .Btn:active {
-    transform: translate(2px, 2px);
-  }
-  
-  
-  table {
-    width: 100%; /* Ensures the table spans full width */
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-  }
-
-  th, td {
-    padding: 12px 18px;
-    text-align: center;
-    border: 1px solid #e0e0e0;
-    font-size: 14px;
-    font-family: 'Arial', sans-serif;
-  }
-
-  thead {
-    background: linear-gradient(180deg, #ccb59b, #92785b);
-    color: rgb(0, 0, 0);
-    position: sticky; /* This makes the header sticky */
-    top: 0; /* This keeps the header at the top */
-    z-index: 10; /* Make sure it's above the table rows */
-  }
-
-  thead th {
-    font-size: 16px;
-    font-weight: 600;
-  }
-
-  tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  tbody tr:hover {
-    background-color: #f1f1f1;
-    cursor: pointer;
-  }
-  .scrollable-table {
-    width: 100%; /* Table takes full width */
-    overflow-x: auto;
-    max-height: 630px;
-    overflow-y: auto;
-  }
-  
-  .outer {
-    width: 100%;
-    max-width: 100%; /* Ensure it takes full width */
-    margin-top: 10px;
-    background-color: #f8f9fa;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    overflow-x: auto; /* Enable horizontal scrolling on smaller screens */
-  }
-  
-  
-  .loadings {
-    top: 0;
-    left: 0;
-    width: fit-content;
-    justify-self: center;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    margin: 10px auto;
-    border-radius: 10px;
-  }
-  
-  .loadings1 {
-    height: 20px;
-    width: 100%;
-    text-align: center;
-  }
-  
-  .loadings1,
-  .loadings2 {
-    font-weight: bold;
-    font-size: 20px;
-  }
-  
   .note {
     width: 380px;
-    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    background: linear-gradient(150deg, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
     border: 2px solid #000000;
     border-radius: 5px;
     padding: 20px;
@@ -1313,17 +787,6 @@
     transform: scale(1.05);
   }
 
-   /* Status Indicators */
-   .status-pending {
-    color: red;
-    font-weight: bolder;
-  }
-
-  .status-approved {
-    color: green;
-    font-weight: bolder;
-  }
-
   .status-icon {
     height: 16px;
     width: 16px;
@@ -1333,7 +796,6 @@
   .statusrow{
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     margin-top: -15px;
@@ -1382,137 +844,10 @@
     font-weight: bolder;
   }
   
-  /* Conditional Row Styling */
-  tr td.status-pending {
-    color: red;
-  }
 
-  tr td.status-approved {
-    color: green;
-  }
-
-  tr td.status-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  tr td.status-actions button {
-    background: linear-gradient(150deg, #DDC7AD, #92785b);
-    border-radius: 8px;
-    color: rgb(0, 0, 0);
-    font-size: 14px;
-    font-weight: bolder;
-    border: solid black 2px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  tr td.status-actions button:hover {
-    background-color: #4a76d7;
-    transform: translateY(-2px);
-  }
-
-  tr td.status-actions .action-icon {
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    margin-top: 5px;
-    transition: opacity 0.3s ease;
-  }
-
-  tr td.status-actions .action-icon:hover {
-    opacity: 0.7;
-  }
-
-  /* Button for Modal Close */
-  img.action-icon {
-    cursor: pointer;
-    margin-top: 5px;
-    width: 35px;
-    height: 35px;
-    transition: opacity 0.3s ease;
-  }
-
-  img.action-icon:hover {
-    opacity: 0.8;
-  }
-  .styled-select {
-    appearance: none;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 10px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-    width: 100px;
-    font-weight: bold;
-    margin-top: -5px;
-    margin-left: 5px;
-  }
-  
-  .styled-select:focus {
-    border-color: #007bff;
-    outline: none;
-  }
-  
-  .styled-select option {
-    padding: 10px;
-    font-weight: bold;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .Btn {
-      margin-right: 20px;
+  @media print{
+    .outer{
+      display: none;
     }
-  
-    /* Adjust the media query to target a specific screen size */
-    .prent {
-      /* Apply styles to takeover the screen */
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: fit-content;
-      height: 100%;
-      /* Set height to 50% of the viewport height */
-      max-height: 1000px;
-      /* Set maximum height for smaller screens */
-      z-index: 9999;
-      /* Ensure it's above other content */
-      height: 100vh;
-      background-color: white;
-    }
-  
-    .prent .buttons {
-      display: flex;
-      justify-content: space-evenly;
-      margin-top: 70px;
-      margin-bottom: 10px;
-    }
-  
   }
-  
-  @media print {
-    .outer {
-      display: none !important;
-    }
-  
-    .hist {
-      display: none !important;
-    }
-  
-    .content,
-    .search,
-    .note,
-    .sign,
-    .Btn,
-    .butokz,
-    .luxury-container {
-      display: none !important;
-    }
-  
-    .buttons {
-      display: none !important;
-    }
-  }</style>
+  </style>

@@ -1,15 +1,28 @@
 <template>
-      <div class="status-filter">
-            <h1>Request Status:</h1>
-            <select v-model="selectedStatus">
-              <option value="all">All</option>
-              <option value="">Pending</option>
-              <option value="disapproved">Disapproved</option>
-              <option value="approved">Approved</option>
-              <option value="ongoing">On-going</option>
-              <option value="done">Done</option>
-            </select>
-          </div>
+    <div class="luxury-title">    
+      <select v-model="selectedStatus" style="margin-bottom: -0px;">
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="disapproved">Disapproved</option>
+        <option value="approved">Approved</option>
+        <option value="ongoing">On-going</option>
+        <option value="done">Done</option>
+      </select>
+
+      <select v-model="typeOfService" style="margin-bottom: -0px;">
+        <option value="all">All</option>
+        <option v-for="type in serviceTypes" :key="type" :value="type">{{ type }}</option>
+      </select>
+
+      <select v-model="numberOfRows">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+        <option value="500">500</option>
+      </select>
+    </div>
   
           <div class="outer">
       <div class="scrollable-table">
@@ -27,17 +40,17 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="service in filteredServices" :key="service.id">
+              <tr v-for="service in services" :key="service.id">
                 <td>{{ service.serviceRequestNo }}</td>
                 <td>{{ formatDate(service.date) }}</td>
                 <td>{{ getName(service.requestedBy) }}</td>
-                <td>{{ service.typeOfService }}, <br>{{ service.note }}</td>
+                <td style="width: fit-content;">{{ service.typeOfService }}, <br>{{ service.note }}</td>
                 <td>{{ service.remarks ? service.remarks : 'Pending' }} {{ service.approvedBy || service.remarks == 'Disapproved'? '' : '(Not yet Approved)' }}</td>
                 <td>
                   <div class="feedback">
                     <p>{{ service.feedback_filled == 0 ? 'Not yet' : 'Done' }} </p>
-                    <button class="action-button" @click="openFeedback(service.id)" v-if="service.id !== feedbackView && service.feedback_filled == 0">Feedback</button> 
-                    <button class="action-button" @click="cancelFeedback()" v-if="service.id == feedbackView && service.feedback_filled == 0">Cancel Feedback</button>
+                    <button class="action-button2" @click="openFeedback(service.id)" v-if="service.id !== feedbackView && service.feedback_filled == 0">Feedback</button> 
+                    <button class="action-button2" @click="cancelFeedback()" v-if="service.id == feedbackView && service.feedback_filled == 0">Cancel Feedback</button>
                     <!-- <button class="action-button" @click="viewFeedback(service.id)" v-if="service.id !== selectedFeedbackView && service.feedback_filled == 1">View</button>
                     <button class="action-button" @click="closeFeedback()" v-if="service.id == selectedFeedbackView && service.feedback_filled == 1">Close Feeback</button> -->
                   </div>
@@ -141,21 +154,28 @@
     import ICTSFFview from './ICTSFFview.vue';
     import feedback from './feedbackform.vue'
     import { API_BASE_URL } from '@/config';
-    // import { useRouter } from 'vue-router';
+    import { useAuthStore } from '@/store/auth';
+    import { watch } from 'vue';
     
-    // const router = useRouter();
-    const selectedView = ref('services');
+    const authStore = useAuthStore()
     const services = ref([]);
     const feedbacks = ref([]);
     const selectedStatus = ref('all');
+    const typeOfService = ref('all');
+    const numberOfRows = ref(10);
     const editPopupVisible = ref(false);
     const selectedServiceBy = ref('53'); // Default selection
     const selectedStatusForEdit = ref('');
     const serviceToEdit = ref(null); // To keep track of the service being edited
-    const popupVisible = ref(false);
-    const currentReferenceId = ref(null); // Add this line
     const admin = ref([53,76,77])
-    const nameId = localStorage.getItem('nameId');
+    const nameId = authStore.name_id
+    const serviceTypes = [
+    'Existing system unit',
+    'Existing network connection',
+    'Existing ICT equipment',
+    'Uploading of data in website',
+    'Others, please specify'
+  ];
 
     const selectedview = ref(0)
     const feedbackView = ref(0)
@@ -173,12 +193,17 @@
     
     const fetchServices = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/services/`);
+        const response = await axios.get(`${API_BASE_URL}/services/${nameId}/${selectedStatus.value}/${typeOfService.value}/${numberOfRows.value}`);
         services.value = response.data.sort((a, b) => b.id - a.id);
       } catch (error) {
         console.error('Error fetching services:', error);
       }
     };
+
+    // Watch for changes in selectedStatus, typeOfService, and numberOfRows
+    watch([selectedStatus, typeOfService, numberOfRows], (newValues, oldValues) => {
+      fetchServices();
+    });
 
     
     const fetchFeedbacks = async () => {
@@ -189,71 +214,8 @@
         console.error('Error fetching feedbacks:', error);
       }
     };
-    
-  
-  //   const filteredServices = computed(() => {
-  //   return services.value.filter(service => {
-  //     if (selectedStatus.value === 'all') return true;
-  //     if (selectedStatus.value === '') return service.remarks === null; // blank
-  //     if (selectedStatus.value === 'approved') return service.remarks === 'Approved';
-  //     if (selectedStatus.value === 'disapproved') return service.remarks === 'Disapproved';
-  //     if (selectedStatus.value === 'ongoing') return service.remarks === 'On-going';
-  //     if (selectedStatus.value === 'done') return service.remarks === 'Done';
-  //     return false;
-  //   });
-  // });
-
-  const filteredServices = computed(() => {
-  return services.value.filter(service => {
-    // If the user is an admin, show all services
-    if (admin.value.includes(parseInt(nameId))) {
-      if (selectedStatus.value === 'all') return true;
-      if (selectedStatus.value === '') return service.remarks === null; // blank
-      if (selectedStatus.value === 'approved') return service.approvedBy !== null;
-      if (selectedStatus.value === 'disapproved') return service.approvedBy == null && service.remarks == 'Disapproved';
-      if (selectedStatus.value === 'ongoing') return service.remarks === 'On-going';
-      if (selectedStatus.value === 'done') return service.remarks === 'Done';
-    }
-
-    // If `approvedBy` is null, show these services
-    if (parseInt(nameId) == 36) {
-      if (selectedStatus.value === 'all') return true;
-      if (selectedStatus.value === '') return service.remarks === null; // blank
-      if (selectedStatus.value === 'approved') return service.approvedBy !== null;
-      if (selectedStatus.value === 'disapproved') return service.approvedBy == null && service.remarks == 'Disapproved';
-      if (selectedStatus.value === 'ongoing') return service.remarks === 'On-going';
-      if (selectedStatus.value === 'done') return service.remarks === 'Done';
-    }
-
-    // For users who are not admins, filter based on `requestedBy`
-    if (service.requestedBy === parseInt(nameId)) {
-      if (selectedStatus.value === 'all') return true;
-      if (selectedStatus.value === '') return service.remarks === null; // blank
-      if (selectedStatus.value === 'approved') return service.approvedBy !== null;
-      if (selectedStatus.value === 'disapproved') return service.approvedBy == null && service.remarks == 'Disapproved';
-      if (selectedStatus.value === 'ongoing') return service.remarks === 'On-going';
-      if (selectedStatus.value === 'done') return service.remarks === 'Done';
-      return false; // No specific status matched
-    }
-
-    return false; // Default case: service does not match any criteria
-  });
-});
 
 
-
-    const showPopup = (referenceId) => {
-      popupVisible.value = true;
-      currentReferenceId.value = referenceId;
-    }
-    const hidePopup = () => {
-      popupVisible.value = false;
-      currentReferenceId.value = null;
-    }
-    const getServiceDetails = (referenceId) => {
-      return services.value.find(service => service.id === referenceId) || {};
-    }
-  
     const editService = (service) => {
     serviceToEdit.value = service;
     selectedServiceBy.value = service.serviceBy || '53'; // Default to existing serviceBy if available
@@ -454,6 +416,12 @@ const handleCancel = () => {
     </script>
     
     <style scoped>
+    .scrollable-table{
+      overflow-y: auto;
+      overflow-x: auto;
+      display: flex;
+      flex-grow: 1;
+    }
     .admin-container {
     padding: 20px;
     font-family: 'Arial', sans-serif;
@@ -568,58 +536,6 @@ option:checked{
     transform: translateX(100%); /* Move selection to second option */
   }
     
-  table {
-    width: 100%; /* Ensures the table spans full width */
-    border-collapse: collapse;
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border-radius: 8px;
-  }
-
-  th, td {
-    padding: 12px 18px;
-    text-align: center;
-    border: 1px solid #e0e0e0;
-    font-size: 14px;
-    font-family: 'Arial', sans-serif;
-  }
-
-  thead {
-    background: linear-gradient(180deg, #ccb59b, #92785b);
-    color: rgb(0, 0, 0);
-    position: sticky; /* This makes the header sticky */
-    top: 0; /* This keeps the header at the top */
-    z-index: 10; /* Make sure it's above the table rows */
-  }
-
-  thead th {
-    font-size: 16px;
-    font-weight: 600;
-  }
-
-  tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  tbody tr:hover {
-    background-color: #f1f1f1;
-    cursor: pointer;
-  }
-  .scrollable-table {
-    width: 100%; /* Table takes full width */
-    overflow-x: auto;
-    max-height: 700px;
-    overflow-y: auto;
-  }
-  .outer {
-    width: 100%;
-    max-width: 100%; /* Ensure it takes full width */
-    margin-top: 10px;
-    background-color: #f8f9fa;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    overflow-x: auto; /* Enable horizontal scrolling on smaller screens */
-  }
 
 
 .feedback{
@@ -642,10 +558,10 @@ option:checked{
   
   .action-button {
     border-radius: 10px;
-    background: linear-gradient(150deg, #DDC7AD, #92785b);
-    border: solid black 2px;
+    background-color: #000000;
+    border: solid rgb(255, 255, 255) 2px;
     padding: 10px 20px;
-    color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
     cursor: pointer;
     transition: background 0.3s;
     margin: 0 5px;
@@ -660,10 +576,11 @@ option:checked{
     transition: background 0.3s;
     margin: 0 5px;
     height: fit-content;
+    padding: 10px;
   }
   
   .action-button:hover {
-    background-color: #0056b3;
+    background-color: #696969;
   }
   
   .popup {
@@ -708,7 +625,7 @@ option:checked{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    background: linear-gradient(150deg, #a1834a, #b8860b); /* Gradient from light gold to dark gold */
     border: solid black 2px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
@@ -789,7 +706,7 @@ option:checked{
     transform: translate(-50%, -50%);
     z-index: 1000;
     width: 400px;
-    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    background: linear-gradient(150deg, #a1834a, #b8860b); /* Gradient from light gold to dark gold */
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     padding: 20px;

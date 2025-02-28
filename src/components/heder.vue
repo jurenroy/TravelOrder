@@ -28,14 +28,15 @@
 <script setup>
 import { ref } from 'vue';
 import { useAuthStore } from '../store/auth';
-import { isButssClicked } from '../views/dashboard.vue';
 import { API_BASE_URL } from '../config'
 
 import axios from 'axios';
 
 const authStore = useAuthStore();
 
-const accountIdz = localStorage.getItem('accountId');
+const accounts = [] 
+
+const accountIdz = authStore.account_id
 
 const emit = defineEmits();
 
@@ -48,7 +49,7 @@ const emit = defineEmits();
     };
 
 
-const accounts = ref([]);
+// const accounts = ref([]);
 const employees = ref([]);
 const names = ref([]);
 const name = ref('')
@@ -148,9 +149,6 @@ fetchNames();
 
 <script>
 import { ref } from 'vue';
-import { isButssClicked,showHeader1, showHeader2, isEdits, isRegistrationClicked, isVisible } from '../views/dashboard.vue';
-import { isleavelogoutClicked, leaveedit } from '@/views/leaveform.vue';
-import { addem, blurTable } from '@/views/employeelist.vue';
 
 export const showEdit = ref(false)
 

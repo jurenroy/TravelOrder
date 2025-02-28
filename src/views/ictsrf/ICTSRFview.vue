@@ -32,34 +32,34 @@
       
       <!-- Type of Service, Notes, and Remarks Table -->
       <table class="service-table">
-        <thead>
+        <tbody>
           <tr>
             <th class="type-of-service-header">TYPE OF SERVICE</th>
             <th class="notes-header">NOTES</th>
             <th class="remarks-header">REMARKS</th>
           </tr>
-        </thead>
+        </tbody>
         <tbody>
           <tr v-for="(option, index) in serviceOptions" :key="index">
-            <td>
+            <td style="font-size: 9.8px;">
               <input type="checkbox" :checked="serviceDetails.typeOfService === option" />
               {{ option }}
             </td>
-            <td>{{ serviceDetails.typeOfService === option ? serviceDetails.note || '' : '' }}</td>
-            <td>{{ serviceDetails.typeOfService === option ? serviceDetails.remarks || 'Pending' : '' }}</td>
+            <td  style="font-size: 9.8px;">{{ serviceDetails.typeOfService === option ? serviceDetails.note || '' : '' }}</td>
+            <td style="font-size: 9.8px;">{{ serviceDetails.typeOfService === option ? serviceDetails.remarks || 'Pending' : '' }}</td>
           </tr>
         </tbody>
       </table>
       
       <!-- Table for Signatories -->
-      <table class="grid-table">
-        <thead>
+      <table class="service-table">
+        <tbody>
           <tr>
-            <th>REQUESTED BY:</th>
-            <th>SERVICED BY:</th>
-            <th> {{ serviceDetails.remarks === 'Disapproved' ? 'DISAPPROVED BY:' : serviceDetails.remarks === null ? 'NOT YET APPROVED BY:' : 'APPROVED BY:' }}</th>
+            <td  style="font-size: 7.8px; text-align: center;">REQUESTED BY:</td>
+            <td  style="font-size: 7.8px; text-align: center;">SERVICED BY:</td>
+            <td  style="font-size: 7.8px; text-align: center;"> {{ serviceDetails.remarks === 'Disapproved' ? 'DISAPPROVED BY:' : serviceDetails.remarks === null ? 'NOT YET APPROVED BY:' : 'APPROVED BY:' }}</td>
           </tr>
-        </thead>
+        </tbody>
         <tbody>
           <tr>
             <td v-for="(signatory, index) in signatories" :key="'signature-' + index">
@@ -72,7 +72,7 @@
           <!-- Row for Names -->
           <tr>
             <td v-for="(signatory, index) in signatories" :key="'name-' + index">
-              <div>
+              <div  style="font-size: 7.8px; text-align: center;">
                 {{ !servicedBy && index == 1 ?  'ICT' :getName(signatory.name)}}<br />
                 Printed Name 
               </div>
@@ -80,7 +80,7 @@
           </tr>
           <!-- Row for Designations -->
           <tr>
-            <td v-for="(signatory, index) in signatories" :key="'designation-' + index">
+            <td v-for="(signatory, index) in signatories" :key="'designation-' + index"  style="font-size: 7.8px; text-align: center;">
               <div>
                 {{ !servicedBy && index == 1 ?  'ICT' : getPositionName(signatory.name)}}<br />
                 Designation
@@ -386,11 +386,13 @@ onMounted(() => {
     font-weight: bold;
   }
   
+  
  /* Table Styling */
 .service-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 10px;
+  background-color: white;
 }
 
 .service-table th, .service-table td {
@@ -421,7 +423,7 @@ onMounted(() => {
 .grid-table {
   width: 100%; /* Full width of the container */
   border-collapse: collapse; /* Collapse borders for a cleaner look */
-  font-size: 8px; /* Font size for table text */
+  font-size: 7px; /* Font size for table text */
   margin-top: 5px;
 }
 
@@ -434,10 +436,10 @@ onMounted(() => {
   font-weight: normal;
 }
 
-
-
 .signature-container {
   text-align: center; /* Center align both image and label */
+  margin-top: -10px;
+  margin-bottom: -10px;
 }
 
 .signature-image {

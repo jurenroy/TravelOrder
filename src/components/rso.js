@@ -701,5 +701,23 @@ export const rso =
       id_number: 79,
       full_name: "Aminah - Jehan Pantao",
       position: "Unknown"
+    },
+    {
+      name_id: 79,
+      first_name: "SALVACION",
+      middle_init: "N.",
+      last_name: "NARANJO",
+      id_number: 51,
+      full_name: "Salvacion Naranjo",
+      position: "Unknown"
+    },
+    {
+      name_id: 80,
+      first_name: "QUINNE MARIE",
+      middle_init: "T.",
+      last_name: "BUHAWE",
+      id_number: 800,
+      full_name: "Quinne Marie Buhawe",
+      position: "Unknown"
     }
   ]

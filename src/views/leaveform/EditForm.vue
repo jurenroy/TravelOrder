@@ -6,7 +6,7 @@
         <div class="form-row">
           <!-- Name Dropdown -->
           <div class="form-group">
-            <label for="name">Name {{ form.name }} {{ leaveFormId }}</label>
+            <label for="name">Name {{ form.name }}</label>
             <select v-model="form.name_id" id="name" required>
               <option v-for="option in names" :key="option" :value="option.name_id">{{ option.last_name }}, {{ option.first_name }} {{ option.middle_init }}</option>
             </select>
@@ -113,7 +113,7 @@
             <div v-if="!isfromDB" style="display: flex; flex-direction: row; position: absolute;">
               <p style="margin-left: 10px; margin-top: 10px;user-select: none;pointer-events: none; position: relative;">{{ dbdate }}</p>
             </div>
-              <input type="date" id="date-input" v-model="selectedDate" @change="handleDateChange" style="outline: none; color: transparent; height: fit-content;" />
+              <input type="date" id="date-input" v-model="selectedDate" @change="handleDateChange" style="outline: none; color: transparent; height: fit-content;"/>
             </div>
           </div>
   
@@ -153,6 +153,7 @@
   import { ref, onMounted, computed, watch } from 'vue';
   import axios from 'axios';
   import { API_BASE_URL } from '@/config';
+  import { useAuthStore } from '@/store/auth';
   
   export default {
     name: 'LeaveForm',
@@ -382,10 +383,10 @@ const isSickLeave = computed(() => {
       }
       console.log('yawa')
       // Now assign the computed values to form
-      if (!isfromDB.value){
+      
         form.value.dates = formattedDateRange.value;
         form.value.days = weekdaysCountWithSuffix.value;
-      }
+      
       
     };
 
@@ -446,16 +447,17 @@ const isSickLeave = computed(() => {
     const names = ref([]);
     const positions = ref([]);
     const employees = ref([]);
-    const nameid = ref(localStorage.getItem('nameId'))
 
-    
+    const authStore = useAuthStore()
+
 
     // Function to fetch names
     const fetchNames = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/get_names_json`);
-        if(parseInt(nameid.value) !== parseInt(76)){
-          names.value = response.data.filter(nem => nem.name_id == nameid.value); // assuming the response is an array
+        if(parseInt(authStore.name_id) !== parseInt(76)){
+          console.log(authStore.name_id)
+          names.value = response.data.filter(nem => nem.name_id == authStore.name_id); // assuming the response is an array
         }else{
           names.value = response.data; // assuming the response is an array
         }
@@ -470,6 +472,7 @@ const isSickLeave = computed(() => {
       try {
         const response = await axios.get(`${API_BASE_URL}/get_positions_json`);
         positions.value = response.data; // assuming the response is an array
+        console.log(response.data)
       } catch (error) {
         console.error('Error fetching positions:', error);
       }
@@ -480,27 +483,40 @@ const isSickLeave = computed(() => {
       try {
         const response = await axios.get(`${API_BASE_URL}/get_employees_json`);
         employees.value = response.data; // assuming the response is an array
+        console.log(response.data)
       } catch (error) {
         console.error('Error fetching employees:', error);
       }
     };
 
     // Method to find the selected employee and update their position
-    const findEmployeeAndPosition = () => {
-      if (form.value.name_id) {
+const findEmployeeAndPosition = async () => {
+    // Function to check if the arrays are populated
+    const checkArrays = async () => {
+        // You can replace this with your actual data fetching logic
+        // For example, await fetchEmployees() and await fetchPositions()
+        return employees.value && employees.value.length > 0 && positions.value && positions.value.length > 0;
+    };
+
+    // Wait until the arrays are populated
+    while (!(await checkArrays())) {
+        console.warn("Waiting for employees and positions to be populated...");
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second before checking again
+    }
+    if (form.value.name_id) {
         // Find employee by name_id
         const selectedEmployee = employees.value.find(emp => emp.name_id === form.value.name_id);
-
+        
         if (selectedEmployee) {
-          // Find the position based on the employee's position_id
-          const selectedPosition = positions.value.find(pos => pos.position_id === selectedEmployee.position_id);
-          
-          // Update the position field with the found position name
-          position.value = selectedPosition ? selectedPosition.position_name : '';
-          form.value.position_id = selectedPosition.position_id
+            // Find the position based on the employee's position_id
+            const selectedPosition = positions.value.find(pos => pos.position_id === selectedEmployee.position_id);
+            
+            // Update the position field with the found position name
+            position.value = selectedPosition ? selectedPosition.position_name : '';
+            form.value.position_id = selectedPosition ? selectedPosition.position_id : null; // Set to null if not found
         }
-      }
-    };
+    }
+};
 
     // Watch the name field to trigger finding the employee and their position when the name is selected
     watch(() => form.value.name_id, findEmployeeAndPosition);
@@ -511,6 +527,8 @@ const isSickLeave = computed(() => {
         fetchPositions();
         fetchEmployees();
         fetchLeaveFormData();
+        findEmployeeAndPosition();
+        
       });
   
       // Handle form submission
@@ -524,10 +542,10 @@ const isSickLeave = computed(() => {
           type: form.value.otherType && form.value.type == 'Others' ? form.value.otherType : form.value.type ,
           detail: detail.value,  // Use the computed "detail" property
           description: form.value.otherPurpose,
-          ...(isfromDB === false && {
+          
             dates: form.value.dates,
             days: form.value.days,
-          }),
+          
           commutation: form.value.commutation,
           applicant: '₱' + form.value.applicant,
         };
@@ -549,10 +567,9 @@ const isSickLeave = computed(() => {
           });
       };
       const fetchLeaveFormData = () => {
-      axios.get(`${API_BASE_URL}/get_leave_json`)
+      axios.get(`${API_BASE_URL}/get_leave_json/${props.leaveFormId}`)
         .then(response => {
-          const travelOrders = response.data; // Assuming the response data is an array
-          const order = travelOrders.find(order => order.leaveform_id === props.leaveFormId);
+          const order = response.data; // Assuming the response data is an array
           console.log(order)
           if (order) {
             populateFormData(order);
@@ -656,9 +673,9 @@ const isSickLeave = computed(() => {
   }
   
   .form-container {
-    width: 90%;
+    width: 100%;
     max-width: 1000px;
-    background: linear-gradient(30deg, #DDC7AD, #92785b);
+    background: linear-gradient(180deg, #f0c36d, #b8860b);
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);

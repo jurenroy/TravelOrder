@@ -48,8 +48,11 @@
   <script setup>
   import { ref, computed, onMounted } from 'vue';
   import axios from 'axios';
+  import { useAuthStore } from '@/store/auth';
 
-  const nameId = localStorage.getItem('nameId');
+  const authStore = useAuthStore()
+
+  const nameId = authStore.name_id
   
   // Form data
   const form = ref({
@@ -165,16 +168,16 @@ const loadis = ref(false);
   <style scoped>
   /* Luxurious styles for the ICT Service Request Form view */
   .form-container {
-    margin: 2em auto;
     font-family: 'Roboto', sans-serif;
     flex-direction: column;
-    width: 90%;
+    width: 100%;
     max-width: 1000px;
-    background: linear-gradient(30deg, #DDC7AD, #92785b);
+    background: linear-gradient(150deg, #a1834a, #b8860b); /* Gradient from light gold to dark gold */
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
     border: 2px solid #000000; 
+    margin: auto;
   }
   
   h1 {

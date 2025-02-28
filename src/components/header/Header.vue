@@ -29,17 +29,16 @@
   <Login v-if="showLogin" :login="showLogin" @closeLogin="closeLoginModal"/>
   <!-- Logout Confirmation Popup -->
   <Logout v-if="isLogoutClicked" :show="isLogoutClicked" @handleNo="handleNo" @handleYes="handleLogout"/>
-  <TravelOrderNotification/>
 
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import Logout from '../logout/Logout.vue';
 import Login from '../login/Login.vue';
 import Heder from '../heder.vue';
-import TravelOrderNotification from '../../components/notifications/travelorder.vue';
+import { useAuthStore } from '@/store/auth';
 
 export default {
   name: 'Header',
@@ -47,15 +46,14 @@ export default {
     Logout,
     Login,
     Heder,
-    TravelOrderNotification
   },
   setup() {
     const title = ref('MGBxPORTAL');
-    const isLoggedIn = ref(localStorage.getItem('isLoggedIn') === 'true');
+    const authStore = useAuthStore();
+    const router = useRouter();
+    const isLoggedIn = computed(() => authStore.isLoggedIn);
     const isMenuOpen = ref(true);
     const isMobile = ref(false);
-
-    const router = useRouter();
 
     const goHome = () => {
       router.push('/');
@@ -79,7 +77,7 @@ export default {
 
     const handleLogout = () => {
       isLoggedIn.value = false;  // Set the logged-in state to false
-      localStorage.setItem('isLoggedIn', 'false'); // Store the state in localStorage
+      authStore.logout(); // Call the logout action
       isLogoutClicked.value = false; // Close the logout confirmation dialog
     };
 
@@ -93,6 +91,7 @@ export default {
     // Handle link click (for login/logout pop-up)
     const handleLinkClick = (linkText) => {
       console.log(linkText , isLoggedIn.value)
+      console.log(authStore.value)
       if (linkText === 'Login' && !isLoggedIn.value) {
         // Trigger login popup here if you want to show a login dialog
         showLogin.value = true;
@@ -137,7 +136,8 @@ export default {
       handleLogout,
       showLogin,
       showLoginModal,
-      closeLoginModal
+      closeLoginModal,
+      authStore,
     };
   }
 };
@@ -152,7 +152,7 @@ export default {
     align-items: center;
     height: 50px;
     padding: 10px;
-    background-color: #DDC7AD;
+    background: linear-gradient(to right, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
     color: rgb(0, 0, 0);
     position: sticky;
     top: 0;
@@ -238,7 +238,7 @@ export default {
   
     .nav ul {
       flex-direction: column;
-      background-color: #DDC7AD;
+      background: linear-gradient(to top, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
       width: 150px;
       padding: 10px 0;
       position: absolute;

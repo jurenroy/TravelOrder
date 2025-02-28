@@ -243,7 +243,7 @@ const emit = defineEmits();
   
   .otp-header {
     margin-bottom: 10px;
-    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    background: linear-gradient(180deg, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -264,7 +264,7 @@ const emit = defineEmits();
   }
   
   .otp-wrapper {
-    background: linear-gradient(150deg, #DDC7AD, #92785b);
+    background: linear-gradient(180deg, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);

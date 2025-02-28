@@ -146,7 +146,9 @@
   
   <script>
   import { ref, onMounted, computed, watch } from 'vue';
+  import { useAuthStore } from '@/store/auth';
   import axios from 'axios';
+  import { API_BASE_URL } from '@/config';
   
   export default {
     name: 'LeaveForm',
@@ -409,12 +411,13 @@
     const names = ref([]);
     const positions = ref([]);
     const employees = ref([]);
-    const nameid = ref(localStorage.getItem('nameId'))
+    const authStore = useAuthStore()
+    const nameid = ref(authStore.name_id)
 
     // Function to fetch names
     const fetchNames = async () => {
       try {
-        const response = await axios.get('http://202.137.117.84:8011/get_names_json');
+        const response = await axios.get(`${API_BASE_URL}/get_names_json/`);
         if(parseInt(nameid.value) !== parseInt(76)){
           names.value = response.data.filter(nem => nem.name_id == nameid.value); // assuming the response is an array
         }else{
@@ -429,7 +432,7 @@
     // Function to fetch positions
     const fetchPositions = async () => {
       try {
-        const response = await axios.get('http://202.137.117.84:8011/get_positions_json');
+        const response = await axios.get(`${API_BASE_URL}/get_positions_json`);
         positions.value = response.data; // assuming the response is an array
       } catch (error) {
         console.error('Error fetching positions:', error);
@@ -439,7 +442,7 @@
     // Function to fetch employees
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('http://202.137.117.84:8011/get_employees_json');
+        const response = await axios.get(`${API_BASE_URL}/get_employees_json`);
         employees.value = response.data; // assuming the response is an array
       } catch (error) {
         console.error('Error fetching employees:', error);
@@ -492,7 +495,7 @@
           applicant: '₱' + form.value.applicant,
         };
         // Use Axios to send a POST request
-        axios.post('http://202.137.117.84:8011/addleave_form', payload)
+        axios.post(`${API_BASE_URL}/addleave_form`, payload)
           .then(response => {
             console.log('Form Submitted:', response.data);  // Handle the server's response
             alert('Form Submitted Successfully!');
@@ -552,7 +555,7 @@
   .form-container {
     width: 90%;
     max-width: 1000px;
-    background: linear-gradient(30deg, #DDC7AD, #92785b);
+    background: linear-gradient(180deg, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);

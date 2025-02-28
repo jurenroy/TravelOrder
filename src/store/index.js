@@ -1,3 +1,4 @@
-import { createPinia } from 'pinia'
+// src/store/index.js
+import { createPinia } from 'pinia';
 
-export const pinia = createPinia()
+export const pinia = createPinia();

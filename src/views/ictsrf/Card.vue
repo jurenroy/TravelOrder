@@ -1,0 +1,945 @@
+<template> 
+<div v-if="!mawala" class="loader"></div> <!-- Loader here -->
+    <div class="outer">
+      <div class="navigation">
+          <div class="arrow" @click="previousCard" v-if="currentCardIndex > 0"><button class="arrow">
+  <div class="arrow-box">
+    <span class="arrow-elem">
+      <svg viewBox="0 0 46 40" xmlns="http://www.w3.org/2000/svg">
+        <path d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z"></path>
+      </svg>
+    </span>
+    <span class="arrow-elem">
+      <svg viewBox="0 0 46 40">
+        <path d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z"></path>
+      </svg>
+    </span>
+  </div>
+</button></div>
+        <div class="card-container" @touchstart="startTouch" @touchmove="moveTouch" @touchend="endTouch">
+          <div class="card" v-for="(service, index) in services" :key="service.id" v-show="currentCardIndex === index">
+            <div class="card-header">
+              <h3>ICT Request No: {{ service.serviceRequestNo }}</h3>
+              <div class="status">
+                <span v-if="service.remarks === 'Disapproved'" class="status-disapproved">Disapproved</span>
+                <span v-else class="status-approved">{{ service.remarks ? service.remarks : 'Pending' }}</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <p><strong>Date:</strong> {{ formatDate(service.date) }}</p>
+              <p><strong>Requested By:</strong> {{ getName(service.requestedBy) }}</p>
+              <p><strong>Type of Service:</strong> {{ service.typeOfService }}</p>
+              <p><strong>Description:</strong> {{ service.note }}</p>
+            </div>
+            <div class="card-footer">
+              <div class="status-actions">
+                <button class="action-button" @click="openFeedback(service.id)" v-if="service.id !== feedbackView && service.feedback_filled == 0">Feedback</button>
+                <button class="action-button" @click="cancelFeedback()" v-if="service.id == feedbackView && service.feedback_filled == 0">Cancel Feedback</button>
+              </div>
+              <!-- <div class="status-actions">
+                <button class="action-button" @click="openNote(service.id)" v-if="admin.includes(parseInt(nameId)) && notenum !== service.id && !service.ictnote">Add note</button>
+                <button class="action-button" @click="viewNotez(service.ictnote, service.id)" v-if="admin.includes(parseInt(nameId)) && service.ictnote && notenum !== service.id">View note</button>
+                <button class="action-button" @click="closeNote()" v-if="admin.includes(parseInt(nameId)) && notenum == service.id">Close {{ viewNote ? 'view': '' }} note</button>
+              </div> -->
+              <div class="status-actions">
+                <button class="action-button" @click="editService(service)" v-if="admin.includes(parseInt(nameId))">Edit</button>
+                <button class="action-button" @click="approveService(service.id)" v-if="nameId == 36 && service.approvedBy == null">Approve</button>
+                <button class="action-button" @click="disapproveService(service.id)" v-if="nameId == 36 && service.approvedBy == null && service.remarks !== 'Disapproved'">Disapprove</button>
+                <button class="action-button" @click="viewService(service.id)" v-if="service.id !== selectedview">View</button>
+                <button class="action-button" @click="closeView()" v-if="service.id == selectedview">Close View</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="arrow right" @click="nextCard" v-if="currentCardIndex < services.length - 1"><button class="arrow" style="rotate: 180deg;">
+  <div class="arrow-box">
+    <span class="arrow-elem">
+      <svg viewBox="0 0 46 40" xmlns="http://www.w3.org/2000/svg">
+        <path d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z"></path>
+      </svg>
+    </span>
+    <span class="arrow-elem">
+      <svg viewBox="0 0 46 40">
+        <path d="M46 20.038c0-.7-.3-1.5-.8-2.1l-16-17c-1.1-1-3.2-1.4-4.4-.3-1.2 1.1-1.2 3.3 0 4.4l11.3 11.9H3c-1.7 0-3 1.3-3 3s1.3 3 3 3h33.1l-11.3 11.9c-1 1-1.2 3.3 0 4.4 1.2 1.1 3.3.8 4.4-.3l16-17c.5-.5.8-1.1.8-1.9z"></path>
+      </svg>
+    </span>
+  </div>
+</button></div>
+      </div>
+        <h1 v-if="services.length == 0" class="no-match">NO PENDING SERVICE REQUEST FOUND</h1>
+    </div>
+  
+   <!-- Popup for editing service -->
+   <div v-if="editPopupVisible" class="edit-popup">
+        <h2>Edit Service</h2>
+        <div class="form-group">
+          <label class="left-label">Service By:</label>
+          <select v-model="selectedServiceBy" class="right-select">
+            <option value="53">{{ getName(53) }}</option>
+            <option value="77">{{ getName(77) }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="left-label">Status:</label>
+          <select v-model="selectedStatusForEdit" class="right-select">
+            <option value="">Pending</option>
+            <option value="On-going">On-going</option>
+            <option value="Done">Done</option>
+          </select>
+        </div>
+        <div class="button-group">
+          <button class="action-button2" @click="updateService">Update</button>
+          <button class="action-button2" @click="editPopupVisible = false">Cancel</button>
+        </div>
+      </div>
+    
+    <div class="popup-overlay" v-if="isPopupVisible">
+      <div class="popup">
+        <h2>{{ confirmationMessage }}</h2>
+        <div class="button-group">
+          <button class="action-button2" @click="handleConfirm">Yes</button>
+          <button class="action-button2" @click="handleCancel">No</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-modal" v-if="addNote">
+      <div class="note-header">
+        <span class="note-title">Add Note</span>
+        <div class="close-btn" @click="closeNote">×</div>
+      </div>
+
+      <div class="note-body">
+        <textarea v-model="noteText" rows="4" placeholder="Enter your note here..." class="notetextarea"></textarea>
+        <div class="note-footer">
+          <button class="save-btn" @click="postNote">Save</button>
+          <button class="cancel-btn" @click="closeNote">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-modal" v-if="viewNote">
+      <div class="note-header">
+        <span class="note-title">View Note</span>
+        <div class="close-btn" @click="closeNote">×</div>
+      </div>
+
+      <div class="note-body">
+        <textarea v-model="noteText" rows="4" :readonly="!(admin.includes(parseInt(nameId)))" class="notetextarea"></textarea>
+        <div class="note-footer">
+          <button class="save-btn" @click="postNote" v-if="admin.includes(parseInt(nameId))">Save</button>
+          <button class="cancel-btn" @click="closeNote">Close</button>
+        </div>
+      </div>
+    </div>
+
+
+    <feedback :id="feedbackView" v-if="feedbackView !== 0" @cancelled="handleCancellation"/>
+
+    <div class="formview">
+        <ICTSRFview :id="selectedview" v-if="selectedview !== 0"/>
+        <ICTSFFview :id="selectedFeedbackView" v-if="selectedFeedbackView !== 0"/>
+    </div>
+
+  </template>
+  
+  <script setup>
+  import { ref, onMounted, computed, onBeforeUnmount} from 'vue';
+  import axios from 'axios';
+  import ICTSRFview from './ICTSRFview.vue';
+  import ICTSFFview from './ICTSFFview.vue';
+  import feedback from './feedbackform.vue'
+  import { API_BASE_URL } from '@/config';
+  import { useAuthStore } from '@/store/auth';
+  import { usePendingStore } from '@/store/pending';
+  import { watch } from 'vue';
+  
+  const authStore = useAuthStore();
+  const pendingStore = usePendingStore();
+  const services = ref([]);
+  const feedbacks = ref([]);
+  const selectedStatus = ref('kulang');
+  const typeOfService = ref('all');
+  const numberOfRows = ref(10);
+  const editPopupVisible = ref(false);
+  const selectedServiceBy = ref('53'); // Default selection
+  const selectedStatusForEdit = ref('');
+  const serviceToEdit = ref(null); // To keep track of the service being edited
+  const admin = ref([53,76,77])
+  const nameId = authStore.name_id
+  const serviceTypes = [
+  'Existing system unit',
+  'Existing network connection',
+  'Existing ICT equipment',
+  'Uploading of data in website',
+  'Others, please specify'
+];
+const mawala = ref(false)
+
+  const selectedview = ref(0)
+  const feedbackView = ref(0)
+  const selectedFeedbackView = ref(0)
+
+  const addNote = ref(false)
+  const viewNote = ref(false)
+  const notenum = ref(0)
+  const noteText = ref('')
+
+  const currentCardIndex = ref(0);
+    const startX = ref(0);
+    const endX = ref(0);
+
+    const startTouch = (event) => {
+      startX.value = event.touches[0].clientX;
+    };
+
+    const moveTouch = (event) => {
+      endX.value = event.touches[0].clientX;
+    };
+
+    const endTouch = () => {
+      if (startX.value - endX.value > 50) {
+        // Swipe left
+        nextCard();
+      } else if (endX.value - startX.value > 50) {
+        // Swipe right
+        previousCard();
+      }
+    };
+
+    const handleKeydown = (event) => {
+      if (event.key === 'ArrowLeft') {
+        previousCard();
+      } else if (event.key === 'ArrowRight') {
+        nextCard();
+      }
+    };
+
+    const nextCard = () => {
+      if (currentCardIndex.value < services.value.length - 1) {
+        currentCardIndex.value++;
+      }
+    };
+
+    const previousCard = () => {
+      if (currentCardIndex.value > 0) {
+        currentCardIndex.value--;
+      }
+    };
+
+  const handleCancellation = (id) => {
+  console.log('Cancel clicked, ID set to:', id);
+  feedbackView.value = id
+}
+  
+  const fetchServices = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/services/${nameId}/${selectedStatus.value}/${typeOfService.value}/${numberOfRows.value}`);
+      services.value = response.data.sort((a, b) => b.id - a.id);
+      pendingStore.count('ictrequest', response.data.length);
+      mawala.value = true
+      console.log(selectedStatus.value)
+      console.log(nameId)
+      console.log(typeOfService.value)
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    }
+  };
+
+  // Watch for changes in selectedStatus, typeOfService, and numberOfRows
+  watch([selectedStatus, typeOfService, numberOfRows], (newValues, oldValues) => {
+    fetchServices();
+  });
+
+  
+  const fetchFeedbacks = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/feedbacks/`);
+      feedbacks.value = response.data;
+    } catch (error) {
+      console.error('Error fetching feedbacks:', error);
+    }
+  };
+
+
+  const editService = (service) => {
+  serviceToEdit.value = service;
+  selectedServiceBy.value = service.serviceBy || '53'; // Default to existing serviceBy if available
+  selectedStatusForEdit.value = service.remarks || '';
+  editPopupVisible.value = true;
+};
+
+const updateService = async () => {
+  if (serviceToEdit.value) {
+    const updatedStatus = selectedStatusForEdit.value ? selectedStatusForEdit.value.charAt(0).toUpperCase() + selectedStatusForEdit.value.slice(1) : null;
+    const serviceBy = selectedServiceBy.value; // Get the selected servicedBy
+    try {
+      await axios.post(`${API_BASE_URL}/services/update/${serviceToEdit.value.id}`, {
+        remarks: updatedStatus,
+        servicedBy: serviceBy
+      });
+      // Refresh services after updating
+      await fetchServices();
+      editPopupVisible.value = false; // Close the popup after updating
+    } catch (error) {
+      console.error('Error updating service:', error);
+    }
+  }
+};
+
+const formatDate = (dateString) => {
+const date = new Date(dateString);
+return date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+};
+
+  const viewNotez = (nutz, numx) => {
+    viewNote.value = true
+    noteText.value = nutz
+    notenum.value = numx
+  };
+  const openNote = (numz) => {
+    addNote.value = true,
+    notenum.value = numz
+    noteText.value = ""
+  };
+  const closeNote = () => {
+    addNote.value = false,
+    viewNote.value = false,
+    notenum.value = 0
+  };
+  const postNote = () => {
+    const formData = new FormData();
+      formData.append('ictnote', noteText.value)
+    axios.post(`${API_BASE_URL}/services/update/${notenum.value}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then(() => {
+      fetchServices();
+    }).catch(error => {
+      console.error('Error:', error);
+    });
+    closeNote()
+  };
+
+  const names = ref([]);
+
+  const fetchNames = async () => {
+  try {
+    const namesResponse = await axios.get(`${API_BASE_URL}/get_names_json`);
+    // names.value = namesResponse.data;
+    // Process names: Sort by last name, format in uppercase
+    names.value = namesResponse.data
+      .map(person => ({
+        ...person,
+        last_name: person.last_name.toUpperCase(),
+        first_name: person.first_name.toUpperCase(),
+        middle_init: person.middle_init.toUpperCase() || ''
+      }))
+      .sort((a, b) => a.last_name.localeCompare(b.last_name));
+
+  } catch (error) {
+    console.error('Error fetching names and divisions:', error);
+  }
+};
+
+// Get name by employee ID
+const getName = (nameId) => {
+  const name = names.value.find(name => name.name_id === nameId);
+  if (name) {
+    return `${name.first_name} ${name.middle_init} ${name.last_name}`;
+  }
+  return 'Invalid Ferson';
+};
+  
+  // Fetch data when component is mounted
+  onMounted(() => {
+    fetchServices();
+    fetchFeedbacks();
+    fetchNames();
+    window.addEventListener('keydown', handleKeydown);
+  });
+
+  onBeforeUnmount(() => {
+      window.removeEventListener('keydown', handleKeydown);
+    });
+
+  const isPopupVisible = ref(false);
+const confirmationMessage = ref('');
+const selectedServiceId = ref(null);
+const isApproving = ref(false);
+
+const approveService = (id) => {
+confirmationMessage.value = "Are you sure you want to approve this service?";
+isPopupVisible.value = true;
+selectedServiceId.value = id;
+isApproving.value = true;
+};
+
+const disapproveService = (id) => {
+confirmationMessage.value = "Are you sure you want to disapprove this service?";
+isPopupVisible.value = true;
+selectedServiceId.value = id;
+isApproving.value = false;
+};
+
+const handleConfirm = async () => {
+if (selectedServiceId.value) {
+  try {
+    if (isApproving.value) {
+      await axios.post(`${API_BASE_URL}/services/update/${selectedServiceId.value}`, {
+        approvedBy: nameId,
+      });
+    } else {
+      await axios.post(`${API_BASE_URL}/services/update/${selectedServiceId.value}`, {
+        remarks: 'Disapproved',
+      });
+    }
+    await fetchServices();
+  } catch (error) {
+    console.error('Error updating service:', error);
+  } finally {
+    isPopupVisible.value = false;
+    selectedServiceId.value = null; // Reset the selected service ID
+  }
+}
+};
+
+const handleCancel = () => {
+isPopupVisible.value = false; // Close the popup
+};
+  
+  const deleteService = (id) => {
+    console.log('Delete service:', id);
+    // Implement deleting logic here
+  };
+  
+  const viewService = (id) => {
+    console.log('View service:', id);
+    // router.push(`/ictsrfv/${id}`); // Navigate to service view
+  //   window.open(`/ictsrfv/${id}`, '_blank'); // Open in a new tab
+   selectedview.value = id
+   viewFeedback(id)
+  };
+  // Function to close the view (optional since toggle handles this)
+  const closeView = () => {
+    selectedview.value = 0;
+    closeFeedback()
+  };
+  
+  const editFeedback = (id) => {
+    console.log('Edit feedback:', id);
+    // Implement editing logic here
+  };
+  
+  const deleteFeedback = (id) => {
+    console.log('Delete feedback:', id);
+    // Implement deleting logic here
+  };
+
+  const openFeedback = (id) => {
+    console.log('View feedback:', id);
+    // router.push(`/ictsffv/${id}`); // Navigate to feedback view
+    // window.open(`/ictsffv/${id}`, '_blank'); // Open in a new tab
+    feedbackView.value = id
+  };
+
+  const cancelFeedback = () => {
+    feedbackView.value = 0
+  }
+  
+  const viewFeedback = (id) => {
+    console.log('View feedback:', id);
+    // router.push(`/ictsffv/${id}`); // Navigate to feedback view
+    // window.open(`/ictsffv/${id}`, '_blank'); // Open in a new tab
+    selectedFeedbackView.value = id
+  };
+  
+  const closeFeedback = () => {
+    selectedFeedbackView.value = 0
+  }
+
+
+  </script>
+  
+  <style scoped>
+  .scrollable-table{
+    overflow-y: auto;
+    overflow-x: auto;
+    display: flex;
+    flex-grow: 1;
+  }
+  .admin-container {
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  min-height: 100vh;
+  display: flex; 
+  flex-direction: column; 
+}
+  
+.title {
+  text-align: center;
+  font-size: 2em;
+  color: #343a40;
+  margin-bottom: 10px; 
+  position: sticky; /* Sticky positioning */
+  top: 0; /* Stick to the top of the viewport */
+  background-color: #fff; 
+  z-index: 10; 
+  padding: 10px; 
+}
+select {
+  background: linear-gradient(150deg, #a1834a, #b8860b); /* Gradient from light gold to dark gold */
+  border: 2px solid #000000;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  transition: background-color 0.3s ease, border 0.3s ease;
+  margin-left: 20px;
+  font-weight: bolder;
+}
+option {
+  background-color: #DDC7AD;
+  color: black;
+  font-weight: bolder;
+}
+option:hover {
+background-color: #ff0000;  /* Adjust the color for hover effect */
+color: #ff0000; /* Change text color on hover */
+}
+option:checked{
+  background-color: #92785b;
+}
+select:hover {
+  background-color: #8e8e8e !important;  /* Force hover effect */
+  color: #fff !important;  /* Change text color on hover */
+}
+
+.radio-input {
+  position: relative; /* Make the radio input sticky */
+  top: 0px; /* Adjust this value based on the height of the title */
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #000;
+  width: 350px;
+  overflow: hidden;
+  border: 1px solid rgba(53, 52, 52, 0.226);
+  justify-content: center; 
+  z-index: 9; 
+  padding: 10px; 
+  align-self: center;
+  margin: auto;
+  margin-top: 20px;
+}
+
+.radio-input input {
+  display: none;
+}
+
+.radio-input label {
+  flex: 1; /* Flex grow to take equal space */
+  padding: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  font-weight: bold;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.selection {
+  position: absolute;
+  height: 100%;
+  width: calc(100% / 2); /* Adjust based on number of options */
+  z-index: 0;
+  left: 0;
+  top: 0;
+  transition: 0.15s ease;
+  background-color: rgb(11, 117, 223);
+}
+
+.radio-input label:has(input:checked) {
+  color: #fff; /* Change text color of active label */
+}
+
+.radio-input label:has(input:checked) ~ .selection {
+  display: inline-block; /* Show selection when checked */
+}
+
+.radio-input label:nth-child(1):has(input:checked) ~ .selection {
+  transform: translateX(0); /* Move selection to first option */
+}
+
+.radio-input label:nth-child(2):has(input:checked) ~ .selection {
+  transform: translateX(100%); /* Move selection to second option */
+}
+  
+
+
+.feedback{
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+}
+.feedback button{
+width: 80px;
+height: auto;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: max-content;
+}
+
+.action-button {
+  border-radius: 10px;
+  background: linear-gradient(150deg, #000000, #000000);
+  border: solid rgb(143, 143, 143) 2px;
+  padding: 10px 20px;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: background 0.3s;
+  margin: 0 5px;
+  height: fit-content;
+}
+.action-button2 {
+  border-radius: 10px;
+  background-color: #000000;
+  padding: 10px 20px;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  transition: background 0.3s;
+  margin: 0 5px;
+  height: fit-content;
+}
+
+.action-button:hover {
+  background-color: #6e6e6e;
+  background: linear-gradient(150deg, #6e6e6e, #6e6e6e); /* Gradient from light gold to dark gold */
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(150deg, #a1834a, #b8860b); /* Gradient from light gold to dark gold */
+  border-radius: 12px; /* Rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  padding: 20px; /* Padding for inner content */
+  z-index: 1000; /* Ensure it sits above other content */
+  width: 320px; /* Fixed width for the popup */
+  max-width: 90%; /* Responsive width */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+  color: #333; /* Text color */
+}
+
+.popup h2 {
+  margin: 0 0 15px; /* Margin below the title */
+  font-size: 20px; /* Title font size */
+  color: #000000; /* Accent color for the title */
+  text-align: center; /* Center title */
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+}
+
+.popup-content p {
+  margin: 8px 0; /* Space between paragraphs */
+  line-height: 1.5; /* Improved line height for readability */
+}
+
+.popup-content strong {
+  color: #555; /* Darker color for labels */
+}
+
+.edit-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(150deg, #a1834a, #b8860b); /* Gradient from light gold to dark gold */
+  border: solid black 2px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  z-index: 1000;
+  width: 400px; /* Wider width for better spacing */
+  max-width: 90%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px; /* Space between rows */
+}
+
+.left-label {
+  flex: 1; /* Left label takes equal space */
+  margin-right: 10px; /* Space between label and select */
+}
+
+.right-select {
+  flex: 2; /* Right select takes more space */
+  padding: 5px; /* Padding for better touch targets */
+}
+.button-group {
+  display: flex;
+  justify-content: space-between; /* Evenly space buttons */
+  margin-top: 20px; /* Space above buttons */
+
+}
+
+.button-group .action-button {
+  background-color: #000;
+  border-radius: 8px;
+  color: white;
+  font-size: 20px;
+  font-weight: bolder;
+  border: solid black 2px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: fit-content;
+}
+.button-group .action-button:hover {
+  padding: 18px 40px;
+  font-size: 15px;
+  font-weight: 700;
+  background-color: #000000;
+  color: rgb(255, 255, 255);
+  border: solid black 2px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+  font-family: 'Playfair Display', serif;
+}
+button:hover {
+  background-color: #6d6c6c;
+  transform: translateY(-3px);
+}
+.status-filter{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-left: 30px;
+}
+.status-filter select{
+  height: 50px;
+}
+
+.note-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 400px;
+  background: linear-gradient(150deg, #a1834a, #b8860b); /* Gradient from light gold to dark gold */
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.3s ease-out;
+  border: solid black 2px;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #000000;
+}
+
+.note-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #000000; /* Elegant gold */
+}
+
+.close-btn {
+  font-size: 50px;
+  cursor: pointer;
+  color: #000000;
+  border-radius: 20px;
+  padding: 10px 20px;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.close-btn:hover {
+  opacity: 1;
+}
+
+.note-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.notetextarea {
+  width: 100%;
+  border: none;
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #404040;
+  color: #fff;
+  font-size: 16px;
+  resize: none;
+  box-sizing: border-box;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.notetextarea:focus {
+  outline: none;
+  box-shadow: inset 0 2px 10px rgba(255, 215, 0, 0.5); /* Gold focus */
+}
+
+.note-options {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.option-btn {
+  background-color: transparent;
+  color: #000000;
+  border: 1px solid #000000;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.option-btn:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.note-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.save-btn, .cancel-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 50px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.save-btn {
+  background-color: #000000;
+  color: #ffffff;
+  border: none;
+}
+
+.save-btn:hover {
+  transform: scale(1.05);
+  background-color: #2e2e2e;
+  color: #ffffff;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #000000;
+}
+
+.cancel-btn:hover {
+  background-color: #000000;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+  
+  @media (max-width: 600px) {
+    .toggle-buttons {
+      flex-direction: column;
+    }
+  
+    .toggle {
+      margin-bottom: 10px;
+    }
+  
+    .action-button {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+    .feedback{
+      flex-direction: column;
+    }
+
+    .actions {
+      flex-direction: column;
+      display: flex;
+      justify-content: center;
+      height: 110px;
+    }
+    .admin-container{
+      width: fit-content;
+    }
+    .edit-popup{
+      top: 30%;
+    }
+  }
+
+  @media print{
+    .outer, .status-filter{
+      display: none;
+    }
+    .formview{
+      margin-left: -15%;
+      width: fit-content;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      align-self: center;
+    }
+    .formelements{
+      margin-top: -10px;
+    }
+
+  }
+  </style>
+  

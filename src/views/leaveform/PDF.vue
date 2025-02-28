@@ -770,7 +770,7 @@ export default {
    watch: {
     leaveform_id(newVal) {
       // Check if the new value is not null, then populate fields
-      if (newVal !== null) {
+      if (newVal !== 0) {
         this.fetchLeaveForms(newVal, this.isChief);
       }
     },
@@ -846,7 +846,6 @@ export default {
        this.fetchAccounts();
        this.fetchNames();
        this.fetchemployee();
-       this.fetchLeaveForms(this.leaveform_id, this.isChief);
        this.comparePosition();
    },
 
@@ -855,9 +854,11 @@ export default {
             window.location.pathname = '/leaveform';
         },
         async generateQRCode() {
+            console.log('damn')
       const textToEncode = `MGBX LEAVE FORM ${this.name.first_name} ${this.name.middle_init} ${this.name.last_name}` ;
       try {
         this.qrCodeUrl = await QRCode.toDataURL(textToEncode);
+        console.log(this.qrCodeUrl)
       } catch (err) {
         console.error(err);
       }
@@ -911,7 +912,7 @@ export default {
                });
        },
        fetchLeaveForms(leaveformID) {
-      axios.get(`${API_BASE_URL}/get_leave_json`)
+      axios.get(`${API_BASE_URL}/get_leave_json/${leaveformID}`)
         .then(response => {
 
             this.selectedLeavetype = []; // Ensure it's cleared before setting a new type
@@ -927,10 +928,11 @@ export default {
             this.otherPurpose = []; // Ensure it's cleared before setting a new type
 
             
-          this.leaveForms = response.data.find(libporm => libporm.leaveform_id == leaveformID);
+          this.leaveForms = response.data
 
           
           if (this.leaveForms){
+            this.generateQRCode(this.leaveForms)
             this.comparePosition()
             this.name_id = this.leaveForms.name_id
             
@@ -1130,7 +1132,7 @@ export default {
             
 
           }
-          this.generateQRCode()
+          
           
         })
         .catch(error => {

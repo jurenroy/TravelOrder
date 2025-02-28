@@ -133,10 +133,7 @@ const login_submit = () => {
   } else {
     email.value = '';
     password.value = '';
-    authStore.login(account.account_id);
-    localStorage.setItem('isLoggedIn', true);
-    localStorage.setItem('accountId', account.account_id);
-    localStorage.setItem('nameId', account.name_id);
+    authStore.login(account.account_id, account.type_id, account.name_id, account.signature, account.password); // Call the login action
     submitting.value = true;
     pleaseWait.value = true;
 
@@ -168,7 +165,7 @@ fetchAccounts();
 <style scoped>
 /* Gradient background */
 body {
-  background: linear-gradient(135deg, #7b1fa2, #d500f9);
+  background: linear-gradient(150deg, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
   font-family: 'Lora', serif;
   margin: 0;
   height: 100vh;
@@ -199,7 +196,7 @@ body {
 }
 
 .second {
-  background: linear-gradient(150deg, #DDC7AD, #92785b);
+  background: linear-gradient(150deg, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
   border-radius: 20px;
   padding: 30px;
   width: 100%;
