@@ -2,10 +2,19 @@
     <div class="note-popup">
       <div class="popup-content">
         <h3>{{ note ? "Edit Note" : "Add Note" }}</h3>
-        <textarea v-model="note" placeholder="Write your note here..." rows="4"></textarea>
+        <textarea v-model="note" placeholder="Write your note here..."
+         rows="4" 
+         :disabled="!isAdmin">
+      </textarea>
         <div class="popup-buttons">
-          <button @click="saveNote">Save</button>
-          <button @click="$emit('close-note')">Cancel</button>
+          <button v-if="isAdmin" 
+          @click="saveNote">
+            Save
+          </button>
+          <button 
+          @click="$emit('close-note')">
+          Close
+        </button>
         </div>
       </div>
     </div>
@@ -13,7 +22,7 @@
   
   <script>
   export default {
-    props: ["initialNote"],
+    props: ["initialNote", "isAdmin"],
     data() {
       return {
         note: this.initialNote || "", // Keep existing note
@@ -37,70 +46,84 @@
   </script>
   
     
-    <style scoped>
-    .note-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(126, 71, 9, 0.856);
-      padding: 60px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgb(218, 131, 0);
-      z-index: 1000;
-      text-align: center;
-    }
-    
-    .popup-content {
-      color: #f0eaea;
-    }
-    
-    textarea {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin-top: 20px;
-      resize: none;
-    }
-    
-    .popup-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      gap: 10px;
-    }
-    
-    .popup-buttons button {
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      background-color: transparent;
-      border: 2px solid black;
-      padding: 10px 20px;
-      font-size: 16px;
-      transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out;
-    }
-    
-    .popup-buttons button::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(162, 123, 92, 0.856);
-      transition: left 0.3s ease-in-out;
-      z-index: -1;
-    }
-    
-    .popup-buttons button:hover::before {
-      left: 0;
-    }
-    
-    .popup-buttons button:hover {
-      color: white;
-      border-color: rgba(162, 123, 92, 0.856);
-    }
-    </style>
+  <style scoped>
+  .note-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2d2d2d; /* Modern dark background */
+    padding: 50px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .popup-content {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background: #1e1e1e;
+    color: #fff;
+    resize: none;
+    outline: none;
+    transition: border 0.3s;
+  }
+
+  textarea:focus {
+    border-color: #ff9800;
+  }
+
+  .popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 12px;
+  }
+
+  .popup-buttons button {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: transparent;
+    border: 2px solid #ff9800;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #ff9800;
+    border-radius: 6px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .popup-buttons button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff9800, #ffb74d);
+    transition: left 0.3s ease-in-out;
+    z-index: -1;
+  }
+
+  .popup-buttons button:hover::before {
+    left: 0;
+  }
+
+  .popup-buttons button:hover {
+    color: #fff;
+    border-color: #ffb74d;
+  }
+</style>

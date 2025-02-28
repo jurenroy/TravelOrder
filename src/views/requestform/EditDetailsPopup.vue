@@ -85,162 +85,170 @@ export default {
 </script>
 
 <style scoped>
-.document-remarks-overlay {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  animation: fadeIn 0.3s ease-out;
-  z-index: 1000;
-}
-.document-remarks-modal {
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  border-radius: 1rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  max-width: 28rem;
-  width: 100%;
-  padding: 1.5rem;
-  animation: slideUp 0.3s ease-out;
-}
-.document-remarks-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-.document-remarks-header h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #111827;
-  margin: 0;
-}
-.close-button {
-  background: none;
-  border: none;
-  color: #6B7280;
-  cursor: pointer;
-  font-size: 1.5rem;
-  padding: 0.25rem;
-  transition: color 0.2s;
-}
-.close-button:hover {
-  color: #374151;
-}
-.document-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.document-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid #050a13;
-  border-radius: 0.75rem;
-  transition: border-color 0.2s;
-}
-.document-item:hover {
-  border-color: #E5E7EB;
-}
-.document-name {
-  font-weight: 500;
-  color: #000000;
-}
-.document-controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.toggle-button {
-  font-size: 17px;
-  background: transparent;
-  border: none;
-  padding: 0.3em 0.2em;
-  color: black;
-  text-transform: uppercase;
-  position: relative;
-  transition: 0.5s ease;
-  cursor: pointer;
-  border: rgb(202, 201, 201) 2px solid;
-}
-.toggle-button:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 2px;
-  width: 0;
-  background-color: gray;
-  transition: 0.5s ease;
-}
-.toggle-button:hover{
-  color: #1e1e2b;
-  transition-delay: 0.5s;
-}
-.toggle-button:hover::before{
-  width: 100%;
-}
-.toggle-button:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 0;
-  width: 100%;
-  background-color: #ffc506;
-  transition: 0.4s ease;
-  z-index: -1;
-}
+  .document-remarks-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease-out;
+    z-index: 1000;
+  }
 
-.toggle-button:hover::after {
-  height: 100%;
-  transition-delay: 0.4s;
-  color: aliceblue;
-}
-.status-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  background-color: #f1a979ec;
-  color: #000000;
-}
-.status-badge.released {
-  background-color: #13d671;
-  color: #000000;
-}
-.overall-status {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid #000000;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.status-label {
-  font-size: 0.875rem;
-  color: #6B7280;
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+  .document-remarks-modal {
+    background: rgba(40, 40, 40, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    max-width: 30rem;
+    width: 100%;
+    padding: 1.8rem;
+    animation: slideUp 0.3s ease-out;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .document-remarks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
   }
-}
+
+  .document-remarks-header h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    color: #c9c9c9;
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.25rem;
+    transition: color 0.2s;
+  }
+
+  .close-button:hover {
+    color: #ffffff;
+  }
+
+  .document-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .document-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    transition: border-color 0.3s, transform 0.2s ease;
+  }
+
+  .document-item:hover {
+    border-color: #ffb74d;
+    transform: scale(1.02);
+  }
+
+  .document-name {
+    font-weight: 500;
+    color: #ffffff;
+  }
+
+  .document-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .toggle-button {
+    font-size: 16px;
+    background: transparent;
+    border: 2px solid #ff9800;
+    padding: 8px 14px;
+    color: #ff9800;
+    text-transform: uppercase;
+    font-weight: 500;
+    position: relative;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .toggle-button::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #ff9800, #ffb74d);
+    transition: width 0.3s ease-in-out;
+    z-index: -1;
+  }
+
+  .toggle-button:hover::before {
+    width: 100%;
+  }
+
+  .toggle-button:hover {
+    color: #ffffff;
+    border-color: #ffb74d;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background-color: #f1a979ec;
+    color: #000000;
+    border-radius: 6px;
+  }
+
+  .status-badge.released {
+    background-color: #13d671;
+    color: #ffffff;
+  }
+
+  .overall-status {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .status-label {
+    font-size: 0.9rem;
+    color: #c9c9c9;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 </style>

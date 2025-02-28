@@ -1,20 +1,85 @@
+<template>
+  <div class="outer">
+    <div class="form-container">
+      <form @submit.prevent="handleSubmit">
+        <h2 class="title">REQUEST SLIP FORM</h2>
+        <h4 class="subtitle">(Administrative Section)</h4>
+
+        <div class="info-container">
+          <div class="info-item">
+            <label for="name">Name:</label>
+            <select v-model="selectedName" id="name" required @change="fetchSelectedEmployee">
+              <option disabled value="">Select a name</option>
+              <option v-for="option in names" :key="option.name_id" :value="option.name_id">
+                {{ option.last_name }}, {{ option.first_name }} {{ option.middle_init }}
+              </option>
+            </select>           
+          </div>
+          <div class="info-item">
+            <label for="division">Division:</label>
+            <input type="text" v-model="division" required readonly>
+          </div>
+          <div class="info-item">
+            <label for="dateToday">Date and Time:</label>
+            <input type="text" id="dateToday" v-model="form.date" readonly />
+          </div>
+        </div>
+
+        <table class="request-table">
+          <thead>
+            <tr>
+              <th>DOCUMENT(S) REQUESTED</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(doc, index) in documents" :key="doc.name">
+              <td>
+                <label>
+                  <input type="checkbox" v-model="doc.checked" />
+                  {{ doc.name }}
+                </label>
+                <input 
+                  v-if="doc.name === 'OTHERS' && doc.checked" 
+                  type="text" 
+                  v-model="otherDocumentText" 
+                  placeholder="Please specify..." 
+                  class="others-input"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="button-container">
+          <button type="submit" :disabled="formDisable">Submit</button>
+        </div>
+
+        <div v-if="pleaseWait" class="formcorrect">
+          <p>Submitted!! Please wait for a moment...</p>
+        </div>
+        <div v-else-if="loading" class="loading">
+          <div class="loader"></div>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import axios from 'axios';
 import { onMounted, ref, watch } from 'vue';
 import { API_BASE_URL } from '@/config';
 
+// Reactive references
 const form = ref({
   name_id: '',
   division_id: '',
   date: '', // Format the date here
   documents: []
-  
 });
 
-
-
 const otherDocumentText = ref("");
-const selectedName = ref(null);
+const selectedName = ref('');
 const division = ref('');
 const names = ref([]);
 const employees = ref([]);
@@ -27,15 +92,17 @@ const documents = ref([
   { name: 'CERTIFICATE OF EMPLOYMENT', checked: false },
   { name: 'CERTIFICATE OF EMPLOYMENT WITH COMPENSATION', checked: false },
   { name: 'OFFICE CLEARANCE', checked: false },
-  { name: 'LBP BC LIST ', checked: false },
+  { name: 'LBP BC LIST', checked: false },
   { name: 'CERTIFICATE OF LEAVE CREDITS', checked: false },
   { name: 'PHOTOCOPY OF TRAVEL ORDER', checked: false },
   { name: 'OTHERS', checked: false }
 ]);
-// Watch for changes in otherDocumentText and capitalize it
+
+const nameid = ref(localStorage.getItem('nameId')); 
+
 watch(otherDocumentText, (newValue) => {
-      otherDocumentText.value = newValue.toUpperCase(); // Automatically capitalize the input
-    });
+  otherDocumentText.value = newValue.toUpperCase(); // Automatically capitalize the input
+});
 
 const fetchData = async () => {
   try {
@@ -44,9 +111,24 @@ const fetchData = async () => {
       fetch(`${API_BASE_URL}/get_employees_json/`).then(res => res.json()),
       fetch(`${API_BASE_URL}/get_divisions_json/`).then(res => res.json())
     ]);
-    names.value = namesRes;
+
+  
+    if (parseInt(nameid.value) === 2 || parseInt(nameid.value) === 76) {
+      // If the user ID is 2, show all names
+      names.value = namesRes; 
+    } else {
+      // Otherwise, filter to show only the current user's name
+      names.value = namesRes.filter(name => name.name_id === parseInt(nameid.value));
+    }
+
     employees.value = employeesRes;
     divisions.value = divisionsRes;
+
+    // Automatically set the selected name to the current user if applicable
+    if (names.value.length > 0) {
+      selectedName.value = names.value[0].name_id; 
+      fetchSelectedEmployee(); // Fetch the employee details
+    }
   } catch (error) {
     console.error('Error fetching data:', error);
   }
@@ -71,33 +153,26 @@ const findDivisionName = (divisionId) => {
 };
 
 const handleSubmit = async () => {
-  console.log(documents.value)
-    // Clear the documents array first
-    //form.value.documents = [];//
-  console.log(form.value.documents)
-    // Include the "Others" document if specified
-    if (otherDocumentText.value) {
+  console.log(documents.value);
+  console.log(form.value.documents);
+  
+  if (otherDocumentText.value) {
     const othersDocument = documents.value.find(doc => doc.name === "OTHERS");
     if (othersDocument) {
-        othersDocument.name = otherDocumentText.value; // Update the name
+      othersDocument.name = otherDocumentText.value; // Update the name
     }
-}
+  }
 
-    console.log(form.value.documents)
-
-    console.log(otherDocumentText.value)
-
-    // Filter checked documents
-    form.value.documents = documents.value
+  form.value.documents = documents.value
     .filter(doc => doc.checked)
     .map(doc => (` ${doc.name}`));
-    //.map(doc => ({ name: doc.name, name_id: null, datetime: null }));
   
   if (!form.value.name_id || !form.value.division_id || form.value.documents.length === 0) {
     alert('Please fill all required fields and select at least one document.');
     return;
   }
-console.log(form.value);
+
+  console.log(form.value);
   pleaseWait.value = true;
   loading.value = true;
   formDisable.value = true;
@@ -105,7 +180,6 @@ console.log(form.value);
   try {
     const response = await axios.post(`${API_BASE_URL}/submit_request`, form.value);
 
-    // Check if the response status is not OK (2xx)
     if (response.status < 200 || response.status >= 300) {
       throw new Error('Failed to submit request');
     }
@@ -133,110 +207,45 @@ const formatDate = (date) => {
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
 
-  form.value.date = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+  form.value.date = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
+
 onMounted(() => {
   fetchData();
   formatDate(new Date());
 });
 </script>
 
-<template>
-  <div class="outer">
-    <div class="form-container">
-      <form @submit.prevent="handleSubmit">
-        <h2 class="title">REQUEST SLIP FORM</h2>
-        <h4 class="subtitle">(Administrative Section)</h4>
-
-        <div class="info-container">
-      <div class="info-item">
-        <label for="name">Name:</label>
-        <select v-model="selectedName" id="name" required @change="fetchSelectedEmployee">
-          <option disabled value="">Select a name</option>
-          <option v-for="option in names" :key="option.name_id" :value="option.name_id">
-            {{ option.last_name }}, {{ option.first_name }} {{ option.middle_init }}
-          </option>
-        </select>           
-      </div>
-      <div class="info-item">
-        <label for="division">Division:</label>
-        <input type="text" v-model="division" required readonly>
-      </div>
-      <div class="info-item">
-        <label for="dateToday">Date and Time:</label>
-        <input type="text" id="dateToday" v-model="form.date" readonly />
-      </div>
-    </div>
-
-    <table class="request-table">
-      <thead>
-        <tr>
-          <th>DOCUMENT(S) REQUESTED</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(doc, index) in documents" :key="doc.name">
-          <td>
-            <label>
-              <input type="checkbox" v-model="doc.checked" />
-              {{ doc.name }}
-            </label>
-            <input 
-                  v-if="doc.name === 'OTHERS' && doc.checked" 
-                  type="text" 
-                  v-model="otherDocumentText" 
-                  placeholder="Please specify..." 
-                  class="others-input"
-                />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="button-container">
-      <button type="submit" :disabled="formDisable">Submit</button>
-    </div>
-
-    <div v-if="pleaseWait" class="formcorrect">
-      <p>Submitted!! Please wait for a moment...</p>
-    </div>
-    <div v-else-if="loading" class="loading">
-      <div class="loader"></div>
-    </div>
-  </form>
-</div>
-  </div>
-</template>
-
-
-
 
 <style scoped>
-/* Base styles */
+
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #f4f7fc;
+  font-family: 'Arial', sans-serif;
+  background-color: #F3E8D3; /* Soft beige */
   margin: 0;
   padding: 0;
+  color: #3B3A30; /* Dark brown for contrast */
 }
-.outer{
+
+.outer {
   display: flex;
   justify-content: center;
-  
 }
 
 .form-container {
-  width: 90%;
-  max-width: 1000px;
-  padding: 20px;
-  background: linear-gradient(30deg, #f9f3e7, #dac08c);
+  width: 95%;
+  max-width: 800px;
+  padding: 25px;
+  background: #FDF8EE; /* Light cream */
   border-radius: 15px;
-  border: 2px solid #000000;      
+  border: 1px solid #B5A78A; /* Subtle brown border */
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .title, .subtitle {
   text-align: center;
-  width: 100%;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .form-row {
@@ -247,15 +256,15 @@ body {
 
 .form-group {
   flex: 1;
-  min-width: 200px;
+  min-width: 220px;
   margin-bottom: 20px;
 }
 
 label {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: bold;
-  color: #000000;
-  margin-bottom: 8px;
+  color: #3B3A30;
+  margin-bottom: 6px;
   display: block;
 }
 
@@ -266,146 +275,115 @@ label {
 }
 .request-table th,
 .request-table td {
-  padding: 8px;
-  text-align: LEFT;
+  padding: 10px;
+  text-align: left;
+  font-size: 18px;
 }
 
 .request-table input[type="time"],
 .request-table input[type="date"] {
   width: 100%;
-  padding: 5px;
-  border-radius: 4px;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 6px;
 }
 
-
-
+/* Input fields */
 input, select {
   width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid;
-  border-radius: 1px;
+  padding: 12px;
+  font-size: 18px;
+  border: 1px solid #B5A78A;
+  border-radius: 6px;
   box-sizing: border-box;
   transition: all 0.3s ease;
+  background: #FFF;
 }
 
 input[type="checkbox"] {
   width: auto;
-  
 }
-
-
 
 input {
   border: none; 
-  border-bottom: 1px solid black; 
+  border-bottom: 2px solid #6D6C6C; 
   outline: none; 
   background: transparent;
   width: 100%; 
-  font-size: 16px; 
-  padding: 5px; 
+  font-size: 18px; 
+  padding: 8px; 
 }
 
-
+/* Buttons */
 button {
-  padding: 10px 20px;
-  font-size: 18px;
-  font-weight: 700;
-  background-color: #000000;
-  color: rgb(255, 255, 255);
-  border: solid black 2px;
-  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: #5D6D7E; /* Soft blue-gray */
+  color: white;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
-  font-family: 'Playfair Display', serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 button:hover {
-  background-color: #6d6c6c;
-  transform: translateY(-3px);
+  background-color: #3B4A5A;
+  transform: translateY(-2px);
 }
 
-label{
-  margin-top: 20px;
-
+button.cancel {
+  background: #C04C3D; /* Soft red for cancel */
 }
 
+button.cancel:hover {
+  background: #A33B2D;
+}
+
+/* Confirmation Message */
 .formcorrect {
-top: 0;
-left: 0;
-width: fit-content;
-justify-self: center;
-display: flex;
-flex-direction: column;
-border: 1px solid #39b259;
-padding: 10px;
-margin: 10px auto;
-border-radius: 10px;
-box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid #39b259;
+  padding: 12px;
+  margin: 15px auto;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px #39b259, 0px 0px 3px #39b259 inset;
+  font-size: 18px;
 }
 
-.formcorrect1,
-.formcorrect2 {
-color: black;
-font-weight: bold;
+/* Error Message */
+.errormsg, .errormsg1 {
+  height: 24px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: #A33B2D;
 }
 
-.request-table th {
-    text-align: center; 
-    padding: 15px;
-}
-
-
-
-.errormsg1 {
-height: 20px;
-width: 100%;
-text-align: center;
-color: black;
-font-weight: bold;
-}
-
-.errormsg {
-height: 20px;
-width: 100%;
-text-align: center;
-font-weight: bold;
-}
-
-.loadid {
-display: flex;
-position: relative;
-flex-direction: row;
-justify-content: space-around;
-margin-top: 8px;
-}
-
+/* Loader */
 .loader {
-display: flex;
---height-of-loader: 4px;
---loader-color: black;
-width: 285px;
-height: 4px;
-border-radius: 30px;
-background-color: rgba(0, 0, 0, 0.2);
-position: relative;
-margin-top: 10px;
+  display: flex;
+  width: 300px;
+  height: 6px;
+  border-radius: 30px;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: relative;
+  margin-top: 12px;
 }
 
 .loader::before {
-content: "";
-position: absolute;
-background: var(--loader-color);
-top: 0;
-left: 0;
-width: 0%;
-height: 100%;
-border-radius: 30px;
-animation: moving 1s ease-in-out infinite;
-;
+  content: "";
+  position: absolute;
+  background: black;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  border-radius: 30px;
+  animation: moving 1s ease-in-out infinite;
 }
-
 
 @media screen and (max-width: 768px) {
   .form-row {
@@ -415,54 +393,5 @@ animation: moving 1s ease-in-out infinite;
   .form-group {
     width: 100%;
   }
-}
-
-.errormsg1 {
-  height: 20px;
-  width: 100%;
-  text-align: center;
-  color: black;
-  font-weight: bold;
-
-}
-
-.errormsg {
-  height: 20px;
-  width: 100%;
-  text-align: center;
-  font-weight: bold;
-}
-
-.loadid {
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  justify-content: space-around;
-  margin-top: 8px;
-}
-
-.loader {
-  display: flex;
-  --height-of-loader: 4px;
-  --loader-color: black;
-  width: 285px;
-  height: 4px;
-  border-radius: 30px;
-  background-color: rgba(0, 0, 0, 0.2);
-  position: relative;
-  margin-top: 10px;
-}
-
-.loader::before {
-  content: "";
-  position: absolute;
-  background: var(--loader-color);
-  top: 0;
-  left: 0;
-  width: 0%;
-  height: 100%;
-  border-radius: 30px;
-  animation: moving 1s ease-in-out infinite;
-  ;
 }
 </style>

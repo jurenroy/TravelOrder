@@ -43,7 +43,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in formData" :key="index">
+            <tr v-for="(item, index) in filteredFormData" :key="index">
               <td>{{ getName(item.name_id) }}</td>
               <td>
                 <span v-if="Array.isArray(item.documents) && item.documents.length">
@@ -66,21 +66,22 @@
                 <span v-if="item.rating !== null">
                   <span v-for="n in item.rating" :key="n">⭐</span>
                 </span>
-                <button v-else @click="openRatingPopup(item)" :disabled="item.rating===0">Rating</button>
+                <button v-else @click="openRatingPopup(item)" :disabled="item.rating === 0">Rating</button>
               </td>
 
               <td>
-                <button @click="openEditDetailsPopup(item)">Edit</button>
+                <button v-if="isAdmin" @click="openEditDetailsPopup(item)">Edit</button>
                 <button @click="generatePDF(item)">View PDF</button>
                 <button @click="add(item)">View Note</button>
               </td> 
             </tr>
-            <h1 style="text-align: center; margin-bottom: 0px;" v-if="formData.length == 0">NO REQUEST FOUND</h1>
+            <h1 style="text-align: center; margin-bottom: 0px;" v-if="filteredFormData.length == 0">NO REQUEST FOUND</h1>
           </tbody>
         </table>
         <Note
           v-if="addNote"
           :initialNote="currentItem.note || ''" 
+          :isAdmin="isAdmin"
           @close-note="closeNote"
           @save-note="saveNote"
          />
@@ -105,7 +106,6 @@ export default {
     Note,
   },
 
-
   data() {
     return {
       showRatingPopup: false,
@@ -118,7 +118,6 @@ export default {
       names: {},
       employees: {},
       accountId: localStorage.getItem('accountId'),
-      acc: [],
       load: true,
       mawala: false,
       addNote: false,
@@ -126,6 +125,7 @@ export default {
       noteText: '',
       searchQuery: '',
       documents: [],
+      nameId: localStorage.getItem('nameId'), // Retrieve nameId from localStorage
     };
   },
   mounted() {
@@ -133,7 +133,6 @@ export default {
     this.fetchEmployees();
     this.fetchNames();
     this.fetchData(); 
-    this.fetchDocuments();
   },
   methods: {
     focusTextarea(text) {
@@ -150,86 +149,72 @@ export default {
       this.currentItem = item; 
     },
     saveNote(updatedNote) {
-  if (!this.currentItem || !this.currentItem.id) return;
+      if (!this.isAdmin) {
+    alert("You do not have permission to save notes.");
+    return; // Exit the method if the user is not an admin
+  }
+      if (!this.currentItem || !this.currentItem.id) return;
+      
 
-  axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, {
-    note: updatedNote,
-  })
-  .then(() => {
-    this.currentItem.note = updatedNote;
-    alert("Note saved successfully!");
-  })
-  .catch(error => {
-    console.error("Error updating note:", error);
-    alert("Failed to update note.");
-  });
-},
+      axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, {
+        note: updatedNote,
+      })
+      .then(() => {
+        this.currentItem.note = updatedNote;
+        alert("Note saved successfully!");
+      })
+      .catch(error => {
+        console.error("Error updating note:", error);
+        alert("Failed to update note.");
+      });
+    },
     closeNote() {
       this.addNote = false; // Hide the Add Note popup
       this.viewNote = false;
     },
-    postNote(note) {
-      const formData = new FormData();
-      formData.append('note', note);
-      axios.post(`${API_BASE_URL}/update_form/${this.notenum}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }).then(() => {
-        this.fetchData();
-        this.closeNote();
-      }).catch(error => {
-        console.error('Error:', error);
-      });
-    },
     getDocumentName(doc) {
-  if (!doc) return "No document";
-  return typeof doc === "object" ? doc.name || "Unknown" : doc;
-},
-
-    getReleasedStatus(doc) {
-  return doc.remarks?.trim() === 'Released' ? 'Released' : 'Unreleased';
-},
-
+      if (!doc) return "No document";
+      return typeof doc === "object" ? doc.name || "Unknown" : doc;
+    },
     openEditDetailsPopup(item) {
       this.currentItem = item; 
       this.showEditDetailsPopup = true; 
     },
     handleEditDetails(updatedDocuments) {
-  if (!this.currentItem || !this.currentItem.id) {
-    alert("No current item selected for update.");
-    return;
-  }
-
-  const payload = {
-    documents: updatedDocuments,
-    remarks: updatedDocuments.map(doc => doc.remarks).join(', ') 
-  };
-
-  axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
-    .then(response => {
-      if (response.status === 200) {
-        alert("Remarks updated successfully!");
-
-        // Update local state
-        this.formData = this.formData.map(item => {
-          if (item.id === this.currentItem.id) {
-            return {
-              ...item,
-              documents: updatedDocuments
-            };
-          }
-          return item;
-        });
-
-        this.showEditDetailsPopup = false;
+      if (!this.currentItem || !this.currentItem.id) {
+        alert("No current item selected for update.");
+        return;
       }
-    })
-    .catch(error => {
-      console.error("Error updating documents:", error);
-      alert("Failed to update documents. Please try again.");
-    });
-},
+
+      const payload = {
+        documents: updatedDocuments,
+        remarks: updatedDocuments.map(doc => doc.remarks).join(', ') 
+      };
+
+      axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
+        .then(response => {
+          if (response.status === 200) {
+            alert("Remarks updated successfully!");
+
+            // Update local state
+            this.formData = this.formData.map(item => {
+              if (item.id === this.currentItem.id) {
+                return {
+                  ...item,
+                  documents: updatedDocuments
+                };
+              }
+              return item;
+            });
+
+            this.showEditDetailsPopup = false;
+          }
+        })
+        .catch(error => {
+          console.error("Error updating documents:", error);
+          alert("Failed to update documents. Please try again.");
+        });
+    },
     handleRating(rating) {
       const payload = { rating: rating };
       axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
@@ -247,47 +232,6 @@ export default {
           this.showRatingPopup = false; 
         });
     },
-    closeEdit() {
-      this.selectedTravelOrderIdEdit = 0;
-    },
-    printzz() {
-      window.print();
-    },
-    closeNote() {
-      this.addNote = false;
-      this.viewNote = false;
-    },
-    postNote(note) {
-  if (!this.currentItem || !this.currentItem.id) {
-    alert("No request selected.");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('note', note);
-
-  axios.post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
-  .then(response => {
-    if (response.status === 200) {
-      alert("Note added successfully!");
-
-      // Update the frontend state
-      this.formData = this.formData.map(item =>
-        item.id === this.currentItem.id ? { ...item, note } : item
-      );
-
-      this.closeNote();
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    alert("Failed to submit note. Please try again.");
-  });
-},
     fetchAccounts() {
       axios.get(`${API_BASE_URL}/get_accounts_json`)
         .then(response => {
@@ -299,38 +243,43 @@ export default {
         });
     },
     fetchData() {
-  axios.get(`${API_BASE_URL}/get_request`)
-    .then(response => {
-      this.mawala = true;
-      this.load = false;
-      console.log("Fetched Data:", response.data); // Debugging
+      axios.get(`${API_BASE_URL}/get_request`)
+        .then(response => {
+          this.mawala = true;
+          this.load = false;
+          console.log("Fetched Data:", response.data); // Debugging
 
-      this.formData = response.data.map(item => {
-        let documents = [];
+          this.formData = response.data.map(item => {
+            let documents = [];
 
-        try {
-          documents = item.documents ? JSON.parse(item.documents) : [];
-        } catch (error) {
-          console.error("Error parsing documents JSON:", error);
-        }
+            try {
+              documents = item.documents ? JSON.parse(item.documents) : [];
+            } catch (error) {
+              console.error("Error parsing documents JSON:", error);
+            }
 
-        return {
-          ...item,
-          documents: documents.map(doc => ({
-            name: doc.name || doc, 
-            remarks: doc.remarks?.trim() ? doc.remarks : 'No Remarks'
-          })),
-          rating: item.rating || null
-        };
-      });
+            return {
+              ...item,
+              documents: documents.map(doc => ({
+                name: doc.name || doc, 
+                remarks: doc.remarks?.trim() ? doc.remarks : 'No Remarks'
+              })),
+              rating: item.rating || null
+            };
+          });
 
-      console.log("Processed FormData:", this.formData);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-      this.load = false;
-    });
-},
+          // Filter based on nameId
+          this.formData = this.formData.filter(item => {
+            return this.nameId === '2' || this.nameId === '76' || item.name_id == this.nameId;
+          });
+
+          console.log("Processed FormData:", this.formData);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          this.load = false;
+        });
+    },
     fetchNames() {
       axios.get(`${API_BASE_URL}/get_names_json`)
         .then(response => {
@@ -361,24 +310,16 @@ export default {
       const idString = travel_order_id.toString();
       return idString.padStart(4, '0');
     },
-    fetchDocuments() {
-      axios.get(`${API_BASE_URL}/get_request`)
-        .then(response => {
-          this.documents = response.data;
-        })
-        .catch(error => {
-          console.error('Error fetching documents:', error);
-        });
-    },
   },
   computed: {
     pendingCount() {
       return this.formData.filter(form => form.note === null && form.initial !== null).length;
     },
-    reversedFormData() {
-      return this.formData.slice().reverse().filter(item => {
-        return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
-      });
+    filteredFormData() {
+      return this.formData; // This can be used in the template for rendering
+    },
+    isAdmin() {
+      return this.nameId === '2' || this.nameId === '76'; // Check if the user is an admin
     },
   },
 };
