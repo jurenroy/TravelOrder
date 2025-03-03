@@ -181,7 +181,7 @@ export default {
       showEditDetailsPopup: false,
       currentItem: "",
       selectedStatus: "Me",
-      options: ["Pending", "Done", "Me"],
+      options: ["Pending", "Released", "Me"],
       yearToday: new Date().getFullYear(),
       formData: [],
       names: {},
@@ -220,7 +220,7 @@ export default {
     saveNote(updatedNote) {
       if (!this.isAdmin) {
         alert("You do not have permission to save notes.");
-        return; 
+        return;
       }
       if (!this.currentItem || !this.currentItem.id) return;
 
@@ -238,7 +238,7 @@ export default {
         });
     },
     closeNote() {
-      this.addNote = false; 
+      this.addNote = false;
       this.viewNote = false;
     },
     getDocumentName(doc) {
@@ -322,7 +322,7 @@ export default {
         .then((response) => {
           this.mawala = true;
           this.load = false;
-          console.log("Fetched Data:", response.data); 
+          console.log("Fetched Data:", response.data);
 
           this.formData = response.data.map((item) => {
             let documents = [];
@@ -387,10 +387,6 @@ export default {
       }
       return "Unknown";
     },
-    padWithZeroes(travel_order_id) {
-      const idString = travel_order_id.toString();
-      return idString.padStart(4, "0");
-    },
   },
   computed: {
     pendingCount() {
@@ -399,8 +395,17 @@ export default {
       ).length;
     },
     filteredFormData() {
-      return this.formData; // This can be used in the template for rendering
-    },
+    return this.formData.filter((item) => {
+      const requestorName = this.getName(item.name_id).toLowerCase();
+      const documentNames = item.documents
+        .map((doc) => doc.name.toLowerCase())
+        .join(" ");
+
+      const query = this.searchQuery.toLowerCase();
+
+      return requestorName.includes(query) || documentNames.includes(query);
+    });
+  },
     isAdmin() {
       return this.nameId === "2" || this.nameId === "76"; // Check if the user is an admin
     },
@@ -429,12 +434,15 @@ export default {
   background-color: red;
   color: white;
   border-radius: 50%;
-  width: 20px; /* Adjust size */
-  height: 20px; /* Adjust size */
+  width: 20px;
+  /* Adjust size */
+  height: 20px;
+  /* Adjust size */
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px; /* Adjust font size */
+  font-size: 12px;
+  /* Adjust font size */
 }
 
 .pholder {
@@ -460,6 +468,7 @@ export default {
   margin-bottom: 2px;
   background-color: white;
 }
+
 .sign {
   width: 100%;
   transition-duration: 0.3s;
@@ -671,6 +680,7 @@ button:hover {
     height: 100vh;
     background-color: white;
   }
+
   .prent .buttons {
     display: flex;
     justify-content: space-evenly;
@@ -696,6 +706,7 @@ button:hover {
   .dropdown {
     display: none !important;
   }
+
   .buttons {
     display: none !important;
   }
