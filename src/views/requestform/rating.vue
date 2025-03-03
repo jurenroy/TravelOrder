@@ -2,7 +2,7 @@
   <div class="rating-popup">
     <div class="popup-content">
       <h2>Rate this Request</h2>
-      
+
       <div class="stars">
         <span
           v-for="s in 4"
@@ -13,11 +13,10 @@
           >★</span
         >
       </div>
-      
+
       <div class="selected-label">{{ getLabel(rating) }}</div>
       <div class="buttons">
-        <button @click="submitRating">Submit </button>
-        
+        <button @click="submitRating">Submit</button>
         <button @click="$emit('close')">Cancel</button>
       </div>
     </div>
@@ -64,7 +63,7 @@ export default {
 </script>
 
 <style scoped>
-  .rating-popup {
+.rating-popup {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
@@ -171,8 +170,12 @@ button.cancel:hover {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
@@ -185,5 +188,4 @@ button.cancel:hover {
     transform: translateY(0);
   }
 }
-
 </style>

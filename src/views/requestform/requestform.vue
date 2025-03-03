@@ -8,16 +8,26 @@
         <div class="info-container">
           <div class="info-item">
             <label for="name">Name:</label>
-            <select v-model="selectedName" id="name" required @change="fetchSelectedEmployee">
+            <select
+              v-model="selectedName"
+              id="name"
+              required
+              @change="fetchSelectedEmployee"
+            >
               <option disabled value="">Select a name</option>
-              <option v-for="option in names" :key="option.name_id" :value="option.name_id">
-                {{ option.last_name }}, {{ option.first_name }} {{ option.middle_init }}
+              <option
+                v-for="option in names"
+                :key="option.name_id"
+                :value="option.name_id"
+              >
+                {{ option.last_name }}, {{ option.first_name }}
+                {{ option.middle_init }}
               </option>
-            </select>           
+            </select>
           </div>
           <div class="info-item">
             <label for="division">Division:</label>
-            <input type="text" v-model="division" required readonly>
+            <input type="text" v-model="division" required readonly />
           </div>
           <div class="info-item">
             <label for="dateToday">Date and Time:</label>
@@ -38,11 +48,11 @@
                   <input type="checkbox" v-model="doc.checked" />
                   {{ doc.name }}
                 </label>
-                <input 
-                  v-if="doc.name === 'OTHERS' && doc.checked" 
-                  type="text" 
-                  v-model="otherDocumentText" 
-                  placeholder="Please specify..." 
+                <input
+                  v-if="doc.name === 'OTHERS' && doc.checked"
+                  type="text"
+                  v-model="otherDocumentText"
+                  placeholder="Please specify..."
                   class="others-input"
                 />
               </td>
@@ -66,21 +76,21 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-import { onMounted, ref, watch } from 'vue';
-import { API_BASE_URL } from '@/config';
+import axios from "axios";
+import { onMounted, ref, watch } from "vue";
+import { API_BASE_URL } from "@/config";
 
 // Reactive references
 const form = ref({
-  name_id: '',
-  division_id: '',
-  date: '', // Format the date here
-  documents: []
+  name_id: "",
+  division_id: "",
+  date: "", // Format the date here
+  documents: [],
 });
 
 const otherDocumentText = ref("");
-const selectedName = ref('');
-const division = ref('');
+const selectedName = ref("");
+const division = ref("");
 const names = ref([]);
 const employees = ref([]);
 const divisions = ref([]);
@@ -88,17 +98,17 @@ const pleaseWait = ref(false);
 const loading = ref(false);
 const formDisable = ref(false);
 const documents = ref([
-  { name: 'SERVICE RECORD', checked: false },
-  { name: 'CERTIFICATE OF EMPLOYMENT', checked: false },
-  { name: 'CERTIFICATE OF EMPLOYMENT WITH COMPENSATION', checked: false },
-  { name: 'OFFICE CLEARANCE', checked: false },
-  { name: 'LBP BC LIST', checked: false },
-  { name: 'CERTIFICATE OF LEAVE CREDITS', checked: false },
-  { name: 'PHOTOCOPY OF TRAVEL ORDER', checked: false },
-  { name: 'OTHERS', checked: false }
+  { name: "SERVICE RECORD", checked: false },
+  { name: "CERTIFICATE OF EMPLOYMENT", checked: false },
+  { name: "CERTIFICATE OF EMPLOYMENT WITH COMPENSATION", checked: false },
+  { name: "OFFICE CLEARANCE", checked: false },
+  { name: "LBP BC LIST", checked: false },
+  { name: "CERTIFICATE OF LEAVE CREDITS", checked: false },
+  { name: "PHOTOCOPY OF TRAVEL ORDER", checked: false },
+  { name: "OTHERS", checked: false },
 ]);
 
-const nameid = ref(localStorage.getItem('nameId')); 
+const nameid = ref(localStorage.getItem("nameId"));
 
 watch(otherDocumentText, (newValue) => {
   otherDocumentText.value = newValue.toUpperCase(); // Automatically capitalize the input
@@ -107,68 +117,76 @@ watch(otherDocumentText, (newValue) => {
 const fetchData = async () => {
   try {
     const [namesRes, employeesRes, divisionsRes] = await Promise.all([
-      fetch(`${API_BASE_URL}/get_names_json/`).then(res => res.json()),
-      fetch(`${API_BASE_URL}/get_employees_json/`).then(res => res.json()),
-      fetch(`${API_BASE_URL}/get_divisions_json/`).then(res => res.json())
+      fetch(`${API_BASE_URL}/get_names_json/`).then((res) => res.json()),
+      fetch(`${API_BASE_URL}/get_employees_json/`).then((res) => res.json()),
+      fetch(`${API_BASE_URL}/get_divisions_json/`).then((res) => res.json()),
     ]);
 
-  
-    if (parseInt(nameid.value) === 2 || parseInt(nameid.value) === 76) {
-      // If the user ID is 2, show all names
-      names.value = namesRes; 
+    if (parseInt(nameid.value) === 76) {
+      names.value = namesRes;
     } else {
-      // Otherwise, filter to show only the current user's name
-      names.value = namesRes.filter(name => name.name_id === parseInt(nameid.value));
+      
+      names.value = namesRes.filter(
+        (name) => name.name_id === parseInt(nameid.value)
+      );
     }
 
     employees.value = employeesRes;
     divisions.value = divisionsRes;
 
-    // Automatically set the selected name to the current user if applicable
+   
     if (names.value.length > 0) {
-      selectedName.value = names.value[0].name_id; 
-      fetchSelectedEmployee(); // Fetch the employee details
+      selectedName.value = names.value[0].name_id;
+      fetchSelectedEmployee(); 
     }
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error("Error fetching data:", error);
   }
 };
 
 const fetchSelectedEmployee = () => {
-  const selectedEmployee = employees.value.find(emp => emp.name_id === selectedName.value);
+  const selectedEmployee = employees.value.find(
+    (emp) => emp.name_id === selectedName.value
+  );
   if (selectedEmployee) {
     form.value.name_id = selectedName.value;
     form.value.division_id = selectedEmployee.division_id;
     division.value = findDivisionName(selectedEmployee.division_id);
   } else {
-    form.value.name_id = '';
-    form.value.division_id = '';
-    division.value = '';
+    form.value.name_id = "";
+    form.value.division_id = "";
+    division.value = "";
   }
 };
 
 const findDivisionName = (divisionId) => {
-  const divisionItem = divisions.value.find(div => div.division_id === divisionId);
-  return divisionItem ? divisionItem.division_name : '';
+  const divisionItem = divisions.value.find(
+    (div) => div.division_id === divisionId
+  );
+  return divisionItem ? divisionItem.division_name : "";
 };
 
 const handleSubmit = async () => {
   console.log(documents.value);
   console.log(form.value.documents);
-  
+
   if (otherDocumentText.value) {
-    const othersDocument = documents.value.find(doc => doc.name === "OTHERS");
+    const othersDocument = documents.value.find((doc) => doc.name === "OTHERS");
     if (othersDocument) {
       othersDocument.name = otherDocumentText.value; // Update the name
     }
   }
 
   form.value.documents = documents.value
-    .filter(doc => doc.checked)
-    .map(doc => (` ${doc.name}`));
-  
-  if (!form.value.name_id || !form.value.division_id || form.value.documents.length === 0) {
-    alert('Please fill all required fields and select at least one document.');
+    .filter((doc) => doc.checked)
+    .map((doc) => ` ${doc.name}`);
+
+  if (
+    !form.value.name_id ||
+    !form.value.division_id ||
+    form.value.documents.length === 0
+  ) {
+    alert("Please fill all required fields and select at least one document.");
     return;
   }
 
@@ -178,19 +196,21 @@ const handleSubmit = async () => {
   formDisable.value = true;
 
   try {
-    const response = await axios.post(`${API_BASE_URL}/submit_request`, form.value);
+    const response = await axios.post(
+      `${API_BASE_URL}/submit_request`,
+      form.value
+    );
 
     if (response.status < 200 || response.status >= 300) {
-      throw new Error('Failed to submit request');
+      throw new Error("Failed to submit request");
     }
 
-    alert('Request submitted successfully!');
+    alert("Request submitted successfully!");
     form.value.documents = [];
-    documents.value.forEach(doc => (doc.checked = false));
-    
+    documents.value.forEach((doc) => (doc.checked = false));
   } catch (error) {
-    console.error('Submission error:', error);
-    alert('Error submitting request. Please try again.');
+    console.error("Submission error:", error);
+    alert("Error submitting request. Please try again.");
   } finally {
     pleaseWait.value = false;
     loading.value = false;
@@ -201,11 +221,11 @@ const handleSubmit = async () => {
 // Function to format the date
 const formatDate = (date) => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
 
   form.value.date = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
@@ -216,15 +236,13 @@ onMounted(() => {
 });
 </script>
 
-
 <style scoped>
-
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #F3E8D3; /* Soft beige */
+  font-family: "Arial", sans-serif;
+  background-color: #f3e8d3; /* Soft beige */
   margin: 0;
   padding: 0;
-  color: #3B3A30; /* Dark brown for contrast */
+  color: #3b3a30; /* Dark brown for contrast */
 }
 
 .outer {
@@ -236,13 +254,14 @@ body {
   width: 95%;
   max-width: 800px;
   padding: 25px;
-  background: #FDF8EE; /* Light cream */
+  background: #fdf8ee; /* Light cream */
   border-radius: 15px;
-  border: 1px solid #B5A78A; /* Subtle brown border */
+  border: 1px solid #b5a78a; /* Subtle brown border */
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.title, .subtitle {
+.title,
+.subtitle {
   text-align: center;
   font-size: 24px;
   font-weight: bold;
@@ -263,7 +282,7 @@ body {
 label {
   font-size: 18px;
   font-weight: bold;
-  color: #3B3A30;
+  color: #3b3a30;
   margin-bottom: 6px;
   display: block;
 }
@@ -289,15 +308,16 @@ label {
 }
 
 /* Input fields */
-input, select {
+input,
+select {
   width: 100%;
   padding: 12px;
   font-size: 18px;
-  border: 1px solid #B5A78A;
+  border: 1px solid #b5a78a;
   border-radius: 6px;
   box-sizing: border-box;
   transition: all 0.3s ease;
-  background: #FFF;
+  background: #fff;
 }
 
 input[type="checkbox"] {
@@ -305,13 +325,13 @@ input[type="checkbox"] {
 }
 
 input {
-  border: none; 
-  border-bottom: 2px solid #6D6C6C; 
-  outline: none; 
+  border: none;
+  border-bottom: 2px solid #6d6c6c;
+  outline: none;
   background: transparent;
-  width: 100%; 
-  font-size: 18px; 
-  padding: 8px; 
+  width: 100%;
+  font-size: 18px;
+  padding: 8px;
 }
 
 /* Buttons */
@@ -319,7 +339,7 @@ button {
   padding: 12px 24px;
   font-size: 20px;
   font-weight: bold;
-  background-color: #5D6D7E; /* Soft blue-gray */
+  background-color: #5d6d7e; /* Soft blue-gray */
   color: white;
   border: none;
   border-radius: 8px;
@@ -329,16 +349,16 @@ button {
 }
 
 button:hover {
-  background-color: #3B4A5A;
+  background-color: #3b4a5a;
   transform: translateY(-2px);
 }
 
 button.cancel {
-  background: #C04C3D; /* Soft red for cancel */
+  background: #c04c3d; /* Soft red for cancel */
 }
 
 button.cancel:hover {
-  background: #A33B2D;
+  background: #a33b2d;
 }
 
 /* Confirmation Message */
@@ -354,12 +374,13 @@ button.cancel:hover {
 }
 
 /* Error Message */
-.errormsg, .errormsg1 {
+.errormsg,
+.errormsg1 {
   height: 24px;
   text-align: center;
   font-weight: bold;
   font-size: 18px;
-  color: #A33B2D;
+  color: #a33b2d;
 }
 
 /* Loader */

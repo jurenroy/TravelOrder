@@ -2,28 +2,38 @@
   <Dashboard />
   <div class="services">
     <div class="notificationcontainer">
-      <button class="servicesbutton" @click="navigateTo('TravelOrder')">Travel Order Form </button> 
-      <TravelOrderNotification class="luxury-notification-count"/>
+      <button class="servicesbutton" @click="navigateTo('TravelOrder')">
+        Travel Order Form
+      </button>
+      <TravelOrderNotification class="luxury-notification-count" />
     </div>
     <div class="notificationcontainer">
-      <button class="servicesbutton" @click="navigateTo('LeaveForm')">Leave Form</button>
-      <LeaveFormNotification class="luxury-notification-count"/>
+      <button class="servicesbutton" @click="navigateTo('LeaveForm')">
+        Leave Form
+      </button>
+      <LeaveFormNotification class="luxury-notification-count" />
     </div>
-    <button class="servicesbutton" @click="navigateTo('ICTSRF')">ICT Service Request Form</button>
-    <button class="servicesbutton" @click="navigateTo('rso')">Special Order Viewer</button>
-    <button class="servicesbutton" @click="openLink">Document Tracking System</button>
-    <button class="servicesbutton" @click="navigateTo('requestform')">Request Form</button>
-    <button class="servicesbutton" @click="navigateTo('FADRF')">FADRF</button>
-
+    <button class="servicesbutton" @click="navigateTo('ICTSRF')">
+      ICT Service Request Form
+    </button>
+    <button class="servicesbutton" @click="navigateTo('rso')">
+      Special Order Viewer
+    </button>
+    <button class="servicesbutton" @click="openLink">
+      Document Tracking System
+    </button>
+    <button class="servicesbutton" @click="navigateTo('requestform')">
+      Request Form
+    </button>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import Dashboard from '../dashboard/Dashboard.vue';
-import TravelOrderNotification from '../../components/notifications/travelorder.vue';
-import LeaveFormNotification from '../../components/notifications/leaveform.vue';
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import Dashboard from "../dashboard/Dashboard.vue";
+import TravelOrderNotification from "../../components/notifications/travelorder.vue";
+import LeaveFormNotification from "../../components/notifications/leaveform.vue";
 
 const router = useRouter();
 
@@ -33,9 +43,8 @@ const navigateTo = (page) => {
 };
 
 const openLink = () => {
-  window.open('http://202.137.117.84:8001/', '_blank');
+  window.open("http://202.137.117.84:8001/", "_blank");
 };
-
 </script>
 
 <style scoped>
@@ -47,20 +56,20 @@ const openLink = () => {
   margin-top: 50px;
   gap: 20px;
   padding: 0 20px;
-  flex-wrap: wrap ;
+  flex-wrap: wrap;
 }
 
 .servicesbutton {
   height: 60px;
   width: 280px;
   font-size: 18px;
-  font-family: 'Playfair Display', serif; /* Luxurious font */
+  font-family: "Playfair Display", serif; /* Luxurious font */
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: #000000;
   background: #bfa16d; /* Deep charcoal */
-  border: 2px solid ; /* Luxurious gold border */
+  border: 2px solid; /* Luxurious gold border */
   border-radius: 10px;
   cursor: pointer;
   outline: none;
@@ -88,22 +97,21 @@ const openLink = () => {
 }
 
 .luxury-notification-count {
-    background-color: #fb0808;
-    color: white;
-    border-radius: 100%;
-    padding: 6px 12px;
-    font-weight: bold;
-    font-size: 20px;
-    border: solid black 2px;
-    position: relative;
-    top: -30px;
-    right: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-.notificationcontainer{
+  background-color: #fb0808;
+  color: white;
+  border-radius: 100%;
+  padding: 6px 12px;
+  font-weight: bold;
+  font-size: 20px;
+  border: solid black 2px;
+  position: relative;
+  top: -30px;
+  right: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.notificationcontainer {
   margin-right: -45px;
 }
-
 
 @media (max-width: 768px) {
   .services {
@@ -114,14 +122,14 @@ const openLink = () => {
   .servicesbutton {
     width: 85%;
   }
-  .notificationcontainer{
+  .notificationcontainer {
     margin-right: -15%;
     width: 100%;
     margin-bottom: -5%;
   }
   .luxury-notification-count {
-   margin-left: 85%;
-   top: -70px;
+    margin-left: 85%;
+    top: -70px;
   }
 }
 </style>
