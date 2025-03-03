@@ -165,7 +165,7 @@ export default {
       props: ['data'],
       parsedDocuments: [],
       selectedDocuments: [],
-      timeRequested: '',
+      timeReleased: '',
       dateTimeReleased: '',
       rating: null,
       nameId: localStorage.getItem('nameId'),
@@ -300,32 +300,151 @@ fetchDivisions() {
         doc.checked = item.documents.includes(doc.name);
       });
     };
-    // Make sure documents is an array
-    const requestedDocs = Array.isArray(item.documents) ? item.documents : JSON.parse(item.documents || '[]');
-    
-    // Extract the time from the date string
-    // Assuming item.date is in a format like "YYYY-MM-DD HH:MM:SS" or contains time information
-    let timeRequested = "";
-    try {
-      const dateObj = new Date(item.date);
-      if (!isNaN(dateObj.getTime())) {
-        // Format time as HH:MM AM/PM
-        timeRequested = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      }
-    } catch (e) {
-      console.error("Error parsing date:", e);
-    }
 
-    let othersText = "";
-if (item.otherDocuments) {
-  othersText = item.otherDocuments; // If directly storing the text in this property
-} else if (typeof item.documents === 'string' && item.documents.includes('Others:')) {
-  // Alternative: if you're storing it as "Others: TEXTHERE" in the documents array
-  const othersMatch = item.documents.match(/Others:\s*(.+?)(?:,|$)/);
-  if (othersMatch && othersMatch[1]) {
-    othersText = othersMatch[1].trim();
+    const formatDateTime = (dateString) => {
+      if (!dateString) return '';
+      
+      try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
+        
+        // Format: "MM/DD/YYYY HH:MM AM/PM"
+        return date.toLocaleString([], { 
+          month: '2-digit', 
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit', 
+          minute: '2-digit'
+        });
+      } catch (e) {
+        console.error("Error formatting date:", e);
+        return '';
+      }
+    };
+
+    const getProcessedDocuments = () => {
+      if (!item.documents) return [];
+      
+      // If documents is a string, try to parse it
+      if (typeof item.documents === 'string') {
+        try {
+          return JSON.parse(item.documents);
+        } catch (e) {
+          console.error("Error parsing documents JSON:", e);
+          return [];
+        }
+      }
+      
+      // If documents is already an array, return it properly formatted
+      if (Array.isArray(item.documents)) {
+        return item.documents.map(doc => {
+          // If doc is already an object with name and releaseDate, return it
+          if (typeof doc === 'object' && doc !== null) {
+            return doc;
+          }
+          // Otherwise, create an object with default values
+          return { name: doc, releaseDate: '', remarks: '' };
+        });
+      }
+      
+      return [];
+    };
+    
+    const processedDocs = getProcessedDocuments();
+
+    function renderOthersDocumentRow(item, processedDocs) {
+  let othersText = "";
+    
+  // First check if otherDocuments is directly available
+  if (item.otherDocuments) {
+    othersText = item.otherDocuments;
+  } 
+  // Then check if otherDocumentText is available from the form
+  else if (item.otherDocumentText) {
+    othersText = item.otherDocumentText;
   }
+  // Check in the documents array for an "Others" entry with custom name
+  else {
+    // Look for an "Others" entry in processed documents
+    const othersDoc = processedDocs.find(doc => {
+      if (typeof doc === 'object') {
+        // Check if this is the others document (could be renamed from "Others")
+        return doc.originalName === "OTHERS" || doc.name.includes("Others:") || doc.name === "Others";
+      }
+      return doc === "Others" || doc.includes("Others:");
+    });
+    
+    if (othersDoc) {
+      if (typeof othersDoc === 'object') {
+        // If the object has a custom name different from "Others", use that
+        if (othersDoc.name !== "Others" && !othersDoc.name.includes("Others:")) {
+          othersText = othersDoc.name;
+        }
+        // If there's additional text stored
+        else if (othersDoc.additionalText) {
+          othersText = othersDoc.additionalText;
+        }
+      } else if (typeof othersDoc === 'string' && othersDoc.includes("Others:")) {
+        // Extract the text after "Others:"
+        const match = othersDoc.match(/Others:\s*(.+)$/);
+        if (match && match[1]) {
+          othersText = match[1].trim();
+        }
+      }
+    }
+  }
+  
+  // Return the rendered table row with the extracted othersText
+  return `
+    <tr class="documents-row">
+      <td><input type="checkbox" ${isDocumentRequested('Others') ? 'checked' : ''} /></td>
+      <td>Others: ${othersText ? othersText : '_______________________________'}</td>
+      <td>${getTimeReleasedForDoc('Others')}</td>
+      <td>${releasedBy('Others')}</td>
+      <td></td>
+    </tr>
+  `;
 }
+    let othersText = "";
+    
+    // First check if otherDocuments is directly available
+    if (item.otherDocuments) {
+      othersText = item.otherDocuments;
+    } 
+    // Then check if otherDocumentText is available from the form
+    else if (item.otherDocumentText) {
+      othersText = item.otherDocumentText;
+    }
+    // Check in the documents array for an "Others" entry with custom name
+    else {
+      // Look for an "Others" entry in processed documents
+      const othersDoc = processedDocs.find(doc => {
+        if (typeof doc === 'object') {
+          // Check if this is the others document (could be renamed from "Others")
+          return doc.originalName === "OTHERS" || doc.name.includes("Others:") || doc.name === "Others";
+        }
+        return doc === "Others" || doc.includes("Others:");
+      });
+      
+      if (othersDoc) {
+        if (typeof othersDoc === 'object') {
+          // If the object has a custom name different from "Others", use that
+          if (othersDoc.name !== "Others" && !othersDoc.name.includes("Others:")) {
+            othersText = othersDoc.name;
+          }
+          // If there's additional text stored
+          else if (othersDoc.additionalText) {
+            othersText = othersDoc.additionalText;
+          }
+        } else if (typeof othersDoc === 'string' && othersDoc.includes("Others:")) {
+          // Extract the text after "Others:"
+          const match = othersDoc.match(/Others:\s*(.+)$/);
+          if (match && match[1]) {
+            othersText = match[1].trim();
+          }
+        }
+      }
+    }
     
     // Function to generate rating option HTML based on current rating
     const generateRatingOption = (value, label) => {
@@ -335,7 +454,8 @@ if (item.otherDocuments) {
   const isSelected = hasRating && currentRating === value;
   
   // Add revision text only for Very dissatisfied rating (value 1)
-  const revisionText = value === 1 ? '<span style="margin-left: 370px; font-weight: normal;">revised document Feb 2025</span>' : '';
+  const revisionText = value === 1 ? '<span style="margin-left: 340px; font-weight: normal;">revised document Feb 2025</span>' : '';
+
   
   return `
     <div class="rating-option ${isSelected ? 'selected' : ''}">
@@ -346,8 +466,70 @@ if (item.otherDocuments) {
   `;
 };
 
+const releasedBy = (docName) => {
+  const doc = processedDocs.find(d => 
+    (typeof d === 'object' && d.name === docName) || d === docName
+  );
+  
+  let isReleased = false;
+  
+  if (doc && typeof doc === 'object') {
+    // Check if the document has a release date or remarks containing "Released"
+    if (doc.releaseDate) {
+      isReleased = true;
+    } else if (doc.remarks && doc.remarks.includes('Released')) {
+      isReleased = true;
+    }
+  }
+  
+  // Return "Joanne Rose O. Alvarez" if the document is released
+  return isReleased ? 'Joanne Rose O. Alvarez' : '';
+};
 
+
+
+const isDocumentRequested = (docName) => {
+      return processedDocs.some(doc => 
+        (typeof doc === 'object' && doc.name === docName) || doc === docName
+      );
+    };
     
+    const getTimeReleasedForDoc = (docName) => {
+      const doc = processedDocs.find(d => 
+        (typeof d === 'object' && d.name === docName) || d === docName
+      );
+
+      let isReleased = false;
+      let releaseTime = '';
+
+
+      
+      if (doc && typeof doc === 'object' && doc.releaseDate) {
+        return formatDateTime(doc.releaseDate);
+      }
+      
+      // Check if remarks contain "Released" which might indicate it was released
+      if (doc && typeof doc === 'object' && doc.remarks && doc.remarks.includes('Released')) {
+        // If the document is marked as released but doesn't have a date, use current time
+        return formatDateTime(new Date());
+      }
+
+      if (doc && typeof doc === 'object') {
+    // Check if the document has a release date or remarks containing "Released"
+    if (doc.releaseDate) {
+      isReleased = true;
+      releaseTime = formatDateTime(doc.releaseDate);
+    } else if (doc.remarks && doc.remarks.includes('Released')) {
+      isReleased = true;
+      releaseTime = formatDateTime(new Date());
+    }
+  }
+      
+      return '';
+
+
+      
+    };
     printableElement.innerHTML = `
       <body>
         <div class="container">
@@ -395,67 +577,77 @@ if (item.otherDocuments) {
                 <td style="width: 20%;">Date & Time Released</td>
                 <td style="width: 30%;">Released By</td>
               </tr>
-
-              <tr class="documents-row">
-                <td><input type="checkbox" ${requestedDocs.includes('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? 'checked' : ''} /></td>
+              
+      <tr class="documents-row">
+                <td><input type="checkbox" ${isDocumentRequested('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? 'checked' : ''} /></td>
                 <td>PURCHASE REQUEST - REQUISITION AND ISSUE SLIP</td>
-                <td>${requestedDocs.includes('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? timeRequested : ''}</td>
+                <td>${getTimeReleasedForDoc('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP')}</td>
+                <td>${releasedBy('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP')}</td>
                 <td></td>
               </tr>
               <tr class="documents-row">
-                <td><input type="checkbox" ${requestedDocs.includes('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? 'checked' : ''} /></td>
+                <td><input type="checkbox" ${isDocumentRequested('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? 'checked' : ''} /></td>
                 <td>CERTIFICATE OF EMPLOYMENT WITH COMPENSATION</td>
-                <td>${requestedDocs.includes('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? timeRequested : ''}</td>
+                <td>${getTimeReleasedForDoc('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION')}</td>
+                <td>${releasedBy('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION')}</td>
                 <td></td>
               </tr>
               <tr class="documents-row">
-                <td><input type="checkbox" ${requestedDocs.includes('INVENTORY CUSTODIAN SLIP') ? 'checked' : ''} /></td>
+                <td><input type="checkbox" ${isDocumentRequested('INVENTORY CUSTODIAN SLIP') ? 'checked' : ''} /></td>
                 <td>INVENTORY CUSTODIAN SLIP</td>
-                <td>${requestedDocs.includes('INVENTORY CUSTODIAN SLIP') ? timeRequested : ''}</td>
+                <td>${getTimeReleasedForDoc('INVENTORY CUSTODIAN SLIP')}</td>
+                <td>${releasedBy('INVENTORY CUSTODIAN SLIP')}</td>
                 <td></td>
               </tr>
               <tr class="documents-row">
-                <td><input type="checkbox" ${requestedDocs.includes('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? 'checked' : ''} /></td>
+                <td><input type="checkbox" ${isDocumentRequested('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? 'checked' : ''} /></td>
                 <td>PROPERTY ACKNOWLEDGEMENT RECEIPT</td>
-                <td>${requestedDocs.includes('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? timeRequested : ''}</td>
+                <td>${getTimeReleasedForDoc('PROPERTY ACKNOWLEDGEMENT RECEIPT')}</td>
+                <td>${releasedBy('PROPERTY ACKNOWLEDGEMENT RECEIPT')}</td>
                 <td></td>
               </tr>
               <tr class="documents-row">
-                <td><input type="checkbox" ${requestedDocs.includes('GATE PASS') ? 'checked' : ''} /></td>
+                <td><input type="checkbox" ${isDocumentRequested('GATE PASS') ? 'checked' : ''} /></td>
                 <td>GATE PASS</td>
-                <td>${requestedDocs.includes('GATE PASS') ? timeRequested : ''}</td>
+                <td>${getTimeReleasedForDoc('GATE PASS')}</td>
+                <td>${releasedBy('GATE PASS')}</td>
                 <td></td>
               </tr>
               <tr class="documents-row">
-                <td><input type="checkbox" ${requestedDocs.includes('PO FUEL') ? 'checked' : ''} /></td>
+                <td><input type="checkbox" ${isDocumentRequested('PO FUEL') ? 'checked' : ''} /></td>
                 <td>PO FUEL</td>
-                <td>${requestedDocs.includes('PO FUEL') ? timeRequested : ''}</td>
+                <td>${getTimeReleasedForDoc('PO FUEL')}</td>
+                <td>${releasedBy('PO FUEL')}</td>
                 <td></td>
               </tr>
               <tr class="documents-row">
-                <td><input type="checkbox" ${requestedDocs.includes('PROPERTY RETURN SLIP') ? 'checked' : ''} /></td>
+                <td><input type="checkbox" ${isDocumentRequested('PROPERTY RETURN SLIP') ? 'checked' : ''} /></td>
                 <td>PROPERTY RETURN SLIP</td>
-                <td>${requestedDocs.includes('PROPERTY RETURN SLIP') ? timeRequested : ''}</td>
+                <td>${getTimeReleasedForDoc('PROPERTY RETURN SLIP')}</td>
+                <td>${releasedBy('PROPERTY RETURN SLIP')}</td>
                 <td></td>
               </tr>
               <tr class="documents-row">
-                <td><input type="checkbox" ${requestedDocs.includes('R&M OF MOTOR VEHICLES') ? 'checked' : ''} /></td>
+                <td><input type="checkbox" ${isDocumentRequested('R&M OF MOTOR VEHICLES') ? 'checked' : ''} /></td>
                 <td>R&M OF MOTOR VEHICLES</td>
-                <td>${requestedDocs.includes('R&M OF MOTOR VEHICLES') ? timeRequested : ''}</td>
+                <td>${getTimeReleasedForDoc('R&M OF MOTOR VEHICLES')}</td>
+                <td>${releasedBy('R&M OF MOTOR VEHICLES')}</td>
                 <td></td>
               </tr>
               <tr class="documents-row">
-                <td><input type="checkbox" ${requestedDocs.includes('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? 'checked' : ''} /></td>
+                <td><input type="checkbox" ${isDocumentRequested('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? 'checked' : ''} /></td>
                 <td>JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C</td>
-                <td>${requestedDocs.includes('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? timeRequested : ''}</td>
+                <td>${getTimeReleasedForDoc('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C')}</td>
+                <td>${releasedBy('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C')}</td>>
                 <td></td>
               </tr>
-<tr class="documents-row">
-  <td><input type="checkbox" ${requestedDocs.includes('Others') ? 'checked' : ''} /></td>
-  <td>Others: ${othersText ? othersText : '_______________________________'}</td>
-  <td>${requestedDocs.includes('Others') ? timeRequested : ''}</td>
-  <td></td>
-</tr>
+              <tr class="documents-row">
+                <td><input type="checkbox" ${isDocumentRequested('Others') ? 'checked' : ''} /></td>
+                <td>Others: ${othersText ? othersText : '_______________________________'}</td>
+                <td>${getTimeReleasedForDoc('Others')}</td>
+                <td>${releasedBy('Others')}</td>
+                <td></td>
+              </tr>
               
 <tr>
   <td colspan="4" class="rating-label">RATING</td>
@@ -761,6 +953,8 @@ padWithZeroes(travel_order_id) {
     alert("No current item selected for update.");
     return;
   }
+
+  
   const routes = [
   // other routes...
   {
@@ -770,12 +964,45 @@ padWithZeroes(travel_order_id) {
     props: true // This allows you to pass props to the PDF component
   }
 ];
+
+const processedDocuments = updatedDocuments.map(doc => {
+    // Create a new object to avoid modifying the original
+    const updatedDoc = { ...doc };
+    
+    // If a document is marked as released but doesn't have a releaseDate, add current timestamp
+    if (updatedDoc.remarks && updatedDoc.remarks.trim() === 'Released' && !updatedDoc.releaseDate) {
+      updatedDoc.releaseDate = new Date().toISOString();
+    }
+    
+    return updatedDoc;
+  });
   const payload = {
     documents: updatedDocuments,
+    documents: processedDocuments,
     remarks: updatedDocuments.map(doc => doc.remarks).join(', ') // Join remarks for storage
   };
-
   axios.post(`${API_BASE_URL}/FADRFupdate_request/${this.currentItem.id}`, payload)
+    .then(response => {
+      if (response.status === 200) {
+        alert("Documents updated successfully!");
+        this.currentItem.documents = processedDocuments; 
+        
+        // Update the form data to reflect changes in the UI
+        this.formData = this.formData.map(item => {
+          if (item.id === this.currentItem.id) {
+            return { ...item, documents: processedDocuments };
+          }
+          return item;
+        });
+      }
+    })
+    .catch(error => {
+      console.error("Error updating documents:", error);
+      alert("Failed to update documents. Please try again.");
+    });
+
+
+(`${API_BASE_URL}/FADRFupdate_request/${this.currentItem.id}`, payload)
     .then(response => {
       if (response.status === 200) {
         alert("Remarks updated successfully!");
