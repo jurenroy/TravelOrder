@@ -52,7 +52,7 @@ export default {
 
       // Toggle the remarks of the document
       this.documents[index].remarks =
-        currentRemark === "Released" ? "Pending" : "Released";
+        currentRemark === "Released" ? "Incomplete" : "Released";
 
       // Show an alert based on the new state
       if (this.documents[index].remarks === "Released") {

@@ -1,6 +1,9 @@
 <template>
   <div style="display: flex; flex-direction: column">
-    <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
+    <h2
+      style="display: flex; flex-direction: row; align-self: center"
+      class="hist"
+    >
       Document Status:
       <select v-model="selectedStatus" class="styled-select">
         <option v-for="option in options" :key="option" :value="option">
@@ -14,10 +17,15 @@
     <div v-if="load" class="loadings">
       <img src="../../assets/loading.gif" width="auto" height="100px" />
     </div>
-    <div style="display: flex; flex-direction: column; align-items: center" v-if="otp">
+    <div
+      style="display: flex; flex-direction: column; align-items: center"
+      v-if="otp"
+    >
       <otpz />
     </div>
-    <div class="search" style="
+    <div
+      class="search"
+      style="
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -25,22 +33,35 @@
         margin-top: 15px;
         margin-bottom: 10px;
         height: 35px;
-      ">
-      <div v-if="mawala" style="
+      "
+    >
+      <div
+        v-if="mawala"
+        style="
           display: flex;
           border: 2px solid black;
           border-radius: 5px;
           align-items: center;
           height: 30px;
           position: relative;
-        ">
-        <img class="imgsearch" style="
+        "
+      >
+        <img
+          class="imgsearch"
+          style="
             height: 20px;
             width: 20px;
             position: relative;
             padding-left: 5px;
-          " src="../../assets/search.png" />
-        <input class="pholder" type="text" v-model="searchQuery" placeholder="Search Document Requested or Name" />
+          "
+          src="../../assets/search.png"
+        />
+        <input
+          class="pholder"
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search Document Requested or Name"
+        />
       </div>
     </div>
 
@@ -49,8 +70,12 @@
         <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
       </div>
 
-      <EditDetailsPopup v-if="showEditDetailsPopup" :documents="currentItem.documents" @submit="handleEditDetails"
-        @close="showEditDetailsPopup = false" />
+      <EditDetailsPopup
+        v-if="showEditDetailsPopup"
+        :documents="currentItem.documents"
+        @submit="handleEditDetails"
+        @close="showEditDetailsPopup = false"
+      />
       <div class="scrollable-table">
         <table>
           <thead>
@@ -67,8 +92,13 @@
             <tr v-for="(item, index) in filteredFormData" :key="index">
               <td>{{ getName(item.name_id) }}</td>
               <td>
-                <span v-if="Array.isArray(item.documents) && item.documents.length">
-                  <span v-for="(doc, docIndex) in item.documents" :key="docIndex">
+                <span
+                  v-if="Array.isArray(item.documents) && item.documents.length"
+                >
+                  <span
+                    v-for="(doc, docIndex) in item.documents"
+                    :key="docIndex"
+                  >
                     {{ getDocumentName(doc) }} <br />
                   </span>
                 </span>
@@ -76,8 +106,13 @@
               </td>
               <td>{{ item.date }}</td>
               <td>
-                <span v-if="Array.isArray(item.documents) && item.documents.length">
-                  <span v-for="(doc, docIndex) in item.documents" :key="'remarks-' + docIndex">
+                <span
+                  v-if="Array.isArray(item.documents) && item.documents.length"
+                >
+                  <span
+                    v-for="(doc, docIndex) in item.documents"
+                    :key="'remarks-' + docIndex"
+                  >
                     {{ doc.remarks || "No remarks" }} <br />
                   </span>
                 </span>
@@ -87,11 +122,13 @@
                 <span v-if="item.rating !== null">
                   <span v-for="n in item.rating" :key="n">⭐</span>
                 </span>
-                <button v-else @click="openRatingPopup(item)" :disabled="item.rating === 0">
+                <button
+                  v-if="nameId == item.name_id && !item.rating"
+                  @click="openRatingPopup(item)"
+                >
                   Rating
                 </button>
               </td>
-
               <td>
                 <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
                   Edit
@@ -100,13 +137,21 @@
                 <button @click="add(item)">View Note</button>
               </td>
             </tr>
-            <h1 style="text-align: center; margin-bottom: 0px" v-if="filteredFormData.length == 0">
+            <h1
+              style="text-align: center; margin-bottom: 0px"
+              v-if="filteredFormData.length == 0"
+            >
               NO REQUEST FOUND
             </h1>
           </tbody>
         </table>
-        <Note v-if="addNote" :initialNote="currentItem.note || ''" :isAdmin="isAdmin" @close-note="closeNote"
-          @save-note="saveNote" />
+        <Note
+          v-if="addNote"
+          :initialNote="currentItem.note || ''"
+          :isAdmin="isAdmin"
+          @close-note="closeNote"
+          @save-note="saveNote"
+        />
       </div>
     </div>
   </div>
@@ -134,7 +179,7 @@ export default {
       showEditDetailsPopup: false,
       currentItem: "",
       selectedStatus: "All",
-      options: ["All", "Pending", "Released", "No Remarks"],
+      options: ["All", "Incomplete", "Released", "No Remarks"],
       yearToday: new Date().getFullYear(),
       formData: [],
       names: {},
@@ -239,6 +284,20 @@ export default {
         });
     },
     handleRating(rating) {
+      if (!this.currentItem || !this.currentItem.id) {
+        alert("No request selected.");
+        return;
+      }
+
+      const userId = Number(this.nameId); // Convert to number
+      const requestorId = Number(this.currentItem.name_id); // Convert to number
+
+      // Restrict users 2 and 76 to rate only their own requests
+      if ((userId === 2 || userId === 76) && userId !== requestorId) {
+        alert("You can only rate your own request.");
+        return;
+      }
+
       const payload = { rating: rating };
       axios
         .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
@@ -348,30 +407,32 @@ export default {
       ).length;
     },
     filteredFormData() {
-    return this.formData.filter((item) => {
-      const requestorName = this.getName(item.name_id).toLowerCase();
-      const documentNames = item.documents
-        .map((doc) => (doc.name ? doc.name.toLowerCase() : ""))
-        .join(" ");
+      return this.formData.filter((item) => {
+        const requestorName = this.getName(item.name_id).toLowerCase();
+        const documentNames = item.documents
+          .map((doc) => (doc.name ? doc.name.toLowerCase() : ""))
+          .join(" ");
 
-      const query = this.searchQuery.toLowerCase();
+        const query = this.searchQuery.toLowerCase();
 
-      // Search filtering
-      const matchesSearch =
-        requestorName.includes(query) || documentNames.includes(query);
+        // Search filtering
+        const matchesSearch =
+          requestorName.includes(query) || documentNames.includes(query);
 
-      if (!matchesSearch) return false;
+        if (!matchesSearch) return false;
 
-      // Status filtering
-      if (this.selectedStatus !== "All") {
-      return item.documents.some((doc) =>
-        doc.remarks.trim().toLowerCase() === this.selectedStatus.toLowerCase()
-      );
-    }
+        // Status filtering
+        if (this.selectedStatus !== "All") {
+          return item.documents.some(
+            (doc) =>
+              doc.remarks.trim().toLowerCase() ===
+              this.selectedStatus.toLowerCase()
+          );
+        }
 
-    return true;
-    });
-  },
+        return true;
+      });
+    },
     isAdmin() {
       return this.nameId === "2" || this.nameId === "76"; // Check if the user is an admin
     },
