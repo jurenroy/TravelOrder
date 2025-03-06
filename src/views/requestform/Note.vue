@@ -11,8 +11,9 @@
       </textarea>
       <div class="popup-buttons">
         <button v-if="isAdmin" @click="saveNote">Save</button>
-        <button @click="$emit('close-note')">Close</button>
       </div>
+        <button class="close-button" @click="$emit('close-note')">&times;</button>
+      
     </div>
   </div>
 </template>
@@ -83,9 +84,8 @@ textarea:focus {
 
 .popup-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 20px;
-  gap: 12px;
 }
 
 .popup-buttons button {
@@ -121,5 +121,20 @@ textarea:focus {
 .popup-buttons button:hover {
   color: #fff;
   border-color: #ffb74d;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 50px;
+  color: #ff9800;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #ffb74d;
 }
 </style>
