@@ -184,7 +184,7 @@ const handleSubmit = async () => {
   if (
     !form.value.name_id ||
     !form.value.division_id ||
-    form.value.documents.length === 0
+    form.value.documents.length === 0 
   ) {
     alert("Please fill all required fields and select at least one document.");
     return;

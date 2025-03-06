@@ -89,9 +89,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in filteredFormData" :key="index">
-              <td>{{ getName(item.name_id) }}</td>
-              <td>
+            <tr v-for="(item, index) in processedFormData" :key="index">
+              <td style="text-align: center">{{ getName(item.name_id) }}</td>
+              <td style="text-align: center">
                 <span
                   v-if="Array.isArray(item.documents) && item.documents.length"
                 >
@@ -104,8 +104,8 @@
                 </span>
                 <span v-else>No documents requested</span>
               </td>
-              <td>{{ item.date }}</td>
-              <td>
+              <td style="text-align: center">{{ item.date }}</td>
+              <td style="text-align: center">
                 <span
                   v-if="Array.isArray(item.documents) && item.documents.length"
                 >
@@ -118,18 +118,19 @@
                 </span>
                 <span v-else>No remarks</span>
               </td>
-              <td>
+              <td style="text-align: center">
                 <span v-if="item.rating !== null">
                   <span v-for="n in item.rating" :key="n">⭐</span>
                 </span>
-                <button
-                  v-if="nameId == item.name_id && !item.rating"
+                <button 
+                  v-else-if="nameId == item.name_id"
                   @click="openRatingPopup(item)"
                 >
                   Rating
                 </button>
+                <span v-else>No ratings yet</span>
               </td>
-              <td>
+              <td style="text-align: center">
                 <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
                   Edit
                 </button>
@@ -137,12 +138,11 @@
                 <button @click="add(item)">View Note</button>
               </td>
             </tr>
-            <h1
-              style="text-align: center; margin-bottom: 0px"
-              v-if="filteredFormData.length == 0"
-            >
-              NO REQUEST FOUND
-            </h1>
+            <tr v-if="processedFormData.length == 0">
+              <td colspan="100%" style="text-align: center; padding: 20px">
+                <h1 style="margin: 0">NO REQUEST FOUND</h1>
+              </td>
+            </tr>
           </tbody>
         </table>
         <Note
@@ -406,8 +406,13 @@ export default {
         (form) => form.note === null && form.initial !== null
       ).length;
     },
-    filteredFormData() {
-      return this.formData.filter((item) => {
+    
+    isAdmin() {
+      return this.nameId === "2" || this.nameId === "76"; // Check if the user is an admin
+    },
+    processedFormData() {
+    return this.formData
+      .filter((item) => {
         const requestorName = this.getName(item.name_id).toLowerCase();
         const documentNames = item.documents
           .map((doc) => (doc.name ? doc.name.toLowerCase() : ""))
@@ -431,25 +436,10 @@ export default {
         }
 
         return true;
-      });
-    },
-    isAdmin() {
-      return this.nameId === "2" || this.nameId === "76"; // Check if the user is an admin
-    },
-    reversedFormData() {
-      return this.formData
-        .slice()
-        .reverse()
-        .filter((item) => {
-          const paddedToNum = this.padWithZeroes(item.to_num);
-          return (
-            paddedToNum.includes(this.searchQuery) ||
-            String(this.getName(item.name_id))
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase())
-          );
-        });
-    },
+      })
+      .slice() // Make a copy before reversing
+      .reverse(); // Reverse after filtering
+  },
   },
 };
 </script>
