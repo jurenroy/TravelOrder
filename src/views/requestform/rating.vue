@@ -2,6 +2,24 @@
   <div class="rating-popup">
     <div class="popup-content">
       <h2>Rate this Request</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Very Dissatisfied😞 </td>
+            <td>Dissatisfied 😐</td>
+            <td>Satisfied 🙂</td>
+            <td>Very Satisfied 🤩</td>
+          </tr>
+        </tbody>
+      </table>
 
       <div class="stars">
         <span
@@ -17,8 +35,8 @@
       <div class="selected-label">{{ getLabel(rating) }}</div>
       <div class="buttons">
         <button @click="submitRating">Submit</button>
-        <button @click="$emit('close')">Cancel</button>
       </div>
+      <button class="close-buttons" @click="$emit('close')">&times;</button>
     </div>
   </div>
 </template>
@@ -83,7 +101,7 @@ export default {
   text-align: center;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease-out;
-  max-width: 350px;
+  max-width: 400px;
   width: 90%;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -137,37 +155,89 @@ button {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 10px 20px;
-  font-size: 0.95rem;
+  font-size: 1.25rem;
+  color:white;
   font-weight: 500;
-  border-radius: 8px;
-  color: white;
+  border-radius: 50px;
+  background-color: transparent;
+  border: 2px solid #ff9800;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-button.submit {
-  background: #ffb648; /* Orange from "UNRELEASE" button */
-  color: #3d2f1d;
-  border: 1px solid #ffb648;
+.buttons button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #ff9800, #ffb74d);
+  transition: left 0.3s ease-in-out;
+  z-index: -1;
 }
 
-button.submit:hover {
-  background: #e89e36;
-  border-color: #e89e36;
+.buttons button:hover::before {
+  left: 0;
 }
 
-button.cancel {
-  background: #28a745; /* Green from "Released" button */
+.buttons button:hover {
+  color: #fff;
+  border-color: #ffb74d;
+}
+.close-buttons {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 50px;
+  color: #ff9800;
+  cursor: pointer;
+}
+
+.close-buttons:hover {
+  color: #ffb74d;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 16px;
+  text-align: center;
+  background: linear-gradient(150deg, #ddc7ad, #92785b);
+  color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  table-layout: auto; 
+}
+
+th, td {
+  border: 1px solid #444;
+  padding: 10px;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+th {
+  background: #5c4a30;
   color: white;
-  border: 1px solid #28a745;
+  font-weight: bold;
 }
 
-button.cancel:hover {
-  background: #218838;
-  border-color: #218838;
+td {
+  background: #1e1e1e;
 }
+
+tr:hover td {
+  background: #333;
+  transition: 0.3s;
+}
+
 
 @keyframes fadeIn {
   from {
