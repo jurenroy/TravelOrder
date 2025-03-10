@@ -66,16 +66,9 @@
     </div>
 
     <div v-if="mawala" class="outer">
-      <div v-if="showRatingPopup">
-        <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
-      </div>
+    
 
-      <EditDetailsPopup
-        v-if="showEditDetailsPopup"
-        :documents="currentItem.documents"
-        @submit="handleEditDetails"
-        @close="showEditDetailsPopup = false"
-      />
+     
       <div class="scrollable-table">
         <table>
           <thead>
@@ -131,11 +124,12 @@
                 <span v-else>No ratings yet</span>
               </td>
               <td style="text-align: center">
+                <button @click="openEditRequestForm(item)">Edit Request</button>     
                 <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
-                  Edit
+                  Remarks
                 </button>
                 <button @click="generatePDF(item)">View PDF</button>
-                <button @click="add(item)">View Note</button>
+                <button @click="add(item)">View Note</button>         
               </td>
             </tr>
             <tr v-if="processedFormData.length == 0">
@@ -144,14 +138,36 @@
               </td>
             </tr>
           </tbody>
-        </table>
-        <Note
-          v-if="addNote"
-          :initialNote="currentItem.note || ''"
-          :isAdmin="isAdmin"
-          @close-note="closeNote"
-          @save-note="saveNote"
-        />
+        </table> 
+          <RatingPopup 
+            v-if="showRatingPopup"
+            @submit="handleRating"
+            @close="showRatingPopup = false" 
+         />
+          <EditDetailsPopup
+            v-if="showEditDetailsPopup"
+            :documents="currentItem.documents"
+            @submit="handleEditDetails"
+            @close="showEditDetailsPopup = false"
+          />
+          <Note
+            v-if="addNote"
+            :initialNote="currentItem.note || ''"
+            :isAdmin="isAdmin"
+            @close-note="closeNote"
+            @save-note="saveNote"
+          />
+          <editform
+            v-if="showEditRequestForm"
+            :requestData="currentItem"
+            :requestId="currentItem.id"
+            :names="names"
+            :employees="employees"
+            :divisions="divisions"
+            @close="closeEditRequestForm"
+            @update-success="handleEditRequestSuccess"
+            @update-error="handleEditRequestError"
+          />
       </div>
     </div>
   </div>
@@ -159,7 +175,7 @@
 
 <script>
 import axios from "axios";
-import editform from "./../editform.vue";
+import editform from "./EditRequest.vue";
 import RatingPopup from "./rating.vue";
 import { API_BASE_URL } from "@/config";
 import EditDetailsPopup from "./EditDetailsPopup.vue";
@@ -171,12 +187,14 @@ export default {
     editform,
     EditDetailsPopup,
     Note,
+    editform, 
   },
 
   data() {
     return {
       showRatingPopup: false,
       showEditDetailsPopup: false,
+      showEditRequestForm: false,
       currentItem: "",
       selectedStatus: "All",
       options: ["All", "Incomplete", "Released", "No Remarks"],
@@ -184,6 +202,7 @@ export default {
       formData: [],
       names: {},
       employees: {},
+      divisions: [],
       accountId: localStorage.getItem("accountId"),
       load: true,
       mawala: false,
@@ -198,10 +217,67 @@ export default {
   mounted() {
     this.fetchAccounts();
     this.fetchEmployees();
+    this.fetchDivisions();
     this.fetchNames();
     this.fetchData();
   },
   methods: {
+    openEditRequestForm(item) {
+      this.currentItem = item;
+      this.showEditRequestForm = true;
+    },
+    
+    closeEditRequestForm() {
+      this.showEditRequestForm = false;
+    },
+    
+    handleEditRequestSuccess(updatedRequest) {
+      let documentsArray = [];
+  
+  if (updatedRequest.documents) {
+    if (Array.isArray(updatedRequest.documents)) {
+      documentsArray = updatedRequest.documents;
+    } else if (typeof updatedRequest.documents === 'string') {
+      try {
+        documentsArray = JSON.parse(updatedRequest.documents);
+      } catch (e) {
+        console.error('Error parsing documents JSON:', e);
+      }
+    }
+  }
+  this.formData = this.formData.map(item => {
+    if (item.id === updatedRequest.id) {
+      return {
+        ...item,
+        ...updatedRequest,
+        documents: documentsArray.map(doc => ({
+          name: doc.name || doc,
+          remarks: doc.remarks?.trim() ? doc.remarks : "No Remarks",
+        }))
+      };
+    }
+    return item;
+  });      
+  
+  this.showEditRequestForm = false;
+  alert("Request updated successfully!");
+},
+    
+    handleEditRequestError(error) {
+      console.error("Error updating request:", error);
+      alert("Failed to update request. Please try again.");
+    },
+    
+    fetchDivisions() {
+      axios
+        .get(`${API_BASE_URL}/get_divisions_json`)
+        .then((response) => {
+          this.divisions = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching divisions:", error);
+        });
+    },
     focusTextarea(text) {
       this.noteText = text;
       this.$refs.noteInput.focus();
@@ -263,8 +339,6 @@ export default {
         .then((response) => {
           if (response.status === 200) {
             alert("Remarks updated successfully!");
-
-            // Update local state
             this.formData = this.formData.map((item) => {
               if (item.id === this.currentItem.id) {
                 return {
@@ -274,7 +348,6 @@ export default {
               }
               return item;
             });
-
             this.showEditDetailsPopup = false;
           }
         })
@@ -288,16 +361,12 @@ export default {
         alert("No request selected.");
         return;
       }
-
-      const userId = Number(this.nameId); // Convert to number
-      const requestorId = Number(this.currentItem.name_id); // Convert to number
-
-      // Restrict users 2 and 76 to rate only their own requests
+      const userId = Number(this.nameId); 
+      const requestorId = Number(this.currentItem.name_id); 
       if ((userId === 2 || userId === 76) && userId !== requestorId) {
         alert("You can only rate your own request.");
         return;
       }
-
       const payload = { rating: rating };
       axios
         .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
@@ -399,6 +468,11 @@ export default {
       }
       return "Unknown";
     },
+    
+    generatePDF(item) {
+      console.log("Generating PDF for item:", item);
+      // You would implement actual PDF generation here
+    }
   },
   computed: {
     pendingCount() {
@@ -411,35 +485,33 @@ export default {
       return this.nameId === "2" || this.nameId === "76"; // Check if the user is an admin
     },
     processedFormData() {
-    return this.formData
-      .filter((item) => {
-        const requestorName = this.getName(item.name_id).toLowerCase();
-        const documentNames = item.documents
-          .map((doc) => (doc.name ? doc.name.toLowerCase() : ""))
-          .join(" ");
+      return this.formData
+        .filter((item) => {
+          const requestorName = this.getName(item.name_id).toLowerCase();
+          const documentNames = item.documents
+            .map((doc) => (doc.name ? doc.name.toLowerCase() : ""))
+            .join(" ");
 
-        const query = this.searchQuery.toLowerCase();
+          const query = this.searchQuery.toLowerCase();
 
-        // Search filtering
-        const matchesSearch =
-          requestorName.includes(query) || documentNames.includes(query);
+          const matchesSearch =
+            requestorName.includes(query) || documentNames.includes(query);
 
-        if (!matchesSearch) return false;
+          if (!matchesSearch) return false;
 
-        // Status filtering
-        if (this.selectedStatus !== "All") {
-          return item.documents.some(
-            (doc) =>
-              doc.remarks.trim().toLowerCase() ===
-              this.selectedStatus.toLowerCase()
-          );
-        }
+          if (this.selectedStatus !== "All") {
+            return item.documents.some(
+              (doc) =>
+                doc.remarks.trim().toLowerCase() ===
+                this.selectedStatus.toLowerCase()
+            );
+          }
 
-        return true;
-      })
-      .slice() // Make a copy before reversing
-      .reverse(); // Reverse after filtering
-  },
+          return true;
+        })
+        .slice() 
+        .reverse(); 
+    },
   },
 };
 </script>
