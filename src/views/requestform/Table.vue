@@ -124,7 +124,9 @@
                 <span v-else>No ratings yet</span>
               </td>
               <td style="text-align: center">
-                <button @click="openEditRequestForm(item)">Edit Request</button>     
+                <button 
+                v-if="canEditRequest(item)" 
+                @click="openEditRequestForm(item)">Edit</button>     
                 <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
                   Remarks
                 </button>
@@ -214,24 +216,23 @@ export default {
       nameId: localStorage.getItem("nameId"), // Retrieve nameId from localStorage
     };
   },
-  mounted() {
-    this.fetchAccounts();
-    this.fetchEmployees();
-    this.fetchDivisions();
-    this.fetchNames();
-    this.fetchData();
-  },
+ 
   methods: {
     openEditRequestForm(item) {
       this.currentItem = item;
       this.showEditRequestForm = true;
     },
+    canEditRequest(item) {
+    const userId = Number(this.nameId);
+    const requestorId = Number(item.name_id);
     
+    return userId === requestorId;
+  },
     closeEditRequestForm() {
       this.showEditRequestForm = false;
     },
     
-    handleEditRequestSuccess(updatedRequest) {
+    handleEditRequestSuccess(updatedRequest) {  
       let documentsArray = [];
   
   if (updatedRequest.documents) {
@@ -473,6 +474,13 @@ export default {
       console.log("Generating PDF for item:", item);
       // You would implement actual PDF generation here
     }
+  },
+  mounted() {
+    this.fetchAccounts();
+    this.fetchEmployees();
+    this.fetchDivisions();
+    this.fetchNames();
+    this.fetchData();
   },
   computed: {
     pendingCount() {
