@@ -132,8 +132,11 @@
               </td>
 
               <td>
-                <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
-                  Status
+                <button 
+                v-if="canEditRequest(item)" 
+                @click="openEditRequestForm(item)">Edit</button>    
+               <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
+                  Remarks
                 </button>
                 <button @click="generatePDF(item, getName(item.name_id))">
                   View PDF
@@ -149,6 +152,17 @@
             </h1>
           </tbody>
         </table>
+        <editform
+            v-if="showEditRequestForm"
+            :requestData="currentItem"
+            :requestId="currentItem.id"
+            :names="names"
+            :employees="employees"
+            :divisions="divisions"
+            @close="closeEditRequestForm"
+            @update-success="handleEditRequestSuccess"
+            @update-error="handleEditRequestError"
+          />
         <Note
           v-if="addNote"
           :initialNote="currentItem.note || ''"
@@ -169,7 +183,7 @@
 
 <script>
 import axios from "axios";
-import editform from "./../editform.vue";
+import editform from "./EditRequest.vue";
 import PDF from "./PDF.vue";
 import RatingPopup from "./Rating.vue";
 import { API_BASE_URL } from "@/config";
@@ -206,6 +220,7 @@ export default {
     EditDetailsPopup,
     Note,
     PDF,
+    editform,
     props: {
       data: {
         type: Object,
@@ -216,6 +231,8 @@ export default {
 
   data() {
     return {
+      showEditDetailsPopup: false,
+      showEditRequestForm: false,
       divisions: [],
       showRatingPopup: false,
       othersDocName: null,
@@ -588,6 +605,66 @@ export default {
           console.error("Error fetching documents:", error);
         });
     },
+    openEditRequestForm(item) {
+      this.currentItem = item;
+      this.showEditRequestForm = true;
+    },
+    canEditRequest(item) {
+    const userId = Number(this.nameId);
+    const requestorId = Number(item.name_id);
+    
+    return userId === requestorId;
+  },
+    closeEditRequestForm() {
+      this.showEditRequestForm = false;
+    },
+    
+    handleEditRequestSuccess(updatedRequest) {  
+      let documentsArray = [];
+  
+  if (updatedRequest.documents) {
+    if (Array.isArray(updatedRequest.documents)) {
+      documentsArray = updatedRequest.documents;
+    } else if (typeof updatedRequest.documents === 'string') {
+      try {
+        documentsArray = JSON.parse(updatedRequest.documents);
+      } catch (e) {
+        console.error('Error parsing documents JSON:', e);
+      }
+    }
+  }
+  this.formData = this.formData.map(item => {
+    if (item.id === updatedRequest.id) {
+      return {
+        ...item,
+        ...updatedRequest,
+        documents: documentsArray.map(doc => ({
+          name: doc.name || doc,
+          remarks: doc.remarks?.trim() ? doc.remarks : "No Remarks",
+        }))
+      };
+    }
+    return item;
+  });      
+  
+  this.showEditRequestForm = false;
+  alert("Request updated successfully!");
+},
+    
+    handleEditRequestError(error) {
+      console.error("Error updating request:", error);
+      alert("Failed to update request. Please try again.");
+    },
+    fetchDivisions() {
+       axios
+         .get(`${API_BASE_URL}/get_divisions_json`)
+         .then((response) => {
+           this.divisions = response.data;
+         })
+         .catch((error) => {
+           console.error("Error fetching divisions:", error);
+         });
+     },
     openRatingPopup(item) {
       this.currentItem = item;
       this.showRatingPopup = true;
@@ -931,47 +1008,34 @@ export default {
     isAdmin() {
       return this.nameId === "30" || this.nameId === "76"; // Check if the user is an admin
     },
-    // reversedFormData() {
-    //   return this.formData
-    //     .slice()
-    //     .reverse()
-    //     .filter((item) => {
-    //       const paddedToNum = this.padWithZeroes(item.to_num);
-    //       return (
-    //         paddedToNum.includes(this.searchQuery) ||
-    //         String(this.getName(item.name_id))
-    //           .toLowerCase()
-    //           .includes(this.searchQuery.toLowerCase())
-    //       );
-    //     });
-    // },
-    processedFormData(){
+   
+    processedFormData() {
       return this.formData
-      .filter((item) => {
-        const requestorName = this.getName(item.name_id);
-        const documentNames = this.documents
-        .map((doc)=> (doc.name ? doc.name.toLowerCase() : ""))
-        .join(" ");
+        .filter((item) => {
+          const requestorName = this.getName(item.name_id).toLowerCase();
+          const documentNames = item.documents
+            .map((doc) => (doc.name ? doc.name.toLowerCase() : ""))
+            .join(" ");
 
-        const query = this.searchQuery.toLowerCase();
+          const query = this.searchQuery.toLowerCase();
 
-        const matchesSearches =
-        requestorName.toLowerCase().includes(query) ||
-        documentNames.includes(query);
+          const matchesSearch =
+            requestorName.includes(query) || documentNames.includes(query);
 
-        if (!matchesSearches) return false;
+          if (!matchesSearch) return false;
 
-        if(this.selectedStatus !== "All"){
-          return item.documents.some(
-            (doc) =>
-            doc.remarks.trim().toLowerCase() ===
-            this.selectedStatus.toLowerCase()
-          );
-        }
+          if (this.selectedStatus !== "All") {
+            return item.documents.some(
+              (doc) =>
+                doc.remarks.trim().toLowerCase() ===
+                this.selectedStatus.toLowerCase()
+            );
+          }
+
           return true;
-      } )
-      .slice()
-      .reverse();
+        })
+        .slice() 
+        .reverse(); 
     },
   },
 };
