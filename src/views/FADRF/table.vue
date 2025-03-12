@@ -110,10 +110,18 @@
                   v-if="Array.isArray(item.documents) && item.documents.length"
                 >
                   <span
-                    v-for="(doc, docIndex) in item.documents"
-                    :key="'remarks-' + docIndex"
+                    v-if="allDocumentsReleased(item.documents)"
+                    class="released-text"
                   >
-                    {{ doc.remarks || "No remarks" }} <br />
+                    All documents released
+                  </span>
+                  <span v-else>
+                    <span
+                      v-for="(doc, docIndex) in item.documents"
+                      :key="'remarks-' + docIndex"
+                    >
+                      {{ doc.remarks || "No remarks" }} <br />
+                    </span>
                   </span>
                 </span>
                 <span v-else>No remarks</span>
@@ -122,7 +130,7 @@
                 <span v-if="item.rating !== null">
                   <span v-for="n in item.rating" :key="n">⭐</span>
                 </span>
-                <button 
+                <button
                   v-else-if="nameId == item.name_id"
                   @click="openRatingPopup(item)"
                 >
@@ -132,10 +140,13 @@
               </td>
 
               <td>
-                <button 
-                v-if="canEditRequest(item)" 
-                @click="openEditRequestForm(item)">Edit</button>    
-               <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
+                <button
+                  v-if="canEditRequest(item)"
+                  @click="openEditRequestForm(item)"
+                >
+                  Edit
+                </button>
+                <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
                   Remarks
                 </button>
                 <button @click="generatePDF(item, getName(item.name_id))">
@@ -153,16 +164,16 @@
           </tbody>
         </table>
         <editform
-            v-if="showEditRequestForm"
-            :requestData="currentItem"
-            :requestId="currentItem.id"
-            :names="names"
-            :employees="employees"
-            :divisions="divisions"
-            @close="closeEditRequestForm"
-            @update-success="handleEditRequestSuccess"
-            @update-error="handleEditRequestError"
-          />
+          v-if="showEditRequestForm"
+          :requestData="currentItem"
+          :requestId="currentItem.id"
+          :names="names"
+          :employees="employees"
+          :divisions="divisions"
+          @close="closeEditRequestForm"
+          @update-success="handleEditRequestSuccess"
+          @update-error="handleEditRequestError"
+        />
         <Note
           v-if="addNote"
           :initialNote="currentItem.note || ''"
@@ -265,7 +276,6 @@ export default {
       selectedName: "",
       selectedSignature: "",
       selectedItem: [],
-     
 
       documentList: [
         "PURCHASE REQUEST - REQUISITION AND ISSUE SLIP",
@@ -610,61 +620,63 @@ export default {
       this.showEditRequestForm = true;
     },
     canEditRequest(item) {
-    const userId = Number(this.nameId);
-    const requestorId = Number(item.name_id);
-    
-    return userId === requestorId;
-  },
+      const userId = Number(this.nameId);
+      const requestorId = Number(item.name_id);
+
+      return (
+        userId === requestorId && !this.allDocumentsReleased(item.documents)
+      );
+    },
     closeEditRequestForm() {
       this.showEditRequestForm = false;
     },
-    
-    handleEditRequestSuccess(updatedRequest) {  
+
+    handleEditRequestSuccess(updatedRequest) {
       let documentsArray = [];
-  
-  if (updatedRequest.documents) {
-    if (Array.isArray(updatedRequest.documents)) {
-      documentsArray = updatedRequest.documents;
-    } else if (typeof updatedRequest.documents === 'string') {
-      try {
-        documentsArray = JSON.parse(updatedRequest.documents);
-      } catch (e) {
-        console.error('Error parsing documents JSON:', e);
+
+      if (updatedRequest.documents) {
+        if (Array.isArray(updatedRequest.documents)) {
+          documentsArray = updatedRequest.documents;
+        } else if (typeof updatedRequest.documents === "string") {
+          try {
+            documentsArray = JSON.parse(updatedRequest.documents);
+          } catch (e) {
+            console.error("Error parsing documents JSON:", e);
+          }
+        }
       }
-    }
-  }
-  this.formData = this.formData.map(item => {
-    if (item.id === updatedRequest.id) {
-      return {
-        ...item,
-        ...updatedRequest,
-        documents: documentsArray.map(doc => ({
-          name: doc.name || doc,
-          remarks: doc.remarks?.trim() ? doc.remarks : "No Remarks",
-        }))
-      };
-    }
-    return item;
-  });      
-  
-  this.showEditRequestForm = false;
-  alert("Request updated successfully!");
-},
-    
+      this.formData = this.formData.map((item) => {
+        if (item.id === updatedRequest.id) {
+          return {
+            ...item,
+            ...updatedRequest,
+            documents: documentsArray.map((doc) => ({
+              name: doc.name || doc,
+              remarks: doc.remarks?.trim() ? doc.remarks : "No Remarks",
+            })),
+          };
+        }
+        return item;
+      });
+
+      this.showEditRequestForm = false;
+      alert("Request updated successfully!");
+    },
+
     handleEditRequestError(error) {
       console.error("Error updating request:", error);
       alert("Failed to update request. Please try again.");
     },
     fetchDivisions() {
-       axios
-         .get(`${API_BASE_URL}/get_divisions_json`)
-         .then((response) => {
-           this.divisions = response.data;
-         })
-         .catch((error) => {
-           console.error("Error fetching divisions:", error);
-         });
-     },
+      axios
+        .get(`${API_BASE_URL}/get_divisions_json`)
+        .then((response) => {
+          this.divisions = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching divisions:", error);
+        });
+    },
     openRatingPopup(item) {
       this.currentItem = item;
       this.showRatingPopup = true;
@@ -818,13 +830,13 @@ export default {
     },
 
     handleRating(rating) {
-      if (!this.currentItem || this.currentItem.id){
+      if (!this.currentItem || this.currentItem.id) {
         alert("No Request Selected");
-        return
+        return;
       }
       const userId = Number(this.nameId);
       const requestorId = Number(this.currentItem.name_id);
-      if ((userId === 30 || userId === 76) && userId !== requestorId){
+      if ((userId === 30 || userId === 76) && userId !== requestorId) {
         alert("You are not allowed to rate this request.");
         return;
       }
@@ -847,6 +859,12 @@ export default {
         .finally(() => {
           this.showRatingPopup = false;
         });
+    },
+    allDocumentsReleased(documents) {
+      if (!documents || documents.length === 0) {
+        return false;
+      }
+      return documents.every((doc) => doc.remarks === "Released");
     },
     closeEdit() {
       this.selectedTravelOrderIdEdit = 0;
@@ -1008,7 +1026,7 @@ export default {
     isAdmin() {
       return this.nameId === "30" || this.nameId === "76"; // Check if the user is an admin
     },
-   
+
     processedFormData() {
       return this.formData
         .filter((item) => {
@@ -1034,8 +1052,8 @@ export default {
 
           return true;
         })
-        .slice() 
-        .reverse(); 
+        .slice()
+        .reverse();
     },
   },
 };
@@ -1255,7 +1273,11 @@ button:hover {
   background-color: black;
   color: white;
 }
-
+.released-text {
+  font-weight: bold;
+  font-size: 18px;
+  color: red;
+}
 .styled-select {
   appearance: none;
   background-color: #f9f9f9;
