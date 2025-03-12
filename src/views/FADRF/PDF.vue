@@ -1,6 +1,7 @@
 <template>
   <div>
     <!-- PDF component doesn't need a visual interface -->
+     <p></p>
   </div>
 </template>
 
@@ -14,6 +15,10 @@ export default {
       type: Object,
       required: true
     },
+    otherDocumentText: {
+    type: String,
+    default: ""
+  },
     names: {
       type: Object,
       required: true
@@ -38,12 +43,21 @@ export default {
     
     getName(nameId) {
       const name = this.names[nameId - 1];
+      
       if (name) {
         const { first_name, middle_init, last_name } = name;
         return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
       }
       return 'Unknown';
     },
+    extractOthersText(documents) {
+      // Look for a document that starts with 'Others:'
+      const othersDoc = documents.find(doc => 
+        typeof doc === 'string' && doc.startsWith('Others:')
+      );
+    },
+    
+
     generatePDF(item) {
       // Create a reference to your PDF component
       const pdfComponent = this.$refs.pdfComponent;
@@ -82,14 +96,38 @@ export default {
         let othersText = "";
         if (this.item.otherDocuments) {
           othersText = this.item.otherDocuments;
-        } else if (typeof this.item.documents === 'string' && this.item.documents.includes('Others:')) {
+        } else if (typeof this.item.documents === 'string' && this.item.documents.includes('others:')) {
           // Alternative: if you're storing it as "Others: TEXTHERE" in the documents array
-          const othersMatch = this.item.documents.match(/Others:\s*(.+?)(?:,|$)/);
+          const othersMatch = this.item.documents.match(/others:\s*(.+?)(?:,|$)/);
           if (othersMatch && othersMatch[1]) {
             othersText = othersMatch[1].trim();
           }
         }
-        
+
+        const possibleOthersTextSources = [
+    item.otherDocuments,
+    item.otherDocumentText,
+    item.others,
+    item.other_documents,
+
+    // If documents is an array, look for an entry starting with "Others:"
+    ...(Array.isArray(item.documents) 
+      ? item.documents.filter(doc => typeof doc === 'string' && doc.startsWith('Others:')) 
+      : [])
+  ];
+  othersText = possibleOthersTextSources.find(source => 
+    source && source.trim() !== ''
+  ) || '';
+  if (typeof othersText === 'string' && othersText.startsWith('Others:')) {
+    othersText = othersText.replace('Others:', '').trim();
+    
+  }
+  if (othersText) {
+      const othersElement = document.createElement("div");
+      othersElement.textContent = `Others: ${othersText}`;
+      othersElement.style.marginTop = "10px";
+      printableElement.appendChild(othersElement);
+    }
         // Function to generate rating option HTML based on current rating
         const generateRatingOption = (value, label) => {
           // Only parse and apply rating if it exists and is not null/undefined/empty
@@ -109,292 +147,7 @@ export default {
           `;
         };
         
-        printableElement.innerHTML = `
-          <body>
-            <div class="container">
-              <div class="header">
-                <div class="logo-section">
-                  <img src="${this.logoPath}" alt="DENR Logo" class="logo">
-                  <div class="title-section">
-                    <h3>Republic of the Philippines</h3>
-                    <h4>Department of Environment and Natural Resources</h4>
-                    <h4>MINES AND GEOSCIENCES BUREAU</h4>
-                    <h4>Regional Office No. X</h4>
-                    <p>DENR-X Compound, Puntod, Cagayan de Oro City</p>
-                    <p>Telefax Nos. (088) 856-2110;(088) 856-1331; Email: region10@mgb.gov.ph</p>
-                  </div>
-                </div>
-                <div class="certification-section">
-                  <div class="certification-images">
-                    <img src="/api/placeholder/50/50" alt="ISO Certification">
-                    <img src="/api/placeholder/50/50" alt="Quality Certification">
-                  </div>
-                </div>
-              </div>
-              
-              <div class="form-title">REQUEST SLIP FORM</div>
-              <div class="admin-section">(Administrative Section-Procurement/Property)</div>
-              
-              <div class="form-content">
-                <table>
-                  <tr class="form-row">
-                    <td><strong>Requestor:</strong></td>
-                    <td>${this.getName(this.item.name_id)}</td>
-                    <td rowspan="3"></td>
-                  </tr>
-                  <tr class="form-row">
-                    <td><strong>Division:</strong></td>
-                    <td>${this.findDivisionName(this.item.division_id)}</td>
-                  </tr>
-                  <tr class="form-row">
-                    <td><strong>Date & Time:</strong></td>
-                    <td>${this.item.date}</td>
-                  </tr>
-                  
-                  <tr class="documents-header">
-                    <td colspan="2">DOCUMENT(S) REQUESTED</td>
-                    <td style="width: 20%;">Time Requested</td>
-                    <td style="width: 30%;">Date and Time Released</td>
-                  </tr>
 
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? 'checked' : ''} /></td>
-                    <td>PURCHASE REQUEST - REQUISITION AND ISSUE SLIP</td>
-                    <td>${requestedDocs.includes('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? 'checked' : ''} /></td>
-                    <td>CERTIFICATE OF EMPLOYMENT WITH COMPENSATION</td>
-                    <td>${requestedDocs.includes('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('INVENTORY CUSTODIAN SLIP') ? 'checked' : ''} /></td>
-                    <td>INVENTORY CUSTODIAN SLIP</td>
-                    <td>${requestedDocs.includes('INVENTORY CUSTODIAN SLIP') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? 'checked' : ''} /></td>
-                    <td>PROPERTY ACKNOWLEDGEMENT RECEIPT</td>
-                    <td>${requestedDocs.includes('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('GATE PASS') ? 'checked' : ''} /></td>
-                    <td>GATE PASS</td>
-                    <td>${requestedDocs.includes('GATE PASS') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('PO FUEL') ? 'checked' : ''} /></td>
-                    <td>PO FUEL</td>
-                    <td>${requestedDocs.includes('PO FUEL') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('PROPERTY RETURN SLIP') ? 'checked' : ''} /></td>
-                    <td>PROPERTY RETURN SLIP</td>
-                    <td>${requestedDocs.includes('PROPERTY RETURN SLIP') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('R&M OF MOTOR VEHICLES') ? 'checked' : ''} /></td>
-                    <td>R&M OF MOTOR VEHICLES</td>
-                    <td>${requestedDocs.includes('R&M OF MOTOR VEHICLES') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? 'checked' : ''} /></td>
-                    <td>JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C</td>
-                    <td>${requestedDocs.includes('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  <tr class="documents-row">
-                    <td><input type="checkbox" ${requestedDocs.includes('Others') ? 'checked' : ''} /></td>
-                    <td>Others: ${othersText ? othersText : '_______________________________'}</td>
-                    <td>${requestedDocs.includes('Others') ? timeRequested : ''}</td>
-                    <td></td>
-                  </tr>
-                  
-                  <tr>
-                    <td colspan="4" class="rating-label">RATING</td>
-                  </tr>
-                  <tr class="rating-row">
-                    <td colspan="4">
-                      ${generateRatingOption(4, 'Very Satisfied')}
-                      ${generateRatingOption(3, 'Satisfied')}
-                      ${generateRatingOption(2, 'Dissatisfied')}
-                      ${generateRatingOption(1, 'Very dissatisfied')}
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </body>
-
-          <style scoped>
-            body {
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding: 0;
-              color: #000;
-            }
-            
-            .container {
-              width: 100%;
-              max-width: 800px;
-              margin: 0 auto;
-              border: 1px solid #ccc;
-            }
-            
-            .header {
-              display: flex;
-              border-bottom: 1px solid #ccc;
-              padding: 10px;
-            }
-            
-            .logo-section {
-              display: flex;
-              width: 70%;
-            }
-            
-            .logo {
-              width: 100px;
-              height: 100px;
-            }
-            
-            .title-section {
-              padding-left: 10px;
-              line-height: 1.2;
-            }
-            
-            .title-section h3, .title-section h4 {
-              margin: 0;
-            }
-            
-            .title-section h3 {
-              font-weight: normal;
-            }
-            
-            .title-section h4 {
-              color: #000080;
-            }
-            
-            .title-section p {
-              margin: 5px 0;
-              font-size: 13px;
-            }
-            
-            .certification-section {
-              width: 30%;
-              display: flex;
-              justify-content: flex-end;
-              align-items: center;
-            }
-            
-            .certification-images img {
-              height: 50px;
-            }
-            
-            .form-title {
-              text-align: center;
-              font-weight: bold;
-              font-size: 18px;
-              margin: 10px 0;
-            }
-            
-            .admin-section {
-              text-align: center;
-              margin-bottom: 10px;
-              font-style: italic;
-            }
-            
-            .form-content {
-              width: 100%;
-            }
-            
-            table {
-              width: 100%;
-              border-collapse: collapse;
-            }
-            
-            td {
-              border: 1px solid #ccc;
-              padding: 5px 10px;
-            }
-            
-            .form-row td:first-child {
-              width: 20%;
-              font-weight: bold;
-            }
-            
-            .form-row td:nth-child(2) {
-              width: 50%;
-              border-bottom: 1px solid #000;
-            }
-            
-            .form-row td:last-child {
-              width: 30%;
-            }
-            
-            .documents-header td {
-              font-weight: bold;
-              text-align: center;
-            }
-            
-            .documents-row td:first-child {
-              width: 5%;
-              text-align: center;
-            }
-            
-            .documents-row td:nth-child(2) {
-              width: 50%;
-            }
-            
-            .checkbox {
-              width: 15px;
-              height: 15px;
-              border: 1px solid #000;
-              display: inline-block;
-            }
-            
-            .rating-row td {
-              padding: 0;
-            }
-            
-            .rating-label {
-              font-weight: bold;
-              padding: 5px 10px;
-            }
-            
-            .star {
-              display: inline-block;
-              margin-right: 5px;
-              color: #000080;
-            }
-            
-            .rating-option {
-              display: flex;
-              align-items: center;
-              margin: 5px 0;
-              padding-left: 60px;
-            }
-            
-            .rating-option.selected {
-              font-weight: bold;
-            }
-            
-            .star.filled {
-              color: black;
-            }
-            
-            .star.empty {
-              color: #ccc;
-            }
-          </style>
-        `;
 
         document.body.appendChild(printableElement);
         
