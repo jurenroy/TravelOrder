@@ -62,7 +62,7 @@ const fetchData = async () => {
       fetch(`${API_BASE_URL}/get_divisions_json/`).then(res => res.json())
     ]);
 
-    if (parseInt(nameid.value) === 2 || parseInt(nameid.value) === 76) {
+    if (parseInt(nameid.value) === nameid.value) {
       names.value = namesRes; 
     } else {
       names.value = namesRes.filter(name => name.name_id === parseInt(nameid.value));
@@ -273,16 +273,16 @@ font-size: 16px;
 }
 
 select, input {
-  font-size: 15px; /* Increase text size inside input and dropdown */
-  padding: 15px; /* Add more padding for better readability */
+  font-size: 15px;
+  padding: 15px; 
 }
 
 .title, .subtitle {
   text-align: center;
-  font-size: 4px; /* Increase font size */
+  font-size: 4px; 
   font-weight: bold;
-  color: #8b5e34; /* Elegant brown tone */
-  text-transform: uppercase; /* Make it stand out */
+  color: #8b5e34; 
+  text-transform: uppercase; 
   margin-bottom: 10px;
 }
 
@@ -318,8 +318,8 @@ select, input {
 
 /* Enhance textboxes */
 input[type="text"], select {
-  width: 100%; /* Make input fields take full width */
-  padding: 12px; /* Increase padding for better usability */
+  width: 100%; 
+  padding: 12px; 
   font-size: 18px; /* Increase font size for better readability */
   border: 2px solid #8b5e34; /* Add a stylish border */
   border-radius: 8px; /* Round the edges */

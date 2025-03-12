@@ -1,6 +1,7 @@
 <template>
   <div class="note-popup">
     <div class="popup-content">
+       <button class="close-button" @click="$emit('close-note')">&times;</button>
       <h3>{{ note ? "Edit Note" : "Add Note" }}</h3>
       <textarea v-model="note" placeholder="Write your note here..."
        rows="4">
@@ -11,7 +12,6 @@
           @click="saveNote">
           Save
         </button>
-        <button @click="$emit('close-note')">Close</button>
       </div>
     </div>
   </div>
@@ -46,26 +46,28 @@ export default {
 <style scoped>
 .note-popup {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: rgba(0, 0, 0, 0.5);
   z-index: 999;
-  backdrop-filter: blur(10px); /* Added background blur */
+  backdrop-filter: blur(10px);
 }
 
 .popup-content {
-  background: linear-gradient(145deg, #fff8f0, #e6d5c3); /* Adjusted background for content */
-  padding: 60px; /* Match padding */
-  border-radius: 8px; /* Match border radius */
+  position: relative;
+  background: linear-gradient(145deg, #fff8f0, #e6d5c3);
+  padding: 60px;
+  border-radius: 8px;
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1), -8px -8px 20px rgba(255, 255, 255, 0.7);
   text-align: center;
-  color: #333129; /* Match text color */
+  color: #333129;
+  width: 80%;
+  max-width: 500px;
 }
 
 h3 {
@@ -85,17 +87,16 @@ textarea {
 
 .popup-buttons {
   display: flex;
-  justify-content: space-between; /* Match button layout */
+  justify-content: center;
   margin-top: 10px;
-  gap: 10px; /* Match gap */
 }
 
 .popup-buttons button {
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  background-color: white; /* Set button background to white */
-  border: 2px solid black; /* Match border */
+  background-color: white;
+  border: 2px solid black;
   padding: 10px 20px;
   border-radius: 16px;
   font-size: 16px;
@@ -114,12 +115,30 @@ textarea {
   left: -100%;
   width: 100%;
   height: 100%;
-  background-color: rgba(141, 71, 14, 0.856); /* Match hover background */
+  background-color: rgba(141, 71, 14, 0.856);
   transition: left 0.3s ease-in-out;
   z-index: -1;
 }
 
 .popup-buttons button:hover {
-  color: rgb(0, 0, 0); /* Match hover text color */
+  color: rgb(0, 0, 0);
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 50px;
+  color: #ff9800;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  margin: 0;
+}
+
+.close-button:hover {
+  color: #ffb74d;
 }
 </style>

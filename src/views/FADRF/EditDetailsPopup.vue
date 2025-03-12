@@ -3,15 +3,24 @@
     <div class="popup-content">
       <div class="close-button" @click="closePopup">X</div>
       <h2>Document Remarks</h2>
-      <div v-for="(document, index) in documents" :key="index" class="document-status">
+      <div
+        v-for="(document, index) in documents"
+        :key="index"
+        class="document-status"
+      >
         <span>{{ document.name }}</span>
-        <button 
-          @click="toggleRemarks(index)" 
-          :class="{'released': document.remarks === 'Released'}"
+        <button
+          @click="toggleRemarks(index)"
+          :class="{ released: document.remarks === 'Released' }"
         >
-          {{ document.remarks === 'Released' ? 'Unrelease' : 'Release' }}
+          {{ document.remarks === "Released" ? "Unrelease" : "Release" }}
         </button>
-        <span :class="{'status-indicator': true, 'released-text': document.remarks === 'Released'}">
+        <span
+          :class="{
+            'status-indicator': true,
+            'released-text': document.remarks === 'Released',
+          }"
+        >
           {{ document.remarks }}
         </span>
       </div>
@@ -27,8 +36,8 @@ export default {
   props: {
     documents: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     toggleRemarks(index) {
@@ -36,41 +45,44 @@ export default {
       const currentRemark = this.documents[index].remarks;
 
       // Toggle the remarks of the document
-      this.documents[index].remarks = currentRemark === 'Released' ? 'Unreleased' : 'Released';
+      this.documents[index].remarks =
+        currentRemark === "Released" ? "Incomplete" : "Released";
 
       // Show an alert based on the new state
-      if (this.documents[index].remarks === 'Released') {
+      if (this.documents[index].remarks === "Released") {
         alert(`Document "${this.documents[index].name}" has been released.`);
       } else {
-        alert(`Document "${this.documents[index].name}" has been unreleased.`);
+        alert(
+          `Document "${this.documents[index].name}" has been set as pending.`
+        );
       }
 
       // Emit the updated documents to the parent component
       this.emitUpdatedDocuments();
     },
     getOverallRemarks() {
-      console.log(this.documents)
+      console.log(this.documents);
       const totalDocuments = this.documents.length;
-      const releasedCount = this.documents.filter(doc => doc.remarks === 'Released').length;
+      const releasedCount = this.documents.filter(
+        (doc) => doc.remarks === "Released"
+      ).length;
 
       if (releasedCount === totalDocuments && totalDocuments > 0) {
-        return 'All documents released';
+        return "All documents released";
       } else {
         return `${releasedCount}/${totalDocuments} documents`;
       }
-
-      
     },
     emitUpdatedDocuments() {
       // Emit the updated documents to the parent component
-      this.$emit('submit', this.documents);
+      this.$emit("submit", this.documents);
     },
     closePopup() {
       // Emit an event to close the popup without submitting
-      this.$emit('close');
-    }
-  }
-};      
+      this.$emit("close");
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -92,11 +104,12 @@ export default {
   background: linear-gradient(145deg, #fff8f0, #e6d5c3);
   padding: 40px;
   border-radius: 16px;
-  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1), -8px -8px 20px rgba(255, 255, 255, 0.7);
+  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1),
+    -8px -8px 20px rgba(255, 255, 255, 0.7);
   text-align: center;
   width: 1000px;
   color: #333;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
   position: relative;
 }
 h2 {
@@ -141,7 +154,7 @@ h2 {
 }
 
 .released-btn {
-  background-color: #2E8B57 !important; /* Green */
+  background-color: #2e8b57 !important; /* Green */
   color: white;
 }
 
@@ -164,7 +177,7 @@ h2 {
 }
 
 .status-indicator.released-text {
-  color: #2E8B57; /* Green text when Released */
+  color: #2e8b57; /* Green text when Released */
 }
 
 .status-summary {
