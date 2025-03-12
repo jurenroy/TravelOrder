@@ -45,7 +45,6 @@
           <tbody>
             <tr v-for="(item, index) in reversedFormData" :key="index">
               <td>{{ getName(item.name_id) }}
-              {{ item.documents[0].releaseDate}}
               </td>
               <td>
                 <span v-if="Array.isArray(item.documents) && item.documents.length">
@@ -73,7 +72,7 @@
 
               <td>
                 <button v-if="isAdmin" @click="openEditDetailsPopup(item)">Edit</button>
-                <button @click="generatePDF(item)">View PDF</button>
+                <button @click="generatePDF(item,getName(item.name_id) )">View PDF</button>
                 <button @click="add(item)">View Note</button>
               </td> 
             </tr>
@@ -90,6 +89,11 @@
       </div>
     </div>
   </div>
+  <PDF 
+      :item="selectedItem"
+      :name="selectedName"
+      :signature="selectedSignature"
+      :documents="documentList"/>
 </template>
 
 <script>
@@ -172,6 +176,9 @@ export default {
       dateTimeReleased: '',
       rating: null,
       nameId: localStorage.getItem('nameId'),
+      selectedName: '',
+      selectedSignature: '',
+      selectedItem: [],
 
   documentList: [
     'PURCHASE REQUEST - REQUISITION AND ISSUE SLIP',
@@ -183,7 +190,6 @@ export default {
     'PROPERTY RETURN SLIP',
     'R&M OF MOTOR VEHICLES',
     'JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C',
-    'othersDoc',
     'Others'
   ],
 
@@ -208,6 +214,7 @@ export default {
     this.fetchDivisions();
     this.fetchDocuments();
     console.log(this.data);
+    this.loadAccounts()
   },
 
   methods: {
@@ -221,7 +228,7 @@ data() {
 methods: {
   otherDocumentText() {
     console.log('Initial item:', item);
-    console.log('Processed Docs:', processedDocs);
+    console.log('Processed Docs:', processedDocs);  
     
     // First check if otherDocuments is directly available
     if (item.otherDocuments) {
@@ -281,6 +288,7 @@ methods: {
   return 'UNKNOWN';
 },
 
+
 fetchDivisions() {
     axios.get(`${API_BASE_URL}/get_divisions_json`) // Adjust the endpoint as necessary
       .then(response => {
@@ -290,6 +298,41 @@ fetchDivisions() {
         console.error('Error fetching divisions:', error);
       });
   },
+  async loadAccounts() {
+  try {
+    // Replace with your actual API call
+    const response = await fetch(`${API_BASE_URL}/get_accounts_json`);
+    const data = await response.json();
+    this.accounts = data;
+    console.log("Accounts loaded successfully:", this.accounts);
+    return this.accounts;
+  } catch (error) {
+    console.error("Error loading accounts:", error);
+    this.accounts = [];
+    return [];
+  }
+},
+  async fetchAccounts() {
+
+try {
+    const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
+
+    this.accounts = response.data  
+
+} catch (error) {
+    console.error('Error fetching accounts:', error);
+}
+},
+
+async fetchNames() {
+try {
+    const response = await axios.get(`${API_BASE_URL}/get_names_json`);
+    this.names = response.data;
+} catch (error) {
+    console.error('Error fetching names:', error);
+}
+},
+
   parseRequestedDocuments() {
       // Make sure documents is an array
       const requestedDocs = Array.isArray(this.item.documents) ? this.item.documents : JSON.parse(this.item.documents || '[]');
@@ -356,763 +399,75 @@ fetchDivisions() {
       console.log('No other document text found, returning empty string');
       return "";
     },
-    generatePDF(item) { 
-  this.$nextTick(() => {
-    const printableElement = document.createElement("div");
-    printableElement.id = "printableArea";
-    printableElement.style.padding = "20px";
-    printableElement.style.fontFamily = "Arial, sans-serif";
-    printableElement.style.textAlign = "center";
-    
-    const otherDocumentText = this.othersDocName || ""; // Use the stored name
 
-    const checkDocuments = () => {
-      documents.value.forEach(doc => {
-        doc.checked = item.documents.includes(doc.name);
-      });
-    };
 
-    const formatDateTime = (dateString) => {
-  if (!dateString) return '';
 
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return '';
-
-    // Extracting components
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    const year = date.getUTCFullYear();
-
-    let hour = date.getUTCHours();
-    const minute = String(date.getUTCMinutes()).padStart(2, '0');
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    hour = hour % 12; // Convert to 12-hour format
-    hour = hour ? String(hour).padStart(2, '0') : '12'; // Handle midnight
-
-    // Format: "MM/DD/YYYY, HH:MM AM/PM"
-    return `${month}/${day}/${year}, ${hour}:${minute} ${ampm}`;
-  } catch (e) {
-    console.error("Error formatting date:", e);
-    return '';
-  }
-};
-
-    const getProcessedDocuments = () => {
-      if (!item.documents) return [];
-      
-      // If documents is a string, try to parse it
-      if (typeof item.documents === 'string') {
-        try {
-          return JSON.parse(item.documents);
-        } catch (e) {
-          console.error("Error parsing documents JSON:", e);
-          return [];
-        }
-      }
-      
-      // If documents is already an array, return it properly formatted
-      if (Array.isArray(item.documents)) {
-        return item.documents.map(doc => {
-          // If doc is already an object with name and releaseDate, return it
-          if (typeof doc === 'object' && doc !== null) {
-            return doc;
-          }
-          // Otherwise, create an object with default values
-          return { name: doc, releaseDate: '', remarks: '' };
-        });
-      }
-      
-      return [];
-    };
-    
-    const processedDocs = getProcessedDocuments();
-
-    const isDocumentRequested = (docName) => {
-      console.log(docName)
-      return processedDocs.some(doc => 
-        (typeof doc === 'object' && doc.name === docName) || doc === docName
-      );
-    };
-    
-    const getTimeReleasedForDoc = (docName) => {
-  // If it's the 'othersDoc', get the custom name
-  if (docName === 'othersDoc') {
-    docName = getOthersDocumentName();
-  }
-
-  const doc = processedDocs.find(d => 
-    (typeof d === 'object' && d.name === docName) || d === docName
-  );
-
-  let isReleased = false;
-  let releaseTime = '';
+// Add this method to your component
+async getSignatureByNameId(nameId) {
+  console.log('getSignatureByNameId called with nameId:', nameId);
   
-  if (doc && typeof doc === 'object') {
-    // Check if the document has a release date or remarks containing "Released"
-    if (doc.releaseDate) {
-      isReleased = true;
-      releaseTime = formatDateTime(doc.releaseDate);
-    } else if (doc.remarks && doc.remarks.includes('Released')) {
-      isReleased = true;
-      releaseTime = formatDateTime(new Date());
-    }
+  // If accounts aren't loaded yet, load them now
+  if (!this.accounts || !Array.isArray(this.accounts)) {
+    console.log('Accounts not loaded, fetching now...');
+    await this.fetchAccounts();
   }
   
-  return releaseTime;
-};
-const getOthersDocumentName = () => {
-  const othersDocInput = document.querySelector('input[name="othersDocInput"]');
-  return othersDocInput ? othersDocInput.value.trim() : '';
-};
-    const releasedBy = (docName) => {
-      const doc = processedDocs.find(d => 
-        (typeof d === 'object' && d.name === docName) || d === docName
-      );
-      
-      let isReleased = false;
-      
-      if (doc && typeof doc === 'object') {
-        // Check if the document has a release date or remarks containing "Released"
-        if (doc.releaseDate) {
-          isReleased = true;
-        } else if (doc.remarks && doc.remarks.includes('Released')) {
-          isReleased = true;
-        }
-      }
-      
-      // Return "Joanne Rose O. Alvarez" if the document is released
-      return isReleased ? 'Joanne Rose O. Alvarez' : '';
-    };
-
-    // Get Others document information
-    const othersDocumentText = (() => {
-  console.log('Initial item:', item);
-  console.log('Processed Docs:', processedDocs);
-
-  // First check if otherDocuments is directly available
-  if (item.otherDocuments) {
-    console.log('Found otherDocuments:', item.otherDocuments);
-    return item.otherDocuments;
-  } 
+  console.log('Accounts after potential fetch:', this.accounts);
   
-  // Then check if otherDocumentText is available from the form
-  if (item.otherDocumentText) {
-    console.log('Found otherDocumentText:', item.otherDocumentText);
-    return item.otherDocumentText;
+  if (!this.accounts || !Array.isArray(this.accounts)) {
+    console.log('Still no accounts available');
+    return '___________________';
   }
   
-  // Check in the documents array for an "Others" entry with custom name
-  const othersDoc = processedDocs.find(doc => {
-    if (typeof doc === 'object') {
-      // Check if this is the others document (could be renamed from "Others")
-      const isOthersDoc = doc.originalName === "OTHERS" || doc.name.includes("Others:") || doc.name === "Others";
-      console.log('Checking doc:', doc, 'isOthersDoc:', isOthersDoc);
-      return isOthersDoc;
-    }
-    const isOthersDoc = doc === "Others" || doc.includes("Others:");
-    console.log('Checking string doc:', doc, 'isOthersDoc:', isOthersDoc);
-    return isOthersDoc;
-  });
+  const account = this.accounts.find(acc => acc.name_id === parseInt(nameId));
+  console.log('Found account:', account);
   
-  console.log('Found othersDoc:', othersDoc);
-
-  if (othersDoc) {
-    if (typeof othersDoc === 'object') {
-      // If the object has a custom name different from "Others", use that
-      if (othersDoc.name !== "Others" && !othersDoc.name.includes("Others:")) {
-        console.log('Returning custom name:', othersDoc.name);
-        return othersDoc.name;
-      }
-      // If there's additional text stored
-      if (othersDoc.additionalText) {
-        console.log('Returning additionalText:', othersDoc.additionalText);
-        return othersDoc.additionalText;
-      }
-    } else if (typeof othersDoc === 'string' && othersDoc.includes("Others:")) {
-      // Extract the text after "Others:"
-      const match = othersDoc.match(/Others:\s*(.+)$/);
-      if (match && match[1]) {
-        const extractedText = match[1].trim();
-        console.log('Returning extracted text:', extractedText);
-        return extractedText;
-      }
-    }
-  }
-  
-  // Return an empty string if no other document text is found
-  console.log('No other document text found, returning empty string');
-  return "";
-})();
-
-console.log('Final otherDocumentText:', otherDocumentText);
-
-const getOthersDocument = () => {
-  // Log to check if this function is being called
-  console.log("Running getOthersDocument()");
-  
-  const othersDoc = processedDocs.find(doc => {
-    if (typeof doc === 'object') {
-      // Add debug logging
-      console.log("Checking object doc:", doc);
-      const isOthers = doc.name === "Others" || 
-                     doc.name.includes("Others:") || 
-                     doc.originalName === "OTHERS";
-      if (isOthers) console.log("Found Others document:", doc);
-      return isOthers;
-    }
-    // Add debug logging for string docs
-    if (typeof doc === 'string') {
-      console.log("Checking string doc:", doc);
-      const isOthers = doc === "Others" || doc.includes("Others:");
-      if (isOthers) console.log("Found Others document:", doc);
-      return isOthers;
-    }
-    return false;
-  });
-
-  console.log("othersDoc found:", othersDoc);
-  
-  if (!othersDoc) return null;
-  
-  const result = {
-    isRequested: true,
-    name: getDocumentName(othersDoc)
-  };
-  
-  console.log("Returning othersDocument:", result);
-  return result;
-};
-
-// Assign the variable before using it in the template
-function getDocumentName(doc) {
-  if (!doc) return "No document";
-  return typeof doc === "object" ? doc.name || "Unknown" : doc;
-}
-
-// Get othersDocument as before
-const othersDocument = getOthersDocument();
-
-// If no others document found but there is at least one document, add a default one
-const useDefaultOthers = !othersDocument && processedDocs.length > 0;
-
-// Let's try to identify what document info we have available
-console.log("othersDocument:", othersDocument);
-console.log("processedDocs:", processedDocs);
-console.log("item:", item);
-
-
-const nameszzz = item.documents.map(document => document.name).filter(document => !this.documentList.includes(document.name));
-console.log(nameszzz);
-
-// Look for 'others' document in all possible places
-const othersInfo = item.othersDocument || item.customDocument || item.others || 
-                  (processedDocs.find(doc => doc.type === 'others' || doc.name.includes('Others')));
-
-console.log("othersInfo found:", othersInfo);
-console.log("Final othersDocument:", othersDocument);
-    // Function to generate rating option HTML based on current rating
-    const generateRatingOption = (value, label) => {
-      // Only parse and apply rating if it exists and is not null/undefined/empty
-      const hasRating = item.rating !== undefined && item.rating !== null && item.rating !== '';
-      const currentRating = hasRating ? parseInt(item.rating) : null;
-      const isSelected = hasRating && currentRating === value;
-      // Add revision text only for Very dissatisfied rating (value 1)
-      const revisionText = value === 1 ? '<span style="margin-left: 340px; font-weight: normal; ">revised document Feb 2025</span>' : '';
-      
-      return `
-        <div class="rating-option ${isSelected ? 'selected' : ''}">
-          <span class="star ${isSelected ? 'filled' : 'empty'}">${isSelected ? '★' : '☆'}</span>
-          <strong>${value} - ${label}</strong>
-          ${revisionText}
-        </div>
-      `;
-    };
-
-
-    printableElement.innerHTML = `
-    
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="logo-section">
-       <img src="src/assets/logo.png" alt="Logo" width="200" height="200" >
-        <div class="title-section">
-          <h3>Republic of the Philippines</h3>
-          <h4>Department of Environment and Natural Resources</h4>
-          <h4>MINES AND GEOSCIENCES BUREAU</h4>
-          <h4>Regional Office No. X</h4>
-          <p>DENR-X Compound, Puntod, Cagayan de Oro City</p>
-          <p>Telefax Nos. (088) 856-2110;(088) 856-1331; Email: region10@mgb.gov.ph</p>
-        </div>
-      </div>
-      <div class="mgbx-section">
-        <div class="bagongpilipinas">
-          <img src="src/assets/bago.png" alt="bago" width="200" height="200">
-        </div>
-      </div>
-    </div>
-    
-    <div class="form-title">REQUEST SLIP FORM</div>
-    <div class="admin-section">(Administrative Section-Procurement/Property)</div>
-  </div>
-          
-          <div class="form-content">
-            <table>
-  
-
-
-
-                  <tr class="form-row">
-      <td><strong>Requestor:</strong></td>
-      <td>
-        ${this.getName(item.name_id)}
-      </td>
-      <td class="sign">Signature:___________________</td>
-    </tr>
-
-    
-              <tr class="form-row"> 
-                <td><strong>Division:</strong></td>
-                <td>${this.findDivisionName(item.division_id)}</td>
-              </tr>
-              <tr class="form-row" style="border-bottom: 1px solid black !important;">
-                <td><strong>Date & Time Requested:</strong></td>
-                <td>${item.date}</td>
-              </tr>
-              
-              <tr class="documents-header" style="border: 2px solid #000;">
-               <tr class="documents-header">
-              <td colspan="2" >DOCUMENT(S) REQUESTED</td>
-              <td class="underline">Date & Time Released</td>
-              <td class="underline">Released by</td>
-              </tr>
-              
-              <tr class="documents-row">
-                <td><input type="checkbox" ${isDocumentRequested('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP') ? 'checked' : ''} /></td>
-                <td>PURCHASE REQUEST - REQUISITION AND ISSUE SLIP</td>
-                <td>${getTimeReleasedForDoc('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP')}</td>
-                <td>${releasedBy('PURCHASE REQUEST - REQUISITION AND ISSUE SLIP')}</td>
-                <td></td>
-              </tr>
-              <tr class="documents-row">
-                <td><input type="checkbox" ${isDocumentRequested('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION') ? 'checked' : ''} /></td>
-                <td>CERTIFICATE OF EMPLOYMENT WITH COMPENSATION</td>
-                <td>${getTimeReleasedForDoc('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION')}</td>
-                <td>${releasedBy('CERTIFICATE OF EMPLOYMENT WITH COMPENSATION')}</td>
-              </tr>
-         
-              <tr class="documents-row">
-                <td><input type="checkbox" ${isDocumentRequested('INVENTORY CUSTODIAN SLIP') ? 'checked' : ''} /></td>
-                <td>INVENTORY CUSTODIAN SLIP</td>
-                <td>${getTimeReleasedForDoc('INVENTORY CUSTODIAN SLIP')}</td>
-                <td>${releasedBy('INVENTORY CUSTODIAN SLIP')}</td>
-              </tr>
-              <tr class="documents-row">
-                <td><input type="checkbox" ${isDocumentRequested('PROPERTY ACKNOWLEDGEMENT RECEIPT') ? 'checked' : ''} /></td>
-                <td>PROPERTY ACKNOWLEDGEMENT RECEIPT</td>
-                <td>${getTimeReleasedForDoc('PROPERTY ACKNOWLEDGEMENT RECEIPT')}</td>
-                <td>${releasedBy('PROPERTY ACKNOWLEDGEMENT RECEIPT')}</td>
-              </tr>
-              <tr class="documents-row">
-                <td><input type="checkbox" ${isDocumentRequested('GATE PASS') ? 'checked' : ''} /></td>
-                <td>GATE PASS</td>
-                <td>${getTimeReleasedForDoc('GATE PASS')}</td>
-                <td>${releasedBy('GATE PASS')}</td>
-              </tr>
-              <tr class="documents-row">
-                <td><input type="checkbox" ${isDocumentRequested('PO FUEL') ? 'checked' : ''} /></td>
-                <td>PO FUEL</td>
-                <td>${getTimeReleasedForDoc('PO FUEL')}</td>
-                <td>${releasedBy('PO FUEL')}</td>
-              </tr>
-              <tr class="documents-row">
-                <td><input type="checkbox" ${isDocumentRequested('PROPERTY RETURN SLIP') ? 'checked' : ''} /></td>
-                <td>PROPERTY RETURN SLIP</td>
-                <td>${getTimeReleasedForDoc('PROPERTY RETURN SLIP')}</td>
-                <td>${releasedBy('PROPERTY RETURN SLIP')}</td>
-              </tr>
-              <tr class="documents-row">
-                <td><input type="checkbox" ${isDocumentRequested('R&M OF MOTOR VEHICLES') ? 'checked' : ''} /></td>
-                <td>R&M OF MOTOR VEHICLES</td>
-                <td>${getTimeReleasedForDoc('R&M OF MOTOR VEHICLES')}</td>
-                <td>${releasedBy('R&M OF MOTOR VEHICLES')}</td>
-              </tr>
-              <tr class="documents-row">
-                <td><input type="checkbox" ${isDocumentRequested('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C') ? 'checked' : ''} /></td>
-                <td>JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C</td>
-                <td>${getTimeReleasedForDoc('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C')}</td>
-                <td>${releasedBy('JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C')}</td>
-              </tr>
-${(() => {
-  // Check if "Others" is specifically selected
-  const hasOthersSelected = item.documents.some(doc => 
-    doc.name === "Others" || 
-    (typeof doc === 'string' && doc === "Others")
-  );
-
-  // Filter out names that are in the documentList and specifically look for custom entries
-  const customNames = item.documents
-    .find(doc => !this.documentList.includes(doc.name));
-
-    console.log(this.documentList)
-    console.log(customNames)
-    console.log(item.documents)
- 
-    console.log(formatDateTime(customNames.releaseDate))
-    
-  
-  // Show the Others section if there are custom names to display
-  if (customNames) {
-    return `
-      <tr class="documents-row">
-        <td><input type="checkbox" checked /></td>
-        <td>Others: ${customNames.name}</td>
-        <td>${customNames.releaseDate ? customNames.releaseDate: ''}</td>
-        <td></td>
-      </tr>
-    `;
-  } else if (!hasOthersSelected) {
-    // Display "Others: _____" if Others is not selected
-    return `
-      <tr class="documents-row">
-        <td><input type="checkbox" /></td>
-        <td>Others: _____</td>
-        <td></td>
-        <td></td>
-      </tr>
-    `;
+  if (account && account.signature) {
+    console.log('Found signature:', account.signature);
+    return `<img src="${account.signature}" alt="Signature" style="height: 40px; max-width: 150px; display: inline-block;">`;
   } else {
-    // Return empty string if Others is selected but no custom names
-    return '';
+    console.log('No signature found for nameId:', nameId);
+    return '___________________';
   }
-})()}
-              <tr>
-                <td colspan="4" class="rating-label" style="border: none !important;">RATING</td>
-              </tr>
-              <tr class="rating-row" style="border: none !important;">
-               <td colspan="4" style="border-bottom: 1px solid black !important; border-left: none; border-right: none; border-top: none;"> 
-    ${generateRatingOption(4, 'Very Satisfied')} 
-    ${generateRatingOption(3, 'Satisfied')} 
-    ${generateRatingOption(2, 'Dissatisfied')} 
-    ${generateRatingOption(1, 'Very dissatisfied')} 
-</td>
-              </tr>
-            </table>
-          </div>
-        </div>
-      </body>
-
-
-<style scoped>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    color: #000;
-  }
-    body::after {
-      content: url('src/assets/logo.png') url('src/assets/bago.png');
-      display: none;
-    }
-
-    /* Ensure the images are properly rendered */
-    .logo-section img,
-    .bagongpilipinas img {
-      display: block; /* Ensure the images are treated as block elements */
-      visibility: visible; /* Ensure the images are visible */
-    }
-
-.container {
- width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    
-    padding: 0;
-}
-
-  .header {
-    display: flex;
-    border-bottom: 1px solid #ccc;
-    padding: 10px;
-  }
-
-  .header-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-
-  .requestor-section {
-    display: flex;
-    align-items: center;
-    
-  }
-
-  .requestor-label {
-    font-weight: bold;
-    margin-right: 5px;
-  }
-
-  .sign {
-  text decoration: none !important;
-  }
-
-  .signature-label {
-    font-weight: bold;
-    margin-right: 5px;
-  }
-
-  .signature-field {
-    display: inline-block;
-    min-width: 150px;
-    text-align: center;
-    border-bottom: 1px solid #000;
-  }
-
- .logo-section {
-  display: flex;
-  width: 100%;
-  align-items: center; 
-  
-  
-}
-
-.bagongpilipinas {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: flex-end; /* This will push the image to the right */
-}
-  
-.logo-section img {
-  width: 100px;
-  height: 100px;
-  margin-right: 10px;
-  display: block; /* Ensure the image is treated as a block element */
-  visibility: visible; /* Ensure the image is visible */
-  
-
-}
-
-.bagongpilipinas img {
-  width: 130px;
-  height: 130px;
-   display: block; /* Ensure the image is treated as a block element */
-  visibility: visible; /* Ensure the image is visible */
-  
-}
-      .hidden {
-      display: none;
-    }
-  .title-section {
-    padding-left: 10px;
-    line-height: 1.2;
-  }
-
-  .title-section h3, .title-section h4 {
-    margin: 0;
-  }
-
-  .title-section h3 {
-    font-weight: normal;
-  }
-
-  .title-section h4 {
-    color: #000080;
-  }
-
-  .title-section p {
-    margin: 5px 0;
-    font-size: 13px;
-  }
-
-  .certification-section {
-    width: 30%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-
-  .certification-images img {
-    height: 50px;
-  }
-
-  .form-title {
-    text-align: center;
-    font-weight: bold;
-    font-size: 18px;
-    margin: 10px 0;
-  }
-
-  .admin-section {
-    text-align: center;
-    margin-bottom: 10px;
-    font-style: italic;
-    
-  }
-
-  .form-content {
-    width: 100%;
-  }
-.documents-row td {
-  border: none;
-}
-
-
-
-td {
-  border: none;
-  border-bottom: 1px solid #eee; 
-}
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-.documents-header {
-  border: 2px solid #000;
-  font-weight: bold;
-  padding: 8px;
-}
-  
-  td {
-    border: 1px solid #ccc;
-    padding: 5px 10px;
-  }
-
-  .form-row td {
-  border: none;
-}
-  .form-row td strong {
-  font-weight: bold;
-}
-
-  .form-row td:first-child{
-    width: 20%;
-    font-weight: bold;
-    
-  }
-
-.form-row td:nth-child(2) {
-  border: none;
-  border-bottom: 1px solid #000; /* Keep only the bottom border for the value */
-  min-width: 200px; /* Adjust this width to match the signature line length */
-}
-
-  .form-row td:last-child {
-    width: 30%;
-    
-
-  }
-
-  tr.form-row td:last-child {
-  border: none;
-}
-
-
-tr.form-row td:last-child strong {
-  border: none;
-}
-  .documents-header td {
-    font-weight: bold;
-    text-align: center;
-  }
-
-  .documents-row td:first-child {
-    width: 5%;
-    text-align: center;
-  }
-
-  .documents-row td:nth-child(2) {
-    width: 50%;
-  }
-
-  .checkbox {
-    width: 15px;
-    height: 15px;
-    border: 1px solid #000;
-    display: inline-block;
-  }
-
-  
-  .rating-row td {
-    padding: 0;
-    }
-
-  .rating-label {
-    font-weight: bold;
-    padding: 5px 10px;
-    
-  }
-
-  .star {
-    display: inline-block;
-    margin-right: 5px;
-    color: #000080;
-    
-  }
-
-  .rating-option {
-    display: flex;
-    align-items: center;
-    margin: 5px 0;
-    padding-left: 60px;
-    
-  }
-
-  .rating-option.selected {
-    font-weight: bold;
-  }
-
-  .star.filled {
-    color: black;
-  }
-
-  .star.empty {
-    color: #ccc;
-  }
-  .form-row:nth-child(2) td:nth-child(2) {
-  border-bottom: 1px solid #000;
-  min-width: 200px; /* Adjust this width to match the signature line length */
-}
-      </style>
-    `;
-
-    document.body.appendChild(printableElement);
-    
-    // Create an iframe for printing
-    const printFrame = document.createElement('iframe');
-    printFrame.style.display = 'none'; // Hide the iframe
-    document.body.appendChild(printFrame); // Append it to the body
-
-    // Prepare the content for the iframe
-    const printDocument = printFrame.contentWindow.document;
-    printDocument.open();
-    printDocument.write(`
-      <html>
-        <head>
-          <title>Print Request Slip</title>
-          <style>
-            body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-            h2 { margin-bottom: 10px; }
-          </style>
-        </head>
-        <body>${printableElement.innerHTML}</body>
-      </html>
-    `);
-    printDocument.close();
-
-    // Focus on the iframe and trigger print
-    printFrame.contentWindow.focus();
-    printFrame.contentWindow.print();
-
-    // Clean up: remove the iframe after printing
-    printFrame.parentNode.removeChild(printFrame);
-
-    // Remove the printable element from the document
-    document.body.removeChild(printableElement);
-  });
 },
+
+
+getSignatureByNameId(nameId) {
+  console.log('getSignatureByNameId called with nameId:', nameId);
+  console.log('this.accounts:', this.accounts);
+  
+  if (!this.accounts || !Array.isArray(this.accounts)) {
+    console.log('No accounts available or accounts is not an array');
+    return '___________________';
+  }
+  
+  const account = this.accounts.find(acc => {
+    console.log('Checking account:', acc, 'against nameId:', parseInt(nameId));
+    return acc.id === parseInt(nameId);
+  });
+  
+  console.log('Found account:', account);
+  
+  if (account && account.signature) {
+    console.log('Found signature:', account.signature);
+    return `<img src="${account.signature}" alt="Signature" style="height: 40px; max-width: 150px; display: inline-block;">`;
+  } else {
+    console.log('No signature found, using default line');
+    return '___________________';
+  }
+},
+generatePDF(item, name){
+  this.selectedItem = item;
+  this.selectedName = name;
+  this.selectedSignature = "http://202.137.117.84:8011/storage/"+this.accounts.filter(acc => acc.name_id === item.name_id)[0].signature;
+  console.log(this.selectedSignature);
+
+  // Set a delay of 0.5 seconds (500 milliseconds) before calling printzz
+  setTimeout(() => {
+    this.printzz();
+  }, 500);
+},
+
 
 findDivisionName(division_Id) {
   if (this.divisions && this.divisions.length > 0) {
@@ -1452,8 +807,8 @@ console.log(formeme)
 window.onload = function() {
     var img = new Image();
     img.src = 'src/assets/bago.png';
-
-    
+    img.src = 'src/assets/logo.png';
+    img.src = `http://202.137.117.84:8011/storage/VeNHQjkJ3QJIvccRXCrQlSglM4MQqlB706xHXDte.png`
   };
 
 
