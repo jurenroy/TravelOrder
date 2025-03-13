@@ -14,11 +14,12 @@
           <span class="document-name">{{ document.name }}</span>
           <div class="document-controls">
             <button
+              v-if="!allDocumentsReleased"
               class="toggle-button"
               :class="{ released: document.remarks === 'Released' }"
               @click="toggleRemarks(index)"
             >
-              {{ document.remarks === "Released" ? "Unrelease" : "Release" }}
+              {{ document.remarks === "Released" ? "Pending" : "Release" }}
             </button>
             <span
               class="status-badge"
@@ -45,6 +46,16 @@ export default {
       required: true,
     },
   },
+  computed: {
+    allDocumentsReleased() {
+      const totalDocuments = this.documents.length;
+      const releasedCount = this.documents.filter(
+        (doc) => doc.remarks === "Released"
+      ).length;
+      
+      return releasedCount === totalDocuments && totalDocuments > 0;
+    }
+  },
   methods: {
     toggleRemarks(index) {
       // Check the current state of the remarks
@@ -52,7 +63,7 @@ export default {
 
       // Toggle the remarks of the document
       this.documents[index].remarks =
-        currentRemark === "Released" ? "Incomplete" : "Released";
+        currentRemark === "Released" ? "Pending" : "Released";
 
       // Show an alert based on the new state
       if (this.documents[index].remarks === "Released") {
@@ -61,8 +72,17 @@ export default {
         alert(`Document "${this.documents[index].name}" has been set as pending.`);
       }
 
+      if (this.checkAllReleased()) {
+        this.setAllDocumentsReleasedStatus();
+      }
       // Emit the updated documents to the parent component
       this.emitUpdatedDocuments();
+    },
+    checkAllReleased() {
+      return this.documents.every(doc => doc.remarks === "Released");
+    },
+    setAllDocumentsReleasedStatus() {
+      this.$emit("all-released", true);
     },
     getOverallRemarks() {
       console.log(this.documents);

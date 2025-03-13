@@ -122,7 +122,7 @@ const fetchData = async () => {
       fetch(`${API_BASE_URL}/get_divisions_json/`).then((res) => res.json()),
     ]);
 
-    if (parseInt(nameid.value) === 76) {
+    if (parseInt(nameid.value) === nameid.value) {
       names.value = namesRes;
     } else {
       
