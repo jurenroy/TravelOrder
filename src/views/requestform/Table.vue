@@ -286,7 +286,7 @@ export default {
      "LBP BC LIST",
      "CERTIFICATE OF LEAVE CREDITS",
      "PHOTOCOPY OF TRAVEL ORDER",
-     "Others",
+     "OTHERS",
       ],
 
       created() {
