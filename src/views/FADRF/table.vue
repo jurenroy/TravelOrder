@@ -23,14 +23,20 @@
     >
       <otpz />
     </div>
-    <div  class="search-box">
-      <img class="imgsearch" src="../../assets/search.png" />
+
+
+    <div  class="search-box" >
       <input 
         class="pholder" 
-        type="text" 
+        type="text"
+        name="text" 
         v-model="searchQuery" 
         placeholder="Search Name or Documents..." 
-      />
+        />
+        <svg fill="#000000" width="20px" height="20px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+    <path d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z" fill-rule="evenodd"></path>
+</svg>
+      
   </div>
 
     <div v-if="mawala" class="outer">
@@ -1052,9 +1058,15 @@ window.onload = function () {
 
 .pholder {
   padding: 5px;
-  border-radius: none;
+  border-radius: 5px;
   border: none;
   outline: none;
+}
+.search-box svg{
+  position: absolute;
+  top: 32%;
+  left: 25px;
+  transform: translate(0, -50%);
 }
 
 .Btn {
@@ -1146,8 +1158,7 @@ th {
 }
 
 .outer {
-  border: 1px solid black;
-  box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
+ 
   border-radius: 5px;
   width: 100%;
 }
@@ -1228,8 +1239,9 @@ textarea {
 
 button {
   border-radius: 10px;
-  background: linear-gradient(to bottom, #59473d, #ac9174);
-  color: white;
+  background: #bfa16dd7;
+ 
+  color: black;
   font-weight: bold;
   font-size: 12px;
   border: solid black 2px;
@@ -1240,7 +1252,7 @@ button {
   height: fit-content;
   justify-content: center;
   font-family: "Segoe UI", sans-serif;
-  border-radius: 30px;
+  border-radius: 5px;
   border: none;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 
@@ -1248,7 +1260,7 @@ button {
 }
 
 button:hover {
-  background: linear-gradient(to bottom, #ac9174, #59473d);
+  background: #bfa16d;
   animation: button-particles 1s ease-in-out infinite;
   transform: translateY(-2px);;
 }
@@ -1285,42 +1297,73 @@ button:active  {
   font-weight: bold;
 }
 
-.search-box {
-  width: 100%;
-  max-width: 270px;
-  height: 60px;
-  padding: 12px;
-  font-size: 24px;
-  font-family: "Courier New", monospace;
-  color: #000;
-  background-color: #fff;
-  border: 4px solid #000;
-  border-radius: 0;
-  outline: none;
-  transition: all 0.3s ease;
-  box-shadow: 8px 8px 0  #59473d;
-}
-.search-box:hover{
-  transform: translate(-4px, -4px);
-  box-shadow: 12px 12px 0  #59473d;
-}
 
 
-.imgsearch {
-  height: 20px;
-  width: 22px;
-  position: relative;
-  padding-left: 5px;
-}
+
 
 .pholder {
-  font-size: 15px;
-  border: none;
+  display: block;
+  width: 245px;
+  height: 50px;
+  padding: 0 48px 0 30px;
+  font-size: 14px;
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #59473d;
+  border-radius: 8px;
   outline: none;
-  padding-left: 5px;
-  flex: 1;
-  color: #888;
+  appearance: none;
+  transition: all .2s ease-in-out;
+  outline: none;
+  opacity: 0.8;
 }
+
+.pholder:focus {
+  border-color: transparent;
+  outline: 2px solid #000;
+  box-shadow: none;
+  opacity: 1;
+  width: 280px;
+}
+
+.pholder:hover {
+  border-color: #59473d;
+}
+
+.imgsearch {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 22px;
+  z-index: 10;
+}
+
+/* Add this for the floating label effect */
+.search-box::before {
+  
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #888;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pholder:focus + .search-box::before,
+.pholder:not(:placeholder-shown) + .search-box::before {
+  top: 0;
+  transform: translateY(-50%) scale(0.75);
+  background-color: white;
+  padding: 0 4px;
+  z-index: 10;
+  
+}
+
 
 @media screen and (max-width: 768px) {
   .Btn {
@@ -1363,6 +1406,9 @@ button:active  {
   .Btn,
   .dropdown {
     display: none !important;
+  }
+    .search-box { /* Add this line */
+    display: none !important; /* Hide search box during print */
   }
   .buttons {
     display: none !important;

@@ -3,6 +3,12 @@
     <div class="popup-content">
       <div class="close-button" @click="closePopup">X</div>
       <h2>Document Remarks</h2>
+      <div class="document-status-summary">
+        <span class="document-column">Document</span>
+        <span class="status-column">Status</span>
+      </div>
+      <hr class="summary-border" />
+
       <div
         v-for="(document, index) in documents"
         :key="index"
@@ -26,8 +32,9 @@
         </span>
       </div>
       <div class="status-summary">
-        <p>Status: {{ getOverallRemarks() }}</p>
-      </div>
+  <span class="overall-status-label">Overall Status:</span>
+  <span class="overall-status-value">{{ getOverallRemarks() }}</span>
+</div>
     </div>
   </div>
 </template>
@@ -101,120 +108,237 @@ export default {
 </script>
 
 <style scoped>
+:root {
+  --status-released: #34C759;
+  --status-unreleased: #FF9500;
+  --status-error: #FF3B30;
+  --primary-color: rgb(30, 64, 175);
+  --background-color: #f8f9fa;
+  --card-background: rgba(255, 255, 255, 0.8);
+  --text-color: #1a202c;
+  --border-color: #e2e8f0;
+}
+
 .edit-action-popup {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: rgba(0, 0, 0, 0.5);
   z-index: 999;
   backdrop-filter: blur(10px);
 }
+
 .popup-content {
-  background: linear-gradient(145deg, #fff8f0, #e6d5c3);
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1),
-    -8px -8px 20px rgba(255, 255, 255, 0.7);
-  text-align: center;
-  width: 1000px;
-  color: #333;
-  font-family: "Arial", sans-serif;
-  position: relative;
-}
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
-}
-.document-status {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  align-items: center;
-  gap: 15px 80px;
-  text-align: left;
-  border-collapse: collapse;
-}
+    background: #fffbf2;
 
-.document-status div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid #99500c;
-}
-
-.document-status button {
-  padding: 10px 20px;
-  min-width: 100px;
-  margin-bottom: 10px;
-  border-radius: 25px;
-  font-size: 16px;
-  border: none;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  position: relative;
+  backdrop-filter: blur(50px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  border: 2px solid black;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  max-height: 900px; /* Increased from 700px to 900px */
+  position: relative;
+  padding-top: 1.5rem;
 }
 
-.document-status button:hover {
-  transform: scale(1.1);
-  background-color: rgba(109, 107, 107, 0.712);
-}
-
-.released-btn {
-  background-color: #2e8b57 !important; /* Green */
-  color: white;
-}
-
-.released-btn:hover {
-  background-color: #1e6b42 !important;
-}
-
-.unreleased-btn {
-  background-color: #99500c !important; /* Brown */
-  color: white;
-}
-
-.unreleased-btn:hover {
-  background-color: #7a4b23 !important;
-}
-
-.status-indicator {
-  color: #99500c;
-  font-weight: bold;
-}
-
-.status-indicator.released-text {
-  color: #2e8b57; /* Green text when Released */
-}
-
-.status-summary {
-  margin-top: 20px;
-  font-size: 18px;
-  color: #555;
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin: 0;
 }
 
 .close-button {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  cursor: pointer;
-  color: #333;
-  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
-  padding: 5px;
-  transition: transform 0.2s ease;
+  border-radius: 9999px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: absolute;
+  
+  right: 1.25rem;
+  font-size: 1.25rem;
+  height: 2rem;
+  width: 2rem;
+
+  position: absolute;
+  top: 1.5rem;
+  
+  margin: 0;
 }
 
 .close-button:hover {
-  transform: scale(1.1);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.document-status-summary {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  font-weight: 500;
+  color: #718096;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+
+.document-column {
+  text-align: left;
+}
+
+.status-column {
+  text-align: right;
+}
+
+.summary-border {
+  display: none;
+}
+
+.document-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+  background-color: transparent;
+}
+
+.document-status:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.document-status span:first-child {
+  font-weight: 500;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.document-status:hover span:first-child {
+  color: var(--primary-color);
+}
+
+.document-status button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: none;
+  color: var(--status-unreleased);
+  border: 1px solid rgba(255, 149, 0, 0.2);
+  background-color: rgba(255, 149, 0, 0.1);
+}
+
+.document-status button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.document-status button.released {
+  background-color: rgba(52, 199, 89, 0.1);
+  color: var(--status-released);
+  border: 1px solid rgba(52, 199, 89, 0.2);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  min-width: 120px;
+  justify-content: center;
+  color: var(--status-unreleased);
+  background-color: rgba(255, 149, 0, 0.1);
+  border: 1px solid rgba(255, 149, 0, 0.2);
+}
+
+.status-indicator.released-text {
+  background-color: rgba(52, 199, 89, 0.1);
+  color: var(--status-released);
+  border: 1px solid rgba(52, 199, 89, 0.2);
+  margin-left: 0;
+  width: auto;
+}
+
+.status-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-weight: 500;
+  margin-top: 0;
+}
+
+.overall-status-label {
+  color: #4a5568;
+}
+
+.overall-status-value {
+  display: flex;
+  align-items: center;
+  color: var(--status-unreleased);
+}
+
+/* Media Queries */
+@media (max-width: 640px) {
+  .popup-content {
+    border-radius: 1rem;
+  }
+  
+  .document-status span:first-child {
+    font-size: 0.875rem;
+  }
+  
+  .status-indicator {
+    font-size: 0.75rem;
+    min-width: 100px;
+  }
+}
+
+/* Dark Mode - you can add a toggle to enable this */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #1a202c;
+    --card-background: rgba(26, 32, 44, 0.8);
+    --text-color: #f7fafc;
+    --border-color: #2d3748;
+  }
+  
+  .document-status-summary {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+  
+  .document-status:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+  
+  .close-button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .overall-status-label {
+    color: #a0aec0;
+  }
 }
 </style>

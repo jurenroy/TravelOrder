@@ -1,16 +1,38 @@
 <template>
   <div class="note-popup">
     <div class="popup-content">
-       <button class="close-button" @click="$emit('close-note')">&times;</button>
-      <h3>{{ note ? "Edit Note" : "Add Note" }}</h3>
-      <textarea v-model="note" placeholder="Write your note here..."
-       rows="4">
-       :disabled="!isAdmin">
-      </textarea>
+      <!-- Close button fix -->
+      <button class="close-button" @click="$emit('close-note')">
+        &times;
+      </button>
+
+      <h3>{{ isAdmin ? (note ? "Edit Note" : "Add Note") : "View Note" }}</h3>
+      
+      <textarea 
+  v-model="note" 
+  :placeholder="isAdmin ? 'Write your note here...' : (note ? note : 'No note yet')"
+  rows="4"
+  :disabled="!isAdmin">
+</textarea>
+
       <div class="popup-buttons">
-        <button v-if="isAdmin"  
-          @click="saveNote">
-          Save
+        <button v-if="isAdmin" @click="saveNote">
+          <div class="svg-wrapper-1">
+            <div class="svg-wrapper">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="30"
+                height="30"
+                class="icon"
+              >
+                <path 
+                  d="M22,15.04C22,17.23 20.24,19 18.07,19H5.93C3.76,19 2,17.23 2,15.04C2,13.07 3.43,11.44 5.31,11.14C5.28,11 5.27,10.86 5.27,10.71C5.27,9.33 6.38,8.2 7.76,8.2C8.37,8.2 8.94,8.43 9.37,8.8C10.14,7.05 11.13,5.44 13.91,5.44C17.28,5.44 18.87,8.06 18.87,10.83C18.87,10.94 18.87,11.06 18.86,11.17C20.65,11.54 22,13.13 22,15.04Z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <span>Save</span>
         </button>
       </div>
     </div>
@@ -42,8 +64,36 @@ export default {
 };
 </script>
 
-  
 <style scoped>
+/* Fix Close Button */
+.close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: absolute;
+  
+  right: 1.25rem;
+  font-size: 1.25rem;
+  height: 2rem;
+  width: 2rem;
+
+  position: absolute;
+  top: 1.5rem;
+  
+  margin: 0;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Popup */
 .note-popup {
   position: fixed;
   top: 0;
@@ -60,10 +110,10 @@ export default {
 
 .popup-content {
   position: relative;
-  background: linear-gradient(145deg, #fff8f0, #e6d5c3);
+  background: #fffbf2;
   padding: 60px;
-  border-radius: 8px;
-  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1), -8px -8px 20px rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+  
   text-align: center;
   color: #333129;
   width: 80%;
@@ -73,6 +123,7 @@ export default {
 h3 {
   font-size: 24px;
   margin-bottom: 20px;
+  text-align: left; /* Align text to the left */
 }
 
 textarea {
@@ -85,60 +136,93 @@ textarea {
   resize: none;
 }
 
+/* Center the button */
 .popup-buttons {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end; /* Align buttons to the right */
   margin-top: 10px;
 }
 
+/* Save Button Styles */
+/* Save Button Styles */
 .popup-buttons button {
+  font-family: inherit;
+  font-size: 20px;
+  background: linear-gradient(to bottom, #bfa16d, rgba(172, 145, 116, 0.849));
+  color: black;
+  fill: black;
+  padding: 0.4em 0.3em;
+  padding-left: 0.2em;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
   position: relative;
   overflow: hidden;
-  cursor: pointer;
-  background-color: white;
-  border: 2px solid black;
-  padding: 10px 20px;
-  border-radius: 16px;
-  font-size: 16px;
-  transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out;
 }
 
+/* Spacing for icon */
+.popup-buttons button .svg-wrapper-1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Text animation */
+.popup-buttons button span {
+  display: block;
+  transition: all 0.1s ease-in-out;
+}
+
+/* SVG animation */
+.popup-buttons button svg {
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Hover Effects */
 .popup-buttons button:hover {
-  transform: scale(1.1);
-  background-color: rgba(109, 107, 107, 0.712);
+  background: linear-gradient(to bottom, rgba(172, 145, 116, 0.849, #bfa16d));
 }
 
-.popup-buttons button::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(141, 71, 14, 0.856);
-  transition: left 0.3s ease-in-out;
-  z-index: -1;
+.popup-buttons button:hover .svg-wrapper-1 {
+  transform: scale(1.25);
+  transition: 0.5s linear;
 }
 
-.popup-buttons button:hover {
-  color: rgb(0, 0, 0);
+.popup-buttons button:hover svg {
+  transform: translateX(1.2em) scale(1.1);
+  fill: black;
 }
 
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  font-size: 50px;
-  color: #ff9800;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  margin: 0;
+.popup-buttons button:hover span {
+  opacity: 0;
+  transition: 0.5s linear;
 }
 
-.close-button:hover {
-  color: #ffb74d;
+/* Click effect */
+.popup-buttons button:active {
+  transform: scale(0.95);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #1a202c;
+    --card-background: rgba(26, 32, 44, 0.8);
+    --text-color: #f7fafc;
+    --border-color: #2d3748;
+  }
+  
+  
+  .close-button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  
 }
 </style>

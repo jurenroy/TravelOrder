@@ -49,7 +49,13 @@
             <tr v-for="(doc, index) in documentOptions" :key="doc.name">
               <td>
                 <label>
-                  <input type="checkbox" v-model="doc.checked" />
+                  <input type="checkbox" v-model="doc.checked" id="cbx" style="display: none;" />
+                  <div class="check">
+    <svg width="18" height="18" viewBox="0 0 18 18">
+      <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+      <polyline points="1 9 7 14 15 4"></polyline>
+    </svg>
+  </div>
                   {{ doc.name }}
                 </label>
                 <input
@@ -325,6 +331,93 @@ this.$emit('update-success', response.data);
 </script>
   
   <style scoped>
+ [id^="cbx"]:checked + .check svg {
+  stroke: black;
+}
+
+[id^="cbx"]:checked + .check svg path {
+  stroke-dashoffset: 60;
+  transition: all 0.3s linear;
+}
+
+[id^="cbx"]:checked + .check svg polyline {
+  stroke-dashoffset: 42;
+  transition: all 0.2s linear;
+  transition-delay: 0.15s;
+}
+
+.check {
+  cursor: pointer;
+  position: relative;
+  width: 18px;
+  height: 18px;
+  -webkit-tap-highlight-color: transparent;
+  transform: translate3d(0, 0, 0);
+  display: inline-block; /* Change to inline-block */
+  vertical-align: middle; /* Align vertically */
+  margin-right: 10px; /* Add margin to separate from label text */
+  float: left; /* Float to the left */
+}
+
+.check:before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: 48px;
+  height: 48px;
+  border-radius: 5px;
+  background: rgba(34,50,84,0.03);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.check svg {
+  position: relative;
+  z-index: 1;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: black;
+  stroke-width: 1.5;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.2s ease;
+}
+
+.check svg path {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 0;
+}
+
+.check svg polyline {
+  stroke-dasharray: 22;
+  stroke-dashoffset: 66;
+}
+
+.check:hover:before {
+  opacity: 1;
+}
+
+.check:hover svg {
+  stroke: black;
+}
+
+/* Apply proper spacing for label text */
+.request-table label {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+}
+
+/* Ensure the "Others" input aligns properly */
+.others-input {
+  margin-top: 10px;
+  width: calc(100% - 28px); /* Account for checkbox width */
+  margin-left: 28px; /* Align with text after checkbox */
+  padding: 8px;
+  border: 1px solid #8b5e34;
+  border-radius: 5px;
+}
   .popup-overlay {
     position: fixed;
     top: 0;
@@ -344,9 +437,9 @@ this.$emit('update-success', response.data);
   flex-direction: column;
   width: 90%;
   max-width: 900px;
-  background: linear-gradient(145deg, #fef6e4, #dac08c);
+  background: #fffbf2;
   padding: 60px;
-  border-radius: 20px;
+  border-radius: 5px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
   }
@@ -371,16 +464,30 @@ this.$emit('update-success', response.data);
   }
   
   .close-btn {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #666;
-  }
+    display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: absolute;
   
+  right: -3rem;
+  font-size: 2rem;
+  height: 3rem;
+  width: 3rem;
+
+  position: absolute;
+  top: -3rem;
+  
+  }
+  .close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+    
+  }
   .info-container {
     display: flex;
     flex-wrap: wrap;
@@ -404,7 +511,7 @@ this.$emit('update-success', response.data);
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 5px;
   }
   
   .request-table {
@@ -439,26 +546,55 @@ this.$emit('update-success', response.data);
   .button-container button {
     padding: 10px 15px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
+  }
+  .button-container button:hover {
+    background-position: right top;
   }
   
   .button-container button[type="submit"] {
-    background-color: #773c00;
-    color: white;
-    font-family: "Playfair Display", serif;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+    padding: 0.9em 1.4em;
+  border-radius: 5px;
+  font-size: 16px;
+  min-width: 85px;
+  min-height: 35px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  transition: 0.8s;
+  background-size: 280% auto;
+  background-image: linear-gradient(
+    325deg,
+    #bfa16d 0%,
+    #bfa16dc2 60%,
+    #bfa16d 90%
+  );
+  color: #fffbf2;
   }
   
   .button-container button[type="button"] {
-    background-color: #773c00;
-    color: rgb(255, 255, 255);
-    font-family: "Playfair Display", serif;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+    padding: 0.9em 1.4em;
+  border-radius: 5px;
+  font-size: 16px;
+  min-width: 85px;
+  min-height: 35px;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  transition: 0.8s;
+  background-size: 280% auto;
+  background-image: linear-gradient(
+    325deg,
+    #bfa16d 0%,
+    #bfa16dc2 60%,
+    #bfa16d 90%
+  );
+  color: #fffbf2;
   }
   
   

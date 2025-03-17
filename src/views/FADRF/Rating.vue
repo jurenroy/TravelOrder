@@ -74,8 +74,8 @@ export default {
 .popup-content {
   background: #fffbf2;
   padding: 40px;
-  border-radius: 16px;
-  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1), -8px -8px 20px rgba(255, 255, 255, 0.7);
+  border-radius: 5px;
+
   text-align: center;
   width: 320px;
   color: #333;
@@ -117,7 +117,7 @@ h3 {
 }
 .popup-buttons button {
   padding: 0.9em 1.4em;
-  border-radius: 25px;
+  border-radius: 5px;
   font-size: 16px;
   min-width: 85px;
   min-height: 35px;
@@ -130,9 +130,9 @@ h3 {
   background-size: 280% auto;
   background-image: linear-gradient(
     325deg,
-    #3e2a20 0%,
-    #ac9174 60%,
-    #3e2a20 90%
+    #bfa16d 0%,
+    #bfa16dc2 60%,
+    #bfa16d 90%
   );
   color: #fffbf2;
   
