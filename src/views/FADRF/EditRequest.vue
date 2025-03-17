@@ -339,14 +339,16 @@ this.$emit('update-success', response.data);
   }
   
   .form-container {
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    width: 90%;
-    max-width: 700px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 2em auto;
+  font-family: "Poppins", sans-serif;
+  flex-direction: column;
+  width: 90%;
+  max-width: 900px;
+  background: linear-gradient(145deg, #fef6e4, #dac08c);
+  padding: 60px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
   }
   
   .form-header {
@@ -412,20 +414,20 @@ this.$emit('update-success', response.data);
   }
   
   .request-table th {
-    background-color: #f0f0f0;
     padding: 10px;
     text-align: left;
   }
   
   .request-table td {
     padding: 10px;
-    border-bottom: 1px solid #eee;
   }
   
   .others-input {
-    margin-top: 5px;
-    width: 90%;
-    padding: 5px;
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #8b5e34;
+    border-radius: 5px;
   }
   
   .button-container {
@@ -442,14 +444,23 @@ this.$emit('update-success', response.data);
   }
   
   .button-container button[type="submit"] {
-    background-color: #4a6fa5;
+    background-color: #773c00;
     color: white;
+    font-family: "Playfair Display", serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
   }
   
   .button-container button[type="button"] {
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: #773c00;
+    color: rgb(255, 255, 255);
+    font-family: "Playfair Display", serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
   }
+  
   
   .loading {
     display: flex;
@@ -476,4 +487,5 @@ this.$emit('update-success', response.data);
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+  
   </style>

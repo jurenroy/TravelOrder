@@ -23,47 +23,15 @@
     >
       <otpz />
     </div>
-    <div
-      class="search"
-      style="
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: end;
-        margin-top: 15px;
-        margin-bottom: 10px;
-        height: 35px;
-      "
-    >
-      <div
-        v-if="mawala"
-        style="
-          display: flex;
-          border: 2px solid black;
-          border-radius: 5px;
-          align-items: center;
-          height: 30px;
-          position: relative;
-        "
-      >
-        <img
-          class="imgsearch"
-          style="
-            height: 20px;
-            width: 20px;
-            position: relative;
-            padding-left: 5px;
-          "
-          src="../../assets/search.png"
-        />
-        <input
-          class="pholder"
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search TO number or Name"
-        />
-      </div>
-    </div>
+    <div  class="search-box">
+      <img class="imgsearch" src="../../assets/search.png" />
+      <input 
+        class="pholder" 
+        type="text" 
+        v-model="searchQuery" 
+        placeholder="Search Name or Documents..." 
+      />
+  </div>
 
     <div v-if="mawala" class="outer">
       <div v-if="showRatingPopup">
@@ -152,7 +120,9 @@
                 <button @click="generatePDF(item, getName(item.name_id))">
                   View PDF
                 </button>
-                <button @click="add(item)">View Note</button>
+                <button @click="add(item)">
+                 {{ isAdmin ? "Add Note" : "View Note"}}
+                </button>
               </td>
             </tr>
             <h1
@@ -830,7 +800,7 @@ export default {
     },
 
     handleRating(rating) {
-      if (!this.currentItem || this.currentItem.id) {
+      if (!this.currentItem || !this.currentItem.id) {
         alert("No Request Selected");
         return;
       }
@@ -1258,20 +1228,33 @@ textarea {
 
 button {
   border-radius: 10px;
-  background: linear-gradient(150deg, #ddc7ad, #92785b);
+  background: linear-gradient(to bottom, #59473d, #ac9174);
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
   border: solid black 2px;
   padding: 10px 20px;
-  color: rgb(0, 0, 0);
   cursor: pointer;
   transition: background 0.3s;
   margin: 0 5px;
   height: fit-content;
   justify-content: center;
+  font-family: "Segoe UI", sans-serif;
+  border-radius: 30px;
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+
 }
 
 button:hover {
-  background-color: black;
-  color: white;
+  background: linear-gradient(to bottom, #ac9174, #59473d);
+  animation: button-particles 1s ease-in-out infinite;
+  transform: translateY(-2px);;
+}
+button:active  {
+  transform: scale(0.95);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 .released-text {
   font-weight: bold;
@@ -1300,6 +1283,43 @@ button:hover {
 .styled-select option {
   padding: 10px;
   font-weight: bold;
+}
+
+.search-box {
+  width: 100%;
+  max-width: 270px;
+  height: 60px;
+  padding: 12px;
+  font-size: 24px;
+  font-family: "Courier New", monospace;
+  color: #000;
+  background-color: #fff;
+  border: 4px solid #000;
+  border-radius: 0;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 8px 8px 0  #59473d;
+}
+.search-box:hover{
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0  #59473d;
+}
+
+
+.imgsearch {
+  height: 20px;
+  width: 22px;
+  position: relative;
+  padding-left: 5px;
+}
+
+.pholder {
+  font-size: 15px;
+  border: none;
+  outline: none;
+  padding-left: 5px;
+  flex: 1;
+  color: #888;
 }
 
 @media screen and (max-width: 768px) {
@@ -1335,8 +1355,9 @@ button:hover {
     display: none !important;
   }
 
+
+
   .content,
-  .search,
   .note,
   .sign,
   .Btn,

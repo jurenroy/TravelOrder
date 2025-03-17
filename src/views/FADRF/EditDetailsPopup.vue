@@ -10,9 +10,9 @@
       >
         <span>{{ document.name }}</span>
         <button
-          v-if="!allDocumentsReleased"
           @click="toggleRemarks(index)"
           :class="{ released: document.remarks === 'Released' }"
+         v-if="!(documents.length > 1 && allDocumentsReleased)"
         >
           {{ document.remarks === "Released" ? "Unrelease" : "Release" }}
         </button>

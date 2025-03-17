@@ -72,7 +72,7 @@ export default {
   backdrop-filter: blur(10px);
 }
 .popup-content {
-  background: linear-gradient(145deg, #fff8f0, #e6d5c3);
+  background: #fffbf2;
   padding: 40px;
   border-radius: 16px;
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.1), -8px -8px 20px rgba(255, 255, 255, 0.7);
@@ -93,6 +93,7 @@ h3 {
   justify-content: center;
   gap: 10px;
 }
+
 .star {
   transition: color 0.3s ease, transform 0.2s ease;
 }
@@ -115,29 +116,37 @@ h3 {
   
 }
 .popup-buttons button {
-  padding: 12px 20px;
+  padding: 0.9em 1.4em;
   border-radius: 25px;
   font-size: 16px;
-  border: none;
-  transition: all 0.3s ease;
+  min-width: 85px;
+  min-height: 35px;
+  font-weight: 500;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  border: 2px solid black;
+  border: none;
+  transition: 0.8s;
+  background-size: 280% auto;
+  background-image: linear-gradient(
+    325deg,
+    #3e2a20 0%,
+    #ac9174 60%,
+    #3e2a20 90%
+  );
+  color: #fffbf2;
+  
 }
-.popup-buttons button:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(109, 107, 107, 0.712);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+
+.popup-buttons button:hover {
+  background-position: right top;
 }
-.popup-buttons button:hover:before {
-  opacity: 1;
+
+
+@media (prefers-reduced-motion: reduce) {
+  .popup-buttons button {
+    transition: linear;
+  }
 }
 .submitRating {
   background-color: #99500c;
