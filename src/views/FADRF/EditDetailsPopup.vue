@@ -62,7 +62,7 @@ export default {
       const currentRemark = this.documents[index].remarks;
 
       this.documents[index].remarks =
-        currentRemark === "Released" ? "Incomplete" : "Released";
+        currentRemark === "Released" ? "Pending" : "Released";
 
       if (this.documents[index].remarks === "Released") {
         alert(`Document "${this.documents[index].name}" has been released.`);

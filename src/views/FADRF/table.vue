@@ -93,6 +93,7 @@
                     <span
                       v-for="(doc, docIndex) in item.documents"
                       :key="'remarks-' + docIndex"
+                      :class="getRemarks(doc)"
                     >
                       {{ doc.remarks || "No remarks" }} <br />
                     </span>
@@ -227,7 +228,7 @@ export default {
       showEditDetailsPopup: false,
       currentItem: "",
       selectedStatus: "All",
-      options: ["All", "Incomplete", "Released", "No Remarks"],
+      options: ["All", "Pending", "Released", "No Remarks"],
       yearToday: new Date().getFullYear(),
       formData: [],
       names: {},
@@ -711,6 +712,12 @@ export default {
 
     getReleasedStatus(doc) {
       return doc.remarks?.trim() === "Released" ? "Released" : "Unreleased";
+    },
+    getRemarks(doc){
+      if (doc.remarks === 'No Remarks') return 'no-remarks-text';
+      if (doc.remarks === 'Released') return 'releasedeg-text';
+      if (doc.remarks === 'Pending') return 'incomplete-text';
+      return '';
     },
 
     openEditDetailsPopup(item) {
@@ -1286,7 +1293,26 @@ button:active  {
   margin-top: -5px;
   margin-left: 5px;
 }
-
+.released-text {
+  font-weight: bold;
+  font-size: 18px;
+  color: green;
+}
+.releasedeg-text{
+  font-weight: bold;
+  font-size: 18px;
+  color: blue;
+}
+.no-remarks-text {
+  font-weight: bold;
+  font-size: 18px;
+  color: red;
+}
+.incomplete-text {
+  font-weight: bold;
+  font-size: 18px;
+  color: orange;
+}
 .styled-select:focus {
   border-color: #007bff;
   outline: none;
