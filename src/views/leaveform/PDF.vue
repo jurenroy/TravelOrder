@@ -755,6 +755,7 @@ export default {
                "OSIN A. SINSUAT JR.",
                "ALVIN M. VILLANUEVA",
                "RODANTE B. FELINA",
+               "JOY CHRISTINE V. ASIS",
            ],
            designations: [
                "Chief, MMD",
@@ -762,6 +763,7 @@ export default {
                "Chief, GD",
                "Chief, MSESDD",
                "OIC, Regional Director",
+               "OIC Chief, GD",
            ],
            dayszz: '',
            dateszz: '',
@@ -939,7 +941,7 @@ export default {
 
             this.division = this.employees.find(emp => emp.name_id == this.leaveForms.name_id).division_id
 
-                    if ([15, 21, 45, 48].includes(this.name_id)) {
+                    if ([15, 21, 45, 48, 3].includes(this.name_id)) {
                        this.reco = this.isChief ?  this.signatories[4] : ''
                        this.recopost = this.isChief ?  this.designations[4] : ''
                        this.rd = this.isChief ? '' : this.signatories[4]
@@ -966,8 +968,16 @@ export default {
                        }
                    } else if (this.division == 3) {
                        {
-                           this.reco = this.signatories[2]
+
+                        
+                        if (this.isSignatureValid){
+                            this.reco = this.signatories[2]
                            this.recopost = this.designations[2]
+                        } else {
+                            this.reco = this.signatories[6]
+                           this.recopost = this.designations[6]
+                        }
+
                            this.rd = 'RODANTE B. FELINA'
                            this.rdpos = 'OIC, REGIONAL DIRECTOR'
                        }
@@ -1139,6 +1149,12 @@ export default {
           console.error('Error fetching leave forms:', error);
         });
     },
+    isSignatureValid() {
+        console.log(this.signature1)
+      const filename = this.signature1.split('/').pop(); // Extract the filename
+      console.log(filename)
+      return filename === 'urAs0SbQ7kw0y6LI4B9dyOpQxKI8cL4q4aEbsFSh.png'; // Check if it matches your condition
+    },
     comparePosition() {
       if (this.leaveForms && this.positions.length > 0) {
         const leaveForm = this.leaveForms;
@@ -1206,7 +1222,7 @@ export default {
    },
 
    computed: {
-
+    
     formattedSalary: {
       get() {
         // Add commas to the salary value

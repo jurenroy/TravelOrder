@@ -282,7 +282,7 @@
                   <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id && ChiefPDF != true" @click="close"
                     style="width: 40px; height: 40px; cursor: pointer;" />
                 </td>
-                <td class="status-actions" v-if="[15,20,21,45,48].includes(item.name_id) && ChiefPDF !== false">
+                <td class="status-actions" v-if="[15,20,21,45,48, 3].includes(item.name_id) && ChiefPDF !== false">
                   <button 
                     v-if="selectedTravelOrderId != item.leaveform_id"
                     @click="openPDF(item.leaveform_id, true)">Chief PDF</button>
@@ -302,7 +302,7 @@
                     Certification
                   </button>
                 </td>
-                <td v-if="[15,21,45,48].includes(this.nameId)" class="status-actions">
+                <td v-if="[15,21,45,48, 3].includes(this.nameId)" class="status-actions">
                   <button v-if="!item.recommendation && item.name_id !== this.nameId"
                     @click="recommendation(item.leaveform_id)"
                     :style="{

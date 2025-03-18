@@ -214,7 +214,7 @@
           <img src="../../assets/check.png" alt="Approved Recommendation" class="status-icon">
           <p class="status-approved">Certified</p>
         </div>
-        <div v-if="item.certification && (![15,21,45,48].includes(item.name_id))">
+        <div v-if="item.certification && (![15,21,45,48, 3].includes(item.name_id))">
           <div v-if="!item.recommendation" class="statusrow">
             <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
             <p class="status-pending">For Recommendation</p>
@@ -228,7 +228,7 @@
             <p class="status-pending">Not Recommended</p>
           </div>
         </div>
-        <div v-if="item.recommendation || (item.certification) || ([15,21,45,48].includes(item.name_id) && item.certification)">
+        <div v-if="item.recommendation || (item.certification) || ([15,21,45,48, 3].includes(item.name_id) && item.certification)">
           <div v-if="!item.appsig" class="statusrow">
             <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
             <p class="status-pending">For Approval</p>
@@ -255,7 +255,7 @@
           <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id && ChiefPDF != true" @click="close"
             style="width: 40px; height: 40px; cursor: pointer;" />
         </div>
-        <div class="status-actions" v-if="[15,20,21,45,48].includes(item.name_id) && ChiefPDF !== false">
+        <div class="status-actions" v-if="[15,20,21,45,48, 3].includes(item.name_id) && ChiefPDF !== false">
           <button 
             v-if="selectedTravelOrderId != item.leaveform_id"
             @click="openPDF(item.leaveform_id, true)">Chief PDF</button>
@@ -275,7 +275,7 @@
             Certification
           </button>
         </div>
-        <div v-if="[15,21,45,48].includes(this.nameId)" class="status-actions">
+        <div v-if="[15,21,45,48, 3].includes(this.nameId)" class="status-actions">
           <button v-if="!item.recommendation && item.name_id !== this.nameId"
             @click="recommendation(item.leaveform_id)"
             :style="{

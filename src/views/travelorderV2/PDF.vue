@@ -88,8 +88,10 @@
               <img :src="signature1" class="signatiz" v-if="signature1 !== `${API_BASE_URL}/storage/null`" @contextmenu.prevent/>
               <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }">
-                {{ recommended }}</p>
-              <p style="margin-top: -10px;">Chief, {{ division }}</p>
+                {{ isSignatureValid ? divisionChiefs[1] : recommended }} </p>
+                <p style="margin-top: -10px;" v-if="isSignatureValid">Chief, {{ division }}</p>
+                <p style="margin-top: -10px;" v-else-if="isSignatureValidAsis">OIC Chief, {{ division }}</p>
+              <p style="margin-top: -10px;" v-else>Chief, {{ division }}</p>
             </div>
   
             <div class="inner-container2" v-if="intervals == 1 && name !== 'RODANTE B. FELINA' && name !== 'LIBERTY B. DAITIA'">
@@ -114,7 +116,10 @@
                 v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
               <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
-                v-if="sdiv == 3 && sdiv !== null ">OSIN A. SINSUAT JR.</p>
+                v-if="sname == 45 && sdiv !== null ">OSIN A. SINSUAT JR.</p>
+              <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
+              v-if="sname == 3 && sdiv !== null ">JOY CHRISTINE V. ASIS</p>
               <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
                 v-if="sdiv == 2 && sdiv !== null ">LIBERTY B.DAITIA</p>
@@ -122,7 +127,7 @@
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
                 v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
               <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
-              <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
+              <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">{{ sname == 3 ? 'OIC' : ''}}Chief,  {{ sdivz.division_name }}</p>
             </div>
   
             <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA'">
@@ -150,8 +155,10 @@
               <img :src="signature1" class="signatiz" v-if="signature1 !== `${API_BASE_URL}/storage/null`" @contextmenu.prevent/>
               <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }">
-                {{ recommended }}</p>
-              <p style="margin-top: -10px;">Chief, {{ division }}</p>
+                {{ isSignatureValid ? divisionChiefs[1] : recommended }} </p>
+                <p style="margin-top: -10px;" v-if="isSignatureValid">Chief, {{ division }}</p>
+                <p style="margin-top: -10px;" v-else-if="isSignatureValidAsis">OIC Chief, {{ division }}</p>
+              <p style="margin-top: -10px;" v-else>Chief, {{ division }}</p>
             </div>
   
             <div class="inner-container2" v-if="!divisionChiefs.includes(name) && intervals == 1">
@@ -174,9 +181,12 @@
               <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
                 v-if="sdiv == 4 && sdiv !== null ">ALVIN M. VILLANUEVA</p>
-              <p class="value"
+                <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
-                v-if="sdiv == 3 && sdiv !== null ">OSIN JR. A. SINSUAT</p>
+                v-if="sname == 45 && sdiv !== null ">OSIN A. SINSUAT JR.</p>
+              <p class="value"
+              :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
+              v-if="sname == 3 && sdiv !== null ">JOY CHRISTINE V. ASIS</p>
               <p class="value"
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
                 v-if="sdiv == 2 && sdiv !== null ">LIBERTY B.DAITIA</p>
@@ -184,7 +194,7 @@
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
                 v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
               <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
-              <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">Chief, {{ sdivz.division_name }}</p>
+              <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">{{ sname == 3 ? 'OIC' : ''}}Chief,  {{ sdivz.division_name }}</p>
             </div>
   
             <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '-10px' : '0px' }" v-if="divisionChiefs.includes(name) && intervals == 1">
@@ -290,10 +300,23 @@
           'OSIN A. SINSUAT JR.',
           'JANICE B. FUROG',
           'ALVIN M. VILLANUEVA',
-          'RODANTE B. FELINA'
+          'RODANTE B. FELINA',
+          'JOY CHRISTINE V. ASIS'
         ],
-        divisionNames: ["MMD", "FAD", "GD", "MSESDD", "ORD"]
+        divisionNames: ["MMD", "FAD", "GD", "MSESDD", "ORD", "GD"]
       };
+    },
+    computed: {
+      isSignatureValid() {
+        const filename = this.signature1.split('/').pop(); // Extract the filename
+        console.log(filename)
+        return filename === 'urAs0SbQ7kw0y6LI4B9dyOpQxKI8cL4q4aEbsFSh.png'; // Check if it matches your condition
+      },
+      isSignatureValidAsis() {
+        const filename = this.signature1.split('/').pop(); // Extract the filename
+        console.log(filename)
+        return filename === 'wlRvkEQMDf3yS74Se7nKxXWVVxD24MD1rImmTRzW.png'; // Check if it matches your condition
+      },
     },
     mounted() {
       // Populate fields when the component is mounted

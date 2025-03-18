@@ -80,7 +80,7 @@
           <td>{{ item.date }}</td>
           <td v-if="isInitialNull(item)" class="status-pending">
             <img src="../../assets/close.png" alt="Pending" class="status-icon">
-            For Initial by: <span v-if="[15,21,45,48].includes(item.name_id)">RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1">DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
+            For Initial by: <span v-if="[15,21,45,48, 3].includes(item.name_id)">RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1">DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
           </td>
           
           <td v-if="!isInitialNull(item)" class="status-approved">
@@ -151,12 +151,12 @@
           </td>
           
           <!-- Signature Actions -->
-          <td v-if="([15,20,21,45,48].includes(nameId) && item.note !== null && item.signature1 == null && ![15, 21, 45, 48].includes(item.name_id) && item.division_id !== 5 && item.intervals == 0) || (nameId == 15 && item.note !== null && item.signature1 == null && item.intervals == 1)" class="status-actions">
+          <td v-if="([15,20,21,45,48, 3].includes(nameId) && item.note !== null && item.signature1 == null && ![15, 21, 45, 48, 3].includes(item.name_id) && item.division_id !== 5 && item.intervals == 0) || (nameId == 15 && item.note !== null && item.signature1 == null && item.intervals == 1)" class="status-actions">
             <!-- <button @click="signature1(item.travel_order_id)">{{ sub.name_id === bus.name_id ? 'Approve' : 'Recommend' }}</button> -->
             <button @click="signature1(item.travel_order_id)">Recommend</button>
           </td>
 
-          <td v-if="nameId == 20 && item.note !== null && item.signature1 == null && item.intervals == 1 && [15, 21, 45, 48].includes(item.name_id)" class="status-actions">
+          <td v-if="nameId == 20 && item.note !== null && item.signature1 == null && item.intervals == 1 && [15, 21, 45, 48, 3].includes(item.name_id)" class="status-actions">
             <button @click="signature11(item.travel_order_id, item.name_id)">Recommends CAO</button>
           </td>
 
@@ -176,11 +176,11 @@
           ((item.signature1 !== null && item.division_id !== 5) || //done reco to be p
           (item.signature2 === null && item.division_id === 5) || //ord to be reco
           (item.signature1 !== null && item.division_id === 5 && item.intervals == 1)|| 
-          ([15, 21, 45, 48].includes(item.name_id) && item.note !== null)))" class="status-actions">
+          ([15, 21, 45, 48, 3].includes(item.name_id) && item.note !== null)))" class="status-actions">
             <button @click="signature2(item.travel_order_id)">Approve</button>
           </td>
 
-          <td v-if="(isSectionChief(nameId) && selectedTravelOrderId != item.travel_order_id && item.initial === null && this.nameId !== item.name_id) || ([15,21,45,48].includes(this.nameId) && item.initial === null && item.intervals == 1 && this.nameId !== item.name_id) || ([20].includes(this.nameId) && item.initial === null && item.intervals == 1 && item.aor == 1 && this.nameId !== item.name_id)" class="status-actions">
+          <td v-if="(isSectionChief(nameId) && selectedTravelOrderId != item.travel_order_id && item.initial === null && this.nameId !== item.name_id) || ([15,21,45,48, 3].includes(this.nameId) && item.initial === null && item.intervals == 1 && this.nameId !== item.name_id) || ([20].includes(this.nameId) && item.initial === null && item.intervals == 1 && item.aor == 1 && this.nameId !== item.name_id)" class="status-actions">
             <button @click="initialize(item.travel_order_id)">Initial</button>
           </td>
         </tr>
@@ -247,11 +247,11 @@ export default {
       selectedStatus: 'Me',
       optionsEmp: ['Pending', 'Done', 'All'],
       options: ['Pending', 'Done', 'Me'],
-      sectionChiefIds: [39, 2, 3, 8, 42, 34, 29, 36, 11, 5, 47],
+      sectionChiefIds: [39, 2,  8, 42, 34, 29, 36, 11, 5, 47],
       members: [
         [23, 25, 35, 70, 64, 78], 
         [30, 7, 26, 18, 67, 49, 24],
-        [43, 40, 71, 81],
+        // [43, 40, 71, 81], temp disable 3 asis
         [32, 50, 71],
         [33, 6],
         [41, 46, 80],
@@ -473,7 +473,7 @@ export default {
       this.currentNoteId = noteId; // Set the note ID to view
       this.currentNoteType = 'update_form'; // Set the type based on your logic
       this.currentNoteText = noteText; // Set the existing note text
-      if ([15, 20, 21, 45, 48, 37,76, 23, 64].includes(this.nameId)) {
+      if ([15, 20, 21, 45, 48, 3, 37,76, 23, 64].includes(this.nameId)) {
         this.currentNoteText += "\n" + this.getName(this.nameId) + ": ";
       }
       this.isAdding = false; // Set to viewing mode
