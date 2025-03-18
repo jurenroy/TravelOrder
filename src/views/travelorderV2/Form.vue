@@ -99,9 +99,11 @@
   import { ref } from 'vue';
   import axios from 'axios';
   import { API_BASE_URL } from '../../config'
+import { useAuthStore } from '@/store/auth';
   
   export default {
     data() {
+      const authStore = useAuthStore();
       return {
         isRed: false,
         selectedName: '',
@@ -129,10 +131,10 @@
         divisionID: '',
         accounts: [],
         accountz: [],
-        accountIdz: localStorage.getItem('accountId'),
+        accountIdz: authStore.account_id,
         loadis: false,
         aor: false,
-        nameIdz: localStorage.getItem('nameId'),
+        nameIdz: authStore.name_id,
         errorDate: ''
       };
     },

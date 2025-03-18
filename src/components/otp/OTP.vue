@@ -72,7 +72,6 @@
   import { API_BASE_URL } from '../../config';
   
   const authStore = useAuthStore();
-  const accountId = localStorage.getItem('accountId');
   const otpData = ref([]);
   const otpInputs = ref(Array(6).fill('')); // Array to store OTP inputs
   const otpRefs = ref([]); // Refs for OTP input fields
@@ -130,7 +129,7 @@
   const sendOTP = async () => {
     resetOTPInputs();
     try {
-      await axios.post(`${API_BASE_URL}/send-otp/${accountId}`);
+      await axios.post(`${API_BASE_URL}/send-otp/${authStore.account_id}`);
       sendingOTPS.value = false;
       OTPsuccesful.value = true;
       expired.value = false;
@@ -170,7 +169,7 @@
     try {
     
       const response = await axios.get(`${API_BASE_URL}/get_otp_json`);
-      otpData.value = response.data.find(result => result.account_id === parseInt(accountId));
+      otpData.value = response.data.find(result => result.account_id === parseInt(authStore.account_id));
       otppp.value = otpData.value.code;
     } catch (error) {
       console.error('Error fetching OTP data:', error);

@@ -60,11 +60,11 @@
         <tr>
           <th>TO No.</th>
           <th>Name</th>
-          <th>Departure Date</th>
+          <th>Date</th>
           <th>Destination</th>
           <th>Purpose</th>
+          <th>Departure Date</th>
           <th>Arrival Date</th>
-          <th>Date</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
@@ -73,11 +73,11 @@
         <tr v-for="item in reversedFormData" :key="item.id">
           <td>{{ padWithZeroes(item.to_num) }} - {{ item.date.slice(0,4) }}</td>
           <td>{{ getName(parseInt(item.name_id)) }}</td>
-          <td>{{ item.departure }}</td>
+          <td>{{ item.date }}</td>
           <td>{{ item.destination }}</td>
           <td>{{ item.purpose }}</td>
+          <td>{{ item.departure }}</td>
           <td>{{ item.arrival }}</td>
-          <td>{{ item.date }}</td>
           <td v-if="isInitialNull(item)" class="status-pending">
             <img src="../../assets/close.png" alt="Pending" class="status-icon">
             For Initial by: <span v-if="[15,21,45,48].includes(item.name_id)">RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1">DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
@@ -658,7 +658,8 @@ export default {
       return this.formData; // Return all if not section chief
     },
     reversedFormData() {
-      let data = this.formData.slice().reverse(); // Make a copy of the original data
+      //let data = this.formData.slice().reverse(); // Make a copy of the original data
+      let data = this.formData.slice(); // Make a copy of the original data
 
       if (this.searchQuery !== '') {
         data = data.filter(item => {

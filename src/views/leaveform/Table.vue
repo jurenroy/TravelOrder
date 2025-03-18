@@ -314,7 +314,7 @@
                     Recommend
                   </button>
                 </td>
-                <td v-if="((sub.division_id == bus.name_id || this.nameId == 20) && !item.appsig)" class="status-actions">
+                <td v-if="((employees.rd || nameId == 20) && !item.appsig)" class="status-actions">
                   <button 
                     @click="approve(item.leaveform_id)"
                     :style="{
@@ -363,6 +363,7 @@
     mounted() {
       this.fetchNames();
       this.fetchData();
+      this.fetchEmployees();
     },
     data() {
       const authStore = useAuthStore();
@@ -375,6 +376,7 @@
         yearToday: new Date().getFullYear(),
         formData: [],
         names: {},
+        employees: {},
         selectedTravelOrderId: 0,
         selectedTravelOrderIdEdit: 0,
         accountId: authStore.account_id,
@@ -431,6 +433,16 @@
     },
   
     methods: {
+      fetchEmployees() {
+      axios.get(`${API_BASE_URL}/get_employees_json/${this.nameId}`)
+        .then(response => {
+          this.employees = response.data;
+          console.log(this.employees)
+        })
+        .catch(error => {
+          console.error('Error fetching employeess:', error);
+        });
+    },
       nonumber(event, field) {
         this[field] = event.target.value.replace(/[^\d.+-]/g, '');
       },
@@ -678,7 +690,7 @@
       return this.pendingStore.leaveform
     },
       reversedFormData() {
-        let data = this.formData.slice().reverse(); // Make a copy of the original data
+        let data = this.formData.slice() // Make a copy of the original data
   
         if (this.searchQuery !== '') {
           data = data.filter(item => {

@@ -295,7 +295,7 @@
       }
     },
         handleAfterPrint() {
-        this.close();
+        //this.close();
         },
       isInitialNull(item) {
         return ItemIndicators.isInitialNull(item);

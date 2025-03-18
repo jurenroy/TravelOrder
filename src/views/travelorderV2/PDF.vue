@@ -432,6 +432,7 @@
         return 'Unknown';
       },
       populateFields(travelOrderId) {
+        console.log(this.formData)
         const selectedForm = this.formData;
         if (selectedForm) {
           this.name_id = selectedForm.name_id ;
