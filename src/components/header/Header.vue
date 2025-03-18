@@ -29,6 +29,12 @@
   <Login v-if="showLogin" :login="showLogin" @closeLogin="closeLoginModal"/>
   <!-- Logout Confirmation Popup -->
   <Logout v-if="isLogoutClicked" :show="isLogoutClicked" @handleNo="handleNo" @handleYes="handleLogout"/>
+  <div class="microscopic-div" v-if="1==2">
+    <TravelCard/>
+    <LeaveCard/>
+    <ICTCard/>
+  </div>
+  
 
 </template>
 
@@ -39,6 +45,10 @@ import Logout from '../logout/Logout.vue';
 import Login from '../login/Login.vue';
 import Heder from '../heder.vue';
 import { useAuthStore } from '@/store/auth';
+import TravelCard from '@/views/travelorderV2/Card.vue';
+import LeaveCard from '@/views/leaveform/Card.vue';
+import ICTCard from '@/views/ictsrf/Card.vue'
+
 
 export default {
   name: 'Header',
@@ -46,6 +56,9 @@ export default {
     Logout,
     Login,
     Heder,
+    TravelCard,
+    LeaveCard,
+    ICTCard
   },
   setup() {
     const title = ref('MGBxPORTAL');
@@ -145,7 +158,14 @@ export default {
   
   <style scoped>
   @import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
-  
+  .microscopic-div {
+      width: 0px; /* Example width */
+      height: 0px; /* Example height */
+      overflow: auto;
+      transform: scale(0.01); /* Scale down the content */
+      transform-origin: top left; /* Keep the scaling from the top left corner */
+      border: 1px solid black;
+    }
   .header {
     display: flex;
     justify-content: space-between;

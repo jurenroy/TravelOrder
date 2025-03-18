@@ -755,6 +755,7 @@ export default {
                "OSIN A. SINSUAT JR.",
                "ALVIN M. VILLANUEVA",
                "RODANTE B. FELINA",
+               "LIBERTY B. DAITIA",
                "JOY CHRISTINE V. ASIS",
            ],
            designations: [
@@ -763,6 +764,7 @@ export default {
                "Chief, GD",
                "Chief, MSESDD",
                "OIC, Regional Director",
+               "Chief Administrative Officer",
                "OIC Chief, GD",
            ],
            dayszz: '',
@@ -931,6 +933,7 @@ export default {
 
             
           this.leaveForms = response.data
+          console.log(response.data)
 
           
           if (this.leaveForms){
@@ -956,15 +959,44 @@ export default {
                        {
                            this.reco = this.signatories[0]
                            this.recopost = this.designations[0]
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
                            this.rd = 'RODANTE B. FELINA'
                            this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
                        }
                    } else if (this.division == 2) {
                        {
+                        console.log('fad')
                            this.reco = this.signatories[1]
                            this.recopost = this.designations[1]
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
                            this.rd = 'RODANTE B. FELINA'
                            this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
                        }
                    } else if (this.division == 3) {
                        {
@@ -978,22 +1010,64 @@ export default {
                            this.recopost = this.designations[6]
                         }
 
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
                            this.rd = 'RODANTE B. FELINA'
                            this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
                        }
                    } else if (this.division == 4) {
                        {
                            this.reco = this.signatories[3]
                            this.recopost = this.designations[3]
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
                            this.rd = 'RODANTE B. FELINA'
                            this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
                        }
                    } else if (this.division == 5) {
                        {
                            this.reco = ''
                            this.recopost = ''
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
                            this.rd = 'RODANTE B. FELINA'
                            this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
                        }
                    } else {
                        this.reco = ''
@@ -1089,10 +1163,10 @@ export default {
                     this.vacation1 = this.leaveForms.detail.replace('Within the Philippines,', '').trim();
                     return 'Within the Philippines, ' + this.vacation1;
                 }
-            } else if (this.leaveForms.detail.startsWith('Abroad(Specify),')) {
+            } else if (this.leaveForms.detail.startsWith('Abroad (Specify),')) {
                 if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
                     this.vacationleavedetails.push(2);
-                    this.vacation2 = this.leaveForms.detail.replace('Abroad(Specify),', '').trim();
+                    this.vacation2 = this.leaveForms.detail.replace('Abroad (Specify),', '').trim();
                     return 'Abroad(Specify), ' + this.vacation2;
                 }
             } else if (this.leaveForms.detail.startsWith('In Hospital (Specify Illness),')) {

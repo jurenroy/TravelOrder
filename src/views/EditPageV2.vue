@@ -36,13 +36,18 @@
                     required
                 >
             </div>
+            <p v-if="!isPasswordValid" class="password-message">
+      It must contain <label v-if="!hasUppercase">UPPERCASE</label>, 
+      <label v-if="!hasLowercase">Lowercase</label> <label v-if="!hasNumber">Numbers</label>.
+    </p>
+
 
             <div class="button-group">
                 <button 
                 class="submit-button" 
                 @click="updateAccount" 
-                :disabled="!newPassword"
-                :class="{ 'disabled-button': !newPassword }"
+                :disabled="!isPasswordValid"
+                :class="{ 'disabled-button': !isPasswordValid }"
             >
                 Update
             </button>
@@ -79,6 +84,11 @@ const newPassword = ref('');
 const isLoading = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
+
+const hasUppercase = computed(() => /[A-Z]/.test(newPassword.value));
+    const hasLowercase = computed(() => /[a-z]/.test(newPassword.value));
+    const hasNumber = computed(() => /\d/.test(newPassword.value));
+    const isPasswordValid = computed(() => hasUppercase.value && hasLowercase.value && hasNumber.value);
 
 const isOldPasswordValid = computed(() => {
     const decryptedPassword = CryptoJS.AES.decrypt(account.value.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
@@ -128,6 +138,8 @@ const closePopup = () => {
     showPopup.value = false; // Close the popup
     router.push('/')
 };
+
+
 </script>
 
 <style>

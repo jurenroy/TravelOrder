@@ -448,7 +448,8 @@
       }
     },
         handleAfterPrint() {
-        this.close();
+        //this.close();
+        console.log('damn')
         },
       nonumber(event, field) {
         this[field] = event.target.value.replace(/[^\d.+-]/g, '');
