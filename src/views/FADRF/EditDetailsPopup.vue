@@ -134,8 +134,7 @@ export default {
 }
 
 .popup-content {
-    background: #fffbf2;
-
+  background: #fffbf2;
   backdrop-filter: blur(50px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 1.5rem;
@@ -145,7 +144,7 @@ export default {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-height: 900px; /* Increased from 700px to 900px */
+  max-height: 900px;
   position: relative;
   padding-top: 1.5rem;
 }
@@ -154,7 +153,7 @@ h2 {
   font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.025em;
-  margin: 0;
+  margin: 0 0 0 1.5rem;
 }
 
 .close-button {
@@ -168,15 +167,11 @@ h2 {
   cursor: pointer;
   transition: background-color 0.2s;
   position: absolute;
-  
   right: 1.25rem;
+  top: 1.5rem;
   font-size: 1.25rem;
   height: 2rem;
   width: 2rem;
-
-  position: absolute;
-  top: 1.5rem;
-  
   margin: 0;
 }
 
@@ -187,7 +182,7 @@ h2 {
 .document-status-summary {
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   font-weight: 500;
   color: #718096;
   background-color: rgba(0, 0, 0, 0.03);
@@ -197,10 +192,12 @@ h2 {
 
 .document-column {
   text-align: left;
+  flex: 1;
 }
 
 .status-column {
   text-align: right;
+  min-width: 120px;
 }
 
 .summary-border {
@@ -211,10 +208,11 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
   transition: background-color 0.2s;
   background-color: transparent;
+  gap: 1rem;
 }
 
 .document-status:hover {
@@ -226,7 +224,8 @@ h2 {
   transition: color 0.2s;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 2.2 rem;
+  flex: 1;
 }
 
 .document-status:hover span:first-child {
