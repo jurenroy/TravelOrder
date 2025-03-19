@@ -1,61 +1,26 @@
 <template>
   <div style="display: flex; flex-direction: column">
-    <h2
-      style="display: flex; flex-direction: row; align-self: center"
-      class="hist"
-    >
+    <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
       Documents Status
       <select v-model="selectedStatus" id="status" class="styled-select">
         <option v-for="option in options" :key="option" :value="option">
           {{ option }}
         </option>
       </select>
-      <span v-if="pendingCount !== 0" class="notification-count">{{
-        pendingCount
-      }}</span>
+      <span v-if="pendingCount !== 0" class="notification-count">{{ pendingCount }}</span>
     </h2>
+
     <div v-if="load" class="loadings">
       <img src="../../assets/loading.gif" width="auto" height="100px" />
     </div>
-    <div
-      style="display: flex; flex-direction: column; align-items: center"
-      v-if="otp"
-    >
+
+    <div style="display: flex; flex-direction: column; align-items: center" v-if="otp">
       <otpz />
     </div>
-    <div
-      class="search"
-      style="
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: end;
-        margin-top: 15px;
-        margin-bottom: 10px;
-        height: 35px;
-      "
-    >
-      <div
-        v-if="mawala"
-        style="
-          display: flex;
-          border: 2px solid black;
-          border-radius: 5px;
-          align-items: center;
-          height: 30px;
-          position: relative;
-        "
-      >
-        <img
-          class="imgsearch"
-          style="
-            height: 20px;
-            width: 20px;
-            position: relative;
-            padding-left: 5px;
-          "
-          src="../../assets/search.png"
-        />
+
+    <div class="search">
+      <div v-if="mawala" class="mawala">
+        <img class="imgsearch" src="../../assets/search.png" />
         <input
           class="pholder"
           type="text"
@@ -76,6 +41,7 @@
         @submit="handleEditDetails"
         @close="showEditDetailsPopup = false"
       />
+
       <div class="scrollable-table">
         <table>
           <thead>
@@ -92,27 +58,17 @@
             <tr v-for="(item, index) in processedFormData" :key="index">
               <td>{{ getName(item.name_id) }}</td>
               <td>
-                <span
-                  v-if="Array.isArray(item.documents) && item.documents.length"
-                >
-                  <span
-                    v-for="(doc, docIndex) in item.documents"
-                    :key="docIndex"
-                  >
+                <span v-if="Array.isArray(item.documents) && item.documents.length">
+                  <span v-for="(doc, docIndex) in item.documents" :key="docIndex">
                     {{ getDocumentName(doc) }} <br />
                   </span>
                 </span>
                 <span v-else>No documents requested</span>
-              </td>
+              </td>             
               <td>{{ item.date }}</td>
               <td>
-                <span
-                  v-if="Array.isArray(item.documents) && item.documents.length"
-                >
-                  <span
-                    v-if="allDocumentsReleased(item.documents)"
-                    class="released-text"
-                  >
+                <span v-if="Array.isArray(item.documents) && item.documents.length">
+                  <span v-if="allDocumentsReleased(item.documents)" class="released-text">
                     All documents released
                   </span>
                   <span v-else>
@@ -131,39 +87,32 @@
                 <span v-if="item.rating !== null">
                   <span v-for="n in item.rating" :key="n">⭐</span>
                 </span>
-                <button
-                  v-else-if="nameId == item.name_id"
-                  @click="openRatingPopup(item)"
-                >
+                <button v-else-if="nameId == item.name_id" @click="openRatingPopup(item)">
                   Rating
                 </button>
                 <span v-else>No ratings yet</span>
               </td>
-
               <td>
-                <button
-                  v-if="canEditRequest(item)"
-                  @click="openEditRequestForm(item)"
-                >
-                  Edit
+                <button v-if="canEditRequest(item)" @click="openEditRequestForm(item)">
+                  EDIT
                 </button>
                 <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
-                  Remarks
+                  REMARKS
                 </button>
                 <button @click="generatePDF(item, getName(item.name_id))">
-                  View PDF
+                  VIEW PDF
                 </button>
-                <button @click="add(item)">View Note</button>
+                <button @click="add(item)">
+                  {{ isAdmin ? "ADD NOTE" : "VIEW NOTE" }}
+                </button>
               </td>
             </tr>
-            <h1
-              style="text-align: center; margin-bottom: 0px"
-              v-if="processedFormData.length == 0"
-            >
+            <h1 style="text-align: center; margin-bottom: 0px" v-if="processedFormData.length == 0">
               NO MATCH FOUND
             </h1>
           </tbody>
         </table>
+        
         <editform
           v-if="showEditRequestForm"
           :requestData="currentItem"
@@ -175,6 +124,7 @@
           @update-success="handleEditRequestSuccess"
           @update-error="handleEditRequestError"
         />
+        
         <Note
           v-if="addNote"
           :initialNote="currentItem.note || ''"
@@ -185,6 +135,7 @@
       </div>
     </div>
   </div>
+  
   <PDF
     :item="selectedItem"
     :name="selectedName"
@@ -199,48 +150,47 @@ import editform from "./EditRequest.vue";
 import PDF from "./PDF.vue";
 import RatingPopup from "./rating.vue";
 import { API_BASE_URL } from "@/config";
-import EditDetailsPopup from "./EditDetailsPopup.vue";
+import EditDetailsPopup from "./remarks.vue";
 import Note from "./Note.vue";
 
 export default {
+  name: "DocumentRequestManager",
+  
   components: {
-    name: "PDF",
-    props: {
-      item: {
-        type: Object,
-        required: true,
-      },
-      names: {
-        type: Object,
-        required: true,
-      },
-      divisions: {
-        type: Array,
-        required: true,
-      },
-      logoPath: {
-        type: String,
-        default: "",
-      },
-      debugMode: {
-        type: Boolean,
-        default: false,
-      },
-    },
+    PDF,
     RatingPopup,
     editform,
     EditDetailsPopup,
-    Note,
-    PDF,
-    editform,
-    props: {
-      data: {
-        type: Object,
-        required: true,
-      },
-    },
+    Note
   },
-
+  
+  props: {
+    data: {
+      type: Object,
+      required: true
+    },
+    item: {
+      type: Object,
+      required: false
+    },
+    names: {
+      type: Object,
+      required: false
+    },
+    divisions: {
+      type: Array,
+      required: false
+    },
+    logoPath: {
+      type: String,
+      default: ""
+    },
+    debugMode: {
+      type: Boolean,
+      default: false
+    }
+  },
+  
   data() {
     return {
       showEditDetailsPopup: false,
@@ -249,7 +199,6 @@ export default {
       showRatingPopup: false,
       othersDocName: null,
       processedDocs: [],
-      showEditDetailsPopup: false,
       currentItem: "",
       selectedStatus: "All",
       options: ["All", "Pending", "Released", "No Remarks"],
@@ -266,8 +215,6 @@ export default {
       noteText: "",
       searchQuery: "",
       documents: [],
-      name: "PDF",
-      props: ["data"],
       parsedDocuments: [],
       selectedDocuments: [],
       timeReleased: "",
@@ -277,31 +224,26 @@ export default {
       selectedName: "",
       selectedSignature: "",
       selectedItem: [],
-
+      accounts: [],
       documentList: [
-     "SERVICE RECORD",
-     "CERTIFICATE OF EMPLOYMENT",
-     "CERTIFICATE OF EMPLOYMENT WITH COMPENSATION",
-     "OFFICE CLEARANCE",
-     "LBP BC LIST",
-     "CERTIFICATE OF LEAVE CREDITS",
-     "PHOTOCOPY OF TRAVEL ORDER",
-     "OTHERS",
-      ],
-
-      created() {
-        this.parseRequestedDocuments();
-      },
-
-      props: {
-        data: {
-          type: Object,
-          required: true,
-        },
-      },
+        "SERVICE RECORD",
+        "CERTIFICATE OF EMPLOYMENT",
+        "CERTIFICATE OF EMPLOYMENT WITH COMPENSATION",
+        "OFFICE CLEARANCE",
+        "LBP BC LIST",
+        "CERTIFICATE OF LEAVE CREDITS",
+        "PHOTOCOPY OF TRAVEL ORDER",
+        "OTHERS"
+      ]
     };
   },
-
+  
+  created() {
+    if (this.item) {
+      this.parseRequestedDocuments();
+    }
+  },
+  
   mounted() {
     this.fetchAccounts();
     this.fetchEmployees();
@@ -310,123 +252,83 @@ export default {
     this.fetchDivisions();
     this.fetchDocuments();
     console.log(this.data);
-    this.loadAccounts();
   },
-
-  methods: {
-    data() {
-      return {
-        othersDocName: null,
-      };
+  
+  computed: {
+    pendingCount() {
+      return this.formData.filter(
+        (form) => form.note === null && form.initial !== null
+      ).length;
     },
-    methods: {
-      otherDocumentText() {
-        console.log("Initial item:", item);
-        console.log("Processed Docs:", processedDocs);
+    
+    filteredFormData() {
+      return this.formData;
+    },
+    
+    isAdmin() {
+      return this.nameId === "2" || this.nameId === "76";
+    },
+    
+    processedFormData() {
+      return this.formData
+        .filter((item) => {
+          const requestorName = this.getName(item.name_id).toLowerCase();
+          const documentNames = item.documents
+            .map((doc) => (doc.name ? doc.name.toLowerCase() : ""))
+            .join(" ");
 
-        if (item.otherDocuments) {
-          console.log("Found otherDocuments:", item.otherDocuments);
-          return item.otherDocuments;
-        }
+          const query = this.searchQuery.toLowerCase();
+          const matchesSearch = requestorName.includes(query) || documentNames.includes(query);
 
-        if (item.otherDocumentText) {
-          console.log("Found otherDocumentText:", item.otherDocumentText);
-          return item.otherDocumentText;
-        }
+          if (!matchesSearch) return false;
 
-        const othersDoc = processedDocs.find((doc) => {
-          if (typeof doc === "object") {
-            const isOthersDoc =
-              doc.originalName === "OTHERS" ||
-              doc.name.includes("Others:") ||
-              doc.name === "Others";
-            console.log("Checking doc:", doc, "isOthersDoc:", isOthersDoc);
-            return isOthersDoc;
+          if (this.selectedStatus !== "All") {
+            return item.documents.some(
+              (doc) =>
+                doc.remarks.trim().toLowerCase() === this.selectedStatus.toLowerCase()
+            );
           }
-          const isOthersDoc = doc === "Others" || doc.includes("Others:");
-          console.log("Checking string doc:", doc, "isOthersDoc:", isOthersDoc);
-          return isOthersDoc;
-        });
-
-        this.othersDocName = othersDoc ? othersDoc.name : null;
-
-        console.log("Found othersDoc:", othersDoc);
-
-        return othersDoc || null;
-      },
-    },
-    focusTextarea(text) {
-      this.noteText = text;
-      this.$refs.noteInput.focus();
-    },
-
-    getTimeRequested(dateString) {
-      try {
-        const dateObj = new Date(dateString);
-        if (!isNaN(dateObj.getTime())) {
-          // Format time as HH:MM AM/PM
-          return dateObj.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-        }
-      } catch (e) {
-        console.error("Error parsing date:", e);
-      }
-      return "N/A"; 
-    },
-    findDivisionName(division_Id) {
-      if (this.divisions && this.divisions.length > 0) {
-        const division = this.divisions.find(
-          (div) => div.division_id === division_Id
-        );
-        return division?.division_name || "UNKNOWN";
-      }
-      return "UNKNOWN";
-    },
-
-    fetchDivisions() {
-      axios
-        .get(`${API_BASE_URL}/get_divisions_json`)
-        .then((response) => {
-          this.divisions = response.data;
+          return true;
         })
-        .catch((error) => {
-          console.error("Error fetching divisions:", error);
-        });
-    },
-    async loadAccounts() {
-      try {
-        const response = await fetch(`${API_BASE_URL}/get_accounts_json`);
-        const data = await response.json();
-        this.accounts = data;
-        console.log("Accounts loaded successfully:", this.accounts);
-        return this.accounts;
-      } catch (error) {
-        console.error("Error loading accounts:", error);
-        this.accounts = [];
-        return [];
-      }
-    },
-    async fetchAccounts() {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
+        .slice()
+        .reverse();
+    }
+  },
+  
+  methods: {
+    otherDocumentText() {
+      console.log("Initial item:", this.item);
+      console.log("Processed Docs:", this.processedDocs);
 
-        this.accounts = response.data;
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
+      if (this.item.otherDocuments) {
+        console.log("Found otherDocuments:", this.item.otherDocuments);
+        return this.item.otherDocuments;
       }
-    },
 
-    async fetchNames() {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/get_names_json`);
-        this.names = response.data;
-      } catch (error) {
-        console.error("Error fetching names:", error);
+      if (this.item.otherDocumentText) {
+        console.log("Found otherDocumentText:", this.item.otherDocumentText);
+        return this.item.otherDocumentText;
       }
-    },
 
+      const othersDoc = this.processedDocs.find((doc) => {
+        if (typeof doc === "object") {
+          const isOthersDoc =
+            doc.originalName === "OTHERS" ||
+            doc.name.includes("Others:") ||
+            doc.name === "Others";
+          console.log("Checking doc:", doc, "isOthersDoc:", isOthersDoc);
+          return isOthersDoc;
+        }
+        const isOthersDoc = doc === "Others" || doc.includes("Others:");
+        console.log("Checking string doc:", doc, "isOthersDoc:", isOthersDoc);
+        return isOthersDoc;
+      });
+
+      this.othersDocName = othersDoc ? othersDoc.name : null;
+      console.log("Found othersDoc:", othersDoc);
+      return othersDoc || null;
+    },
+    
     parseRequestedDocuments() {
       const requestedDocs = Array.isArray(this.item.documents)
         ? this.item.documents
@@ -442,7 +344,7 @@ export default {
       console.log("Parsed Documents:", this.parsedDocuments);
       return this.parsedDocuments;
     },
-
+    
     isDocumentRequested(documentName) {
       if (this.parsedDocuments.length === 0) {
         this.parseRequestedDocuments();
@@ -451,7 +353,7 @@ export default {
       const doc = this.parsedDocuments.find((d) => d.name === documentName);
       return doc ? doc.isChecked : false;
     },
-
+    
     isOthersDoc(doc) {
       const othersDoc = this.processedDocs.find((d) => {
         if (typeof d === "object") {
@@ -498,152 +400,54 @@ export default {
       console.log("No other document text found, returning empty string");
       return "";
     },
-
-    async getSignatureByNameId(nameId) {
-      console.log("getSignatureByNameId called with nameId:", nameId);
-
-      if (!this.accounts || !Array.isArray(this.accounts)) {
-        console.log("Accounts not loaded, fetching now...");
-        await this.fetchAccounts();
-      }
-
-      console.log("Accounts after potential fetch:", this.accounts);
-
-      if (!this.accounts || !Array.isArray(this.accounts)) {
-        console.log("Still no accounts available");
-        return "___________________";
-      }
-
-      const account = this.accounts.find(
-        (acc) => acc.name_id === parseInt(nameId)
-      );
-      console.log("Found account:", account);
-
-      if (account && account.signature) {
-        console.log("Found signature:", account.signature);
-        return `<img src="${account.signature}" alt="Signature" style="height: 40px; max-width: 150px; display: inline-block;">`;
-      } else {
-        console.log("No signature found for nameId:", nameId);
-        return "___________________";
-      }
+    
+    getDocumentName(doc) {
+      if (!doc) return "No document";
+      return typeof doc === "object" ? doc.name || "Unknown" : doc;
     },
-
-    getSignatureByNameId(nameId) {
-      console.log("getSignatureByNameId called with nameId:", nameId);
-      console.log("this.accounts:", this.accounts);
-
-      if (!this.accounts || !Array.isArray(this.accounts)) {
-        console.log("No accounts available or accounts is not an array");
-        return "___________________";
-      }
-
-      const account = this.accounts.find((acc) => {
-        console.log(
-          "Checking account:",
-          acc,
-          "against nameId:",
-          parseInt(nameId)
-        );
-        return acc.id === parseInt(nameId);
-      });
-
-      console.log("Found account:", account);
-
-      if (account && account.signature) {
-        console.log("Found signature:", account.signature);
-        return `<img src="${account.signature}" alt="Signature" style="height: 40px; max-width: 150px; display: inline-block;">`;
-      } else {
-        console.log("No signature found, using default line");
-        return "___________________";
-      }
+    
+    getReleasedStatus(doc) {
+      return doc.remarks?.trim() === "Released" ? "Released" : "Unreleased";
     },
-    generatePDF(item, name) {
-      this.selectedItem = item;
-      this.selectedName = name;
-      this.selectedSignature =
-        "http://202.137.117.84:8011/storage/" +
-        this.accounts.filter((acc) => acc.name_id === item.name_id)[0]
-          .signature;
-      console.log(this.selectedSignature);
-
-      // Set a delay of 0.5 seconds (500 milliseconds) before calling printzz
-      setTimeout(() => {
-        this.printzz();
-      }, 500);
-    },
-
-    findDivisionName(division_Id) {
-      if (this.divisions && this.divisions.length > 0) {
-        const division = this.divisions.find(
-          (div) => div.division_id === division_Id
-        );
-        return division?.division_name || "UNKNOWN";
-      }
-      return "UNKNOWN";
-    },
-
-    fetchDocuments() {
-      axios
-        .get(`${API_BASE_URL}/get_request`)
-        .then((response) => {
-          this.documents = response.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching documents:", error);
-        });
-    },
-    openEditRequestForm(item) {
-      this.currentItem = item;
-      this.showEditRequestForm = true;
-    },
-    canEditRequest(item) {
-      const userId = Number(this.nameId);
-      const requestorId = Number(item.name_id);
-
-      return (
-        userId === requestorId && !this.allDocumentsReleased(item.documents)
-      );
-    },
-    closeEditRequestForm() {
-      this.showEditRequestForm = false;
-    },
-
-    handleEditRequestSuccess(updatedRequest) {
-      let documentsArray = [];
-
-      if (updatedRequest.documents) {
-        if (Array.isArray(updatedRequest.documents)) {
-          documentsArray = updatedRequest.documents;
-        } else if (typeof updatedRequest.documents === "string") {
-          try {
-            documentsArray = JSON.parse(updatedRequest.documents);
-          } catch (e) {
-            console.error("Error parsing documents JSON:", e);
-          }
+   
+    getTimeRequested(dateString) {
+      try {
+        const dateObj = new Date(dateString);
+        if (!isNaN(dateObj.getTime())) {
+          // Format time as HH:MM AM/PM
+          return dateObj.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
         }
+      } catch (e) {
+        console.error("Error parsing date:", e);
       }
-      this.formData = this.formData.map((item) => {
-        if (item.id === updatedRequest.id) {
-          return {
-            ...item,
-            ...updatedRequest,
-            documents: documentsArray.map((doc) => ({
-              name: doc.name || doc,
-              remarks: doc.remarks?.trim() ? doc.remarks : "No Remarks",
-            })),
-          };
-        }
-        return item;
-      });
-
-      this.showEditRequestForm = false;
-      alert("Request updated successfully!");
+      return "N/A"; 
     },
-
-    handleEditRequestError(error) {
-      console.error("Error updating request:", error);
-      alert("Failed to update request. Please try again.");
+  
+    async fetchAccounts() {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
+        this.accounts = response.data;
+        this.acc = this.accounts.find(result => result.account_id == this.accountId);
+        return this.accounts;
+      } catch (error) {
+        console.error("Error fetching accounts:", error);
+        this.accounts = [];
+        return [];
+      }
     },
+    
+    async fetchNames() {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/get_names_json`);
+        this.names = response.data;
+      } catch (error) {
+        console.error("Error fetching names:", error);
+      }
+    },
+    
     fetchDivisions() {
       axios
         .get(`${API_BASE_URL}/get_divisions_json`)
@@ -654,256 +458,29 @@ export default {
           console.error("Error fetching divisions:", error);
         });
     },
-   
-    add(item) {
-      this.addNote = true;
-      this.noteText = item.note || "";
-      this.currentItem = item;
-    },
-    saveNote(updatedNote) {
-      if (!this.isAdmin) {
-        alert("You do not have permission to save notes.");
-        return; // Exit the method if the user is not an admin
-      }
-      if (!this.currentItem || !this.currentItem.id) return;
-
+    
+    fetchDocuments() {
       axios
-        .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, {
-          note: updatedNote,
-        })
-        .then(() => {
-          this.currentItem.note = updatedNote;
-          alert("Note saved successfully!");
-        })
-        .catch((error) => {
-          console.error("Error updating note:", error);
-          alert("Failed to update note.");
-        });
-    },
-    closeNote() {
-      this.addNote = false; // Hide the Add Note popup
-      this.viewNote = false;
-    },
-    postNote(note) {
-      const formData = new FormData();
-      formData.append("note", note);
-      axios
-        .post(`${API_BASE_URL}/update_form/${this.notenum}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(() => {
-          this.fetchData();
-          this.closeNote();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    },
-
-    getDocumentName(doc) {
-      if (!doc) return "No document";
-      return typeof doc === "object" ? doc.name || "Unknown" : doc;
-    },
-
-    getReleasedStatus(doc) {
-      return doc.remarks?.trim() === "Released" ? "Released" : "Unreleased";
-    },
-
-    openEditDetailsPopup(item) {
-      this.currentItem = item;
-      this.showEditDetailsPopup = true;
-    },
-
-    handleEditDetails(updatedDocuments) {
-      if (!this.currentItem || !this.currentItem.id) {
-        alert("No current item selected for update.");
-        return;
-      }
-
-      const routes = [
-        // other routes...
-        {
-          path: "/pdf",
-          name: "PDF",
-          component: PDF,
-          props: true, // This allows you to pass props to the PDF component
-        },
-      ];
-
-      const processedDocuments = updatedDocuments.map((doc) => {
-        const updatedDoc = { ...doc };
-
-        if (
-          updatedDoc.remarks &&
-          updatedDoc.remarks.trim() === "Released" &&
-          !updatedDoc.releaseDate
-        ) {
-          updatedDoc.releaseDate = new Date().toISOString();
-          console.log("yawa");
-        }
-
-        return updatedDoc;
-      });
-      const payload = {
-        documents: processedDocuments,
-        remarks: updatedDocuments.map((doc) => doc.remarks).join(", "), // Join remarks for storage
-      };
-      // const formeme = new FormData();
-      // formeme.append('documents', JSON.stringify(processedDocuments)); // Append as JSON string
-      const formeme = {
-        documents: processedDocuments,
-      };
-
-      // Log the processedDocuments
-      console.log(processedDocuments);
-      console.log(payload);
-
-      // Log the contents of the FormData
-      console.log(formeme);
-
-      axios
-        .post(
-          `${API_BASE_URL}/update_request/${this.currentItem.id}`,
-          formeme
-        )
+        .get(`${API_BASE_URL}/get_request`)
         .then((response) => {
-          if (response.status === 200) {
-            alert("Documents updated successfullyxxxx!");
-            console.log("gana man lage", formeme);
-            this.currentItem.documents = processedDocuments;
-
-            this.formData = this.formData.map((item) => {
-              if (item.id === this.currentItem.id) {
-                return { ...item, documents: processedDocuments };
-              }
-              return item;
-            });
-          }
+          this.documents = response.data;
         })
         .catch((error) => {
-          console.error("Error updating documents:", error);
-          alert("Failed to update documents. Please try again.");
-        });
-
-      (`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
-        .then((response) => {
-          if (response.status === 200) {
-            alert("Remarks updated successfullyzzzz!");
-            this.currentItem.documents = updatedDocuments;
-          }
-        })
-        .catch((error) => {
-          console.error("Error updating documents:", error);
-          alert("Failed to update documents. Please try again.");
+          console.error("Error fetching documents:", error);
         });
     },
-    allDocumentsReleased(documents) {
-      if (!documents || documents.length === 0) {
-        return false;
-      }
-      return documents.every((doc) => doc.remarks === "Released");
-    },
-    getRemarksszzz(doc){
-      if (doc.remarks === 'No Remarks') return 'no-remarks-text';
-      if (doc.remarks === 'Released') return 'releasedeg-text';
-      if (doc.remarks === 'Pending') return 'incomplete-text';
-      return '';
-    },
-
-    handleRating(rating) {
-      if (!this.currentItem || !this.currentItem.id) {
-        alert("No request selected.");
-        return;
-      }
-      const userId = Number(this.nameId); 
-      const requestorId = Number(this.currentItem.name_id); 
-      if ((userId === 2 || userId === 76) && userId !== requestorId) {
-        alert("You can only rate your own request.");
-        return;
-      }
-      const payload = { rating: rating };
+    
+    fetchEmployees() {
       axios
-        .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
+        .get(`${API_BASE_URL}/get_employees_json`)
         .then((response) => {
-          if (response.status === 200) {
-            alert("Rating submitted successfully!");
-            this.currentItem.rating = rating;
-          }
+          this.employees = response.data;
         })
         .catch((error) => {
-          console.error("Error submitting rating:", error);
-          alert("Failed to submit rating. Please try again.");
-        })
-        .finally(() => {
-          this.showRatingPopup = false;
+          console.error("Error fetching employees:", error);
         });
     },
-    openRatingPopup(item) {
-      this.currentItem = item;
-      this.showRatingPopup = true;
-    },
-  
-    closeEdit() {
-      this.selectedTravelOrderIdEdit = 0;
-    },
-    printzz() {
-      window.print();
-    },
-   
-    postNote(note) {
-      if (!this.currentItem || !this.currentItem.id) {
-        alert("No request selected.");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("note", note);
-
-      axios
-        .post(
-          `${API_BASE_URL}/update_request/${this.currentItem.id}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
-        .then((response) => {
-          if (response.status === 200) {
-            alert("Note added successfully!");
-
-            this.formData = this.formData.map((item) =>
-              item.id === this.currentItem.id ? { ...item, note } : item
-            );
-
-            this.closeNote();
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          alert("Failed to submit note. Please try again.");
-        });
-    },
-     closeNote() {
-      this.addNote = false;
-      this.viewNote = false;
-    },
-    fetchAccounts() {
-      axios
-        .get(`${API_BASE_URL}/get_accounts_json`)
-        .then((response) => {
-          this.acc = response.data.find(
-            (result) => result.account_id == this.accountId
-          );
-          this.fetchData();
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
-    },
+    
     fetchData() {
       axios
         .get(`${API_BASE_URL}/get_request`)
@@ -945,26 +522,17 @@ export default {
           this.load = false;
         });
     },
-    fetchNames() {
-      axios
-        .get(`${API_BASE_URL}/get_names_json`)
-        .then((response) => {
-          this.names = response.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching names:", error);
-        });
+  
+    findDivisionName(division_Id) {
+      if (this.divisions && this.divisions.length > 0) {
+        const division = this.divisions.find(
+          (div) => div.division_id === division_Id
+        );
+        return division?.division_name || "UNKNOWN";
+      }
+      return "UNKNOWN";
     },
-    fetchEmployees() {
-      axios
-        .get(`${API_BASE_URL}/get_employees_json`)
-        .then((response) => {
-          this.employees = response.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching employees:", error);
-        });
-    },
+    
     getName(nameId) {
       const name = this.names[nameId - 1];
       if (name) {
@@ -973,69 +541,283 @@ export default {
       }
       return "Unknown";
     },
-    padWithZeroes(travel_order_id) {
-      if (travel_order_id === undefined || travel_order_id === null) {
-        console.warn("padWithZeroes received an undefined or null value");
-        return "0000"; // or some default value, depending on your requirements
+    
+    getSignatureByNameId(nameId) {
+      console.log("getSignatureByNameId called with nameId:", nameId);
+
+      if (!this.accounts || !Array.isArray(this.accounts)) {
+        console.log("No accounts available or accounts is not an array");
+        return "___________________";
       }
 
-      const idString = travel_order_id.toString();
-      return idString.padStart(4, "0");
+      const account = this.accounts.find((acc) => acc.id === parseInt(nameId));
+      console.log("Found account:", account);
+
+      if (account && account.signature) {
+        console.log("Found signature:", account.signature);
+        return `<img src="${account.signature}" alt="Signature" style="height: 40px; max-width: 150px; display: inline-block;">`;
+      } else {
+        console.log("No signature found, using default line");
+        return "___________________";
+      }
     },
-    fetchDocuments() {
+    
+    getRemarksszzz(doc) {
+      if (doc.remarks === 'No Remarks') return 'no-remarks-text';
+      if (doc.remarks === 'Released') return 'releasedeg-text';
+      if (doc.remarks === 'Pending') return 'incomplete-text';
+      return '';
+    },
+    
+    allDocumentsReleased(documents) {
+      if (!documents || documents.length === 0) {
+        return false;
+      }
+      return documents.every((doc) => doc.remarks === "Released");
+    },
+    
+    canEditRequest(item) {
+      const userId = Number(this.nameId);
+      const requestorId = Number(item.name_id);
+
+      return (
+        userId === requestorId && !this.allDocumentsReleased(item.documents)
+      );
+    },
+    
+    openEditRequestForm(item) {
+      this.currentItem = item;
+      this.showEditRequestForm = true;
+    },
+    
+    closeEditRequestForm() {
+      this.showEditRequestForm = false;
+    },
+    
+    handleEditRequestSuccess(updatedRequest) {
+      let documentsArray = [];
+
+      if (updatedRequest.documents) {
+        if (Array.isArray(updatedRequest.documents)) {
+          documentsArray = updatedRequest.documents;
+        } else if (typeof updatedRequest.documents === "string") {
+          try {
+            documentsArray = JSON.parse(updatedRequest.documents);
+          } catch (e) {
+            console.error("Error parsing documents JSON:", e);
+          }
+        }
+      }
+      
+      this.formData = this.formData.map((item) => {
+        if (item.id === updatedRequest.id) {
+          return {
+            ...item,
+            ...updatedRequest,
+            documents: documentsArray.map((doc) => ({
+              name: doc.name || doc,
+              remarks: doc.remarks?.trim() ? doc.remarks : "No Remarks",
+            })),
+          };
+        }
+        return item;
+      });
+
+      this.showEditRequestForm = false;
+      alert("Request updated successfully!");
+    },
+    
+    handleEditRequestError(error) {
+      console.error("Error updating request:", error);
+      alert("Failed to update request. Please try again.");
+    },
+    
+    openEditDetailsPopup(item) {
+      this.currentItem = item;
+      this.showEditDetailsPopup = true;
+    },
+    
+    handleEditDetails(updatedDocuments) {
+      if (!this.currentItem || !this.currentItem.id) {
+        alert("No current item selected for update.");
+        return;
+      }
+
+      const processedDocuments = updatedDocuments.map((doc) => {
+        const updatedDoc = { ...doc };
+
+        if (
+          updatedDoc.remarks &&
+          updatedDoc.remarks.trim() === "Released" &&
+          !updatedDoc.releaseDate
+        ) {
+          updatedDoc.releaseDate = new Date().toISOString();
+          console.log("yawa");
+        }
+
+        return updatedDoc;
+      });
+      
+      const formeme = {
+        documents: processedDocuments,
+      };
+
+      console.log(processedDocuments);
+      console.log(formeme);
+
       axios
-        .get(`${API_BASE_URL}/get_request`)
+        .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, formeme)
         .then((response) => {
-          this.documents = response.data;
+          if (response.status === 200) {
+            alert("Documents updated successfully!");
+            console.log("gana man lage", formeme);
+            this.currentItem.documents = processedDocuments;
+
+            this.formData = this.formData.map((item) => {
+              if (item.id === this.currentItem.id) {
+                return { ...item, documents: processedDocuments };
+              }
+              return item;
+            });
+          }
         })
         .catch((error) => {
-          console.error("Error fetching documents:", error);
+          console.error("Error updating documents:", error);
+          alert("Failed to update documents. Please try again.");
         });
     },
-  },
-  computed: {
-    pendingCount() {
-      return this.formData.filter(
-        (form) => form.note === null && form.initial !== null
-      ).length;
+    
+    openRatingPopup(item) {
+      this.currentItem = item;
+      this.showRatingPopup = true;
     },
-    filteredFormData() {
-      return this.formData;
-    },
-    isAdmin() {
-      return this.nameId === "2" || this.nameId === "76";
-    },
-
-    processedFormData() {
-      return this.formData
-        .filter((item) => {
-          const requestorName = this.getName(item.name_id).toLowerCase();
-          const documentNames = item.documents
-            .map((doc) => (doc.name ? doc.name.toLowerCase() : ""))
-            .join(" ");
-
-          const query = this.searchQuery.toLowerCase();
-
-          const matchesSearch =
-            requestorName.includes(query) || documentNames.includes(query);
-
-          if (!matchesSearch) return false;
-
-          if (this.selectedStatus !== "All") {
-            return item.documents.some(
-              (doc) =>
-                doc.remarks.trim().toLowerCase() ===
-                this.selectedStatus.toLowerCase()
-            );
+    
+    handleRating(rating) {
+      if (!this.currentItem || !this.currentItem.id) {
+        alert("No request selected.");
+        return;
+      }
+      
+      const userId = Number(this.nameId); 
+      const requestorId = Number(this.currentItem.name_id); 
+      
+      if ((userId === 2 || userId === 76) && userId !== requestorId) {
+        alert("You can only rate your own request.");
+        return;
+      }
+      
+      const payload = { rating: rating };
+      
+      axios
+        .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
+        .then((response) => {
+          if (response.status === 200) {
+            alert("Rating submitted successfully!");
+            this.currentItem.rating = rating;
           }
-
-          return true;
         })
-        .slice()
-        .reverse();
+        .catch((error) => {
+          console.error("Error submitting rating:", error);
+          alert("Failed to submit rating. Please try again.");
+        })
+        .finally(() => {
+          this.showRatingPopup = false;
+        });
     },
-  },
+    
+    add(item) {
+      this.addNote = true;
+      this.noteText = item.note || "";
+      this.currentItem = item;
+    },
+    
+    saveNote(updatedNote) {
+      if (!this.isAdmin) {
+        alert("You do not have permission to save notes.");
+        return;
+      }
+      
+      if (!this.currentItem || !this.currentItem.id) return;
+
+      axios
+        .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, {
+          note: updatedNote,
+        })
+        .then(() => {
+          this.currentItem.note = updatedNote;
+          alert("Note saved successfully!");
+        })
+        .catch((error) => {
+          console.error("Error updating note:", error);
+          alert("Failed to update note.");
+        });
+    },
+    
+    closeNote() {
+      this.addNote = false;
+      this.viewNote = false;
+    },
+    
+    postNote(note) {
+      if (!this.currentItem || !this.currentItem.id) {
+        alert("No request selected.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("note", note);
+
+      axios
+        .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            alert("Note added successfully!");
+
+            this.formData = this.formData.map((item) =>
+              item.id === this.currentItem.id ? { ...item, note } : item
+            );
+
+            this.closeNote();
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Failed to submit note. Please try again.");
+        });
+    },
+    
+    focusTextarea(text) {
+      this.noteText = text;
+      this.$refs.noteInput.focus();
+    },
+    
+    generatePDF(item, name) {
+      this.selectedItem = item;
+      this.selectedName = name;
+      this.selectedSignature =
+        "http://202.137.117.84:8011/storage/" +
+        this.accounts.filter((acc) => acc.name_id === item.name_id)[0].signature;
+      console.log(this.selectedSignature);
+
+      setTimeout(() => {
+        this.printzz();
+      }, 500);
+    },
+    
+    printzz() {
+      window.print();
+    },
+    
+    closeEdit() {
+      this.selectedTravelOrderIdEdit = 0;
+    }
+  }
 };
+
 window.onload = function () {
   var img = new Image();
   img.src = "src/assets/bago.png";
@@ -1044,301 +826,4 @@ window.onload = function () {
 };
 </script>
 
-<style scoped>
-.notification-count {
-  margin-top: -10px;
-  margin-left: -10px;
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  width: 20px; /* Adjust size */
-  height: 20px; /* Adjust size */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px; /* Adjust font size */
-}
-
-.pholder {
-  padding: 5px;
-  border-radius: none;
-  border: none;
-  outline: none;
-}
-
-.Btn {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 50px;
-  height: 50px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition-duration: 0.3s;
-  border: 2px solid black;
-  margin-bottom: 2px;
-  background-color: white;
-}
-.sign {
-  width: 100%;
-  transition-duration: 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  left: 1px;
-}
-
-.text {
-  position: absolute;
-  right: 0%;
-  width: 0%;
-  opacity: 0;
-  color: black;
-  font-size: 1.2em;
-  font-weight: 500;
-  transition-duration: 0.3s;
-}
-
-.Btn:hover {
-  background-color: white;
-  width: 230px;
-  border: 2px solid black;
-  border-radius: 5px;
-  transition-duration: 0.3s;
-  position: relative;
-}
-
-.Btn:hover .text {
-  opacity: 1;
-  width: 70%;
-  transition-duration: 0.3s;
-  padding-right: 10px;
-}
-
-.Btn:hover .sign {
-  width: 30%;
-  transition-duration: 0.3s;
-  position: relative;
-  left: -15px;
-}
-
-.Btn:active {
-  transform: translate(2px, 2px);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-th {
-  background-color: #f2f2f2;
-  position: sticky;
-  top: -2px;
-}
-
-.scrollable-table {
-  max-height: 630px;
-  overflow-y: auto;
-  margin: 15px;
-}
-
-.outer {
-  border: 1px solid black;
-  box-shadow: 0px 0px 4px black, 0px 0px 3px black inset;
-  border-radius: 5px;
-  width: 100%;
-}
-
-.loadings {
-  top: 0;
-  left: 0;
-  width: fit-content;
-  justify-self: center;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  margin: 10px auto;
-  border-radius: 10px;
-}
-
-.loadings1 {
-  height: 20px;
-  width: 100%;
-  text-align: center;
-}
-
-.loadings1,
-.loadings2 {
-  font-weight: bold;
-  font-size: 20px;
-}
-
-.note {
-  width: 300px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 100;
-}
-
-.title-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.butokz {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.title {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.close-icon {
-  cursor: pointer;
-  font-size: 20px;
-  color: #333;
-}
-
-.content {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-textarea {
-  width: 100%;
-  resize: vertical;
-  height: 75px;
-}
-
-button {
-  border-radius: 10px;
-  background: linear-gradient(150deg, #ddc7ad, #92785b);
-  border: solid black 2px;
-  padding: 10px 20px;
-  color: rgb(0, 0, 0);
-  cursor: pointer;
-  transition: background 0.3s;
-  margin: 0 5px;
-  height: fit-content;
-  justify-content: center;
-}
-
-button:hover {
-  background-color: black;
-  color: white;
-}
-.released-text {
-  font-weight: bold;
-  font-size: 18px;
-  color: green;
-}
-.releasedeg-text{
-  font-weight: bold;
-  font-size: 18px;
-  color: blue;
-}
-.no-remarks-text {
-  font-weight: bold;
-  font-size: 18px;
-  color: red;
-}
-.incomplete-text {
-  font-weight: bold;
-  font-size: 18px;
-  color: orange;
-}
-.styled-select {
-  appearance: none;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-  width: 100px;
-  font-weight: bold;
-  margin-top: -5px;
-  margin-left: 5px;
-}
-
-.styled-select:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-.styled-select option {
-  padding: 10px;
-  font-weight: bold;
-}
-
-@media screen and (max-width: 768px) {
-  .Btn {
-    margin-right: 20px;
-  }
-
-  .prent {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: fit-content;
-    height: 100%;
-    max-height: 1000px;
-    z-index: 9999;
-    height: 100vh;
-    background-color: white;
-  }
-  .prent .buttons {
-    display: flex;
-    justify-content: space-evenly;
-    margin-top: 70px;
-    margin-bottom: 10px;
-  }
-}
-
-@media print {
-  .outer {
-    display: none !important;
-  }
-
-  .hist {
-    display: none !important;
-  }
-
-  .content,
-  .search,
-  .note,
-  .sign,
-  .Btn,
-  .dropdown {
-    display: none !important;
-  }
-  .buttons {
-    display: none !important;
-  }
-}
-</style>
+<style src="./CSS/table.css" scoped></style>
