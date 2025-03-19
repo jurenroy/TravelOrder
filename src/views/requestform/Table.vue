@@ -113,7 +113,7 @@
                 >
                   Rating
                 </button>
-                <span v-else>No ratings yet</span>
+                <span v-else class="norating">No ratings yet</span>
               </td>
               <td>
                 <button

@@ -188,7 +188,9 @@ textarea {
   resize: vertical;
   height: 75px;
 }
-
+.norating{
+  font-weight: bold;
+}
 button {
   background: #bfa16d;
   border: solid black 2px;

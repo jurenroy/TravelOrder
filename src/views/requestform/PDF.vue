@@ -160,6 +160,11 @@
                 </div>
               </td>
             </tr>
+            <tfoot>
+              <tr>
+                <td colspan="3" style="text-align: right; font-style: italic;">Revised document Feb 2025</td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
