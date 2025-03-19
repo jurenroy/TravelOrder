@@ -2,14 +2,17 @@
   <div class="document-remarks-overlay">
     <div class="document-remarks-modal">
       <div class="document-remarks-header">
+        <div v-if="showNotification" class="notification">
+          {{ notificationMessage }}
+        </div>
         <h2>Document Remarks</h2>
         <div class="doc-subtitles">
-        <div class="subtitle">Document</div>
-        <div class="subtitle2">Status</div>
-      </div>
+          <div class="subtitle">Document</div>
+          <div class="subtitle2">Status</div>
+        </div>
         <button class="close-button" @click="closePopup">✕</button>
       </div>
-    
+
       <div class="document-list">
         <div
           v-for="(document, index) in documents"
@@ -40,7 +43,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -51,40 +53,52 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      showNotification: false,
+      notificationMessage: "",
+    };
+  },
   computed: {
     allDocumentsReleased() {
       const totalDocuments = this.documents.length;
       const releasedCount = this.documents.filter(
         (doc) => doc.remarks === "Released"
       ).length;
-      
+
       return releasedCount === totalDocuments && totalDocuments > 0;
-    }
+    },
   },
   methods: {
     toggleRemarks(index) {
-      // Check the current state of the remarks
       const currentRemark = this.documents[index].remarks;
 
-      // Toggle the remarks of the document
       this.documents[index].remarks =
         currentRemark === "Released" ? "Pending" : "Released";
 
-      // Show an alert based on the new state
-      if (this.documents[index].remarks === "Released") {
-        alert(`Document "${this.documents[index].name}" has been released.`);
-      } else {
-        alert(`Document "${this.documents[index].name}" has been set as pending.`);
+      this.notificationMessage =
+        this.documents[index].remarks === "Released"
+          ? `Document "${this.documents[index].name}" has been released.`
+          : `Document "${this.documents[index].name}" has been set as pending.`;
+
+      if (this.notificationTimeout) {
+        clearTimeout(this.notificationTimeout);
       }
+
+      this.showNotification = true;
+
+      this.notificationTimeout = setTimeout(() => {
+        this.showNotification = false;
+        this.notificationTimeout = null;
+      }, 3000);
 
       if (this.checkAllReleased()) {
         this.setAllDocumentsReleasedStatus();
       }
-      // Emit the updated documents to the parent component
       this.emitUpdatedDocuments();
     },
     checkAllReleased() {
-      return this.documents.every(doc => doc.remarks === "Released");
+      return this.documents.every((doc) => doc.remarks === "Released");
     },
     setAllDocumentsReleasedStatus() {
       this.$emit("all-released", true);
@@ -103,11 +117,9 @@ export default {
       }
     },
     emitUpdatedDocuments() {
-      // Emit the updated documents to the parent component
       this.$emit("submit", this.documents);
     },
     closePopup() {
-      // Emit an event to close the popup without submitting
       this.$emit("close");
     },
   },

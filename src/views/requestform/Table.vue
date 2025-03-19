@@ -1,20 +1,28 @@
 <template>
   <div style="display: flex; flex-direction: column">
-    <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
+    <h2
+      style="display: flex; flex-direction: row; align-self: center"
+      class="hist"
+    >
       Documents Status
       <select v-model="selectedStatus" id="status" class="styled-select">
         <option v-for="option in options" :key="option" :value="option">
           {{ option }}
         </option>
       </select>
-      <span v-if="pendingCount !== 0" class="notification-count">{{ pendingCount }}</span>
+      <span v-if="pendingCount !== 0" class="notification-count">{{
+        pendingCount
+      }}</span>
     </h2>
 
     <div v-if="load" class="loadings">
       <img src="../../assets/loading.gif" width="auto" height="100px" />
     </div>
 
-    <div style="display: flex; flex-direction: column; align-items: center" v-if="otp">
+    <div
+      style="display: flex; flex-direction: column; align-items: center"
+      v-if="otp"
+    >
       <otpz />
     </div>
 
@@ -29,7 +37,9 @@
         />
       </div>
     </div>
-
+    <div v-if="showNotification" class="notification">
+      {{ notificationMessage }}
+    </div>
     <div v-if="mawala" class="outer">
       <div v-if="showRatingPopup">
         <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
@@ -58,17 +68,27 @@
             <tr v-for="(item, index) in processedFormData" :key="index">
               <td>{{ getName(item.name_id) }}</td>
               <td>
-                <span v-if="Array.isArray(item.documents) && item.documents.length">
-                  <span v-for="(doc, docIndex) in item.documents" :key="docIndex">
+                <span
+                  v-if="Array.isArray(item.documents) && item.documents.length"
+                >
+                  <span
+                    v-for="(doc, docIndex) in item.documents"
+                    :key="docIndex"
+                  >
                     {{ getDocumentName(doc) }} <br />
                   </span>
                 </span>
                 <span v-else>No documents requested</span>
-              </td>             
+              </td>
               <td>{{ item.date }}</td>
               <td>
-                <span v-if="Array.isArray(item.documents) && item.documents.length">
-                  <span v-if="allDocumentsReleased(item.documents)" class="released-text">
+                <span
+                  v-if="Array.isArray(item.documents) && item.documents.length"
+                >
+                  <span
+                    v-if="allDocumentsReleased(item.documents)"
+                    class="released-text"
+                  >
                     All documents released
                   </span>
                   <span v-else>
@@ -87,13 +107,19 @@
                 <span v-if="item.rating !== null">
                   <span v-for="n in item.rating" :key="n">⭐</span>
                 </span>
-                <button v-else-if="nameId == item.name_id" @click="openRatingPopup(item)">
+                <button
+                  v-else-if="nameId == item.name_id"
+                  @click="openRatingPopup(item)"
+                >
                   Rating
                 </button>
                 <span v-else>No ratings yet</span>
               </td>
               <td>
-                <button v-if="canEditRequest(item)" @click="openEditRequestForm(item)">
+                <button
+                  v-if="canEditRequest(item)"
+                  @click="openEditRequestForm(item)"
+                >
                   EDIT
                 </button>
                 <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
@@ -107,12 +133,15 @@
                 </button>
               </td>
             </tr>
-            <h1 style="text-align: center; margin-bottom: 0px" v-if="processedFormData.length == 0">
+            <h1
+              style="text-align: center; margin-bottom: 0px"
+              v-if="processedFormData.length == 0"
+            >
               NO MATCH FOUND
             </h1>
           </tbody>
         </table>
-        
+
         <editform
           v-if="showEditRequestForm"
           :requestData="currentItem"
@@ -124,7 +153,7 @@
           @update-success="handleEditRequestSuccess"
           @update-error="handleEditRequestError"
         />
-        
+
         <Note
           v-if="addNote"
           :initialNote="currentItem.note || ''"
@@ -135,7 +164,7 @@
       </div>
     </div>
   </div>
-  
+
   <PDF
     :item="selectedItem"
     :name="selectedName"
@@ -155,42 +184,42 @@ import Note from "./Note.vue";
 
 export default {
   name: "DocumentRequestManager",
-  
+
   components: {
     PDF,
     RatingPopup,
     editform,
     EditDetailsPopup,
-    Note
+    Note,
   },
-  
+
   props: {
     data: {
       type: Object,
-      required: true
+      required: true,
     },
     item: {
       type: Object,
-      required: false
+      required: false,
     },
     names: {
       type: Object,
-      required: false
+      required: false,
     },
     divisions: {
       type: Array,
-      required: false
+      required: false,
     },
     logoPath: {
       type: String,
-      default: ""
+      default: "",
     },
     debugMode: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  
+
   data() {
     return {
       showEditDetailsPopup: false,
@@ -225,6 +254,8 @@ export default {
       selectedSignature: "",
       selectedItem: [],
       accounts: [],
+      showNotification: false,
+      notificationMessage: "",
       documentList: [
         "SERVICE RECORD",
         "CERTIFICATE OF EMPLOYMENT",
@@ -233,17 +264,17 @@ export default {
         "LBP BC LIST",
         "CERTIFICATE OF LEAVE CREDITS",
         "PHOTOCOPY OF TRAVEL ORDER",
-        "OTHERS"
-      ]
+        "OTHERS",
+      ],
     };
   },
-  
+
   created() {
     if (this.item) {
       this.parseRequestedDocuments();
     }
   },
-  
+
   mounted() {
     this.fetchAccounts();
     this.fetchEmployees();
@@ -253,22 +284,22 @@ export default {
     this.fetchDocuments();
     console.log(this.data);
   },
-  
+
   computed: {
     pendingCount() {
       return this.formData.filter(
         (form) => form.note === null && form.initial !== null
       ).length;
     },
-    
+
     filteredFormData() {
       return this.formData;
     },
-    
+
     isAdmin() {
       return this.nameId === "2" || this.nameId === "76";
     },
-    
+
     processedFormData() {
       return this.formData
         .filter((item) => {
@@ -278,23 +309,25 @@ export default {
             .join(" ");
 
           const query = this.searchQuery.toLowerCase();
-          const matchesSearch = requestorName.includes(query) || documentNames.includes(query);
+          const matchesSearch =
+            requestorName.includes(query) || documentNames.includes(query);
 
           if (!matchesSearch) return false;
 
           if (this.selectedStatus !== "All") {
             return item.documents.some(
               (doc) =>
-                doc.remarks.trim().toLowerCase() === this.selectedStatus.toLowerCase()
+                doc.remarks.trim().toLowerCase() ===
+                this.selectedStatus.toLowerCase()
             );
           }
           return true;
         })
         .slice()
         .reverse();
-    }
+    },
   },
-  
+
   methods: {
     otherDocumentText() {
       console.log("Initial item:", this.item);
@@ -328,7 +361,7 @@ export default {
       console.log("Found othersDoc:", othersDoc);
       return othersDoc || null;
     },
-    
+
     parseRequestedDocuments() {
       const requestedDocs = Array.isArray(this.item.documents)
         ? this.item.documents
@@ -344,7 +377,7 @@ export default {
       console.log("Parsed Documents:", this.parsedDocuments);
       return this.parsedDocuments;
     },
-    
+
     isDocumentRequested(documentName) {
       if (this.parsedDocuments.length === 0) {
         this.parseRequestedDocuments();
@@ -353,7 +386,7 @@ export default {
       const doc = this.parsedDocuments.find((d) => d.name === documentName);
       return doc ? doc.isChecked : false;
     },
-    
+
     isOthersDoc(doc) {
       const othersDoc = this.processedDocs.find((d) => {
         if (typeof d === "object") {
@@ -400,16 +433,16 @@ export default {
       console.log("No other document text found, returning empty string");
       return "";
     },
-    
+
     getDocumentName(doc) {
       if (!doc) return "No document";
       return typeof doc === "object" ? doc.name || "Unknown" : doc;
     },
-    
+
     getReleasedStatus(doc) {
       return doc.remarks?.trim() === "Released" ? "Released" : "Unreleased";
     },
-   
+
     getTimeRequested(dateString) {
       try {
         const dateObj = new Date(dateString);
@@ -423,14 +456,16 @@ export default {
       } catch (e) {
         console.error("Error parsing date:", e);
       }
-      return "N/A"; 
+      return "N/A";
     },
-  
+
     async fetchAccounts() {
       try {
         const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
         this.accounts = response.data;
-        this.acc = this.accounts.find(result => result.account_id == this.accountId);
+        this.acc = this.accounts.find(
+          (result) => result.account_id == this.accountId
+        );
         return this.accounts;
       } catch (error) {
         console.error("Error fetching accounts:", error);
@@ -438,7 +473,7 @@ export default {
         return [];
       }
     },
-    
+
     async fetchNames() {
       try {
         const response = await axios.get(`${API_BASE_URL}/get_names_json`);
@@ -447,7 +482,7 @@ export default {
         console.error("Error fetching names:", error);
       }
     },
-    
+
     fetchDivisions() {
       axios
         .get(`${API_BASE_URL}/get_divisions_json`)
@@ -458,7 +493,7 @@ export default {
           console.error("Error fetching divisions:", error);
         });
     },
-    
+
     fetchDocuments() {
       axios
         .get(`${API_BASE_URL}/get_request`)
@@ -469,7 +504,7 @@ export default {
           console.error("Error fetching documents:", error);
         });
     },
-    
+
     fetchEmployees() {
       axios
         .get(`${API_BASE_URL}/get_employees_json`)
@@ -480,7 +515,7 @@ export default {
           console.error("Error fetching employees:", error);
         });
     },
-    
+
     fetchData() {
       axios
         .get(`${API_BASE_URL}/get_request`)
@@ -522,7 +557,7 @@ export default {
           this.load = false;
         });
     },
-  
+
     findDivisionName(division_Id) {
       if (this.divisions && this.divisions.length > 0) {
         const division = this.divisions.find(
@@ -532,7 +567,7 @@ export default {
       }
       return "UNKNOWN";
     },
-    
+
     getName(nameId) {
       const name = this.names[nameId - 1];
       if (name) {
@@ -541,7 +576,7 @@ export default {
       }
       return "Unknown";
     },
-    
+
     getSignatureByNameId(nameId) {
       console.log("getSignatureByNameId called with nameId:", nameId);
 
@@ -561,21 +596,21 @@ export default {
         return "___________________";
       }
     },
-    
+
     getRemarksszzz(doc) {
-      if (doc.remarks === 'No Remarks') return 'no-remarks-text';
-      if (doc.remarks === 'Released') return 'releasedeg-text';
-      if (doc.remarks === 'Pending') return 'incomplete-text';
-      return '';
+      if (doc.remarks === "No Remarks") return "no-remarks-text";
+      if (doc.remarks === "Released") return "releasedeg-text";
+      if (doc.remarks === "Pending") return "incomplete-text";
+      return "";
     },
-    
+
     allDocumentsReleased(documents) {
       if (!documents || documents.length === 0) {
         return false;
       }
       return documents.every((doc) => doc.remarks === "Released");
     },
-    
+
     canEditRequest(item) {
       const userId = Number(this.nameId);
       const requestorId = Number(item.name_id);
@@ -584,16 +619,16 @@ export default {
         userId === requestorId && !this.allDocumentsReleased(item.documents)
       );
     },
-    
+
     openEditRequestForm(item) {
       this.currentItem = item;
       this.showEditRequestForm = true;
     },
-    
+
     closeEditRequestForm() {
       this.showEditRequestForm = false;
     },
-    
+
     handleEditRequestSuccess(updatedRequest) {
       let documentsArray = [];
 
@@ -608,7 +643,7 @@ export default {
           }
         }
       }
-      
+
       this.formData = this.formData.map((item) => {
         if (item.id === updatedRequest.id) {
           return {
@@ -624,19 +659,28 @@ export default {
       });
 
       this.showEditRequestForm = false;
-      alert("Request updated successfully!");
+      this.showNotification = true;
+      this.notificationMessage = "Edit Form Saved!";
+      setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
     },
-    
+
     handleEditRequestError(error) {
       console.error("Error updating request:", error);
-      alert("Failed to update request. Please try again.");
+      this.showNotification = true;
+      this.notificationMessage = "Failed to add Note. Please try again.";
+
+      setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
     },
-    
+
     openEditDetailsPopup(item) {
       this.currentItem = item;
       this.showEditDetailsPopup = true;
     },
-    
+
     handleEditDetails(updatedDocuments) {
       if (!this.currentItem || !this.currentItem.id) {
         alert("No current item selected for update.");
@@ -657,7 +701,7 @@ export default {
 
         return updatedDoc;
       });
-      
+
       const formeme = {
         documents: processedDocuments,
       };
@@ -669,7 +713,11 @@ export default {
         .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, formeme)
         .then((response) => {
           if (response.status === 200) {
-            alert("Documents updated successfully!");
+            this.showNotification = true;
+            this.notificationMessage = "Remarks Updated";
+            setTimeout(() => {
+              this.showNotification = false;
+            }, 3000);  
             console.log("gana man lage", formeme);
             this.currentItem.documents = processedDocuments;
 
@@ -683,60 +731,78 @@ export default {
         })
         .catch((error) => {
           console.error("Error updating documents:", error);
-          alert("Failed to update documents. Please try again.");
+          this.showNotification = true;
+          this.notificationMessage =
+            "Failed to add Remarks. Please try again.";
+
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
         });
     },
-    
+
     openRatingPopup(item) {
       this.currentItem = item;
       this.showRatingPopup = true;
     },
-    
+
     handleRating(rating) {
       if (!this.currentItem || !this.currentItem.id) {
         alert("No request selected.");
         return;
       }
-      
-      const userId = Number(this.nameId); 
-      const requestorId = Number(this.currentItem.name_id); 
-      
+
+      const userId = Number(this.nameId);
+      const requestorId = Number(this.currentItem.name_id);
+
       if ((userId === 2 || userId === 76) && userId !== requestorId) {
         alert("You can only rate your own request.");
         return;
       }
-      
+
       const payload = { rating: rating };
-      
+
       axios
         .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
         .then((response) => {
           if (response.status === 200) {
-            alert("Rating submitted successfully!");
+            this.showNotification = true;
+            this.notificationMessage = "Rating submitted successfully!";
             this.currentItem.rating = rating;
+
+            setTimeout(() => {
+              this.showNotification = false;
+            }, 3000);
           }
         })
         .catch((error) => {
           console.error("Error submitting rating:", error);
-          alert("Failed to submit rating. Please try again.");
+
+          this.showNotification = true;
+          this.notificationMessage =
+            "Failed to submit rating. Please try again.";
+
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
         })
         .finally(() => {
           this.showRatingPopup = false;
         });
     },
-    
+
     add(item) {
       this.addNote = true;
       this.noteText = item.note || "";
       this.currentItem = item;
     },
-    
+
     saveNote(updatedNote) {
       if (!this.isAdmin) {
         alert("You do not have permission to save notes.");
         return;
       }
-      
+
       if (!this.currentItem || !this.currentItem.id) return;
 
       axios
@@ -745,19 +811,28 @@ export default {
         })
         .then(() => {
           this.currentItem.note = updatedNote;
-          alert("Note saved successfully!");
+          this.showNotification = true;
+          this.notificationMessage = "Note Saved!";
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
         })
         .catch((error) => {
           console.error("Error updating note:", error);
-          alert("Failed to update note.");
+          this.showNotification = true;
+          this.notificationMessage = "Failed to add Note. Please try again.";
+
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
         });
     },
-    
+
     closeNote() {
       this.addNote = false;
       this.viewNote = false;
     },
-    
+
     postNote(note) {
       if (!this.currentItem || !this.currentItem.id) {
         alert("No request selected.");
@@ -768,11 +843,15 @@ export default {
       formData.append("note", note);
 
       axios
-        .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post(
+          `${API_BASE_URL}/update_request/${this.currentItem.id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then((response) => {
           if (response.status === 200) {
             alert("Note added successfully!");
@@ -789,33 +868,30 @@ export default {
           alert("Failed to submit note. Please try again.");
         });
     },
-    
+
     focusTextarea(text) {
       this.noteText = text;
       this.$refs.noteInput.focus();
     },
-    
+
     generatePDF(item, name) {
       this.selectedItem = item;
       this.selectedName = name;
       this.selectedSignature =
         "http://202.137.117.84:8011/storage/" +
-        this.accounts.filter((acc) => acc.name_id === item.name_id)[0].signature;
+        this.accounts.filter((acc) => acc.name_id === item.name_id)[0]
+          .signature;
       console.log(this.selectedSignature);
 
       setTimeout(() => {
         this.printzz();
       }, 500);
     },
-    
+
     printzz() {
       window.print();
     },
-    
-    closeEdit() {
-      this.selectedTravelOrderIdEdit = 0;
-    }
-  }
+  },
 };
 
 window.onload = function () {
