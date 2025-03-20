@@ -24,20 +24,28 @@
       <otpz />
     </div>
 
-
-    <div  class="search-box" >
-      <input 
-        class="pholder" 
+    <div class="search-box">
+      <input
+        class="pholder"
         type="text"
-        name="text" 
-        v-model="searchQuery" 
-        placeholder="Search Name or Documents..." 
-        />
-        <svg fill="#000000" width="20px" height="20px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
-    <path d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z" fill-rule="evenodd"></path>
-</svg>         
-  </div>
-  <div v-if="showNotification" class="notification">
+        name="text"
+        v-model="searchQuery"
+        placeholder="Search Name or Documents..."
+      />
+      <svg
+        fill="#000000"
+        width="20px"
+        height="20px"
+        viewBox="0 0 1920 1920"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z"
+          fill-rule="evenodd"
+        ></path>
+      </svg>
+    </div>
+    <div v-if="showNotification" class="notification">
       {{ notificationMessage }}
     </div>
 
@@ -130,7 +138,7 @@
                   View PDF
                 </button>
                 <button @click="add(item)">
-                 {{ isAdmin ? "Add Note" : "View Note"}}
+                  {{ isAdmin ? "Add Note" : "View Note" }}
                 </button>
               </td>
             </tr>
@@ -296,7 +304,6 @@ export default {
   },
 
   methods: {
-   
     data() {
       return {
         othersDocName: null,
@@ -725,11 +732,11 @@ export default {
     getReleasedStatus(doc) {
       return doc.remarks?.trim() === "Released" ? "Released" : "Unreleased";
     },
-    getRemarks(doc){
-      if (doc.remarks === 'No Remarks') return 'no-remarks-text';
-      if (doc.remarks === 'Released') return 'releasedeg-text';
-      if (doc.remarks === 'Pending') return 'incomplete-text';
-      return '';
+    getRemarks(doc) {
+      if (doc.remarks === "No Remarks") return "no-remarks-text";
+      if (doc.remarks === "Released") return "releasedeg-text";
+      if (doc.remarks === "Pending") return "incomplete-text";
+      return "";
     },
 
     openEditDetailsPopup(item) {
@@ -813,7 +820,8 @@ export default {
         .catch((error) => {
           console.error("Error updating documents:", error);
           this.showNotification = true;
-          this.notificationMessage = "Failed to update documents. Please try again.";
+          this.notificationMessage =
+            "Failed to update documents. Please try again.";
           setTimeout(() => {
             this.showNotification = false;
           }, 3000);
@@ -832,11 +840,12 @@ export default {
         })
         .catch((error) => {
           console.error("Error updating documents:", error);
-         this.showNotification = true;
-         this.notificationMessage = "Failed to update documents. Please try again.";
-         setTimeout(() => {
-           this.showNotification = false;
-         }, 3000);
+          this.showNotification = true;
+          this.notificationMessage =
+            "Failed to update documents. Please try again.";
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
         });
     },
 
@@ -870,7 +879,8 @@ export default {
         .catch((error) => {
           console.error("Error submitting rating:", error);
           this.showNotification = true;
-          this.notificationMessage = "Failed to submit rating. Please try again.";
+          this.notificationMessage =
+            "Failed to submit rating. Please try again.";
           setTimeout(() => {
             this.showNotification = false;
           }, 3000);
@@ -916,11 +926,11 @@ export default {
         )
         .then((response) => {
           if (response.status === 200) {
-           this.showNotification = true;
-           this.notificationMessage = "Note saved successfully!";
-           setTimeout(() => {
-             this.showNotification = false;
-          }, 3000);
+            this.showNotification = true;
+            this.notificationMessage = "Note saved successfully!";
+            setTimeout(() => {
+              this.showNotification = false;
+            }, 3000);
 
             // Update the frontend state
             this.formData = this.formData.map((item) =>
