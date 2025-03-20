@@ -4,6 +4,9 @@
       <form @submit.prevent="handleSubmit">
         <h2 class="title">REQUEST SLIP FORM</h2>
         <h4 class="subtitle">(Administrative Section)</h4>
+        <div v-if="showNotification" class="notification">
+        {{ notificationMessage }}
+      </div>
 
         <div class="info-container">
           <div class="info-item">
@@ -79,6 +82,9 @@
 import axios from "axios";
 import { onMounted, ref, watch } from "vue";
 import { API_BASE_URL } from "@/config";
+
+const showNotification = ref(false);
+const notificationMessage = ref("");
 
 // Reactive references
 const form = ref({
@@ -205,12 +211,23 @@ const handleSubmit = async () => {
       throw new Error("Failed to submit request");
     }
 
-    alert("Request submitted successfully!");
+    showNotification.value = true;
+    notificationMessage.value = "Request submitted successfully!";
+    setTimeout(() => {
+      showNotification = false;
+    }, 3000);
+
     form.value.documents = [];
     documents.value.forEach((doc) => (doc.checked = false));
   } catch (error) {
     console.error("Submission error:", error);
-    alert("Error submitting request. Please try again.");
+
+    showNotification.value = true;
+    notificationMessage.value = "Error submitting request. Please try again.";
+    setTimeout(() => {
+      showNotification = false;
+    }, 3000);
+
   } finally {
     pleaseWait.value = false;
     loading.value = false;
