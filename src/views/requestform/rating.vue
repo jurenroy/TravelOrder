@@ -13,10 +13,10 @@
         </thead>
         <tbody>
           <tr>
-            <td>Very Dissatisfied😞 </td>
-            <td>Dissatisfied 😐</td>
-            <td>Satisfied 🙂</td>
-            <td>Very Satisfied 🤩</td>
+            <td>Very Dissatisfied </td>
+            <td>Dissatisfied </td>
+            <td>Satisfied </td>
+            <td>Very Satisfied </td>
           </tr>
         </tbody>
       </table>
