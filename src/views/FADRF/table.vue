@@ -37,6 +37,9 @@
     <path d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z" fill-rule="evenodd"></path>
 </svg>         
   </div>
+  <div v-if="showNotification" class="notification">
+      {{ notificationMessage }}
+    </div>
 
     <div v-if="mawala" class="outer">
       <div v-if="showRatingPopup">
@@ -174,7 +177,7 @@ import editform from "./EditRequest.vue";
 import PDF from "./PDF.vue";
 import RatingPopup from "./Rating.vue";
 import { API_BASE_URL } from "@/config";
-import EditDetailsPopup from "./EditDetailsPopup.vue";
+import EditDetailsPopup from "./remarks.vue";
 import Note from "./Note.vue";
 
 export default {
@@ -218,6 +221,8 @@ export default {
 
   data() {
     return {
+      showNotification: false,
+      notificationMessage: "",
       showEditDetailsPopup: false,
       showEditRequestForm: false,
       divisions: [],
@@ -263,7 +268,7 @@ export default {
         "PROPERTY RETURN SLIP",
         "R&M OF MOTOR VEHICLES",
         "JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C",
-        "Others",
+        "OTHERS",
       ],
 
       created() {
@@ -291,10 +296,10 @@ export default {
   },
 
   methods: {
-    // In your script section
+   
     data() {
       return {
-        othersDocName: null, // Add this to your data
+        othersDocName: null,
       };
     },
     methods: {
@@ -302,22 +307,18 @@ export default {
         console.log("Initial item:", item);
         console.log("Processed Docs:", processedDocs);
 
-        // First check if otherDocuments is directly available
         if (item.otherDocuments) {
           console.log("Found otherDocuments:", item.otherDocuments);
           return item.otherDocuments;
         }
 
-        // Then check if otherDocumentText is available from the form
         if (item.otherDocumentText) {
           console.log("Found otherDocumentText:", item.otherDocumentText);
           return item.otherDocumentText;
         }
 
-        // Check in the documents array for an "Others" entry with custom name
         const othersDoc = processedDocs.find((doc) => {
           if (typeof doc === "object") {
-            // Check if this is the others document (could be renamed from "Others")
             const isOthersDoc =
               doc.originalName === "OTHERS" ||
               doc.name.includes("Others:") ||
@@ -330,7 +331,6 @@ export default {
           return isOthersDoc;
         });
 
-        // Store the name in the data property
         this.othersDocName = othersDoc ? othersDoc.name : null;
 
         console.log("Found othersDoc:", othersDoc);
@@ -347,7 +347,6 @@ export default {
       try {
         const dateObj = new Date(dateString);
         if (!isNaN(dateObj.getTime())) {
-          // Format time as HH:MM AM/PM
           return dateObj.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -636,13 +635,22 @@ export default {
       });
 
       this.showEditRequestForm = false;
-      alert("Request updated successfully!");
+      this.showNotification = true;
+      this.notificationMessage = "Request updated successfully!";
+      setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
     },
 
     handleEditRequestError(error) {
       console.error("Error updating request:", error);
-      alert("Failed to update request. Please try again.");
+      this.showNotification = true;
+      this.notificationMessage = "Failed to update request. Please try again.";
+      setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
     },
+
     fetchDivisions() {
       axios
         .get(`${API_BASE_URL}/get_divisions_json`)
@@ -675,11 +683,16 @@ export default {
         })
         .then(() => {
           this.currentItem.note = updatedNote;
-          alert("Note saved successfully!");
+          this.showNotification = true;
+          this.notifactionMessage = "Note save successfully!";
         })
         .catch((error) => {
           console.error("Error updating note:", error);
-          alert("Failed to update note.");
+          this.showNotification = true;
+          this.notifactionMessage = "Failed to save note. Please try again.";
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
         });
     },
     closeNote() {
@@ -780,7 +793,11 @@ export default {
         )
         .then((response) => {
           if (response.status === 200) {
-            alert("Documents updated successfullyxxxx!");
+            this.showNotification = true;
+            this.notificationMessage = "Remarks updated successfully!";
+            setTimeout(() => {
+              this.showNotification = false;
+            }, 3000);
             console.log("gana man lage", formeme);
             this.currentItem.documents = processedDocuments;
 
@@ -795,19 +812,31 @@ export default {
         })
         .catch((error) => {
           console.error("Error updating documents:", error);
-          alert("Failed to update documents. Please try again.");
+          this.showNotification = true;
+          this.notificationMessage = "Failed to update documents. Please try again.";
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
         });
 
       (`${API_BASE_URL}/FADRFupdate_request/${this.currentItem.id}`, payload)
         .then((response) => {
           if (response.status === 200) {
-            alert("Remarks updated successfullyzzzz!");
+            this.showNotification = true;
+            this.notificationMessage = "Remarks updated successfully!";
+            setTimeout(() => {
+              this.showNotification = false;
+            }, 3000);
             this.currentItem.documents = updatedDocuments;
           }
         })
         .catch((error) => {
           console.error("Error updating documents:", error);
-          alert("Failed to update documents. Please try again.");
+         this.showNotification = true;
+         this.notificationMessage = "Failed to update documents. Please try again.";
+         setTimeout(() => {
+           this.showNotification = false;
+         }, 3000);
         });
     },
 
@@ -830,13 +859,21 @@ export default {
         )
         .then((response) => {
           if (response.status === 200) {
-            alert("Rating submitted successfully!");
+            this.showNotification = true;
+            this.notificationMessage = "Rating submitted successfully!";
+            setTimeout(() => {
+              this.showNotification = false;
+            }, 3000);
             this.currentItem.rating = rating;
           }
         })
         .catch((error) => {
           console.error("Error submitting rating:", error);
-          alert("Failed to submit rating. Please try again.");
+          this.showNotification = true;
+          this.notificationMessage = "Failed to submit rating. Please try again.";
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
         })
         .finally(() => {
           this.showRatingPopup = false;
@@ -879,7 +916,11 @@ export default {
         )
         .then((response) => {
           if (response.status === 200) {
-            alert("Note added successfully!");
+           this.showNotification = true;
+           this.notificationMessage = "Note saved successfully!";
+           setTimeout(() => {
+             this.showNotification = false;
+          }, 3000);
 
             // Update the frontend state
             this.formData = this.formData.map((item) =>
@@ -891,7 +932,11 @@ export default {
         })
         .catch((error) => {
           console.error("Error:", error);
-          alert("Failed to submit note. Please try again.");
+          this.showNotification = true;
+          this.notificationMessage = "Failed to save note. Please try again.";
+          setTimeout(() => {
+            this.showNotification = false;
+          }, 3000);
         });
     },
     fetchAccounts() {
@@ -1047,397 +1092,4 @@ window.onload = function () {
 };
 </script>
 
-<style scoped>
-.notification-count {
-  margin-top: -10px;
-  margin-left: -10px;
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  width: 20px; /* Adjust size */
-  height: 20px; /* Adjust size */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px; /* Adjust font size */
-}
-
-.pholder {
-  padding: 5px;
-  border-radius: 5px;
-  border: none;
-  outline: none;
-}
-.search-box svg {
-    position: relative; 
-    top: 100%; 
-    left: 15px; 
-    transform: translateY(-100%); 
-    cursor: pointer; 
-}
-
-.Btn {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 50px;
-  height: 50px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition-duration: 0.3s;
-  border: 2px solid black;
-  margin-bottom: 2px;
-  background-color: white;
-}
-.sign {
-  width: 100%;
-  transition-duration: 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  left: 1px;
-}
-
-.text {
-  position: absolute;
-  right: 0%;
-  width: 0%;
-  opacity: 0;
-  color: black;
-  font-size: 1.2em;
-  font-weight: 500;
-  transition-duration: 0.3s;
-}
-
-.Btn:hover {
-  background-color: white;
-  width: 230px;
-  border: 2px solid black;
-  border-radius: 5px;
-  transition-duration: 0.3s;
-  position: relative;
-}
-
-.Btn:hover .text {
-  opacity: 1;
-  width: 70%;
-  transition-duration: 0.3s;
-  padding-right: 10px;
-}
-
-.Btn:hover .sign {
-  width: 30%;
-  transition-duration: 0.3s;
-  position: relative;
-  left: -15px;
-}
-
-.Btn:active {
-  transform: translate(2px, 2px);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-th {
-  background-color: #f2f2f2;
-  position: sticky;
-  top: -2px;
-}
-
-.scrollable-table {
-  max-height: 630px;
-  overflow-y: auto;
-  margin: 15px;
-}
-
-.outer {
- 
-  border-radius: 5px;
-  width: 100%;
-}
-
-.loadings {
-  top: 0;
-  left: 0;
-  width: fit-content;
-  justify-self: center;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  margin: 10px auto;
-  border-radius: 10px;
-}
-
-.loadings1 {
-  height: 20px;
-  width: 100%;
-  text-align: center;
-}
-
-.loadings1,
-.loadings2 {
-  font-weight: bold;
-  font-size: 20px;
-}
-
-.note {
-  width: 300px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 100;
-}
-
-.title-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.butokz {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.title {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.close-icon {
-  cursor: pointer;
-  font-size: 20px;
-  color: #333;
-}
-
-.content {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-textarea {
-  width: 100%;
-  resize: vertical;
-  height: 75px;
-}
-
-button {
-  border-radius: 10px;
-  background: #bfa16dd7;
- 
-  color: black;
-  font-weight: bold;
-  font-size: 12px;
-  border: solid black 2px;
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: background 0.3s;
-  margin: 0 5px;
-  height: fit-content;
-  justify-content: center;
-  font-family: "Segoe UI", sans-serif;
-  border-radius: 5px;
-  border: none;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-
-
-}
-
-button:hover {
-  background: #bfa16d;
-  animation: button-particles 1s ease-in-out infinite;
-  transform: translateY(-2px);;
-}
-button:active  {
-  transform: scale(0.95);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-.released-text {
-  font-weight: bold;
-  font-size: 18px;
-  color: red;
-}
-.styled-select {
-  appearance: none;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-  width: 100px;
-  font-weight: bold;
-  margin-top: -5px;
-  margin-left: 5px;
-}
-.released-text {
-  font-weight: bold;
-  font-size: 18px;
-  color: green;
-}
-.releasedeg-text{
-  font-weight: bold;
-  font-size: 18px;
-  color: blue;
-}
-.no-remarks-text {
-  font-weight: bold;
-  font-size: 18px;
-  color: red;
-}
-.incomplete-text {
-  font-weight: bold;
-  font-size: 18px;
-  color: orange;
-}
-.styled-select:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-.styled-select option {
-  padding: 10px;
-  font-weight: bold;
-}
-
-
-
-
-
-.pholder {
-  display: block;
-  width: 245px;
-  height: 50px;
-  padding: 0 48px 0 30px;
-  font-size: 14px;
-  color: #000;
-  background-color: #fff;
-  border: 1px solid #59473d;
-  border-radius: 8px;
-  outline: none;
-  appearance: none;
-  transition: all .2s ease-in-out;
-  outline: none;
-  opacity: 0.8;
-}
-
-.pholder:focus {
-  border-color: transparent;
-  outline: 2px solid #000;
-  box-shadow: none;
-  opacity: 1;
-  width: 280px;
-}
-
-.pholder:hover {
-  border-color: #59473d;
-}
-
-.imgsearch {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
-  height: 20px;
-  width: 22px;
-  z-index: 10;
-}
-
-/* Add this for the floating label effect */
-.search-box::before {
-  
-  position: absolute;
-  top: 50%;
-  left: 16px;
-  transform: translateY(-50%);
-  font-size: 14px;
-  color: #888;
-  transition: all 0.3s ease;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.pholder:focus + .search-box::before,
-.pholder:not(:placeholder-shown) + .search-box::before {
-  top: 0;
-  transform: translateY(-50%) scale(0.75);
-  background-color: white;
-  padding: 0 4px;
-  z-index: 10;
-  
-}
-
-
-@media screen and (max-width: 768px) {
-  .Btn {
-    margin-right: 20px;
-  }
-
-  .prent {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: fit-content;
-    height: 100%;
-    max-height: 1000px;
-    z-index: 9999;
-    height: 100vh;
-    background-color: white;
-  }
-  .prent .buttons {
-    display: flex;
-    justify-content: space-evenly;
-    margin-top: 70px;
-    margin-bottom: 10px;
-  }
-}
-
-@media print {
-  .outer {
-    display: none !important;
-  }
-
-  .hist {
-    display: none !important;
-  }
-
-
-
-  .content,
-  .note,
-  .sign,
-  .Btn,
-  .dropdown {
-    display: none !important;
-  }
-    .search-box { /* Add this line */
-    display: none !important; /* Hide search box during print */
-  }
-  .buttons {
-    display: none !important;
-  }
-}
-</style>
+<style src="./CSS/table.css" scoped></style>

@@ -13,10 +13,10 @@
         >
       </div>
       <div class="selected-label">{{ getLabel(rating) }}</div>
-      <div class="popup-buttons">
+      <div class="buttons">
         <button @click="submitRating">Submit</button>
-        <button @click="$emit('close')">Close</button>
       </div>
+      <button class="close-buttons" @click="$emit('close')">&times;</button>
     </div>
   </div>
 </template>
@@ -56,111 +56,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.rating-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  backdrop-filter: blur(10px);
-}
-.popup-content {
-  background: #fffbf2;
-  padding: 40px;
-  border-radius: 5px;
-
-  text-align: center;
-  width: 320px;
-  color: #333;
-  font-family: 'Arial', sans-serif;
-}
-h3 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-.star-rating {
-  font-size: 32px;
-  color: #333129;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.star {
-  transition: color 0.3s ease, transform 0.2s ease;
-}
-.star:hover {
-  transform: scale(1.2);
-}
-.star.active {
-  color: #ff9900;
-}
-.selected-label {
-  margin-top: 10px;
-  font-size: 18px;
-  color: #555;
-}
-.popup-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
-  
-}
-.popup-buttons button {
-  padding: 0.9em 1.4em;
-  border-radius: 5px;
-  font-size: 16px;
-  min-width: 85px;
-  min-height: 35px;
-  font-weight: 500;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  border: none;
-  transition: 0.8s;
-  background-size: 280% auto;
-  background-image: linear-gradient(
-    325deg,
-    #bfa16d 0%,
-    #bfa16dc2 60%,
-    #bfa16d 90%
-  );
-  color: #fffbf2;
-  
-}
-
-.popup-buttons button:hover {
-  background-position: right top;
-}
-
-
-@media (prefers-reduced-motion: reduce) {
-  .popup-buttons button {
-    transition: linear;
-  }
-}
-.submitRating {
-  background-color: #99500c;
-  color: white;
-}
-.submitRating:hover {
-  background-color: #7a4b23;
-}
-.close-btn {
-  background-color: #f5f5f5;
-  border: 1px solid #ccc;
-  color: #333;
-}
-.close-btn:hover {
-  background-color: #e0e0e0;
-}
-</style>
+<style src="./CSS/rating.css" scoped></style>

@@ -1,0 +1,147 @@
+.close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: absolute;
+    
+    right: 1.25rem;
+    font-size: 1.25rem;
+    height: 2rem;
+    width: 2rem;
+  
+    position: absolute;
+    top: 1.5rem;
+    
+    margin: 0;
+  }
+  
+  .close-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .note-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(10px);
+  }
+  
+  .popup-content {
+    position: relative;
+    background: #fffbf2;
+    padding: 60px;
+    border-radius: 5px;
+    
+    text-align: center;
+    color: #333129;
+    width: 80%;
+    max-width: 500px;
+  }
+  
+  h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    resize: none;
+  }
+  
+  .popup-buttons {
+    display: flex;
+    justify-content: flex-end; 
+    margin-top: 10px;
+  }
+
+  .popup-buttons button {
+    font-family: inherit;
+    font-size: 20px;
+    background: linear-gradient(to bottom, #bfa16d, rgba(172, 145, 116, 0.849));
+    color: black;
+    fill: black;
+    padding: 0.4em 0.3em;
+    padding-left: 0.2em;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .popup-buttons button .svg-wrapper-1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .popup-buttons button span {
+    display: block;
+    transition: all 0.1s ease-in-out;
+  }
+  
+  .popup-buttons button svg {
+    display: block;
+    transform-origin: center center;
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .popup-buttons button:hover {
+    background: linear-gradient(to bottom, rgba(172, 145, 116, 0.849, #bfa16d));
+  }
+  
+  .popup-buttons button:hover .svg-wrapper-1 {
+    transform: scale(1.25);
+    transition: 0.5s linear;
+  }
+  
+  .popup-buttons button:hover svg {
+    transform: translateX(1.2em) scale(1.1);
+    fill: black;
+  }
+  
+  .popup-buttons button:hover span {
+    opacity: 0;
+    transition: 0.5s linear;
+  }
+  
+  .popup-buttons button:active {
+    transform: scale(0.95);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background-color: #1a202c;
+      --card-background: rgba(26, 32, 44, 0.8);
+      --text-color: #f7fafc;
+      --border-color: #2d3748;
+    }
+    
+    .close-button:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
