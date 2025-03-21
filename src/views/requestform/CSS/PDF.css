@@ -150,10 +150,6 @@ body::after {
   border: none;
 }
 
-td {
-  border: none;
-  border-bottom: 1px solid #eee;
-}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -165,12 +161,7 @@ table {
   padding: 8px;
 }
 
-td {
-  border: 1px solid #ccc;
-  padding: 5px 2px;
-  border: none;
-  margin-bottom: -5px;
-}
+
 
 .form-row td {
   border: none;

@@ -35,18 +35,18 @@
               <td><img :src="$props.signature" alt="Signature" /></td>
             </tr>
             <tr>
-              <td>
+              <td style="padding-bottom: 10px;">
                 <strong>Date & Time Requested: </strong
                 >{{ formatDate($props.item.date) }}
               </td>
             </tr>
             <tr>
-              <td colspan="4"><strong>DOCUMENT(S) REQUESTED</strong></td>
+              <td colspan="4" style="padding-top: 10px;"><strong>DOCUMENT(S) REQUESTED</strong></td>
             </tr>
-            <tr style="border: solid black 2px">
-              <td><strong>Document Name</strong></td>
-              <td><strong>Date & Time Released</strong></td>
-              <td><strong>Released by</strong></td>
+            <tr style="border: solid black 1px">
+              <td style="text-align: center;"><strong>Document Name</strong></td>
+              <td style="text-align: center;"><strong>Date & Time Released</strong></td>
+              <td style="text-align: center;"><strong>Released by</strong></td>
             </tr>
             <tr v-for="doc in $props.documents" :key="doc">
               <td
@@ -55,6 +55,7 @@
                   display: flex;
                   justify-content: left;
                   align-items: center;
+                 border: solid black 1px;
                 "
               >
                 <img
@@ -89,7 +90,7 @@
                   }}
                 </p>
               </td>
-              <td>
+              <td style="border: solid black 1px">
                 {{
                   $props.item.documents &&
                   (() => {
@@ -113,7 +114,7 @@
                   })()
                 }}
               </td>
-              <td colspan="2">
+              <td colspan="2"style="border: solid black 1px">
                 {{
                   $props.item.documents &&
                   (() => {
