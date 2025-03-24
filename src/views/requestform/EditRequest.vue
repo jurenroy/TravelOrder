@@ -49,7 +49,7 @@
             <tr v-for="(doc, index) in documentOptions" :key="doc.name">
               <td>
                 <label>
-                  <input type="checkbox" v-model="doc.checked" />
+                  <input type="checkbox" v-model="doc.checked" :disabled="hasReleasedRemark(doc.name)"  />
                   {{ doc.name }}
                 </label>
                 <input
@@ -58,6 +58,7 @@
                   v-model="otherDocumentText"
                   placeholder="Please specify..."
                   class="others-input"
+                  :disabled="hasReleasedRemark(doc.name)" 
                 />
               </td>
             </tr>
@@ -162,6 +163,12 @@ export default {
   },
   
   methods: {
+    hasReleasedRemark(docName) {
+    const existingDoc = this.requestData.documents.find(d => 
+      (typeof d === 'object' && d.name === docName)
+    );
+    return existingDoc && existingDoc.remarks === "Released";
+  },
     initializeForm() {
       this.form.name_id = this.requestData.name_id;
       this.form.date = this.requestData.date;
