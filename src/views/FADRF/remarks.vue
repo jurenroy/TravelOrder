@@ -21,7 +21,6 @@
         <button
           @click="toggleRemarks(index)"
           :class="{ released: document.remarks === 'Released' }"
-         v-if="!(documents.length > 1 && allDocumentsReleased)"
         >
           {{ document.remarks === "Released" ? "Unrelease" : "Release" }}
         </button>
@@ -97,7 +96,7 @@ export default {
       this.emitUpdatedDocuments();
     },
     checkAllReleased() {
-      return this.documents.every(doc => doc.remarks === "Released");
+      return this.documents.every((doc) => doc.remarks === "Released");
     },
     setAllDocumentsReleasedStatus() {
       this.$emit("all-released", true);

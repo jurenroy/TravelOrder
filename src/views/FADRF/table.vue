@@ -14,15 +14,7 @@
         pendingCount
       }}</span>
     </h2>
-    <div v-if="load" class="loadings">
-      <img src="../../assets/loading.gif" width="auto" height="100px" />
-    </div>
-    <div
-      style="display: flex; flex-direction: column; align-items: center"
-      v-if="otp"
-    >
-      <otpz />
-    </div>
+    
 
     <div class="search-box">
       <input
@@ -48,6 +40,17 @@
     <div v-if="showNotification" class="notification">
       {{ notificationMessage }}
     </div>
+
+    <div v-if="load" class="loadings">
+      <img src="../../assets/sample_loaders.gif" width="auto" height="480px" />
+    </div>
+    <div
+      style="display: flex; flex-direction: column; align-items: center"
+      v-if="otp"
+    >
+      <otpz />
+    </div>
+
 
     <div v-if="mawala" class="outer">
       <div v-if="showRatingPopup">

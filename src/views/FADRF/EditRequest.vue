@@ -56,6 +56,7 @@
                     v-model="doc.checked"
                     id="cbx"
                     style="display: none"
+                    :disabled="hasReleasedRemark(doc.name)"
                   />
                   <div class="check">
                     <svg width="18" height="18" viewBox="0 0 18 18">
@@ -73,6 +74,7 @@
                   v-model="otherDocumentText"
                   placeholder="Please specify..."
                   class="others-input"
+                  :disabled="hasReleasedRemark(doc.name)"
                 />
               </td>
             </tr>
@@ -186,6 +188,12 @@ export default {
   },
 
   methods: {
+    hasReleasedRemark(docName) {
+     const existingDoc = this.requestData.documents.find(d => 
+       (typeof d === 'object' && d.name === docName)
+     );
+     return existingDoc && existingDoc.remarks === "Released";
+   },
     initializeForm() {
       this.form.name_id = this.requestData.name_id;
       this.form.date = this.requestData.date;

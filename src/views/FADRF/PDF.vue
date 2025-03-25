@@ -20,7 +20,7 @@
 
         <div class="form-title">REQUEST SLIP FORM</div>
         <div class="admin-section">
-          (Administrative Section-Procurement/Property)
+          (Administrative Section-Procurement/Property) 
         </div>
 
         <div class="form-content">
@@ -151,11 +151,7 @@
                   style="display: flex; align-items: center"
                 >
                   <img
-                    :src="
-                      rating.value <= $props.item.rating == index + 1
-                        ? starz
-                        : star
-                    "
+                    :src="rating.value <= $props.item.rating ? starz : star"
                     alt="Star"
                     width="auto"
                     height="20"
@@ -166,6 +162,11 @@
                 </div>
               </td>
             </tr>
+            <tfoot>
+              <tr>
+                <td colspan="3" style="text-align: right; font-style: italic;">Revised document Feb 2025</td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>

@@ -50,11 +50,12 @@ body {
   
   .sign {
     text-decoration: none !important;
+    right: 100px; 
   }
   
   .signature-label {
     font-weight: bold;
-    margin-right: 5px;
+    margin-right: 100px;
   }
   
   .signature-field {
@@ -169,7 +170,7 @@ body {
     border: 1px solid #ccc;
     padding: 5px 2px;
     border: none;
-    margin-bottom: -5px;
+    margin-bottom: -18px;
   }
   
   .form-row td {
@@ -216,8 +217,8 @@ body {
   }
   
   .checkbox {
-    width: 15px;
-    height: 15px;
+    width: 10px;
+    height: 10px;
     border: 1px solid #000;
     display: inline-block;
   }
@@ -240,7 +241,7 @@ body {
   .rating-option {
     display: flex;
     align-items: center;
-    margin: 5px 0;
+    margin: 2px 0;
     padding-left: 60px;
   }
   
@@ -266,9 +267,28 @@ body {
     border: none !important;
     height: 40px !important;
     max-width: 150px !important;
+    margin-left: 70px; /* Added margin to move signature to the right */
+    position: relative; /* Added to allow finer positioning */
+    left: 20px; /* Additional shift to the right */
+    bottom: 35px;
+    
   }
   @media print {
     .container {
       scale: 1;
+    }
+     @page {
+      margin: 0;
+      size: 210mm 296mm;
+    }
+    
+    /* Hide header and footer that contain page numbers */
+
+    @page :left {
+      margin-left: 0;
+    }
+    
+    @page :right {
+      margin-right: 0;
     }
   }

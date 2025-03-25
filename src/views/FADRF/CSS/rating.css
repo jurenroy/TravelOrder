@@ -60,8 +60,6 @@
     padding: 0.9em 1.4em;
     border-radius: 5px;
     font-size: 16px;
-    min-width: 85px;
-    min-height: 35px;
     font-weight: 500;
     cursor: pointer;
     position: relative;
@@ -94,17 +92,28 @@
     border-color: #ffb74d;
   }
   .close-buttons {
-    position: absolute;
-    top: 29.5%;
-    right: 38.5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: none;
     border: none;
-    font-size: 50px;
-    color: #ff9800;
+    border-radius: 50% !important;
+    padding: 0rem;
     cursor: pointer;
+    transition: background-color 0.2s;
+    position: absolute;
+    right: 50rem;
+    height: 40px;  /* Increased height */
+    width: 40px; 
+    font-size: 38px;
+    position: absolute;
+    top: 21rem;
+    margin: 0;
+    
   }
   
   .close-buttons:hover {
-    color: #ffb74d;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 50% !important;
   }
   
