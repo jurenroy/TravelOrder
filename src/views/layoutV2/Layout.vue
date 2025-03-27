@@ -2,7 +2,7 @@
   <div class="layout">
     <Header />
     <div class="content-wrapper">
-      <Sidebar v-if="isLoggedIn && !isMobile" @toggle-sidebar="handleSidebarToggle" /> <!-- Only show Sidebar if logged in and not mobile -->
+      <Sidebar v-if="isLoggedIn && !isMobile" @toggle-sidebar="handleSidebarToggle" class="sidebar" /> <!-- Only show Sidebar if logged in and not mobile -->
       <main class="main-content" :style="{ marginLeft: sidebarMargin }">
         <router-view />  <!-- This is where the page content will be injected -->
       </main>
@@ -17,6 +17,7 @@
 import Header from '../../components/header/Header.vue';
 import Footer from '../../components/footer/Footer.vue';
 import Sidebar from '@/components/sidebar/Sidebar.vue';
+import Chat from '../chat/Dashboard.vue'
 import { useAuthStore } from '@/store/auth';
 
 export default {
@@ -24,13 +25,15 @@ export default {
   components: {
     Header,
     Footer,
-    Sidebar
+    Sidebar,
+    Chat,
   },
   data() {
     return {
       isMenuOpen: true, // Track sidebar state
       isMobile: false, // Track if the device is mobile
       authStore: useAuthStore(),
+      socket: null,
     };
   },
   computed: {
@@ -48,9 +51,25 @@ export default {
   mounted() {
     this.checkMobile();
     window.addEventListener('resize', this.checkMobile); // Check screen size on resize
+    this.setupWebSocket();
   },
   
   methods: {
+    setupWebSocket() {
+        this.socket = new WebSocket('ws://202.137.117.84:8012/ws/chat/');
+  
+        this.socket.onopen = () => {
+          console.log('WebSocket connection established');
+        };
+  
+        this.socket.onclose = (event) => {
+          console.log('WebSocket closed:', event);
+        };
+  
+        this.socket.onerror = (error) => {
+          console.error('WebSocket error:', error);
+        };
+      },
     handleSidebarToggle(isOpen) {
       this.isMenuOpen = isOpen; 
     },
@@ -58,7 +77,7 @@ export default {
       this.isMobile = window.innerWidth <= 768; 
     },destroyed() {
     window.removeEventListener('resize', this.checkMobile); 
-  },
+    },
   }
 };
 </script>
@@ -81,6 +100,7 @@ export default {
   padding: 20px;
   box-sizing: border-box;
 }
+
 
 @media (max-width: 768px) {
   .content-wrapper {

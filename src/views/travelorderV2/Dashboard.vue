@@ -3,6 +3,7 @@
         <div class="navigationz">
             <p class="headerzz">Travel Order</p>
             <button class="add-button" @click="toggleForm">{{ isVisible ? 'Close Form' : 'Add Form' }}</button>
+            
         </div>
     </div>
     <tablez class="tablex" v-if="!isVisible"/>
@@ -41,10 +42,12 @@
 
 .navigationz {
     display: flex;
-    justify-content: space-between; /* Space between header and button */
+    justify-content: center; /* Space between header and button */
     align-items: center; /* Center items vertically */
     padding: 10px; /* Add some padding */
-    margin-top: -20px;
+    margin-top: -40px;
+    margin-bottom: -40px;
+    gap: 20PX;
 }
 
  .formz{
@@ -71,9 +74,7 @@
     cursor: pointer;
  }
  .headerzz {
-    text-align: center; /* Center the header text */
-    flex-grow: 1; /* Allow the header to take available space */
-    margin: 0; /* Remove default margin */
+
 }
 
 /* Media Query for Mobile Devices */
@@ -85,11 +86,12 @@
     }
 
     .headerzz {
-        margin-bottom: 10px; /* Add space below the header */
+        margin-bottom: -20px; /* Add space below the header */
     }
 
     .add-button {
         width: 100%; /* Make button full width on mobile */
+        margin-bottom: 20px;
     }
 }
 

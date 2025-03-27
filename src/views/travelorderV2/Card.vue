@@ -179,7 +179,6 @@
         <h1 v-if="reversedFormData.length == 0" class="no-match">NO PENDING TRAVEL ORDER FOUND</h1>
       </div>
     </div>
-  
     <div v-show="selectedTravelOrderId" class="prent full-screen">
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
     </div>
@@ -678,7 +677,8 @@
 
 @media print {
     .card-container {
-        display: none;
+        margin-left: -100%;
+        display: flex;
     }
 }
 

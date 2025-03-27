@@ -1,13 +1,13 @@
 <template>
     <div class="chat-container">
-      <div class="sender">{{ sender }}</div>
+      <div class="sender">{{ 1==2? sender : getName(parseInt(authStore.name_id))}}</div>
       <div class="messages">
         <div
           v-for="(msg, index) in messages"
           :key="index"
           :class="msg.sender === sender ? 'message right' : 'message left'"
         >
-          <strong>{{ msg.sender }}:</strong> {{ msg.message }}
+          <strong>{{ getName(parseInt(msg.sender)) }}:</strong> {{ msg.message }}
         </div>
       </div>
       <div class="input-container">
@@ -23,6 +23,10 @@
   </template>
   
   <script>
+  import { useAuthStore } from '@/store/auth';
+  import { API_BASE_URL } from '@/config';
+  import axios from 'axios';
+
   export default {
     data() {
       return {
@@ -30,6 +34,8 @@
         messages: [],
         socket: null,
         sender: this.generateRandomString(10), // Hardcoded sender for demonstration
+        authStore: useAuthStore(),
+        names: {},
       };
     },
     methods: {
@@ -44,14 +50,14 @@
       },
       sendMessage() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-          this.socket.send(JSON.stringify({ message: this.message, sender: this.sender }));
+          this.socket.send(JSON.stringify({ message: this.message, sender: this.authStore.name_id, geater: 76 }));
           this.message = ''; // Clear the input field after sending
         } else {
           console.error('WebSocket is not open or no match found.');
         }
       },
       setupWebSocket() {
-        this.socket = new WebSocket('ws://172.31.10.156:8000/ws/chat/');
+        this.socket = new WebSocket('ws://172.31.10.35:8012/ws/chat/');
   
         this.socket.onopen = () => {
           console.log('WebSocket connection established');
@@ -59,7 +65,11 @@
   
         this.socket.onmessage = (event) => {
           const data = JSON.parse(event.data);
-          this.messages.push({ sender: data.sender, message: data.message });
+          // Check if the sender or geater matches the authStore.name_id
+          console.log(data.sender)
+          if (data.sender === this.authStore.name_id || data.geater === this.authStore.name_id || data.sender === 76) {
+            this.messages.push({ sender: data.sender, geater: data.geater, message: data.message });
+          }
         };
   
         this.socket.onclose = (event) => {
@@ -70,9 +80,28 @@
           console.error('WebSocket error:', error);
         };
       },
+      fetchNames() {
+        axios.get(`${API_BASE_URL}/get_names_json`)
+          .then(response => {
+            this.names = response.data;
+          })
+          .catch(error => {
+            console.error('Error fetching names:', error);
+          });
+      },
+
+      getName(nameId) {
+        const name = this.names[nameId - 1];
+        if (name) {
+          const { first_name, middle_init, last_name } = name;
+          return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
+        }
+        return 'Unknown';
+      },
     },
     mounted() {
       this.setupWebSocket();
+      this.fetchNames();
     },
     beforeDestroy() {
       if (this.socket) {
