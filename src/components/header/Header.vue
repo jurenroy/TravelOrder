@@ -2,7 +2,7 @@
   <header class="header">
     <!-- Logo section -->
     <div class="logo" @click="goHome">
-      <h1>{{ title }}</h1>
+      <h1>{{ title }} </h1>
     </div>
 
     <Heder/>
@@ -10,8 +10,8 @@
     <nav class="nav-container">
       <nav class="nav" :class="{ 'is-open': isMenuOpen }">
         <ul>
-          <li v-for="link in links" :key="link.text">
-            <a @click="handleLinkClick(link.text)">{{ link.text }}</a>
+          <li v-for="link in filteredLinks" :key="link.text" >
+            <a @click="handleLinkClick(link.text)">{{ link.text }}{{ link.text == 'Chats' && unreadMessagesCount ?  '('+unreadMessagesCount+')' : ''}}</a>
           </li>
         </ul>
       </nav>
@@ -23,6 +23,7 @@
       <div class="line"></div>
       <div class="line"></div>
     </div>
+    <p style="color: red;">{{ isMobile && !isMenuOpen &&  unreadMessagesCount ? '('+unreadMessagesCount+')' : '' }}</p>
   </header>
   <!-- Login Popup -->
   <!-- <Login :login="showLogin" @closeLogin="closeLoginModal"/> -->
@@ -34,7 +35,7 @@
     <LeaveCard/>
     <ICTCard/>
   </div>
-  
+  <Chat v-if="(isLoggedIn && !isMobile) || (isMobile && checkMobileChat)" @update:unreadMessages="updateUnreadMessages"/>
 
 </template>
 
@@ -48,6 +49,8 @@ import { useAuthStore } from '@/store/auth';
 import TravelCard from '@/views/travelorderV2/Card.vue';
 import LeaveCard from '@/views/leaveform/Card.vue';
 import ICTCard from '@/views/ictsrf/Card.vue'
+import { useChatStore } from '@/store/chat';
+import Chat from '@/views/chat/Dashboard.vue';
 
 
 export default {
@@ -58,7 +61,8 @@ export default {
     Heder,
     TravelCard,
     LeaveCard,
-    ICTCard
+    ICTCard,
+    Chat
   },
   setup() {
     const title = ref('MGBxPORTAL');
@@ -67,6 +71,8 @@ export default {
     const isLoggedIn = computed(() => authStore.isLoggedIn);
     const isMenuOpen = ref(true);
     const isMobile = ref(false);
+    const chatStore = useChatStore();
+    const unreadMessagesCount = ref(0)
 
     const goHome = () => {
       router.push('/');
@@ -80,6 +86,10 @@ export default {
 
     const closeLoginModal = () => {
       showLogin.value = false;
+    };
+
+    const updateUnreadMessages = (count) => {
+      unreadMessagesCount.value = count;
     };
 
     const isLogoutClicked = ref(false);
@@ -98,8 +108,16 @@ export default {
     const links = ref([
       { text: 'Home', url: '/' },
       { text: 'Services', url: '/services' },
+      { text: 'Chats', url: '/chat' },
       { text: isLoggedIn.value ? 'Logout' : 'Login', url: '#' } // Set URL to '#' to prevent routing
     ]);
+
+    const filteredLinks = computed(() => {
+      return links.value.filter(link => {
+        // Exclude 'Chats' link if not logged in
+        return !(link.text === 'Chats' && !isLoggedIn.value);
+      });
+    });
 
     // Handle link click (for login/logout pop-up)
     const handleLinkClick = (linkText) => {
@@ -114,9 +132,29 @@ export default {
         router.push('/services');
       } else if (linkText === 'Services' && !isLoggedIn.value){
         showLogin.value = true;
-      } else if (linkText === 'Home'){
+      } else if (linkText === 'Chats' && isLoggedIn.value){
+        if (window.innerWidth >= 768) {
+          chatStore.toggleShow();
+          console.log('desktop')
+        }else if (window.innerWidth <= 768 && router.currentRoute.value.path !== 'chat') {
+        router.push('/chat');
+        console.log('ipa show sa route ra', router.currentRoute.value.path !== 'chat')
+          if (!chatStore.show) {
+            chatStore.toggleShow(); // Call toggleShow if it's false
+            console.log('ipashow')
+          }
+        }
+      } else if (linkText === 'Chats' && !isLoggedIn.value){
+        showLogin.value = true;
+      }else if (linkText === 'Home'){
         router.push('/');
       }
+
+      if (linkText !== 'Chats' && chatStore.show){
+        console.log('dili ipashow')
+        chatStore.toggleShow()
+      } 
+      
 
     };
 
@@ -129,6 +167,15 @@ export default {
     const checkMobileScreen = () => {
       isMobile.value = window.innerWidth <= 768; // Adjust the width based on your design
     };
+    // Check for mobile screen size
+    const checkMobileScreens = computed(() => {
+      return window.innerWidth <= 768; // Adjust the width based on your design
+    });
+    // Check for mobile screen size
+    const checkMobileChat = computed(() => {
+      console.log(router.currentRoute.value.path !== 'chat')
+      return router.currentRoute.value.path !== 'chat'; // Adjust the width based on your design
+    });
 
     onMounted(() => {
       checkMobileScreen();
@@ -151,6 +198,11 @@ export default {
       showLoginModal,
       closeLoginModal,
       authStore,
+      filteredLinks,
+      unreadMessagesCount,
+      updateUnreadMessages,
+      checkMobileChat,
+      checkMobileScreens
     };
   }
 };

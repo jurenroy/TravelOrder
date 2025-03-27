@@ -17,7 +17,7 @@ import employeelist from './views/EmployeelistV2.vue';
 import editpage from './views/EditPageV2.vue';
 import logout from './components/logout/Logout.vue';
 
-import ChatVue from './views/chat/Chat.vue';
+import ChatVue from './views/chat/Blank.vue';
 
 const routes = [
   {
@@ -85,15 +85,15 @@ const routes = [
         component: logout,
         meta: { requiresAuth: true }
       },
-
+      {
+        path: '/chat',
+        name: 'chat',
+        component: ChatVue,
+        meta: { requiresAuth: false }
+      },
       ]
     },
-    {
-      path: '/chat',
-      name: 'chat',
-      component: ChatVue,
-      meta: { requiresAuth: false }
-    },
+    
   // {
   //   path: '/leaveform',
   //   name: 'LeaveForm',

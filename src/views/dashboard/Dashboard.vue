@@ -13,7 +13,7 @@
       </main>
     </div>
     <div class="card-container" @touchstart="startTouch" @touchmove="moveTouch" @touchend="endTouch">
-    <TravelCard v-if="isLoggedIn && isHomePage && currentCardIndex === 0" />
+    <TravelCard v-if="isLoggedIn && isHomePage && currentCardIndex === 0"/>
     <LeaveCard v-if="isLoggedIn && isHomePage && currentCardIndex === 1" />
     <ICTCard v-if="isLoggedIn && isHomePage && currentCardIndex === 2" />
     </div>

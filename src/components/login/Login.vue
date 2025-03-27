@@ -184,6 +184,7 @@ body {
   align-items: center;       /* Center content vertically */
   width: 100%;               /* Optional: set the width (you can customize this if needed) */
   height: 100%;              /* Optional: set the height (you can customize this if needed) */
+  z-index: 999;
 }
 
 .first {

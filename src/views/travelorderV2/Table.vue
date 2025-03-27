@@ -232,6 +232,7 @@ export default {
     this.fetchEmployees();
     this.fetchNames();
     this.fetchData();
+    this.setupWebSocket()
     window.addEventListener('afterprint', this.handleAfterPrint);
   },
   beforeDestroy() {
@@ -286,9 +287,32 @@ export default {
       currentNoteId: 0,
       currentNoteText: '',
       currentNoteType: '',
+      socket: '',
     };
   },
   methods: {
+    setupWebSocket() {
+        this.socket = new WebSocket('ws://202.137.117.84:8012/ws/chat/');
+  
+        this.socket.onopen = () => {
+          console.log('WebSocket connection established');
+        };
+  
+        this.socket.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          // Check if the message is relevant to the current chat
+            // this.messages.push({ sender: data.sender, receiver: data.receiver, message: data.message });
+            console.log(data)
+        };
+  
+        this.socket.onclose = (event) => {
+          console.log('WebSocket closed:', event);
+        };
+  
+        this.socket.onerror = (error) => {
+          console.error('WebSocket error:', error);
+        };
+      },
     handleAfterPrint() {
       // Code to execute after printing
       this.close()
@@ -1151,7 +1175,7 @@ export default {
       padding: 8px 12px;
     }
     .scrollable-table{
-      max-height: 50vh;
+      max-height: 40vh;
     }
   }
 
@@ -1168,7 +1192,7 @@ export default {
   .scrollable-table {
     width: 100%; /* Table takes full width */
     overflow-x: auto;
-    max-height: 70vh;
+    max-height: 60vh;
     overflow-y: auto;
   }
 
