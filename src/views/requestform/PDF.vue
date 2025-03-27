@@ -55,7 +55,7 @@
                   display: flex;
                   justify-content: left;
                   align-items: center;
-                 border: solid black 1px;
+                  border: solid black 1px
                 "
               >
                 <img

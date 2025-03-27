@@ -4,7 +4,7 @@
       style="display: flex; flex-direction: row; align-self: center"
       class="hist"
     >
-      Documents Status
+      Status
       <select v-model="selectedStatus" id="status" class="styled-select">
         <option v-for="option in options" :key="option" :value="option">
           {{ option }}
@@ -13,6 +13,18 @@
       <span v-if="pendingCount !== 0" class="notification-count">{{
         pendingCount
       }}</span>
+    </h2>
+
+    <h2
+      style="display: flex; flex-direction: row; align-self: center"
+      class="hist"
+    >
+      Category
+      <select v-model="selectedCategory" id="status" class="styled-select">
+        <option v-for="option in category" :key="option" :value="option">
+          {{ option }}
+        </option>
+      </select>
     </h2>
 
     <div v-if="load" class="loadings">
@@ -231,6 +243,18 @@ export default {
       currentItem: "",
       selectedStatus: "All",
       options: ["All", "Pending", "Released", "No Remarks"],
+      selectedCategory: "All",
+      category: [
+        "All",
+        "SERVICE RECORD",
+        "CERTIFICATE OF EMPLOYMENT",
+        "CERTIFICATE OF EMPLOYMENT WITH COMPENSATION",
+        "OFFICE CLEARANCE",
+        "LBP BC LIST",
+        "CERTIFICATE OF LEAVE CREDITS",
+        "PHOTOCOPY OF TRAVEL ORDER",
+        "OTHERS",
+      ],
       yearToday: new Date().getFullYear(),
       formData: [],
       names: {},
@@ -320,6 +344,28 @@ export default {
                 doc.remarks.trim().toLowerCase() ===
                 this.selectedStatus.toLowerCase()
             );
+          }
+
+          console.log("Selected Category:", this.selectedCategory);
+
+          if (this.selectedCategory !== "All") {
+            if (this.selectedCategory === "OTHERS") {
+              return item.documents.some((doc) => {
+                if (!doc.name) return false;
+                const docName = doc.name.trim().toLowerCase();
+                console.log("Checking Document Name:", docName);
+
+                return !this.documentList.includes(docName.toUpperCase());
+              });
+            }
+
+            return item.documents.some((doc) => {
+              return (
+                doc.name &&
+                doc.name.trim().toLowerCase() ===
+                  this.selectedCategory.toLowerCase()
+              );
+            });
           }
           return true;
         })
@@ -411,7 +457,7 @@ export default {
             !othersDoc.name.includes("Others:")
           ) {
             console.log("Returning custom name:", othersDoc.name);
-            return othersDoc.name;
+            return `OTHERS: ${othersDoc.name}`;
           }
           if (othersDoc.additionalText) {
             console.log("Returning additionalText:", othersDoc.additionalText);
@@ -425,7 +471,7 @@ export default {
           if (match && match[1]) {
             const extractedText = match[1].trim();
             console.log("Returning extracted text:", extractedText);
-            return extractedText;
+            return `OTHERS: ${extractedText}`;
           }
         }
       }
