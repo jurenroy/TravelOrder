@@ -765,7 +765,7 @@ export default {
                "Chief, MSESDD",
                "OIC, Regional Director",
                "Chief Administrative Officer",
-               "OIC Chief, GD",
+               "OIC, Geoscicnce Division",
            ],
            dayszz: '',
            dateszz: '',
@@ -999,15 +999,17 @@ export default {
                            }
                        }
                    } else if (this.division == 3) {
-                       {
-
+                       
+                        console.log('gd?')
                         
-                        if (this.isSignatureValid){
+                        if (this.leaveForms.recommendation && this.leaveForms.recommendation.split('/').pop() === 'urAs0SbQ7kw0y6LI4B9dyOpQxKI8cL4q4aEbsFSh.png'){
                             this.reco = this.signatories[2]
                            this.recopost = this.designations[2]
+                           console.log('sirjo')
                         } else {
                             this.reco = this.signatories[6]
                            this.recopost = this.designations[6]
+                           console.log('mamjo')
                         }
 
                            if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
@@ -1026,7 +1028,7 @@ export default {
                                this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
                                this.rdpos = this.designations[3]; // "Chief, MSESDD"
                            }
-                       }
+                       
                    } else if (this.division == 4) {
                        {
                            this.reco = this.signatories[3]
@@ -1223,9 +1225,9 @@ export default {
           console.error('Error fetching leave forms:', error);
         });
     },
-    isSignatureValid() {
-        console.log(this.signature1)
-      const filename = this.signature1.split('/').pop(); // Extract the filename
+    isSignatureValid(item) {
+        console.log(item)
+      const filename = item.split('/').pop(); // Extract the filename
       console.log(filename)
       return filename === 'urAs0SbQ7kw0y6LI4B9dyOpQxKI8cL4q4aEbsFSh.png'; // Check if it matches your condition
     },

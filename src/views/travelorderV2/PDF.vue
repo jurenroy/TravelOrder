@@ -90,7 +90,7 @@
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }">
                 {{ isSignatureValid ? divisionChiefs[1] : recommended }} </p>
                 <p style="margin-top: -10px;" v-if="isSignatureValid">Chief, {{ division }}</p>
-                <p style="margin-top: -10px;" v-else-if="isSignatureValidAsis">OIC Chief, {{ division }}</p>
+                <p style="margin-top: -10px;" v-else-if="isSignatureValidAsis">OIC, {{ division }}</p>
               <p style="margin-top: -10px;" v-else>Chief, {{ division }}</p>
             </div>
   
@@ -127,7 +127,7 @@
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
                 v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
               <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
-              <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">{{ sname == 3 ? 'OIC' : ''}}Chief,  {{ sdivz.division_name }}</p>
+              <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">{{ sname == 3 ? 'OIC' : 'Chief,'}}  {{ sdivz.division_name }}</p>
             </div>
   
             <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '90px' : '0px' }" v-if="name == 'RODANTE B. FELINA'">
@@ -157,7 +157,7 @@
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }">
                 {{ isSignatureValid ? divisionChiefs[1] : recommended }} </p>
                 <p style="margin-top: -10px;" v-if="isSignatureValid">Chief, {{ division }}</p>
-                <p style="margin-top: -10px;" v-else-if="isSignatureValidAsis">OIC Chief, {{ division }}</p>
+                <p style="margin-top: -10px;" v-else-if="isSignatureValidAsis">OIC, {{ division }}</p>
               <p style="margin-top: -10px;" v-else>Chief, {{ division }}</p>
             </div>
   
@@ -194,7 +194,7 @@
                 :style="{ 'font-weight': 'bold', 'margin-top': (signature2 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }"
                 v-if="sdiv == 1 && sdiv !== null ">JANICE B.FUROG</p>
               <p style="margin-top: -10px;" v-if="sdiv == 5 || sdiv == null">OIC, Regional Director</p>
-              <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">{{ sname == 3 ? 'OIC' : ''}}Chief,  {{ sdivz.division_name }}</p>
+              <p style="margin-top: -10px;" v-if="sdiv !== 5 && sdiv !== null">{{ sname == 3 ? 'OIC' : 'Chief,'}}  {{ sdivz.division_name }}</p>
             </div>
   
             <div class="inner-container2" :style="{ marginRight: division == 'ORD' ? '-10px' : '0px' }" v-if="divisionChiefs.includes(name) && intervals == 1">
