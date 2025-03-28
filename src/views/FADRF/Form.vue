@@ -263,7 +263,7 @@ onMounted(() => {
       <div class="button-container">
         <button type="submit" :disabled="formDisable">Submit</button>
       </div>
-
+    
       <div v-if="pleaseWait" class="formcorrect">
         <p>Submitted!! Please wait for a moment...</p>
       </div>
@@ -272,6 +272,7 @@ onMounted(() => {
       </div>
     </form>
   </div>
+  
 </template>
 
 <style src="./CSS/form.css" scoped></style>

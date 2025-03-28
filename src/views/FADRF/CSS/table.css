@@ -1,3 +1,9 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh; /* Use viewport height instead of 100% */
+  overflow: hidden; /* Remove page-wide scrolling */
+}
 
 .notification-count {
   background-color: #ff4d4f;
@@ -43,13 +49,12 @@ thead {
   padding: 0 48px 0 30px !important;
 }
 
+
 .scrollable-table {
-  max-height: 630px;
-  overflow-y: auto;
+  max-height: calc(60vh - 110px); /* Adjust height to fit screen, subtracting space for header/footer */
+  overflow-y: auto; /* Allow scrolling only within the table */
   margin: 15px;
-  -ms-overflow-style: none; 
-  scrollbar-width: none;
-  width: 100%;
+  width: calc(100% - 30px); /* Subtract margins */
   border-radius: 20px;
 }
 
@@ -407,7 +412,7 @@ button:active  {
   background-color: #f7f7f7;
   border: 2.5px solid #020101;
   border-radius: 15px;
-  padding: 15px 0 15px 15px;
+  padding: 15px 35PX 15px 15px;
   font-size: 1.0rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -430,6 +435,15 @@ button:active  {
   background-color: rgba(187,138,20,1) !important;
   color: white;
 }
+@media print{
+  .styled-select{
+    display: none;
+  }
+}
+.notification-count {
+  margin-left: 10px;
+}
+
 @media screen and (max-width: 768px) {
   .styled-select {
     width: 100%; /* Full width on mobile */
@@ -475,6 +489,9 @@ button:active  {
     width: 20px; /* Slightly smaller icon */
     height: 20px;
   }
+  
+  
+
 }
 
 @media print{

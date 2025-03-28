@@ -1,15 +1,19 @@
 .form-container {
-    margin: 2em auto;
-    font-family: "Poppins", sans-serif;
-    flex-direction: column;
-    width: 90%;
-    max-width: 900px;
-    background: linear-gradient(145deg, #fef6e4, #dac08c);
-    padding: 60px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
-  }
+  margin: 1em auto;
+  font-family: "Poppins", sans-serif;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  
+  background: rgba(184, 133, 6, 0.774);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  min-height: auto;
+  height: fit-content;
+  overflow: visible;
+}
   
   .others-input {
     margin-top: 10px;
@@ -148,18 +152,18 @@
     padding: 18px 40px;
     font-size: 18px;
     font-weight: 700;
-    background-color: #773c00;
+    background-color: #000000;
     color: rgb(255, 255, 255);
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    box-shadow: 0 10px 30px rgba(243, 156, 18, 0.3);
+
     font-family: "Playfair Display", serif;
     margin-left: 40%;
   }
   
   button:hover {
-    background-color: #783c00;
+    background-color: gray;
     transform: translateY(-3px);
   }
   
@@ -291,7 +295,7 @@
   }
   
   .container input:checked ~ span {
-    color: rgba(121, 83, 14, 0.808);
+    color: black;
     font-weight: bold;
     margin-left: 10px;
   }

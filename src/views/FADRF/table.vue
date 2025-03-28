@@ -33,10 +33,15 @@
        class="hist"
      >
        <select v-model="fetchLimit" @change="fetchData" class="styled-select">
-         <option :value="10">10 Items</option>
-         <option :value="20">20 Items</option>
-         <option :value="50">50 Items</option>
-         <option :value="100">100 Items</option>
+         <option :value="10">10 </option>
+         <option :value="20">20 </option>
+         <option :value="50">50 </option>
+         <option :value="100">100 </option>
+         <option :value="200">200 </option>
+         <option :value="500">500 </option>
+         <option :value="1000">1000 </option>
+         <option :value="5000">5000 </option>
+         <option :value="10000">10000 </option>
        </select>
      </h2>
   </div>
@@ -322,8 +327,8 @@ export default {
         "JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C",
         "OTHERS",
       ],
-      fetchlimit: 10,
-      curretPage: 1,
+      fetchLimit: 10, 
+      currentPage: 1, 
 
       created() {
         this.parseRequestedDocuments();
@@ -1019,10 +1024,10 @@ export default {
     },
     fetchData() {
       axios
-        .get(`${API_BASE_URL}/FADRFget_request` , {
+        .get(`${API_BASE_URL}/FADRFget_request`, {
           params: {
-           limit: this.fetchLimit,
-           page: this.currentPage,
+            limit: this.fetchLimit * 2,
+            page: this.currentPage, // Optional: for pagination
           },
         })
         .then((response) => {
@@ -1050,7 +1055,7 @@ export default {
 
           this.formData = this.formData.filter((item) => {
             return (
-              this.nameId === "30" ||
+              this.nameId === "2" ||
               this.nameId === "76" ||
               item.name_id == this.nameId
             );
@@ -1062,6 +1067,10 @@ export default {
           console.error("Error fetching data:", error);
           this.load = false;
         });
+    },
+    changeLimit(newLimit) {
+      this.fetchLimit = newLimit;
+      this.fetchData(); // Reload data with new limit
     },
     fetchNames() {
       axios
@@ -1133,45 +1142,44 @@ export default {
             .join(" ");
 
           const query = this.searchQuery.toLowerCase();
-
           const matchesSearch =
             requestorName.includes(query) || documentNames.includes(query);
 
           if (!matchesSearch) return false;
 
-          if (this.selectedStatus !== "All") {
-            return item.documents.some(
+          const statusMatches =
+            this.selectedStatus === "All" ||
+            item.documents.some(
               (doc) =>
                 doc.remarks.trim().toLowerCase() ===
                 this.selectedStatus.toLowerCase()
             );
-          }
-          console.log("Selected Category:", this.selectedCategory);
 
-          if (this.selectedCategory !== "All") {
-            if (this.selectedCategory === "OTHERS") {
-              return item.documents.some((doc) => {
-                if (!doc.name) return false;
-                const docName = doc.name.trim().toLowerCase();
-                console.log("Checking Document Name:", docName);
+          if (!statusMatches) return false;
 
-                return !this.documentList.includes(docName.toUpperCase());
-              });
-            }
-
-            return item.documents.some((doc) => {
+          const categoryMatches =
+            this.selectedCategory === "All" ||
+            item.documents.some((doc) => {
+              if (this.selectedCategory === "OTHERS") {
+                return (
+                  doc.name &&
+                  !this.documentList.includes(doc.name.trim().toUpperCase())
+                );
+              }
               return (
                 doc.name &&
-                doc.name.trim().toLowerCase() ===
-                  this.selectedCategory.toLowerCase()
+                doc.name.trim().toLowerCase() === this.selectedCategory.toLowerCase()
               );
             });
-          }
+
+          if (!categoryMatches) return false;
+
           return true;
         })
-        .slice()
-        .reverse();
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, this.fetchLimit);
     },
+
   },
 };
 window.onload = function () {
