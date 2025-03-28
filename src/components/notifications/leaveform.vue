@@ -1,5 +1,5 @@
 <template>
-    <span>{{ pendingCount }}</span>
+    <!-- <span>{{ pendingCount }}</span> -->
 </template>
 
 <script>

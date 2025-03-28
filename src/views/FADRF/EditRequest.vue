@@ -83,7 +83,7 @@
 
         <div class="button-container">
           <button type="submit" :disabled="formDisable">Update Request</button>
-          <button type="button" @click="$emit('close')">Cancel</button>
+         
         </div>
 
         <div v-if="pleaseWait" class="formcorrect">

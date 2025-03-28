@@ -76,9 +76,9 @@
   .popup-buttons button {
     font-family: inherit;
     font-size: 20px;
-    background: linear-gradient(to bottom, #bfa16d, rgba(172, 145, 116, 0.849));
-    color: black;
-    fill: black;
+    background: black;
+    color: white;
+    fill: white;
     padding: 0.4em 0.3em;
     padding-left: 0.2em;
     display: flex;
@@ -112,7 +112,7 @@
   }
   
   .popup-buttons button:hover {
-    background: linear-gradient(to bottom, rgba(172, 145, 116, 0.849, #bfa16d));
+    background: rgba(0, 0, 0, 0.863);
   }
   
   .popup-buttons button:hover .svg-wrapper-1 {
@@ -122,7 +122,7 @@
   
   .popup-buttons button:hover svg {
     transform: translateX(1.2em) scale(1.1);
-    fill: black;
+    fill: white;
   }
   
   .popup-buttons button:hover span {

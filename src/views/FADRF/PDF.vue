@@ -24,34 +24,34 @@
         </div>
 
         <div class="form-content">
-          <table>
-            <tr>
+          <table class="bordered-table">
+            <tr style="border: solid black 1px">
               <td><strong>Requestor: </strong>{{ $props.name }}</td>
               <td><strong>Signature:</strong></td>
             </tr>
-            <tr>
+            <tr class="division">
               <td>
                 <strong>Division: </strong
                 >{{ getDivision($props.item.division_id) }}
               </td>
               <td><img :src="$props.signature" alt="Signature" /></td>
             </tr>
-            <tr>
+            <tr class="datetime">
               <td>
                 <strong>Date & Time Requested: </strong
                 >{{ formatDate($props.item.date) }}
               </td>
             </tr>
-            <tr>
-              <td colspan="4"><strong>DOCUMENT(S) REQUESTED</strong></td>
+            <tr >
+              <td class="docresq" colspan="4" ><strong>DOCUMENT(S) REQUESTED</strong></td>
             </tr>
-            <tr style="border: solid black 2px">
-              <td><strong>Document Name</strong></td>
+            <tr class="doctitle" style="margin-top: 2px; font-weight: bold">
+              <td ><strong>Document Name</strong></td>
               <td><strong>Date & Time Released</strong></td>
               <td><strong>Released by</strong></td>
             </tr>
-            <tr v-for="doc in $props.documents" :key="doc">
-              <td
+            <tr v-for="doc in $props.documents" :key="doc" >
+              <td class="tablesz"
                 style="
                   flex-direction: row;
                   display: flex;
@@ -59,7 +59,7 @@
                   align-items: center;
                 "
               >
-                <img
+                <img 
                   :src="
                     $props.item.documents &&
                     ($props.item.documents.some((item) => item.name === doc) ||
@@ -91,7 +91,7 @@
                   }}
                 </p>
               </td>
-              <td>
+              <td class="tablesz">
                 {{
                   $props.item.documents &&
                   (() => {
@@ -115,7 +115,7 @@
                   })()
                 }}
               </td>
-              <td colspan="2">
+              <td class="tablestat"colspan="2">
                 {{
                   $props.item.documents &&
                   (() => {
@@ -140,11 +140,12 @@
                 }}
               </td>
             </tr>
-            <tr>
+            
+            <tr class="rating">
               <td colspan="3"><strong>RATING</strong></td>
             </tr>
-            <tr>
-              <td colspan="3">
+            <tr >
+              <td class="rates" colspan="3">
                 <div
                   v-for="(rating, index) in ratings"
                   :key="rating.value"

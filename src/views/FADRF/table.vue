@@ -1,20 +1,36 @@
 <template>
   <div style="display: flex; flex-direction: column">
+
+    <div v-if="!isPrinting" class="dropdown-container">
+      <div class="dropdown-docstat">
     <h2
       style="display: flex; flex-direction: row; align-self: center"
       class="hist"
     >
-      Documents Status
+      
       <select v-model="selectedStatus" id="status" class="styled-select">
         <option v-for="option in options" :key="option" :value="option">
           {{ option }}
         </option>
       </select>
-      <span v-if="pendingCount !== 0" class="notification-count">{{
+      <!-- <span v-if="pendingCount !== 0" class="notification-count">{{
         pendingCount
-      }}</span>
+      }}</span> -->
     </h2>
-    
+    <div class="dropdown-categ">
+    <h2
+    style="display: flex; flex-direction: row; align-self: center"
+    class="hist">
+   
+    <select v-model="selectedCategory" id="category" class="styled-select">
+      <option v-for="option in Category" :key="option" :value="option">
+        {{ option }}
+      </option>
+    </select>
+    </h2>
+  </div>
+</div>
+</div>
 
     <div class="search-box">
       <input
@@ -232,6 +248,7 @@ export default {
 
   data() {
     return {
+      isPrinting: false,
       showNotification: false,
       notificationMessage: "",
       showEditDetailsPopup: false,
@@ -244,6 +261,20 @@ export default {
       currentItem: "",
       selectedStatus: "All",
       options: ["All", "Pending", "Released", "No Remarks"],
+      selectedCategory: "All",
+      Category: [
+        "All",
+        "PURCHASE REQUEST - REQUISITION AND ISSUE SLIP",
+        "CERTIFICATE OF EMPLOYMENT WITH COMPENSATION",
+        "INVENTORY CUSTODIAN SLIP",
+        "PROPERTY ACKNOWLEDGEMENT RECEIPT",
+        "GATE PASS",
+        "PO FUEL",
+        "PROPERTY RETURN SLIP",
+        "R&M OF MOTOR VEHICLES",
+        "JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C",
+        "OTHERS",
+      ],
       yearToday: new Date().getFullYear(),
       formData: [],
       names: {},
@@ -268,7 +299,6 @@ export default {
       selectedName: "",
       selectedSignature: "",
       selectedItem: [],
-
       documentList: [
         "PURCHASE REQUEST - REQUISITION AND ISSUE SLIP",
         "CERTIFICATE OF EMPLOYMENT WITH COMPENSATION",
@@ -304,6 +334,12 @@ export default {
     this.fetchDocuments();
     console.log(this.data);
     this.loadAccounts();
+    window.addEventListener('beforeprint', () => {
+      this.isPrinting = true;
+    });
+    window.addEventListener('afterprint', () => {
+      this.isPrinting = false;
+    });
   },
 
   methods: {
@@ -695,6 +731,9 @@ export default {
           this.currentItem.note = updatedNote;
           this.showNotification = true;
           this.notifactionMessage = "Note save successfully!";
+          setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
         })
         .catch((error) => {
           console.error("Error updating note:", error);
@@ -1089,7 +1128,27 @@ export default {
                 this.selectedStatus.toLowerCase()
             );
           }
+          console.log("Selected Category:", this.selectedCategory);
 
+          if (this.selectedCategory !== "All") {
+            if (this.selectedCategory === "OTHERS") {
+              return item.documents.some((doc) => {
+                if (!doc.name) return false;
+                const docName = doc.name.trim().toLowerCase();
+                console.log("Checking Document Name:", docName);
+
+                return !this.documentList.includes(docName.toUpperCase());
+              });
+            }
+
+            return item.documents.some((doc) => {
+              return (
+                doc.name &&
+                doc.name.trim().toLowerCase() ===
+                  this.selectedCategory.toLowerCase()
+              );
+            });
+          }
           return true;
         })
         .slice()

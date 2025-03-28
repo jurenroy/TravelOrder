@@ -1,17 +1,15 @@
+
 .notification-count {
-  margin-top: -10px;
-  margin-left: -10px;
-  background-color: red;
+  background-color: #ff4d4f;
   color: white;
   border-radius: 50%;
-  width: 20px; 
-  height: 20px; 
-  display: flex;
-  justify-content: center;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  margin-left: 10px;
+  display: inline-flex;
   align-items: center;
-  font-size: 12px; 
+  justify-content: center;
 }
-
 .pholder {
   padding: 5px;
   border-radius: 5px;
@@ -25,9 +23,6 @@
     transform: translateY(-100%); 
     cursor: pointer; 
 }
-
-
-
 table {
   width: 100%;
   border-collapse: collapse;
@@ -38,12 +33,14 @@ td {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
+  padding: 23px !important;
 }
 
-th {
-  background-color: #f2f2f2;
+thead {
   position: sticky;
   top: -2px;
+  background: linear-gradient(0deg, rgba(188,138,18,1) 44%, rgba(235,190,101,1) 100%);
+  padding: 0 48px 0 30px !important;
 }
 
 .scrollable-table {
@@ -52,6 +49,50 @@ th {
   margin: 15px;
   -ms-overflow-style: none; 
   scrollbar-width: none;
+  width: 100%;
+  border-radius: 20px;
+}
+
+
+.scrollable-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+
+.scrollable-table table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+
+
+table thead th {
+  color: black !important;
+  font-weight: bold;
+}
+
+
+.scrollable-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9; /* Light gray for even rows */
+}
+
+.scrollable-table tbody tr:nth-child(odd) {
+  background-color: white; /* White for odd rows */
+}
+
+.scrollable-table tbody tr:hover {
+  background-color: #e0e0e0; /* Slightly darker gray on hover */
+  transition: background-color 0.3s ease;
+}
+
+.scrollable-table th, 
+.scrollable-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
 }
 
 .outer {
@@ -135,8 +176,8 @@ textarea {
 
 button {
   border-radius: 10px;
-  background: #bfa16dd7;
-  color: black;
+  background: black;
+  color: white;
   font-weight: bold;
   font-size: 12px;
   border: solid black 2px;
@@ -153,9 +194,9 @@ button {
 }
 
 button:hover {
-  background: #bfa16d;
+  background: rgba(0, 0, 0, 0.623);
   animation: button-particles 1s ease-in-out infinite;
-  transform: translateY(-2px);;
+  transform: translateY(-2px);
 }
 button:active  {
   transform: scale(0.95);
@@ -166,19 +207,21 @@ button:active  {
   font-size: 18px;
   color: red;
 }
-.styled-select {
-  appearance: none;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-  width: 100px;
-  font-weight: bold;
-  margin-top: -5px;
-  margin-left: 5px;
+
+
+.dropdown-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
 }
+
+.dropdown-wrapper label {
+  font-weight: 600;
+  color: #272727;
+  margin-bottom: 5px;
+}
+
 .released-text {
   font-weight: bold;
   font-size: 18px;
@@ -199,14 +242,17 @@ button:active  {
   font-size: 18px;
   color: orange;
 }
-.styled-select:focus {
-  border-color: #007bff;
-  outline: none;
+.styled-select:hover {
+  border-color: black;
+  color:white;
+  
 }
 
-.styled-select option {
-  padding: 10px;
-  font-weight: bold;
+.styled-select:focus {
+  outline: none;
+  border-color: black;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+
 }
 
 .pholder {
@@ -289,9 +335,7 @@ button:active  {
     display: none !important;
   }
 
-  .hist {
-    display: none !important;
-  }
+ 
   .content,
   .note,
   .sign,
@@ -323,4 +367,121 @@ button:active  {
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
+}
+.dropdown-container {
+  display: flex;
+  align-items: center;
+  gap: 20px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; 
+  width: 100%;
+  
+}
+.dropdown-docstat,
+.dropdown-categ {
+  display: flex;
+  align-items: center;
+  
+}
+.hist {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  
+}
+
+.styled-select {
+  margin-left: 10px;
+  background: linear-gradient(90deg, rgba(231,185,93,1) 0%, rgba(187,138,20,1) 73%);
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: 
+    url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>"),
+    linear-gradient(90deg, rgba(231,185,93,1) 0%, rgba(187,138,20,1) 73%);
+  background-position: calc(100% - 10px) center, center;
+  background-repeat: no-repeat, no-repeat;
+  background-size: auto, cover;
+  position: relative;
+  background-color: #f7f7f7;
+  border: 2.5px solid #020101;
+  border-radius: 15px;
+  padding: 15px 0 15px 15px;
+  font-size: 1.0rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+
+.styled-select option {
+  background-color: rgba(231,185,93,1) !important; /* Solid color instead of linear-gradient */
+  color: black;
+  padding: 10px;
+}
+
+.styled-select option:hover {
+  background-color: rgba(187,138,20,1) !important;
+  color: white;
+}
+
+.styled-select option:checked {
+  background-color: rgba(187,138,20,1) !important;
+  color: white;
+}
+@media screen and (max-width: 768px) {
+  .styled-select {
+    width: 100%; /* Full width on mobile */
+    margin-left: 0; /* Remove left margin */
+    font-size: 0.9rem; /* Slightly smaller font for mobile */
+    padding: 10px 40px 10px 15px; /* Adjusted padding */
+  }
+
+  .dropdown-container {
+    flex-direction: column; /* Stack dropdowns vertically on mobile */
+    gap: 10px; /* Reduced gap between dropdowns */
+  }
+
+  .dropdown-wrapper {
+    width: 100%; /* Full width for dropdown wrappers */
+    max-width: 300px; /* Maximum width */
+  }
+
+  .dropdown-wrapper label {
+    align-self: flex-start; /* Align labels to the start */
+    margin-bottom: 5px;
+  }
+  .search-box {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 10px;
+  }
+
+  .pholder {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 48px 0 15px; /* Reduced left padding */
+    font-size: 12px; /* Slightly smaller font */
+  }
+
+  .pholder:focus {
+    width: 100%; /* Ensure full width on focus */
+    max-width: 100%;
+  }
+
+  .search-box svg {
+    right: 15px; /* Adjusted for mobile */
+    width: 20px; /* Slightly smaller icon */
+    height: 20px;
+  }
+}
+
+@media print{
+  .styled-select{
+    display: none;
+  }
+}
+.notification-count {
+  margin-left: 10px;
 }

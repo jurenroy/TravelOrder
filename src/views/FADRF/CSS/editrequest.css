@@ -157,7 +157,7 @@
     top: -3rem;
   }
   .close-btn:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 0, 0, 0.05);
   }
   .info-container {
     display: flex;
@@ -222,6 +222,7 @@
   }
   .button-container button:hover {
     background-position: right top;
+    background-color: rgba(0, 0, 0, 0.356);
   }
   
   .button-container button[type="submit"] {
@@ -234,18 +235,19 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    border: none;
+    border: none; 
     transition: 0.8s;
     background-size: 280% auto;
-    background-image: linear-gradient(
-      325deg,
-      #bfa16d 0%,
-      #bfa16dc2 60%,
-      #bfa16d 90%
-    );
-    color: #fffbf2;
+    background-color: black;
+    color: white;
   }
-  
+
+  .button-container button[type="submit"]:hover {
+    background: rgba(0, 0, 0, 0.705);
+    color:white;
+    animation: button-particles 1s ease-in-out infinite;
+    transform: translateY(-2px);
+  }
   .button-container button[type="button"] {
     padding: 0.9em 1.4em;
     border-radius: 5px;
@@ -259,13 +261,8 @@
     border: none;
     transition: 0.8s;
     background-size: 280% auto;
-    background-image: linear-gradient(
-      325deg,
-      #bfa16d 0%,
-      #bfa16dc2 60%,
-      #bfa16d 90%
-    );
-    color: #fffbf2;
+    background-color: black;
+    color: white;
   }
   
   .loading {

@@ -37,7 +37,7 @@ export default defineComponent({
     justify-content: center; /* Center the content horizontally */
     align-items: center;
     padding: 10px;
-    background-color: #DDC7AD;
+    background: linear-gradient(90deg, rgba(184,134,12,1) 26%, rgba(230,184,92,1) 67%);;
     color: rgb(0, 0, 0);
     width: 100%;
     text-align: center;
