@@ -105,13 +105,14 @@ th {
 }
 
 .scrollable-table {
-  max-height: 630px;
+  max-height: 350px;
   overflow-y: auto;
   margin: 15px;
   -ms-overflow-style: none; 
   scrollbar-width: none;
   width: 100%;
   border-radius: 20px;
+  font-size: small;
 }
 
 
