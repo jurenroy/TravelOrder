@@ -44,8 +44,10 @@
       </form>
     </div>
   </template>
+
   
   <script setup>
+  import { API_BASE_URL } from '@/config';
   import { ref, computed, onMounted } from 'vue';
   
   import axios from 'axios';
@@ -81,7 +83,7 @@ const loadis = ref(false);
   // Fetch names data from the JSON endpoint
   const fetchNames = async () => {
     try {
-      const response = await axios.get('http://202.137.117.84:8011/get_names_json');
+      const response = await axios.get(`${API_BASE_URL}/get_names_json`);
       const fetchedNames = response.data;
   
       // Process names: Sort by last name, format in uppercase
@@ -97,11 +99,11 @@ const loadis = ref(false);
       console.error('Error fetching names:', error);
     }
   };
-  
-  // Fetch employee data from the JSON endpoint
+
+
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get('http://202.137.117.84:8011/get_employees_json');
+      const response = await axios.get(`${API_BASE_URL}/get_employees_json`);
       employees.value = response.data;
     } catch (error) {
       console.error('Error fetching employees:', error);
@@ -136,7 +138,7 @@ const loadis = ref(false);
   loadis.value = true;
   try {
     // Replace with actual API endpoint and method to submit form data
-    const response = await axios.post('http://202.137.117.84:8011/services', form.value);
+    const response = await axios.post(`${API_BASE_URL}/services`, form.value);
     console.log('Form submitted successfully:', response.data);
     form.value.requestedBy = ''
     form.value.typeOfService = ''
