@@ -27,6 +27,18 @@
       </select>
     </h2>
 
+    <h2
+      style="display: flex; flex-direction: row; align-self: center"
+      class="hist"
+    >
+      <select v-model="fetchLimit" @change="fetchData" class="styled-select">
+        <option :value="10">10 Items</option>
+        <option :value="20">20 Items</option>
+        <option :value="50">50 Items</option>
+        <option :value="100">100 Items</option>
+      </select>
+    </h2>
+
     <div v-if="load" class="loadings">
       <img src="../../assets/loading.gif" width="auto" height="100px" />
     </div>
@@ -290,6 +302,8 @@ export default {
         "PHOTOCOPY OF TRAVEL ORDER",
         "OTHERS",
       ],
+      fetchLimit: 10, // Default limit
+      currentPage: 1, // If you want pagination support
     };
   },
 
@@ -564,7 +578,12 @@ export default {
 
     fetchData() {
       axios
-        .get(`${API_BASE_URL}/get_request`)
+        .get(`${API_BASE_URL}/get_request`, {
+          params: {
+            limit: this.fetchLimit,
+            page: this.currentPage, // Optional: for pagination
+          },
+        })
         .then((response) => {
           this.mawala = true;
           this.load = false;
@@ -602,6 +621,10 @@ export default {
           console.error("Error fetching data:", error);
           this.load = false;
         });
+    },
+    changeLimit(newLimit) {
+      this.fetchLimit = newLimit;
+      this.fetchData(); // Reload data with new limit
     },
 
     findDivisionName(division_Id) {
