@@ -28,6 +28,17 @@
       </option>
     </select>
     </h2>
+    <h2
+       style="display: flex; flex-direction: row; align-self: center"
+       class="hist"
+     >
+       <select v-model="fetchLimit" @change="fetchData" class="styled-select">
+         <option :value="10">10 Items</option>
+         <option :value="20">20 Items</option>
+         <option :value="50">50 Items</option>
+         <option :value="100">100 Items</option>
+       </select>
+     </h2>
   </div>
 </div>
 </div>
@@ -311,6 +322,8 @@ export default {
         "JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C",
         "OTHERS",
       ],
+      fetchlimit: 10,
+      curretPage: 1,
 
       created() {
         this.parseRequestedDocuments();
@@ -1006,7 +1019,12 @@ export default {
     },
     fetchData() {
       axios
-        .get(`${API_BASE_URL}/FADRFget_request`)
+        .get(`${API_BASE_URL}/FADRFget_request` , {
+          params: {
+           limit: this.fetchLimit,
+           page: this.currentPage,
+          },
+        })
         .then((response) => {
           this.mawala = true;
           this.load = false;
