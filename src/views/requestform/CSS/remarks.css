@@ -1,3 +1,14 @@
+:root {
+  --status-released: #34C759;
+  --status-unreleased: #FF9500;
+  --status-error: #FF3B30;
+  --primary-color: rgb(30, 64, 175);
+  --background-color: #f8f9fa;
+  --card-background: rgba(255, 255, 255, 0.8);
+  --text-color: #1a202c;
+  --border-color: #e2e8f0;
+}
+
 .document-remarks-overlay {
   position: fixed;
   inset: 0;
@@ -12,15 +23,19 @@
 }
 
 .document-remarks-modal {
-  background: #f0e8db;
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-  max-width: 30rem;
-  width: 100%;
-  padding: 2.5rem 1.8rem 1.8rem; 
-  animation: slideUp 0.3s ease-out;
-  margin-top: 2rem; 
+  background: #fffbf2;
+    backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1.5rem;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 900px;
+    position: relative;
+    padding-top: 1.5rem;
 }
 
 .document-remarks-header {
@@ -42,11 +57,7 @@
   
 }
 
-.doc-subtitles {
-  border-bottom: 2px solid #59473d;
- 
- 
-}
+
 
 .subtitle {
   position: absolute;
@@ -67,20 +78,26 @@
 }
 
 .close-button {
-  position: absolute;
-  top: 0;
-  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
-  color: black;
+  border-radius: 9999px;
+  padding: 0.5rem;
   cursor: pointer;
-  font-size: 1.5rem;
-  padding: 0.25rem;
-  transition: color 0.2s;
+  transition: background-color 0.2s;
+  position: absolute;
+  right: 1.25rem;
+  top: -1rem;
+  font-size: 1.25rem;
+  height: 2rem;
+  width: 2rem;
+  margin: 0;
 }
 
 .close-button:hover {
-  color: gray;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .document-list {
@@ -101,8 +118,7 @@
 }
 
 .document-item:hover {
-  border-color: #59473d;
-  transform: scale(1.02);
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .document-name {
@@ -117,39 +133,28 @@
 }
 
 .toggle-button {
-  font-size: 16px;
-  background: transparent;
-  border: 2px solid #59473d;
-  padding: 8px 14px;
-  color: #59473d;
-  text-transform: uppercase;
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  font-size: 0.875rem;
   font-weight: 500;
-  position: relative;
-  transition: all 0.3s ease-in-out;
   cursor: pointer;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.toggle-button::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 100%;
-  width: 0;
-  background: linear-gradient(90deg, #59473d, #ac9174);
-  transition: width 0.3s ease-in-out;
-  z-index: -1;
-}
-
-.toggle-button:hover::before {
-  width: 100%;
+  transition: all 0.2s ease;
+  background: none;
+  color: var(--status-unreleased);
+  border: 1px solid rgba(255, 149, 0, 0.2);
+  background-color: rgba(255, 149, 0, 0.1);
 }
 
 .toggle-button:hover {
-  color: #f0e8db;
-  border-color: #59473d;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-button.released{
+  background-color: rgba(52, 199, 89, 0.1);
+  color: var(--status-released);
+  border: 1px solid rgba(52, 199, 89, 0.2);
+
 }
 
 .status-badge {
@@ -173,12 +178,14 @@
 }
 
 .overall-status {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid #59473d;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #718096;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid var(--border-color);
+    margin-top: 1rem;
 }
 
 .status-label {
@@ -224,3 +231,23 @@
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
+
+.document-remarks-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: black;
+  margin-left: 1.5rem;
+  text-align: left;
+  width: auto;
+  margin-top: -65px; /* Adjust this value as needed */
+}
+
+.doc-subtitles {
+  color: white; /* Changed from black to white for better contrast */
+  background-color: rgba(0, 0, 0, 0.7) !important; /* Semi-transparent black background */
+  padding: 5px 10px; /* Add some padding to make the background more visible */
+  border-radius: 4px; /* Optional: adds rounded corners */
+}
+
+
+

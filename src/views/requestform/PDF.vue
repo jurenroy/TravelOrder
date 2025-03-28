@@ -19,46 +19,47 @@
         </div>
 
         <div class="form-title">REQUEST SLIP FORM</div>
-        <div class="admin-section">(Administrative Section)</div>
+        <div class="admin-section">
+          (Administrative Section-Procurement/Property) 
+        </div>
 
         <div class="form-content">
-          <table>
-            <tr>
+          <table class="bordered-table">
+            <tr style="border: solid black 1px">
               <td><strong>Requestor: </strong>{{ $props.name }}</td>
               <td><strong>Signature:</strong></td>
             </tr>
-            <tr>
+            <tr class="division">
               <td>
                 <strong>Division: </strong
                 >{{ getDivision($props.item.division_id) }}
               </td>
               <td><img :src="$props.signature" alt="Signature" /></td>
             </tr>
-            <tr>
-              <td style="padding-bottom: 10px;">
+            <tr class="datetime">
+              <td>
                 <strong>Date & Time Requested: </strong
                 >{{ formatDate($props.item.date) }}
               </td>
             </tr>
-            <tr>
-              <td colspan="4" style="padding-top: 10px;"><strong>DOCUMENT(S) REQUESTED</strong></td>
+            <tr >
+              <td class="docresq" colspan="4" ><strong>DOCUMENT(S) REQUESTED</strong></td>
             </tr>
-            <tr style="border: solid black 1px">
-              <td style="text-align: center;"><strong>Document Name</strong></td>
-              <td style="text-align: center;"><strong>Date & Time Released</strong></td>
-              <td style="text-align: center;"><strong>Released by</strong></td>
+            <tr class="doctitle" style="margin-top: 2px; font-weight: bold">
+              <td ><strong>Document Name</strong></td>
+              <td><strong>Date & Time Released</strong></td>
+              <td><strong>Released by</strong></td>
             </tr>
-            <tr v-for="doc in $props.documents" :key="doc">
-              <td
+            <tr v-for="doc in $props.documents" :key="doc" >
+              <td class="tablesz"
                 style="
                   flex-direction: row;
                   display: flex;
                   justify-content: left;
                   align-items: center;
-                  border: solid black 1px
                 "
               >
-                <img
+                <img 
                   :src="
                     $props.item.documents &&
                     ($props.item.documents.some((item) => item.name === doc) ||
@@ -73,7 +74,7 @@
                   width="auto"
                   height="20"
                 />
-                <!-- <img :src="$props.item.documents && $props.item.documents.some(item => !$props.documents.includes(item.name)) && doc == 'OTHERS' ? checked : unchecked" alt="Logo" width="auto" height="20"/> -->
+                <!-- <img :src="$props.item.documents && $props.item.documents.some(item => !$props.documents.includes(item.name)) && doc == 'Others' ? checked : unchecked" alt="Logo" width="auto" height="20"/> -->
                 <p style="margin-left: 10px">
                   {{ doc }}
                   {{
@@ -90,7 +91,7 @@
                   }}
                 </p>
               </td>
-              <td style="border: solid black 1px">
+              <td class="tablesz">
                 {{
                   $props.item.documents &&
                   (() => {
@@ -114,7 +115,7 @@
                   })()
                 }}
               </td>
-              <td colspan="2"style="border: solid black 1px">
+              <td class="tablestat"colspan="2">
                 {{
                   $props.item.documents &&
                   (() => {
@@ -139,11 +140,12 @@
                 }}
               </td>
             </tr>
-            <tr>
+            
+            <tr class="rating">
               <td colspan="3"><strong>RATING</strong></td>
             </tr>
-            <tr>
-              <td colspan="3">
+            <tr >
+              <td class="rates" colspan="3">
                 <div
                   v-for="(rating, index) in ratings"
                   :key="rating.value"

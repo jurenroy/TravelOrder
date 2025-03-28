@@ -5,7 +5,7 @@ body {
   color: #000;
 }
 body::after {
-  content: url("src/assets/logo.png") url("src/assets/bago.png");
+  content: url("src/assets/logo.png") url("src/assets/ISO_logo.png");
   display: none;
 }
 
@@ -50,11 +50,12 @@ body::after {
 
 .sign {
   text-decoration: none !important;
+  right: 100px; 
 }
 
 .signature-label {
   font-weight: bold;
-  margin-right: 5px;
+  margin-right: 100px;
 }
 
 .signature-field {
@@ -107,6 +108,14 @@ body::after {
 
 .title-section h3 {
   font-weight: normal;
+  visibility: hidden;
+  position: relative;
+}
+.title-section h3::before {
+  content: attr(data-text);
+  visibility: visible;
+  position: absolute;
+  left: 0;
 }
 
 .title-section h4 {
@@ -144,28 +153,33 @@ body::after {
 
 .form-content {
   width: 100%;
-  border: none;
-}
-.documents-row td {
-  border: none;
+ 
 }
 
+
+td {
+ 
+  border-bottom: 1px solid #eee;
+}
 table {
   width: 100%;
   border-collapse: collapse;
-  border: none;
+  
 }
 .documents-header {
-  border: none;
+ 
   font-weight: bold;
   padding: 8px;
 }
 
-
-
-.form-row td {
+td {
+  
+  padding: 5px 2px;
   border: none;
+  margin-bottom: -18px;
 }
+
+
 .form-row td strong {
   font-weight: bold;
 }
@@ -176,8 +190,8 @@ table {
 }
 
 .form-row td:nth-child(2) {
-  border: none;
-  border-bottom: 1px solid #000;
+ 
+  border-bottom: 1px solid #000; 
   min-width: 200px; 
 }
 
@@ -185,13 +199,9 @@ table {
   width: 30%;
 }
 
-tr.form-row td:last-child {
-  border: none;
-}
 
-tr.form-row td:last-child strong {
-  border: none;
-}
+
+
 .documents-header td {
   font-weight: bold;
   text-align: center;
@@ -207,8 +217,8 @@ tr.form-row td:last-child strong {
 }
 
 .checkbox {
-  width: 15px;
-  height: 15px;
+  width: 10px;
+  height: 10px;
   border: 1px solid #000;
   display: inline-block;
 }
@@ -231,7 +241,7 @@ tr.form-row td:last-child strong {
 .rating-option {
   display: flex;
   align-items: center;
-  margin: 5px 0;
+  margin: 2px 0;
   padding-left: 60px;
 }
 
@@ -248,7 +258,7 @@ tr.form-row td:last-child strong {
 }
 .form-row:nth-child(2) td:nth-child(2) {
   border-bottom: 1px solid #000;
-  min-width: 200px;
+  min-width: 200px; 
 }
 
 img[alt="Signature"] {
@@ -257,9 +267,85 @@ img[alt="Signature"] {
   border: none !important;
   height: 40px !important;
   max-width: 150px !important;
+  margin-left: 70px; /* Added margin to move signature to the right */
+  position: relative; /* Added to allow finer positioning */
+  left: 20px; /* Additional shift to the right */
+  bottom: 35px;
+  
 }
+
+.division, .docresq, .datetime, .doctitle,
+.rating, .rates{
+  border: solid black 1px !important;
+}
+
+.division{
+  margin:0;
+}
+
+.tablesz{
+  border-left: solid black 1px !important;
+ 
+}
+
+.tablestat{
+  border-right: solid black 1px !important;
+  border-left: solid black 1px !important;
+}
+
+.docresq, .doctitle {
+  margin-top: 100%;
+  margin-bottom: 100%;
+}
+
+
+
+
 @media print {
+  .styled-select,
+  .dropdown-categ,
+  .dropdown-container,
+  .dropdown-docstat,
+  .hist,
+  .select {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0) !important;
+    outline:none !important;
+  }
+
+  .styled-select *,
+  .dropdown-categ *,
+  .dropdown-container *,
+  .dropdown-docstat *,
+  .hist *,
+  .select * {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+  }
+
   .container {
     scale: 1;
+  }
+
+
+  @page {
+    margin: 0;
+    size: 210mm 296mm;
+  }
+
+  @page :left {
+    margin-left: 0;
+  }
+  
+  @page :right {
+    margin-right: 0;
   }
 }

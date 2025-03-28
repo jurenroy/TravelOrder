@@ -1,80 +1,77 @@
 <template>
   <div style="display: flex; flex-direction: column">
-    <h2
-      style="display: flex; flex-direction: row; align-self: center"
-      class="hist"
-    >
-      Status
-      <select v-model="selectedStatus" id="status" class="styled-select">
-        <option v-for="option in options" :key="option" :value="option">
-          {{ option }}
-        </option>
-      </select>
-      <span v-if="pendingCount !== 0" class="notification-count">{{
+    <div v-if="!isPrinting" class="dropdown-container">
+      <div class="dropdown-docstat">
+        <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
+
+          <select v-model="selectedStatus" id="status" class="styled-select">
+            <option v-for="option in options" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
+          <!-- <span v-if="pendingCount !== 0" class="notification-count">{{
         pendingCount
-      }}</span>
-    </h2>
+      }}</span> -->
+        </h2>
+        <div class="dropdown-categ">
+          <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
 
-    <h2
-      style="display: flex; flex-direction: row; align-self: center"
-      class="hist"
-    >
-      Category
-      <select v-model="selectedCategory" id="status" class="styled-select">
-        <option v-for="option in category" :key="option" :value="option">
-          {{ option }}
-        </option>
-      </select>
-    </h2>
+            <select v-model="selectedCategory" id="status" class="styled-select">
+              <option v-for="option in category" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
+          </h2>
 
-    <h2
-      style="display: flex; flex-direction: row; align-self: center"
-      class="hist"
-    >
-      <select v-model="fetchLimit" @change="fetchData" class="styled-select">
-        <option :value="10">10 Items</option>
-        <option :value="20">20 Items</option>
-        <option :value="50">50 Items</option>
-        <option :value="100">100 Items</option>
-      </select>
-    </h2>
+          <div class="dropdown-limits">
+            <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
+              <select v-model="fetchLimit" @change="fetchData" class="styled-select">
+                <option :value="10">10</option>
+                <option :value="20">20</option>
+                <option :value="50">50</option>
+                <option :value="100">100</option>
+                <option :value="200">200</option>
+                <option :value="500">500</option>
+                <option :value="1000">1000</option>
+                <option :value="15000">5000</option>
+                <option :value="10000">10000</option>
+              </select>
+            </h2>
 
-    <div v-if="load" class="loadings">
-      <img src="../../assets/loading.gif" width="auto" height="100px" />
-    </div>
-
-    <div
-      style="display: flex; flex-direction: column; align-items: center"
-      v-if="otp"
-    >
-      <otpz />
-    </div>
-
-    <div class="search">
-      <div v-if="mawala" class="mawala">
-        <img class="imgsearch" src="../../assets/search.png" />
-        <input
-          class="pholder"
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search TO number or Name"
-        />
+          </div>
+        </div>
       </div>
+    </div>
+
+
+
+    <div class="search-box">
+      <input class="pholder" type="text" name="text" v-model="searchQuery" placeholder="Search Name or Documents..." />
+      <svg fill="#000000" width="20px" height="20px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z"
+          fill-rule="evenodd"></path>
+      </svg>
     </div>
     <div v-if="showNotification" class="notification">
       {{ notificationMessage }}
     </div>
+
+
+    <div v-if="load" class="loadings">
+      <img src="../../assets/sample_loaders.gif" width="auto" height="480px" />
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center" v-if="otp">
+      <otpz />
+    </div>
+
     <div v-if="mawala" class="outer">
       <div v-if="showRatingPopup">
         <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
       </div>
 
-      <EditDetailsPopup
-        v-if="showEditDetailsPopup"
-        :documents="currentItem.documents"
-        @submit="handleEditDetails"
-        @close="showEditDetailsPopup = false"
-      />
+      <EditDetailsPopup v-if="showEditDetailsPopup" :documents="currentItem.documents" @submit="handleEditDetails"
+        @close="showEditDetailsPopup = false" />
 
       <div class="scrollable-table">
         <table>
@@ -92,13 +89,8 @@
             <tr v-for="(item, index) in processedFormData" :key="index">
               <td>{{ getName(item.name_id) }}</td>
               <td>
-                <span
-                  v-if="Array.isArray(item.documents) && item.documents.length"
-                >
-                  <span
-                    v-for="(doc, docIndex) in item.documents"
-                    :key="docIndex"
-                  >
+                <span v-if="Array.isArray(item.documents) && item.documents.length">
+                  <span v-for="(doc, docIndex) in item.documents" :key="docIndex">
                     {{ getDocumentName(doc) }} <br />
                   </span>
                 </span>
@@ -106,21 +98,13 @@
               </td>
               <td>{{ item.date }}</td>
               <td>
-                <span
-                  v-if="Array.isArray(item.documents) && item.documents.length"
-                >
-                  <span
-                    v-if="allDocumentsReleased(item.documents)"
-                    class="released-text"
-                  >
+                <span v-if="Array.isArray(item.documents) && item.documents.length">
+                  <span v-if="allDocumentsReleased(item.documents)" class="released-text">
                     All documents released
                   </span>
                   <span v-else>
-                    <span
-                      v-for="(doc, docIndex) in item.documents"
-                      :key="'remarks-' + docIndex"
-                      :class="getRemarksszzz(doc)"
-                    >
+                    <span v-for="(doc, docIndex) in item.documents" :key="'remarks-' + docIndex"
+                      :class="getRemarksszzz(doc)">
                       {{ doc.remarks || "No remarks" }} <br />
                     </span>
                   </span>
@@ -131,19 +115,13 @@
                 <span v-if="item.rating !== null">
                   <span v-for="n in item.rating" :key="n">⭐</span>
                 </span>
-                <button
-                  v-else-if="nameId == item.name_id"
-                  @click="openRatingPopup(item)"
-                >
+                <button v-else-if="nameId == item.name_id" @click="openRatingPopup(item)">
                   Rating
                 </button>
                 <span v-else class="norating">No ratings yet</span>
               </td>
               <td>
-                <button
-                  v-if="canEditRequest(item)"
-                  @click="openEditRequestForm(item)"
-                >
+                <button v-if="canEditRequest(item)" @click="openEditRequestForm(item)">
                   EDIT
                 </button>
                 <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
@@ -159,42 +137,21 @@
             </tr>
           </tbody>
         </table>
-        <h1
-          style="text-align: center; margin-bottom: 0px"
-          v-if="processedFormData.length == 0"
-        >
+        <h1 style="text-align: center; margin-bottom: 0px" v-if="processedFormData.length == 0">
           NO MATCH FOUND
         </h1>
 
-        <editform
-          v-if="showEditRequestForm"
-          :requestData="currentItem"
-          :requestId="currentItem.id"
-          :names="names"
-          :employees="employees"
-          :divisions="divisions"
-          @close="closeEditRequestForm"
-          @update-success="handleEditRequestSuccess"
-          @update-error="handleEditRequestError"
-        />
+        <editform v-if="showEditRequestForm" :requestData="currentItem" :requestId="currentItem.id" :names="names"
+          :employees="employees" :divisions="divisions" @close="closeEditRequestForm"
+          @update-success="handleEditRequestSuccess" @update-error="handleEditRequestError" />
 
-        <Note
-          v-if="addNote"
-          :initialNote="currentItem.note || ''"
-          :isAdmin="isAdmin"
-          @close-note="closeNote"
-          @save-note="saveNote"
-        />
+        <Note v-if="addNote" :initialNote="currentItem.note || ''" :isAdmin="isAdmin" @close-note="closeNote"
+          @save-note="saveNote" />
       </div>
     </div>
   </div>
 
-  <PDF
-    :item="selectedItem"
-    :name="selectedName"
-    :signature="selectedSignature"
-    :documents="documentList"
-  />
+  <PDF :item="selectedItem" :name="selectedName" :signature="selectedSignature" :documents="documentList" />
 </template>
 
 <script>
@@ -352,39 +309,37 @@ export default {
 
           if (!matchesSearch) return false;
 
-          if (this.selectedStatus !== "All") {
-            return item.documents.some(
+          const statusMatches =
+            this.selectedStatus === "All" ||
+            item.documents.some(
               (doc) =>
                 doc.remarks.trim().toLowerCase() ===
                 this.selectedStatus.toLowerCase()
             );
-          }
 
-          console.log("Selected Category:", this.selectedCategory);
+          if (!statusMatches) return false;
 
-          if (this.selectedCategory !== "All") {
-            if (this.selectedCategory === "OTHERS") {
-              return item.documents.some((doc) => {
-                if (!doc.name) return false;
-                const docName = doc.name.trim().toLowerCase();
-                console.log("Checking Document Name:", docName);
-
-                return !this.documentList.includes(docName.toUpperCase());
-              });
-            }
-
-            return item.documents.some((doc) => {
+          const categoryMatches =
+            this.selectedCategory === "All" ||
+            item.documents.some((doc) => {
+              if (this.selectedCategory === "OTHERS") {
+                return (
+                  doc.name &&
+                  !this.documentList.includes(doc.name.trim().toUpperCase())
+                );
+              }
               return (
                 doc.name &&
-                doc.name.trim().toLowerCase() ===
-                  this.selectedCategory.toLowerCase()
+                doc.name.trim().toLowerCase() === this.selectedCategory.toLowerCase()
               );
             });
-          }
+
+          if (!categoryMatches) return false;
+
           return true;
         })
-        .slice()
-        .reverse();
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, this.fetchLimit);
     },
   },
 
@@ -580,7 +535,7 @@ export default {
       axios
         .get(`${API_BASE_URL}/get_request`, {
           params: {
-            limit: this.fetchLimit,
+            limit: this.fetchLimit * 2,
             page: this.currentPage, // Optional: for pagination
           },
         })
