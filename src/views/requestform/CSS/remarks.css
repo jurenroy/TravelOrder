@@ -9,6 +9,39 @@
   --border-color: #e2e8f0;
 }
 
+ 
+
+.edit-action-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  backdrop-filter: blur(10px);
+}
+.popup-content {
+  background: #fffbf2;
+  backdrop-filter: blur(50px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 950px;
+  position: relative;
+  padding-top: 1.5rem;
+  /* Add these centering properties */
+  margin: 0; 
+  
+}
 .document-remarks-overlay {
   position: fixed;
   inset: 0;
@@ -47,15 +80,7 @@
   padding-top: 1rem; 
 }
 
-.document-remarks-header h2 {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: black;
-  margin: 0 auto; 
-  text-align: center;
-  width: 100%;
-  
-}
+
 
 
 
@@ -89,7 +114,7 @@
   transition: background-color 0.2s;
   position: absolute;
   right: 1.25rem;
-  top: -1rem;
+  top: 1rem;
   font-size: 1.25rem;
   height: 2rem;
   width: 2rem;
@@ -104,7 +129,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .document-item {
@@ -232,14 +257,12 @@
   opacity: 0;
 }
 
-.document-remarks-header h2 {
-  font-size: 1rem;
+ 
+h2 {
+  font-size: 1.5rem;
   font-weight: 600;
-  color: black;
-  margin-left: 1.5rem;
-  text-align: left;
-  width: auto;
-  margin-top: -65px; /* Adjust this value as needed */
+  letter-spacing: -0.025em;
+  margin: 0 0 0 1.5rem;
 }
 
 .doc-subtitles {
@@ -248,6 +271,66 @@
   padding: 5px 10px; /* Add some padding to make the background more visible */
   border-radius: 4px; /* Optional: adds rounded corners */
 }
+
+.document-status-summary {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  font-weight: 500;
+  color: #718096;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid var(--border-color);
+  margin-top: 1rem;
+}
+.document-column {
+  text-align: left;
+  flex: 1;
+}
+.status-column {
+  text-align: right;
+  min-width: 120px;
+}
+
+.summary-border {
+  display: none;
+}
+.document-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+    background-color: transparent;
+    gap: 1rem;
+  }
+  
+  .document-status:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  .document-status span:first-child {
+    font-weight: 500;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 2.2 rem;
+    flex: 1;
+  }
+  
+  .document-status:hover span:first-child {
+    color: var(--primary-color);
+  }
+
+  .status-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    font-weight: 500;
+    margin-top: 0;
+  }
 
 
 

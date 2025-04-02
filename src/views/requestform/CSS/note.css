@@ -3,7 +3,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #f0e8db;
+  background: #fffbf2;
   padding: 50px;
   border-radius: 12px;
   box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
@@ -57,10 +57,10 @@ textarea:focus {
   font-size: 20px;
   position: relative;
   overflow: hidden;
-  background: #bfa16d;
+  background: black;
   padding: 12px 20px;
-  color: #000;
-  fill: rgb(155, 153, 153);
+  color: white;
+  fill: white;
   align-items: center;
   border: none;
   border-radius: 15px;
@@ -91,7 +91,7 @@ textarea:focus {
 }
 
 .popup-buttons button:hover {
-  background: linear-gradient(to bottom, #ac9174, #59473d);
+  background: black;
 }
 
 .popup-buttons button:hover .svg-wrapper {
@@ -108,18 +108,28 @@ textarea:focus {
   transition: 0.5s linear;
 }
 .close-button {
-  position: absolute;
-  bottom: 245px;
-  left: 310px;
-  border:none;
-  padding: 0.25rem;
-  font-size: 2.5rem;
-  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 50% !important;
+  padding: 0rem;
   cursor: pointer;
-  line-height: 0.5;
-  padding: 0;
+  transition: background-color 0.2s;
+  position: absolute;
+  top: -60px;
+  right: -45px;
+  height: 40px;  /* Increased height */
+  width: 40px; 
+  font-size: 38px;
+  position: absolute;
+  color:black;
+
+  margin: 0;
 }
 
 .close-button:hover {
-  color: gray;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50% !important;
 }

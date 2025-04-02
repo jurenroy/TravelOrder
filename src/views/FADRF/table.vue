@@ -843,7 +843,8 @@ export default {
       // const formeme = new FormData();
       // formeme.append('documents', JSON.stringify(processedDocuments)); // Append as JSON string
       const formeme = {
-        documents: processedDocuments,
+        documents: processedDocuments.map(doc => doc.name),
+        remarks: processedDocuments.map(doc => doc.remarks).join(',')
       };
 
       // Log the processedDocuments

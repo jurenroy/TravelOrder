@@ -188,6 +188,7 @@ onMounted(() => {
 </script>
 
 <template>
+  
   <div class="form-container">
     <form @submit.prevent="handleSubmit">
       <h2 class="title">REQUEST SLIP FORM</h2>
@@ -195,7 +196,6 @@ onMounted(() => {
       <div v-if="showNotification" class="notification">
         {{ notificationMessage }}
       </div>
-
       <div class="info-container">
         <div class="info-item">
           <label for="name">Name:</label>
@@ -225,6 +225,7 @@ onMounted(() => {
           <input type="text" id="dateToday" v-model="dateTime" readonly />
         </div>
       </div>
+      <div class="try">
       <table class="request-table">
         <thead>
           <tr>
@@ -258,12 +259,14 @@ onMounted(() => {
               />
             </td>
           </tr>
+          
         </tbody>
+        
       </table>
       <div class="button-container">
         <button type="submit" :disabled="formDisable">Submit</button>
       </div>
-    
+    </div>
       <div v-if="pleaseWait" class="formcorrect">
         <p>Submitted!! Please wait for a moment...</p>
       </div>
@@ -272,7 +275,6 @@ onMounted(() => {
       </div>
     </form>
   </div>
-  
 </template>
 
 <style src="./CSS/form.css" scoped></style>

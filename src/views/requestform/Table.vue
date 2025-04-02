@@ -17,7 +17,7 @@
           <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
 
             <select v-model="selectedCategory" id="status" class="styled-select">
-              <option v-for="option in category" :key="option" :value="option">
+              <option v-for="option in category" :key="option" :value="option" class="styled-select1">
                 {{ option }}
               </option>
             </select>

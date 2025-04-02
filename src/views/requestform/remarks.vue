@@ -1,28 +1,30 @@
 <template>
-  <div class="document-remarks-overlay">
-    <div class="document-remarks-modal">
-      <div class="document-remarks-header">
+  
+ <div class="edit-action-popup">
+  <div class="popup-content">
+      <button class="close-button" @click="closePopup">X</button>
         <div v-if="showNotification" class="notification">
           {{ notificationMessage }}
         </div>
+        <div class="document-list">
         <h2>Document Remarks</h2>
-        <div class="doc-subtitles">
-          <div class="subtitle">Document</div>
-          <div class="subtitle2">Status</div>
+       <div class="document-status-summary">
+        <span class="document-column">Document</span>
+        <span class="status-column">Status</span>
         </div>
-        <button class="close-button" @click="closePopup">✕</button>
+        <hr class="summary-border" />
       </div>
 
-      <div class="document-list">
+      
         <div
           v-for="(document, index) in documents"
           :key="index"
-          class="document-item"
+          class="document-status"
         >
           <span class="document-name">{{ document.name }}</span>
           <div class="document-controls">
             <button
-              class="toggle-button"
+              class="toggle-button" 
               :class="{ released: document.remarks === 'Released' }"
               @click="toggleRemarks(index)"
             >
@@ -36,13 +38,14 @@
             </span>
           </div>
         </div>
-      </div>
-      <div class="overall-status">
-        <span class="status-label">Overall Status</span>
-        <span class="status-badge">{{ getOverallRemarks() }}</span>
+     
+      <div class="status-summary">
+        <span class="overall-status-label">Overall Status</span>
+        <span class="overall-status-value">{{ getOverallRemarks() }}</span>
       </div>
     </div>
   </div>
+  
 </template>
 
 <script>
