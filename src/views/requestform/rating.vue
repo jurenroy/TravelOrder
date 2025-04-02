@@ -99,6 +99,7 @@
       </div>
 
       <div class="selected-label">{{ getLabel(rating) }}</div>
+      <table>
         <thead>
           <tr>
             <th>1</th>
