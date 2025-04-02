@@ -163,7 +163,7 @@
             <img src="/src/assets/canceledit.png" v-if="selectedTravelOrderIdEdit == item.travel_order_id" @click="closeEdit" class="action-icon"/>
           </td>
           <td class="status-actions">
-            <button v-if="selectedTravelOrderId != item.travel_order_id" @click="openPDF(item.travel_order_id)">PDF</button>
+            <button @click="openPDF(item)" v-if="selectedTravelOrderId !== item.travel_order_id">PDF</button>
             <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close" class="action-icon"/>
           </td>
           

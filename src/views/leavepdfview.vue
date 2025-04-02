@@ -13,7 +13,7 @@
                <img :src="image1" alt="Background Image" class="pic1">
                <div style="text-align: center;">
                    <p style=" font-size: 11px;">Republic of the Philippines</p>
-                   <p style=" font-size: 11px;">Department of Environment and Natural Resources</p>
+                   <p style=" font-size: 11px;">Department of Envbackground_image.pngironment and Natural Resources</p>
                    <p style=" font-size: 13px; font-weight: bold;">MINES AND GEOSCIENCE BUREAU REGIONAL OFFICE NO. X
                    </p>
                    <p style=" font-size: 11px;">DENR-X Compound, Puntod, Cagayan de Oro City</p>

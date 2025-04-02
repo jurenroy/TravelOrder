@@ -1047,7 +1047,7 @@
 
   /* Search Section Styling */
   .luxury-search-container {
-    display: flex;
+    visibility: hidden;
     flex-direction: column;
     margin-top: 40px;
   }
