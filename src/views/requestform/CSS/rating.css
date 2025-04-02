@@ -11,7 +11,7 @@
 }
 
 .popup-content {
-  background: rgba(30, 30, 30, 0.95);
+  background: #f0e8db;
   backdrop-filter: blur(12px);
   padding: 24px;
   border-radius: 12px;
@@ -26,7 +26,7 @@
 h2 {
   font-size: 1.6rem;
   font-weight: 600;
-  color: #f8f8f8;
+  color: black;
   margin-bottom: 12px;
 }
 
@@ -36,10 +36,11 @@ h2 {
   display: flex;
   justify-content: center;
   gap: 12px;
+  border-radius: 10px;
 }
 
 .star {
-  color: rgba(255, 255, 255, 0.3);
+  color: black;
   transition: color 0.3s ease, transform 0.2s ease;
 }
 
@@ -58,7 +59,7 @@ h2 {
   margin-top: 12px;
   font-size: 1.1rem;
   font-weight: 500;
-  color: #f5f5f5;
+  color: black;
 }
 
 .buttons {
@@ -69,89 +70,76 @@ h2 {
 }
 
 button {
-  background: rgba(255, 255, 255, 0.1);
+  
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 10px 20px;
   font-size: 1.25rem;
   color:white;
   font-weight: 500;
-  border-radius: 50px;
-  background-color: transparent;
-  border: 2px solid #ff9800;
+  border-radius: 10px;
+  background-color: black;
+  transition: background-color 0.2s;
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
 }
 
-.buttons button::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #ff9800, #ffb74d);
-  transition: left 0.3s ease-in-out;
-  z-index: -1;
-}
-
-.buttons button:hover::before {
-  left: 0;
-}
 
 .buttons button:hover {
   color: #fff;
-  border-color: #ffb74d;
+  background-color: rgba(0, 0, 0, 0.815);
+  animation: button-particles 1s ease-in-out infinite;
+  transform: translateY(-2px);
+
 }
 .close-buttons {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 50px;
-  color: #ff9800;
-  cursor: pointer;
+  display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: absolute;
+    right: 1px;
+    top: 0.25rem;
+    font-size: 2.25rem;
+    height: 2rem;
+    width: 2rem;
+    margin: 0;
+    color:black;
 }
 
 .close-buttons:hover {
-  color: #ffb74d;
+  color: rgba(0, 0, 0, 0.938);
 }
-
-
 table {
   width: 100%;
-  border-collapse: collapse;
   margin-top: 15px;
   font-size: 16px;
   text-align: center;
-  background: linear-gradient(150deg, #ddc7ad, #92785b);
   color: #ffffff;
-  border-radius: 10px;
   overflow: hidden;
   table-layout: auto; 
 }
-
 th, td {
-  border: 1px solid #444;
-  padding: 10px;
+  padding: 5px;
   text-align: center;
   word-wrap: break-word;
 }
-
 th {
-  background: #5c4a30;
-  color: white;
+  color: black;
   font-weight: bold;
 }
-
 td {
-  background: #1e1e1e;
+  font-size: 20px;
+  color:black;
 }
-
 tr:hover td {
-  background: #333;
+ 
   transition: 0.3s;
 }
 

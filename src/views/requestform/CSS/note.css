@@ -57,10 +57,10 @@ textarea:focus {
   font-size: 20px;
   position: relative;
   overflow: hidden;
-  background: #bfa16d;
+  background: black;
   padding: 12px 20px;
-  color: #000;
-  fill: rgb(155, 153, 153);
+  color: white;
+  fill: white;
   align-items: center;
   border: none;
   border-radius: 15px;
@@ -91,7 +91,7 @@ textarea:focus {
 }
 
 .popup-buttons button:hover {
-  background: linear-gradient(to bottom, #ac9174, #59473d);
+  background: black;
 }
 
 .popup-buttons button:hover .svg-wrapper {
@@ -100,7 +100,7 @@ textarea:focus {
 }
 .popup-buttons button:hover svg {
   transform: translateX(0.9em) scale(1.1);
-  fill: #fff;
+  fill: white;
 }
 
 .popup-buttons button:hover span {
