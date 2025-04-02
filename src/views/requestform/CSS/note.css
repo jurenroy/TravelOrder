@@ -100,7 +100,7 @@ textarea:focus {
 }
 .popup-buttons button:hover svg {
   transform: translateX(0.9em) scale(1.1);
-  fill: #fff;
+  fill: white;
 }
 
 .popup-buttons button:hover span {

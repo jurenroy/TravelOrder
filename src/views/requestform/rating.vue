@@ -1,7 +1,24 @@
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
   <div class="rating-popup">
     <div class="popup-content">
       <h2>Rate this Request</h2>
+      
+
+      <div class="stars">
+        <span
+          v-for="s in 4"
+          :key="s"
+          @click="setRating(s)"
+          class="star"
+          :class="{ active: s <= rating }"
+          >★</span
+        >
+      </div>
+
+      <div class="selected-label">{{ getLabel(rating) }}</div>
+
       <table>
   <thead>
     <tr>
@@ -82,6 +99,23 @@
       </div>
 
       <div class="selected-label">{{ getLabel(rating) }}</div>
+        <thead>
+          <tr>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><i class="fa-regular fa-face-angry"></i></td>
+            <td><i class="fa-regular fa-face-frown"></i></td>
+            <td><i class="fa-regular fa-face-smile"></i></td>
+            <td><i class="fa-regular fa-face-laugh"></i></td>
+          </tr>
+        </tbody>
+      </table>
       <div class="buttons">
         <button @click="submitRating">Submit</button>
       </div>
@@ -129,4 +163,5 @@ export default {
 };
 </script>
 
-<style src="./CSS/rating.css"scoped></style>
+<style src="./CSS/rating.css"scoped ></style>
+

@@ -263,14 +263,14 @@ h2 {
   font-weight: 600;
   letter-spacing: -0.025em;
   margin: 0 0 0 1.5rem;
+  color: black;
+  margin-left: 1.5rem;
+  text-align: left;
+  width: auto;
+  margin-top: -50px; /* Adjust this value as needed */
 }
 
-.doc-subtitles {
-  color: white; /* Changed from black to white for better contrast */
-  background-color: rgba(0, 0, 0, 0.7) !important; /* Semi-transparent black background */
-  padding: 5px 10px; /* Add some padding to make the background more visible */
-  border-radius: 4px; /* Optional: adds rounded corners */
-}
+
 
 .document-status-summary {
   display: flex;
