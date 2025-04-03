@@ -419,7 +419,12 @@ button:hover {
 .dropdown-docstat,
 .dropdown-categ, .dropdown-limits {
   display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  
 
 }
 
@@ -490,6 +495,49 @@ button:hover {
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: bold;
+  min-width: 120px;
+}
+@media screen and (max-width: 768px) {
+  .dropdown-container {
+    flex-direction: column;
+    gap: 0; 
+    align-items: flex-start;
+  }
+
+  .dropdown-docstat {
+        flex-direction: column;
+    align-items: flex-start;
+    gap: 0; 
+    width: 100%;
+    margin-bottom: 0;
+
+  }
+  
+  .dropdown-categ {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0; 
+    width: 100%;
+    margin-bottom: 0; 
+
+  }
+  
+  .dropdown-limits {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .styled-select {
+    width: 100%;
+    min-width: unset;
+    margin: 5px 0;
+  }
+  
+  .hist {
+    width: 100%;
+    gap: 0;
+    margin: 0; 
+  }
 }
 
 .styled-select option {
