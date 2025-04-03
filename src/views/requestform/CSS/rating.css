@@ -11,6 +11,7 @@
 }
 
 .popup-content {
+  background: #fffbf2;
   background: #f0e8db;
   backdrop-filter: blur(12px);
   padding: 24px;
@@ -26,6 +27,7 @@
 h2 {
   font-size: 1.6rem;
   font-weight: 600;
+  color: black;
   color: black;
   margin-bottom: 12px;
 }
@@ -70,6 +72,10 @@ h2 {
 }
 
 button {
+  padding: 0.9em 1.4em;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
   
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 10px 20px;
@@ -83,8 +89,49 @@ button {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  border: 1px solid black;
+  transition: 0.8s;
+  background-size: 280% auto;
+  background:black ;
+  color: white;
 }
 
+
+
+
+.buttons button:hover {
+  background: rgba(0, 0, 0, 0.623);
+  animation: button-particles 1s ease-in-out infinite;
+  transform: translateY(-2px);
+  color:white;
+  
+}
+.close-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 50% !important;
+  padding: 0rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  height: 40px;  /* Increased height */
+  width: 40px; 
+  font-size: 38px;
+  position: absolute;
+  color:black;
+
+  margin: 0;
+  
+}
+
+.close-buttons:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50% !important;
 
 .buttons button:hover {
   color: #fff;
@@ -117,6 +164,15 @@ button {
   color: rgba(0, 0, 0, 0.938);
 }
 table {
+  width: 80%;
+  border-collapse: collapse;
+  margin-top: 30px;
+  margin-left: 30px;
+  font-size: 13px;
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  border-radius: 10px;
   width: 100%;
   margin-top: 15px;
   font-size: 16px;
@@ -126,6 +182,17 @@ table {
   table-layout: auto; 
 }
 th, td {
+ 
+  padding: 10px;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+
+
+
+tr:hover td {
+
   padding: 5px;
   text-align: center;
   word-wrap: break-word;
@@ -141,6 +208,7 @@ td {
 tr:hover td {
  
   transition: 0.3s;
+  cursor: pointer;
 }
 
 
@@ -162,4 +230,5 @@ tr:hover td {
     opacity: 1;
     transform: translateY(0);
   }
+}
 }

@@ -1,3 +1,10 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh; /* Use viewport height instead of 100% */
+  overflow: hidden; /* Remove page-wide scrolling */
+}
+
 
 .notification-count {
   margin-top: -10px;
@@ -105,14 +112,11 @@ th {
 }
 
 .scrollable-table {
-  max-height: 350px;
-  overflow-y: auto;
+  max-height: calc(60vh - 110px); /* Adjust height to fit screen, subtracting space for header/footer */
+  overflow-y: auto; /* Allow scrolling only within the table */
   margin: 15px;
-  -ms-overflow-style: none; 
-  scrollbar-width: none;
-  width: 100%;
+  width: calc(100% - 30px); /* Subtract margins */
   border-radius: 20px;
-  font-size: small;
 }
 
 
@@ -421,17 +425,15 @@ button:hover {
   gap: 15px;
   flex-wrap: wrap;
   
+
 }
 
 .dropdown-limits {
   display: flex;
-  align-items: center;
-  position: relative; /* Needed for proper positioning of the icon */
-}
-
-.dropdown-limits {
   position: relative;
   display: inline-block;
+  align-items: center;
+  position: relative; /* Needed for proper positioning of the icon */
 }
 
 .dropdown-limits select {
@@ -446,6 +448,7 @@ button:hover {
   transition: all 0.3s ease;
   font-weight: bold;
   width: 100%;
+  padding-top: 5px;
 }
 
 /* Create a separate dropdown icon */
@@ -487,7 +490,7 @@ button:hover {
   background-color: #f7f7f7;
   border: 2.5px solid #020101;
   border-radius: 15px;
-  padding: 15px 0 15px 15px;
+  padding: 15px 15px 15px 15px;
   font-size: 1.0rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -537,11 +540,11 @@ button:hover {
   }
 }
 
-
 .styled-select option {
   background-color: rgba(231,185,93,1) !important; /* Solid color instead of linear-gradient */
   color: black;
   padding: 10px;
+
 }
 
 .styled-select option:hover {
@@ -561,7 +564,6 @@ button:hover {
     font-size: 0.9rem; /* Slightly smaller font for mobile */
     padding: 10px 40px 10px 15px; /* Adjusted padding */
   }
-
   .dropdown-container {
     flex-direction: column; /* Stack dropdowns vertically on mobile */
     gap: 10px; /* Reduced gap between dropdowns */
@@ -575,7 +577,7 @@ button:hover {
   .dropdown-wrapper label {
     align-self: flex-start; /* Align labels to the start */
     margin-bottom: 5px;
-  }
+  } 
  
 
   .pholder {
@@ -674,4 +676,11 @@ table thead th {
   padding: 10px;
   text-align: center;
   border: 1px solid #ddd;
+}
+.scrollable-table {
+  max-height: calc(60vh - 110px); /* Adjust height to fit screen, subtracting space for header/footer */
+  overflow-y: auto; /* Allow scrolling only within the table */
+  margin: 15px;
+  width: calc(100% - 30px); /* Subtract margins */
+  border-radius: 20px;
 }

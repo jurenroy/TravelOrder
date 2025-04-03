@@ -2,6 +2,73 @@
   <div class="rating-popup">
     <div class="popup-content">
       <h3>Rate Request</h3>
+      <table class="ratetable">
+  <thead>
+    <tr>
+      <th>
+        <svg xmlns="http://www.w3.org/2000/svg" width="37" height="37" viewBox="-30 -30 60 60">
+          <circle cx="0" cy="0" r="30" fill="none" stroke="black" stroke-width="2"/>
+          <circle cx="-10" cy="-8" r="3" fill="black"/>
+          <circle cx="10" cy="-8" r="3" fill="black"/>
+          <path d="M -15,12 A 15,15 0 0,0 15,12" fill="none" stroke="black" stroke-width="2" transform="rotate(180, 0, 12)"/>
+        </svg>
+      </th>
+      <th>
+        <svg xmlns="http://www.w3.org/2000/svg" width="37" height="37" viewBox="-30 -30 60 60">
+          <circle cx="0" cy="0" r="30" fill="none" stroke="black" stroke-width="2"/>
+          <circle cx="-10" cy="-8" r="3" fill="black"/>
+          <circle cx="10" cy="-8" r="3" fill="black"/>
+          <path d="M -15,15 A 20,20 0 0,1 15,15" fill="none" stroke="black" stroke-width="2"/>
+        </svg>
+      </th>
+      <th>
+
+        <svg xmlns="http://www.w3.org/2000/svg"  width="37" height="37" viewBox="-30 -30 60 60">
+          <circle cx="0" cy="0" r="30" fill="none" stroke="black" stroke-width="2"/>
+          <circle cx="-10" cy="-8" r="3" fill="black"/>
+          <circle cx="10" cy="-8" r="3" fill="black"/>
+          <path d="M -15,8 Q 0,20 15,8" fill="none" stroke="black" stroke-width="2"/>
+        </svg>
+      </th>
+      <th>
+        <svg xmlns="http://www.w3.org/2000/svg"  width="37" height="37" viewBox="-30 -30 60 60">
+        <circle cx="0" cy="0" r="30" fill="none" stroke="black" stroke-width="2"/>
+        <circle cx="-10" cy="-8" r="3" fill="black"/>
+        <circle cx="10" cy="-8" r="3" fill="black"/>
+        <path d="M -15,10 A 15,15 0 0,0 15,10" fill="none" stroke="black" stroke-width="2"/>
+      </svg>
+      </th>
+    </tr>
+  </thead>
+  <tbody class="ratinglabel">
+    <tr>
+      <td>
+        Very Dissatisfied
+        <div style="text-align: center;">
+          <span style="font-size: 16px;">★☆☆☆</span>
+        </div>
+      </td>
+      <td>
+        Dissatisfied
+        <div style="text-align: center;">
+          <span style="font-size: 16px;">★★☆☆</span>
+        </div>
+      </td>
+      <td>
+        Satisfied
+        <div style="text-align: center;">
+          <span style="font-size: 16px;">★★★★</span>
+        </div>
+      </td>
+      <td>
+        Very Satisfied
+        <div style="text-align: center;">
+          <span style="font-size: 16px;">★★★★★</span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
       <div class="star-rating">
         <span
           v-for="s in 4"
@@ -38,13 +105,13 @@ export default {
     getLabel(star) {
       switch (star) {
         case 4:
-          return "4 - Very Satisfied";
+          return "Very Satisfied";
         case 3:
-          return "3 - Satisfied";
+          return "Satisfied";
         case 2:
-          return "2 - Dissatisfied";
+          return "Dissatisfied";
         case 1:
-          return "1 - Very Dissatisfied";
+          return "Very Dissatisfied";
         default:
           return "No Rating Selected";
       }
