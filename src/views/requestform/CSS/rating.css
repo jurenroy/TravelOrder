@@ -117,14 +117,13 @@ button {
   cursor: pointer;
   transition: background-color 0.2s;
   position: absolute;
-  top: 2px;
+  top: 5px;
   right: 2px;
   height: 40px;  /* Increased height */
   width: 40px; 
   font-size: 38px;
   position: absolute;
   color:black;
-
   margin: 0;
   
 }
