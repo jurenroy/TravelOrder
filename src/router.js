@@ -11,7 +11,7 @@ import Services from './views/services/Services.vue';
 import TravelOrder from './views/travelorder/Dashboard.vue';
 import LeaveForm from './views/leaveform/Dashboard.vue';
 import RequestForm from './views/requestform/dashboard.vue'
-import LeaveForm from './views/leaveform/Dashboard.vue';
+// import LeaveForm from './views/leaveform/Dashboard.vue';
 import FADRF from './views/FADRF/dashboard.vue';
 
 

@@ -214,7 +214,7 @@ const handleSubmit = async () => {
     showNotification.value = true;
     notificationMessage.value = "Request submitted successfully!";
     setTimeout(() => {
-      showNotification = false;
+      showNotification.value = false;
     }, 3000);
 
     form.value.documents = [];
