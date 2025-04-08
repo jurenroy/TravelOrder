@@ -162,53 +162,7 @@ button {
 .close-buttons:hover {
   color: rgba(0, 0, 0, 0.938);
 }
-table {
-  width: 80%;
-  border-collapse: collapse;
-  margin-top: 30px;
-  margin-left: 30px;
-  font-size: 13px;
-  text-align: center;
-  font-weight: bold;
-  color: black;
-  border-radius: 10px;
-  width: 100%;
-  margin-top: 15px;
-  font-size: 16px;
-  text-align: center;
-  color: #ffffff;
-  overflow: hidden;
-  table-layout: auto; 
-}
-th, td {
- 
-  padding: 10px;
-  text-align: center;
-  word-wrap: break-word;
-}
 
-
-
-
-tr:hover td {
-
-  padding: 5px;
-  text-align: center;
-  word-wrap: break-word;
-}
-th {
-  color: black;
-  font-weight: bold;
-}
-td {
-  font-size: 20px;
-  color:black;
-}
-tr:hover td {
- 
-  transition: 0.3s;
-  cursor: pointer;
-}
 
 
 @keyframes fadeIn {
