@@ -97,7 +97,7 @@
     width: 40px; 
     font-size: 38px;
     position: absolute;
-    top: 18rem;
+    top: 21.05rem;
     margin: 0;
     color: black;
     
@@ -110,5 +110,13 @@
   .ratetable{
 font-size: 11px;
     
+  }
+
+  @media screen and (max-width: 768px) {
+    .close-buttons {
+      top: 12rem;
+      left: 19rem;
+    }
+ 
   }
   
