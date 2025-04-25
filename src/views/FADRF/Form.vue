@@ -3,6 +3,7 @@ import { onMounted, ref, watch } from "vue";
 import { API_BASE_URL } from "@/config";
 import axios from "axios";
 
+
 const showNotification = ref(false);
 const notificationMessage = ref("");
 
@@ -156,6 +157,7 @@ const handleSubmit = async () => {
     }, 3000);
     form.value.documents = [];
     documents.value.forEach((doc) => (doc.checked = false));
+    window.location.reload();
   } catch (error) {
     console.error("Submission error:", error);
     showNotification.value = true;

@@ -223,6 +223,7 @@ const handleSubmit = async () => {
 
     showNotification.value = true;
     notificationMessage.value = "Request submitted successfully!";
+    window.location.reload();
     setTimeout(() => {
       showNotification.value = false;
     }, 3000);
