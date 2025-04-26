@@ -846,7 +846,7 @@ export default {
       }
       const userId = Number(this.nameId);
       const requestorId = Number(this.currentItem.name_id);
-      if ((userId === 30 || userId === 76) && userId !== requestorId) {
+      if ((userId === 2 || userId === 76) && userId !== requestorId) {
         alert("You are not allowed to rate this request.");
         return;
       }
@@ -1060,7 +1060,7 @@ export default {
       return this.formData; // This can be used in the template for rendering
     },
     isAdmin() {
-      return this.nameId === "30" || this.nameId === "76"; // Check if the user is an admin
+      return this.nameId === "2" || this.nameId === "76"; // Check if the user is an admin
     },
 
     processedFormData() {

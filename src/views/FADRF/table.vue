@@ -1054,7 +1054,7 @@ export default {
 
           this.formData = this.formData.filter((item) => {
             return (
-              this.nameId === "2" ||
+              this.nameId === "30" ||
               this.nameId === "76" ||
               item.name_id == this.nameId
             );
