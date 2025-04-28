@@ -1,52 +1,55 @@
 <template>
   <div style="display: flex; flex-direction: column">
-
     <div v-if="!isPrinting" class="dropdown-container">
       <div class="dropdown-docstat">
-    <h2
-      style="display: flex; flex-direction: row; align-self: center"
-      class="hist"
-    >
-      
-      <select v-model="selectedStatus" id="status" class="styled-select">
-        <option v-for="option in options" :key="option" :value="option">
-          {{ option }}
-        </option>
-      </select>
-      <!-- <span v-if="pendingCount !== 0" class="notification-count">{{
+        <h2
+          style="display: flex; flex-direction: row; align-self: center"
+          class="hist"
+        >
+          <select v-model="selectedStatus" id="status" class="styled-select">
+            <option v-for="option in options" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
+          <!-- <span v-if="pendingCount !== 0" class="notification-count">{{
         pendingCount
       }}</span> -->
-    </h2>
-    <div class="dropdown-categ">
-    <h2
-    style="display: flex; flex-direction: row; align-self: center"
-    class="hist">
-   
-    <select v-model="selectedCategory" id="category" class="styled-select">
-      <option v-for="option in Category" :key="option" :value="option">
-        {{ option }}
-      </option>
-    </select>
-    </h2>
-    <h2
-       style="display: flex; flex-direction: row; align-self: center"
-       class="hist"
-     >
-       <select v-model="fetchLimit" @change="fetchData" class="styled-select">
-         <option :value="10">10 </option>
-         <option :value="20">20 </option>
-         <option :value="50">50 </option>
-         <option :value="100">100 </option>
-         <option :value="200">200 </option>
-         <option :value="500">500 </option>
-         <option :value="1000">1000 </option>
-         <option :value="5000">5000 </option>
-         <option :value="10000">10000 </option>
-       </select>
-     </h2>
-  </div>
-</div>
-</div>
+        </h2>
+        <div class="dropdown-categ">
+          <h2
+            style="display: flex; flex-direction: row; align-self: center"
+            class="hist"
+          >
+            <select
+              v-model="selectedCategory"
+              id="category"
+              class="styled-select"
+            >
+              <option v-for="option in Category" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
+          </h2>
+          <h2
+            style="display: flex; flex-direction: row; align-self: center"
+            class="hist"
+          >
+            <select
+              v-model="fetchLimit"
+              @change="fetchData"
+              class="styled-select"
+            >
+              <option
+                v-for="limit in [10, 20, 50, 100, 200, 500, 1000, 5000, 10000]"
+                :value="limit"
+              >
+                {{ limit }}
+              </option>
+            </select>
+          </h2>
+        </div>
+      </div>
+    </div>
 
     <div class="search-box">
       <input
@@ -83,7 +86,6 @@
       <otpz />
     </div>
 
-
     <div v-if="mawala" class="outer">
       <div v-if="showRatingPopup">
         <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
@@ -109,8 +111,11 @@
           </thead>
           <tbody>
             <tr v-if="processedFormData.length == 0">
-              <td colspan="6" style="text-align: center; padding: 20px; opacity: 0.5">
-                <h1 style="margin: 0;">NO MATCH FOUND</h1>
+              <td
+                colspan="6"
+                style="text-align: center; padding: 20px; opacity: 0.5"
+              >
+                <h1 style="margin: 0">NO MATCH FOUND</h1>
               </td>
             </tr>
             <tr v-for="(item, index) in processedFormData" :key="index">
@@ -326,8 +331,8 @@ export default {
         "JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C",
         "OTHERS",
       ],
-      fetchLimit: 10, 
-      currentPage: 1, 
+      fetchLimit: 10,
+      currentPage: 1,
 
       created() {
         this.parseRequestedDocuments();
@@ -351,10 +356,10 @@ export default {
     this.fetchDocuments();
     console.log(this.data);
     this.loadAccounts();
-    window.addEventListener('beforeprint', () => {
+    window.addEventListener("beforeprint", () => {
       this.isPrinting = true;
     });
-    window.addEventListener('afterprint', () => {
+    window.addEventListener("afterprint", () => {
       this.isPrinting = false;
     });
   },
@@ -749,8 +754,8 @@ export default {
           this.showNotification = true;
           this.notificationMessage = "Note save successfully!";
           setTimeout(() => {
-        this.showNotification = false;
-      }, 3000);
+            this.showNotification = false;
+          }, 3000);
         })
         .catch((error) => {
           console.error("Error updating note:", error);
@@ -765,7 +770,7 @@ export default {
         });
     },
     closeNote() {
-      this.addNote = false; 
+      this.addNote = false;
       this.viewNote = false;
     },
     postNote(note) {
@@ -877,27 +882,6 @@ export default {
               }
               return item;
             });
-          }
-        })
-        .catch((error) => {
-          console.error("Error updating documents:", error);
-          this.showNotification = true;
-          this.notificationMessage =
-            "Failed to update documents. Please try again.";
-          setTimeout(() => {
-            this.showNotification = false;
-          }, 3000);
-        });
-
-      (`${API_BASE_URL}/FADRFupdate_request/${this.currentItem.id}`, payload)
-        .then((response) => {
-          if (response.status === 200) {
-            this.showNotification = true;
-            this.notificationMessage = "Remarks updated successfully!";
-            setTimeout(() => {
-              this.showNotification = false;
-            }, 3000);
-            this.currentItem.documents = updatedDocuments;
           }
         })
         .catch((error) => {
@@ -1170,7 +1154,8 @@ export default {
               }
               return (
                 doc.name &&
-                doc.name.trim().toLowerCase() === this.selectedCategory.toLowerCase()
+                doc.name.trim().toLowerCase() ===
+                  this.selectedCategory.toLowerCase()
               );
             });
 
@@ -1181,7 +1166,6 @@ export default {
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .slice(0, this.fetchLimit);
     },
-
   },
 };
 window.onload = function () {

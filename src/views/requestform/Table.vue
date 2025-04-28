@@ -1,10 +1,11 @@
 <template>
   <div style="display: flex; flex-direction: column">
-
     <div v-if="!isPrinting" class="dropdown-container">
       <div class="dropdown-docstat">
-        <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
-
+        <h2
+          style="display: flex; flex-direction: row; align-self: center"
+          class="hist"
+        >
           <select v-model="selectedStatus" id="status" class="styled-select">
             <option v-for="option in options" :key="option" :value="option">
               {{ option }}
@@ -15,25 +16,35 @@
       }}</span> -->
         </h2>
         <div class="dropdown-categ">
-          <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
-
-            <select v-model="selectedCategory" id="category" class="styled-select">
+          <h2
+            style="display: flex; flex-direction: row; align-self: center"
+            class="hist"
+          >
+            <select
+              v-model="selectedCategory"
+              id="category"
+              class="styled-select"
+            >
               <option v-for="option in Category" :key="option" :value="option">
                 {{ option }}
               </option>
             </select>
           </h2>
-          <h2 style="display: flex; flex-direction: row; align-self: center" class="hist">
-            <select v-model="fetchLimit" @change="fetchData" class="styled-select">
-              <option :value="10">10 </option>
-              <option :value="20">20 </option>
-              <option :value="50">50 </option>
-              <option :value="100">100 </option>
-              <option :value="200">200 </option>
-              <option :value="500">500 </option>
-              <option :value="1000">1000 </option>
-              <option :value="5000">5000 </option>
-              <option :value="10000">10000 </option>
+          <h2
+            style="display: flex; flex-direction: row; align-self: center"
+            class="hist"
+          >
+            <select
+              v-model="fetchLimit"
+              @change="fetchData"
+              class="styled-select"
+            >
+              <option
+                v-for="limit in [10, 20, 50, 100, 200, 500, 1000, 5000, 10000]"
+                :value="limit"
+              >
+                {{ limit }}
+              </option>
             </select>
           </h2>
         </div>
@@ -41,11 +52,24 @@
     </div>
 
     <div class="search-box">
-      <input class="pholder" type="text" name="text" v-model="searchQuery" placeholder="Search Name or Documents..." />
-      <svg fill="#000000" width="20px" height="20px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+      <input
+        class="pholder"
+        type="text"
+        name="text"
+        v-model="searchQuery"
+        placeholder="Search Name or Documents..."
+      />
+      <svg
+        fill="#000000"
+        width="20px"
+        height="20px"
+        viewBox="0 0 1920 1920"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
           d="M790.588 1468.235c-373.722 0-677.647-303.924-677.647-677.647 0-373.722 303.925-677.647 677.647-677.647 373.723 0 677.647 303.925 677.647 677.647 0 373.723-303.924 677.647-677.647 677.647Zm596.781-160.715c120.396-138.692 193.807-319.285 193.807-516.932C1581.176 354.748 1226.428 0 790.588 0S0 354.748 0 790.588s354.748 790.588 790.588 790.588c197.647 0 378.24-73.411 516.932-193.807l516.028 516.142 79.963-79.963-516.142-516.028Z"
-          fill-rule="evenodd"></path>
+          fill-rule="evenodd"
+        ></path>
       </svg>
     </div>
     <div v-if="showNotification" class="notification">
@@ -55,18 +79,24 @@
     <div v-if="load" class="loadings">
       <img src="../../assets/sample_loaders.gif" width="auto" height="480px" />
     </div>
-    <div style="display: flex; flex-direction: column; align-items: center" v-if="otp">
+    <div
+      style="display: flex; flex-direction: column; align-items: center"
+      v-if="otp"
+    >
       <otpz />
     </div>
-
 
     <div v-if="mawala" class="outer">
       <div v-if="showRatingPopup">
         <RatingPopup @submit="handleRating" @close="showRatingPopup = false" />
       </div>
 
-      <EditDetailsPopup v-if="showEditDetailsPopup" :documents="currentItem.documents" @submit="handleEditDetails"
-        @close="showEditDetailsPopup = false" />
+      <EditDetailsPopup
+        v-if="showEditDetailsPopup"
+        :documents="currentItem.documents"
+        @submit="handleEditDetails"
+        @close="showEditDetailsPopup = false"
+      />
       <div class="scrollable-table">
         <table>
           <thead>
@@ -81,15 +111,23 @@
           </thead>
           <tbody>
             <tr v-if="processedFormData.length == 0">
-              <td colspan="6" style="text-align: center; padding: 20px; opacity: 0.5">
-                <h1 style="margin: 0;">NO MATCH FOUND</h1>
+              <td
+                colspan="6"
+                style="text-align: center; padding: 20px; opacity: 0.5"
+              >
+                <h1 style="margin: 0">NO MATCH FOUND</h1>
               </td>
             </tr>
             <tr v-else v-for="(item, index) in processedFormData" :key="index">
               <td>{{ getName(item.name_id) }}</td>
               <td>
-                <span v-if="Array.isArray(item.documents) && item.documents.length">
-                  <span v-for="(doc, docIndex) in item.documents" :key="docIndex">
+                <span
+                  v-if="Array.isArray(item.documents) && item.documents.length"
+                >
+                  <span
+                    v-for="(doc, docIndex) in item.documents"
+                    :key="docIndex"
+                  >
                     {{ getDocumentName(doc) }} <br />
                   </span>
                 </span>
@@ -97,13 +135,21 @@
               </td>
               <td>{{ item.date }}</td>
               <td>
-                <span v-if="Array.isArray(item.documents) && item.documents.length">
-                  <span v-if="allDocumentsReleased(item.documents)" class="released-text">
+                <span
+                  v-if="Array.isArray(item.documents) && item.documents.length"
+                >
+                  <span
+                    v-if="allDocumentsReleased(item.documents)"
+                    class="released-text"
+                  >
                     All documents released
                   </span>
                   <span v-else>
-                    <span v-for="(doc, docIndex) in item.documents" :key="'remarks-' + docIndex"
-                      :class="getRemarks(doc)">
+                    <span
+                      v-for="(doc, docIndex) in item.documents"
+                      :key="'remarks-' + docIndex"
+                      :class="getRemarks(doc)"
+                    >
                       {{ doc.remarks || "No remarks" }} <br />
                     </span>
                   </span>
@@ -114,14 +160,20 @@
                 <span v-if="item.rating !== null">
                   <span v-for="n in item.rating" :key="n">⭐</span>
                 </span>
-                <button v-else-if="nameId == item.name_id" @click="openRatingPopup(item)">
+                <button
+                  v-else-if="nameId == item.name_id"
+                  @click="openRatingPopup(item)"
+                >
                   Rating
                 </button>
                 <span v-else>No ratings yet</span>
               </td>
 
               <td>
-                <button v-if="canEditRequest(item)" @click="openEditRequestForm(item)">
+                <button
+                  v-if="canEditRequest(item)"
+                  @click="openEditRequestForm(item)"
+                >
                   Edit
                 </button>
                 <button v-if="isAdmin" @click="openEditDetailsPopup(item)">
@@ -137,15 +189,33 @@
             </tr>
           </tbody>
         </table>
-        <editform v-if="showEditRequestForm" :requestData="currentItem" :requestId="currentItem.id" :names="names"
-          :employees="employees" :divisions="divisions" @close="closeEditRequestForm"
-          @update-success="handleEditRequestSuccess" @update-error="handleEditRequestError" />
-        <Note v-if="addNote" :initialNote="currentItem.note || ''" :isAdmin="isAdmin" @close-note="closeNote"
-          @save-note="saveNote" />
+        <editform
+          v-if="showEditRequestForm"
+          :requestData="currentItem"
+          :requestId="currentItem.id"
+          :names="names"
+          :employees="employees"
+          :divisions="divisions"
+          @close="closeEditRequestForm"
+          @update-success="handleEditRequestSuccess"
+          @update-error="handleEditRequestError"
+        />
+        <Note
+          v-if="addNote"
+          :initialNote="currentItem.note || ''"
+          :isAdmin="isAdmin"
+          @close-note="closeNote"
+          @save-note="saveNote"
+        />
       </div>
     </div>
   </div>
-  <PDF :item="selectedItem" :name="selectedName" :signature="selectedSignature" :documents="documentList" />
+  <PDF
+    :item="selectedItem"
+    :name="selectedName"
+    :signature="selectedSignature"
+    :documents="documentList"
+  />
 </template>
 
 <script>
@@ -257,8 +327,8 @@ export default {
         "PHOTOCOPY OF TRAVEL ORDER",
         "OTHERS",
       ],
-      fetchLimit: 10, 
-      currentPage: 1, 
+      fetchLimit: 10,
+      currentPage: 1,
 
       created() {
         this.parseRequestedDocuments();
@@ -282,10 +352,10 @@ export default {
     this.fetchDocuments();
     console.log(this.data);
     this.loadAccounts();
-    window.addEventListener('beforeprint', () => {
+    window.addEventListener("beforeprint", () => {
       this.isPrinting = true;
     });
-    window.addEventListener('afterprint', () => {
+    window.addEventListener("afterprint", () => {
       this.isPrinting = false;
     });
   },
@@ -680,8 +750,8 @@ export default {
           this.showNotification = true;
           this.notificationMessage = "Note save successfully!";
           setTimeout(() => {
-        this.showNotification = false;
-      }, 3000);
+            this.showNotification = false;
+          }, 3000);
         })
         .catch((error) => {
           console.error("Error updating note:", error);
@@ -692,7 +762,7 @@ export default {
           }, 3000);
         })
         .finally(() => {
-          this.addNote = false; 
+          this.addNote = false;
         });
     },
     closeNote() {
@@ -787,10 +857,7 @@ export default {
       console.log(formeme);
 
       axios
-        .post(
-          `${API_BASE_URL}/update_request/${this.currentItem.id}`,
-          formeme
-        )
+        .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, formeme)
         .then((response) => {
           if (response.status === 200) {
             this.showNotification = true;
@@ -819,27 +886,6 @@ export default {
             this.showNotification = false;
           }, 3000);
         });
-
-      (`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
-        .then((response) => {
-          if (response.status === 200) {
-            this.showNotification = true;
-            this.notificationMessage = "Remarks updated successfully!";
-            setTimeout(() => {
-              this.showNotification = false;
-            }, 3000);
-            this.currentItem.documents = updatedDocuments;
-          }
-        })
-        .catch((error) => {
-          console.error("Error updating documents:", error);
-          this.showNotification = true;
-          this.notificationMessage =
-            "Failed to update documents. Please try again.";
-          setTimeout(() => {
-            this.showNotification = false;
-          }, 3000);
-        });
     },
 
     handleRating(rating) {
@@ -855,10 +901,7 @@ export default {
       }
       const payload = { rating: rating };
       axios
-        .post(
-          `${API_BASE_URL}/update_request/${this.currentItem.id}`,
-          payload
-        )
+        .post(`${API_BASE_URL}/update_request/${this.currentItem.id}`, payload)
         .then((response) => {
           if (response.status === 200) {
             this.showNotification = true;
@@ -1101,7 +1144,8 @@ export default {
               }
               return (
                 doc.name &&
-                doc.name.trim().toLowerCase() === this.selectedCategory.toLowerCase()
+                doc.name.trim().toLowerCase() ===
+                  this.selectedCategory.toLowerCase()
               );
             });
 
@@ -1112,7 +1156,6 @@ export default {
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         .slice(0, this.fetchLimit);
     },
-
   },
 };
 window.onload = function () {
