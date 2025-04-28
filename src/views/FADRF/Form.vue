@@ -113,6 +113,12 @@ const handleSubmit = async () => {
   console.log(documents.value);
   form.value.documents = [];
 
+  const othersDocument = documents.value.find(doc => doc.name === "OTHERS" && doc.checked);
+  if (othersDocument && !otherDocumentText.value) {
+    alert("Please specify the document type for 'OTHERS' option.");
+    return;
+  }
+
   if (otherDocumentText.value) {
     const othersDocument = documents.value.find((doc) => doc.name === "OTHERS");
     if (othersDocument) {

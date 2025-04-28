@@ -44,8 +44,8 @@ textarea:focus {
 
 .popup-buttons {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
+  justify-content: center;
+  margin-top: 15px;
 }
 
 .spacer {

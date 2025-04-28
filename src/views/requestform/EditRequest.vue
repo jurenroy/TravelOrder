@@ -234,6 +234,11 @@ export default {
     },
     
     async handleSubmit() {
+      const othersDocument = this.documentOptions.find(doc => doc.name === "OTHERS" && doc.checked);
+      if (othersDocument && othersDocument.checked && !this.otherDocumentText) {
+        alert("Please specify the document type for 'OTHERS' option.");
+        return;
+      }
       if (this.otherDocumentText) {
         const othersDocument = this.documentOptions.find((doc) => doc.name === "OTHERS");
         if (othersDocument && othersDocument.checked) {

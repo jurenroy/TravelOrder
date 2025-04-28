@@ -22,7 +22,7 @@
           @click="toggleRemarks(index)"
           :class="{ released: document.remarks === 'Released' }"
         >
-          {{ document.remarks === "Released" ? "Unrelease" : "Release" }}
+          {{ document.remarks === "Released" ? "Pending" : "Release" }}
         </button>
         <span
           :class="{

@@ -678,7 +678,7 @@ export default {
         .then(() => {
           this.currentItem.note = updatedNote;
           this.showNotification = true;
-          this.notifactionMessage = "Note save successfully!";
+          this.notificationMessage = "Note save successfully!";
           setTimeout(() => {
         this.showNotification = false;
       }, 3000);
@@ -686,14 +686,17 @@ export default {
         .catch((error) => {
           console.error("Error updating note:", error);
           this.showNotification = true;
-          this.notifactionMessage = "Failed to save note. Please try again.";
+          this.notificationMessage = "Failed to save note. Please try again.";
           setTimeout(() => {
             this.showNotification = false;
           }, 3000);
+        })
+        .finally(() => {
+          this.addNote = false; 
         });
     },
     closeNote() {
-      this.addNote = false; // Hide the Add Note popup
+      this.addNote = false;
       this.viewNote = false;
     },
     postNote(note) {
