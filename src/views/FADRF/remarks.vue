@@ -3,8 +3,8 @@
     <div class="popup-content">
       <div class="close-button" @click="closePopup">X</div>
       <div v-if="showNotification" class="notification">
-          {{ notificationMessage }}
-        </div>
+        {{ notificationMessage }}
+      </div>
       <h2>Document Remarks</h2>
       <div class="document-status-summary">
         <span class="document-column">Document</span>
@@ -34,9 +34,9 @@
         </span>
       </div>
       <div class="status-summary">
-  <span class="overall-status-label">Overall Status:</span>
-  <span class="overall-status-value">{{ getOverallRemarks() }}</span>
-</div>
+        <span class="overall-status-label">Overall Status:</span>
+        <span class="overall-status-value">{{ getOverallRemarks() }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -49,8 +49,8 @@ export default {
       required: true,
     },
   },
-  data(){
-    return{
+  data() {
+    return {
       showNotificaion: false,
       notificationMessage: "",
     };
@@ -61,9 +61,9 @@ export default {
       const releasedCount = this.documents.filter(
         (doc) => doc.remarks === "Released"
       ).length;
-      
+
       return releasedCount === totalDocuments && totalDocuments > 0;
-    }
+    },
   },
   methods: {
     toggleRemarks(index) {
@@ -72,7 +72,7 @@ export default {
       this.documents[index].remarks =
         currentRemark === "Released" ? "Pending" : "Released";
 
-        this.notificationMessage =
+      this.notificationMessage =
         this.documents[index].remarks === "Released"
           ? `Document "${this.documents[index].name}" has been released.`
           : `Document "${this.documents[index].name}" has been set as pending.`;
@@ -92,7 +92,6 @@ export default {
         this.setAllDocumentsReleasedStatus();
       }
 
-     
       this.emitUpdatedDocuments();
     },
     checkAllReleased() {

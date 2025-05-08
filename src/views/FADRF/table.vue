@@ -872,6 +872,7 @@ export default {
               this.showNotification = false;
             }, 3000);
             console.log("gana man lage", formeme);
+            console.log(response.data);
             this.currentItem.documents = processedDocuments;
 
             // Update the form data to reflect changes in the UI
