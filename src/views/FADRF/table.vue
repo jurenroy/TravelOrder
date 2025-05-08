@@ -39,15 +39,12 @@
               @change="fetchData"
               class="styled-select"
             >
-              <option :value="10">10</option>
-              <option :value="20">20</option>
-              <option :value="50">50</option>
-              <option :value="100">100</option>
-              <option :value="200">200</option>
-              <option :value="500">500</option>
-              <option :value="1000">1000</option>
-              <option :value="5000">5000</option>
-              <option :value="10000">10000</option>
+              <option
+                v-for="limit in [10, 20, 50, 100, 200, 500, 1000, 5000, 10000]"
+                :value="limit"
+              >
+                {{ limit }}
+              </option>
             </select>
           </h2>
         </div>
@@ -113,6 +110,14 @@
             </tr>
           </thead>
           <tbody>
+            <tr v-if="processedFormData.length == 0">
+              <td
+                colspan="6"
+                style="text-align: center; padding: 20px; opacity: 0.5"
+              >
+                <h1 style="margin: 0">NO MATCH FOUND</h1>
+              </td>
+            </tr>
             <tr v-for="(item, index) in processedFormData" :key="index">
               <td>{{ getName(item.name_id) }}</td>
               <td>
@@ -182,12 +187,6 @@
                 </button>
               </td>
             </tr>
-            <h1
-              style="text-align: center; margin-bottom: 0px"
-              v-if="processedFormData.length == 0"
-            >
-              NO MATCH FOUND
-            </h1>
           </tbody>
         </table>
         <editform
@@ -753,7 +752,7 @@ export default {
         .then(() => {
           this.currentItem.note = updatedNote;
           this.showNotification = true;
-          this.notifactionMessage = "Note save successfully!";
+          this.notificationMessage = "Note save successfully!";
           setTimeout(() => {
             this.showNotification = false;
           }, 3000);
@@ -761,14 +760,17 @@ export default {
         .catch((error) => {
           console.error("Error updating note:", error);
           this.showNotification = true;
-          this.notifactionMessage = "Failed to save note. Please try again.";
+          this.notificationMessage = "Failed to save note. Please try again.";
           setTimeout(() => {
             this.showNotification = false;
           }, 3000);
+        })
+        .finally(() => {
+          this.addNote = false;
         });
     },
     closeNote() {
-      this.addNote = false; // Hide the Add Note popup
+      this.addNote = false;
       this.viewNote = false;
     },
     postNote(note) {
@@ -848,8 +850,7 @@ export default {
       // const formeme = new FormData();
       // formeme.append('documents', JSON.stringify(processedDocuments)); // Append as JSON string
       const formeme = {
-        documents: processedDocuments.map(doc => doc.name),  // Only store names in documents
-        remarks: processedDocuments.map(doc => doc.remarks).join(',')
+        documents: processedDocuments,
       };
 
       // Log the processedDocuments
@@ -882,27 +883,6 @@ export default {
               }
               return item;
             });
-          }
-        })
-        .catch((error) => {
-          console.error("Error updating documents:", error);
-          this.showNotification = true;
-          this.notificationMessage =
-            "Failed to update documents. Please try again.";
-          setTimeout(() => {
-            this.showNotification = false;
-          }, 3000);
-        });
-
-      (`${API_BASE_URL}/FADRFupdate_request/${this.currentItem.id}`, payload)
-        .then((response) => {
-          if (response.status === 200) {
-            this.showNotification = true;
-            this.notificationMessage = "Remarks updated successfully!";
-            setTimeout(() => {
-              this.showNotification = false;
-            }, 3000);
-            this.currentItem.documents = updatedDocuments;
           }
         })
         .catch((error) => {
@@ -1062,7 +1042,7 @@ export default {
 
           this.formData = this.formData.filter((item) => {
             return (
-              this.nameId === "2" ||
+              this.nameId === "30" ||
               this.nameId === "76" ||
               item.name_id == this.nameId
             );

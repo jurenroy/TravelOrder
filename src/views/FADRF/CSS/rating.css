@@ -1,122 +1,185 @@
 .rating-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.5);
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    backdrop-filter: blur(10px);
-  }
-  .popup-content {
-    background: #fffbf2;
-    padding: 40px;
-    border-radius: 5px;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.popup-content {
+  background: #fffbf2;
+  background: #f0e8db;
+  backdrop-filter: blur(12px);
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+  max-width: 400px;
+  width: 90%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: black;
+  color: black;
+  margin-bottom: 12px;
+}
+
+.stars {
+  font-size: 36px !important;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  border-radius: 10px;
+}
+
+.star {
+  color: black;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.star.active {
+  color: #ffb648; /* Orange from "UNRELEASE" button */
+  transform: scale(1.15);
+  text-shadow: 0px 0px 8px rgba(255, 182, 72, 0.7);
+}
+
+.star:hover {
+  color: #ffcc00;
+  transform: scale(1.2);
+}
+
+.selected-label {
+  margin-top: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: black;
+}
+
+.buttons {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+button {
+  padding: 0.9em 1.4em;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 500;
   
-    text-align: center;
-    width: 320px;
-    color: #333;
-    font-family: 'Arial', sans-serif;
-  }
-  h3 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  .star-rating {
-    font-size: 32px;
-    color: #333129;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  font-size: 1.25rem;
+  color:white;
+  font-weight: 500;
+  border-radius: 10px;
+  background-color: black;
+  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid black;
+  transition: 0.8s;
+  background-size: 280% auto;
+  background:black ;
+  color: white;
+}
+
+
+
+
+.buttons button:hover {
+  background: rgba(0, 0, 0, 0.623);
+  animation: button-particles 1s ease-in-out infinite;
+  transform: translateY(-2px);
+  color:white;
   
-  .star {
-    transition: color 0.3s ease, transform 0.2s ease;
-  }
-  .star:hover {
-    transform: scale(1.2);
-    color: #ff9900;
-  }
-  .star.active {
-    color: #ff9900;
-  }
-  .selected-label {
-    margin-top: 10px;
-    font-size: 18px;
-    color: #555;
-  }
-  .buttons {
-    margin-top: 18px;
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-  }
-  button {
-    padding: 0.9em 1.4em;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid black;
-    transition: 0.8s;
-    background-size: 280% auto;
-    background:black ;
-    color: white;
-  }
+}
+.close-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 50% !important;
+  padding: 0rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: absolute;
+  top: 5px;
+  right: 2px;
+  height: 40px;  /* Increased height */
+  width: 40px; 
+  font-size: 38px;
+  position: absolute;
+  color:black;
+  margin: 0;
   
-  
-  
-  
-  .buttons button:hover {
-    background: rgba(0, 0, 0, 0.623);
-    animation: button-particles 1s ease-in-out infinite;
-    transform: translateY(-2px);
-    color:white;
-    
-  }
-  .close-buttons {
-    display: flex;
+}
+
+.close-buttons:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50% !important;
+
+.buttons button:hover {
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.815);
+  animation: button-particles 1s ease-in-out infinite;
+  transform: translateY(-2px);
+
+}
+.close-buttons {
+  display: flex;
     align-items: center;
     justify-content: center;
     background: none;
     border: none;
-    border-radius: 50% !important;
-    padding: 0rem;
+    border-radius: 9999px;
+    padding: 0.5rem;
     cursor: pointer;
     transition: background-color 0.2s;
     position: absolute;
-    right: 50rem;
-    height: 40px;  /* Increased height */
-    width: 40px; 
-    font-size: 38px;
-    position: absolute;
-    top: 21.05rem;
+    right: 1px;
+    top: 0.25rem;
+    font-size: 2.25rem;
+    height: 2rem;
+    width: 2rem;
     margin: 0;
-    color: black;
-    
-  }
-  
-  .close-buttons:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 50% !important;
-  }
-  .ratetable{
-font-size: 11px;
-    
-  }
+    color:black;
+}
 
-  @media screen and (max-width: 768px) {
-    .close-buttons {
-      top: 12rem;
-      left: 19rem;
-    }
- 
+.close-buttons:hover {
+  color: rgba(0, 0, 0, 0.938);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+}

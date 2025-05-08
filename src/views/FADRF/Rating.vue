@@ -1,9 +1,16 @@
 <template>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
   <div class="rating-popup">
     <div class="popup-content">
-      <h3>Rate Request</h3>
-     
-      <div class="star-rating">
+      <h2>Rate this Request</h2>
+
+  
+
+      <div class="stars">
         <span
           v-for="s in 4"
           :key="s"
@@ -13,6 +20,7 @@
           >★</span
         >
       </div>
+
       <div class="selected-label">{{ getLabel(rating) }}</div>
       <div class="buttons">
         <button @click="submitRating">Submit</button>

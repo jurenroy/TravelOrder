@@ -22,7 +22,6 @@
       </div>
 
       <div class="selected-label">{{ getLabel(rating) }}</div>
-      <table></table>
       <div class="buttons">
         <button @click="submitRating">Submit</button>
       </div>

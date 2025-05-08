@@ -3,6 +3,7 @@ import { onMounted, ref, watch } from "vue";
 import { API_BASE_URL } from "@/config";
 import axios from "axios";
 
+
 const showNotification = ref(false);
 const notificationMessage = ref("");
 
@@ -112,6 +113,12 @@ const handleSubmit = async () => {
   console.log(documents.value);
   form.value.documents = [];
 
+  const othersDocument = documents.value.find(doc => doc.name === "OTHERS" && doc.checked);
+  if (othersDocument && !otherDocumentText.value) {
+    alert("Please specify the document type for 'OTHERS' option.");
+    return;
+  }
+
   if (otherDocumentText.value) {
     const othersDocument = documents.value.find((doc) => doc.name === "OTHERS");
     if (othersDocument) {
@@ -156,6 +163,7 @@ const handleSubmit = async () => {
     }, 3000);
     form.value.documents = [];
     documents.value.forEach((doc) => (doc.checked = false));
+    window.location.reload();
   } catch (error) {
     console.error("Submission error:", error);
     showNotification.value = true;

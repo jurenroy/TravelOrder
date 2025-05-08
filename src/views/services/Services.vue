@@ -25,7 +25,7 @@
     <button class="servicesbutton" @click="navigateTo('requestform')">
       Request Form
     </button>
-    <button class="servicesbutton" @click="navigateTo('FADRF')">FADRF</button>
+    <button class="servicesbutton" @click="navigateTo('FADRF')">Procurement form</button>
   </div>
 </template>
 
