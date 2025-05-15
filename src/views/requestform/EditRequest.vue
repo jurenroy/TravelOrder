@@ -138,7 +138,6 @@ export default {
         { name: "OFFICE CLEARANCE", checked: false },
         { name: "LBP BC LIST", checked: false },
         { name: "CERTIFICATE OF LEAVE CREDITS", checked: false },
-        { name: "PHOTOCOPY OF TRAVEL ORDER", checked: false },
         { name: "OTHERS", checked: false },
       ],
       

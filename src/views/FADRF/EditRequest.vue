@@ -139,11 +139,8 @@ export default {
       loading: false,
       formDisable: false,
       documentOptions: [
-        {
-          name: "PURCHASE REQUEST - REQUISITION AND ISSUE SLIP",
-          checked: false,
-        },
-        { name: "CERTIFICATE OF EMPLOYMENT WITH COMPENSATION", checked: false },
+        { name: "PURCHASE REQUEST", checked: false,},
+        { name: "REQUISITION AND ISSUE SLIP", checked: false },
         { name: "INVENTORY CUSTODIAN SLIP", checked: false },
         { name: "PROPERTY ACKNOWLEDGEMENT RECEIPT", checked: false },
         { name: "GATE PASS", checked: false },
@@ -151,9 +148,10 @@ export default {
         { name: "PROPERTY RETURN SLIP", checked: false },
         { name: "R&M OF MOTOR VEHICLES", checked: false },
         {
-          name: "JOB ORDER FOR FURNITURE & FIXTURES, LIGHTINGS, PLUMBING, & A/C",
+          name: "JOB ORDER FOR FURNITURE",
           checked: false,
         },
+        { name: "FIXTURES, LIGHTINGS, PLUMBING, & A/C", checked: false },
         { name: "OTHERS", checked: false },
       ],
 
