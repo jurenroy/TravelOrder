@@ -8,9 +8,14 @@ import rso from './views/rso/dashboard.vue';
 
 import Layout from './views/layoutV2/Layout.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
+
 import Services from './views/services/Services.vue';
 import TravelOrder from './views/travelorderV2/Dashboard.vue';
 import LeaveForm from './views/leaveform/Dashboard.vue'
+import RequestForm from './views/requestform/dashboard.vue'
+// import LeaveForm from './views/leaveform/Dashboard.vue';
+import FADRF from './views/FADRF/dashboard.vue';
+
 
 import registration from './views/Registration.vue';
 import employeelist from './views/EmployeelistV2.vue';
@@ -18,6 +23,9 @@ import editpage from './views/EditPageV2.vue';
 import logout from './components/logout/Logout.vue';
 
 import ChatVue from './views/chat/Blank.vue';
+
+
+import PDF from './views/FADRF/JobOrder/PDF.vue';
 
 const routes = [
   {
@@ -91,33 +99,27 @@ const routes = [
         component: ChatVue,
         meta: { requiresAuth: false }
       },
+      {
+        path: '/requestform',
+        name: 'requestform',
+        component: RequestForm,
+        meta: { requiresAuth: true}
+      },
+      {
+        path: '/FADRF',
+        name: 'FADRF',
+        component: FADRF,
+        meta: { requiresAuth: true }
+      },
       ]
     },
+    {
+      path: '/pedeep',
+      component: PDF,
+      meta: { requiresAuth: false },
+    }
     
-  // {
-  //   path: '/leaveform',
-  //   name: 'LeaveForm',
-  //   component: leaveform,
-  //   meta: { requiresAuth: true }
-  // },
-  // {
-  //   path: '/travelorder',
-  //   name: 'TravelOrder',
-  //   component: dashboard,
-  //   meta: { requiresAuth: true }
-  // },
-  // {
-  //   path: '/ICTSRF',
-  //   name: 'ICTSRF',
-  //   component: ictsrf,
-  //   meta: { requiresAuth: true }
-  // },
-  // {
-  //   path: '/rso',
-  //   name: 'rso',
-  //   component: rso,
-  //   meta: { requiresAuth: true }
-  // },
+
 ];
 
 const router = createRouter({
@@ -147,7 +149,11 @@ router.beforeEach((to, from, next) => {
     document.title = 'MGBXPortal Employees';
   } else if (to.name === 'settings' ){
     document.title = 'MGBXPortal Edit Page';
-  } else {
+  } else if (to.name === 'requestform'){
+    document.title = 'Procurement Request Form';
+  } else if (to.name === 'FADRF' ){
+    document.title = 'Admin Request Form';
+  }else {
     document.title = 'MGB Application Form';
   }  
   if (to.matched.some(record => record.meta.requiresAuth)) {

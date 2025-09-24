@@ -1,0 +1,135 @@
+.note-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fffbf2;
+  padding: 50px;
+  border-radius: 12px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 90%;
+  max-width: 400px;
+}
+
+.popup-content {
+  position: relative;
+  color: black;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.title {
+  color: black;
+  margin: 0 0 15px 0;
+  text-align: left;
+}
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #555;
+  background: #eee7dd;
+  color: black;
+  resize: none;
+  outline: none;
+  transition: border 0.3s;
+}
+
+textarea:focus {
+  border-color: #59473d;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.popup-buttons button {
+  font-family: inherit;
+  font-size: 20px;
+  position: relative;
+  overflow: hidden;
+  background: black;
+  padding: 12px 20px;
+  color: white;
+  fill: white;
+  align-items: center;
+  border: none;
+  border-radius: 15px;
+  font-weight: 1000;
+  width: 100px;
+  height: 40px;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition-duration: 0.3s;
+}
+
+.popup-buttons button:active {
+  transform: scale(0.95);
+}
+.popup-buttons button span {
+  display: block;
+  margin-left: 0.3em;
+  transition: all 0.3s ease-in-out;
+}
+
+.popup-buttons button svg {
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.popup-buttons button:hover {
+  background: black;
+}
+
+.popup-buttons button:hover .svg-wrapper {
+  transform: scale(1.25);
+  transition: 0.5s linear;
+}
+.popup-buttons button:hover svg {
+  transform: translateX(0.9em) scale(1.1);
+  fill: white;
+}
+
+.popup-buttons button:hover span {
+  opacity: 0;
+  transition: 0.5s linear;
+}
+.close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 50% !important;
+  padding: 0rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: absolute;
+  top: -60px;
+  right: -45px;
+  height: 40px;  /* Increased height */
+  width: 40px; 
+  font-size: 38px;
+  position: absolute;
+  color:black;
+
+  margin: 0;
+}
+
+.close-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50% !important;
+}

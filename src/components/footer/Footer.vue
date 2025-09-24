@@ -1,17 +1,17 @@
 <template>
-    <footer class="footer">
+  <footer class="footer">
       <div class="footer-content">
         <div @click="openLink('https://www.facebook.com/mgbregionxofficialpage')"> 
         <img src="./logos/facebook.png" alt="Facebook Logo" class="footer-image" /> 
-        <p>Facebook Page</p>    
+        <p style="text-decoration: underline;">Facebook Page</p>    
         </div> 
         <div @click="openLink('https://region10.mgb.gov.ph/')">
         <img src="./logos/web.png" alt="Web Logo" class="footer-image" />
-        <p>MGBX Website</p>    
+        <p style="text-decoration: underline;">MGBX Website</p>    
         </div> 
       </div>
     </footer>
-  </template>
+</template>
   
   <script>
 import { defineComponent } from 'vue';

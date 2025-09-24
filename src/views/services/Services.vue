@@ -15,6 +15,10 @@
     </div>
     <button class="servicesbutton" @click="navigateTo('rso')">Special Order Viewer</button>
     <button class="servicesbutton" @click="openLink">Document Tracking System</button>
+    <button class="servicesbutton" @click="navigateTo('requestform')">
+      Request Form
+    </button>
+    <button class="servicesbutton" @click="navigateTo('FADRF')">Procurement form</button>
   </div>
 </template>
 
@@ -33,9 +37,8 @@ const navigateTo = (page) => {
 };
 
 const openLink = () => {
-  window.open('http://202.137.117.84:8001/', '_blank');
+  window.open("http://202.137.117.84:8001/", "_blank");
 };
-
 </script>
 
 <style scoped>
@@ -54,7 +57,7 @@ const openLink = () => {
   height: 60px;
   width: 280px;
   font-size: 18px;
-  font-family: 'Playfair Display', serif; /* Luxurious font */
+  font-family: "Playfair Display", serif; /* Luxurious font */
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -114,7 +117,6 @@ const openLink = () => {
   .servicesbutton {
     width: 85%;
   }
-
   .notificationcontainer {
     margin-right: -15%;
     width: 100%;

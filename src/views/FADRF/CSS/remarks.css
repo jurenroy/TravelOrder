@@ -1,0 +1,309 @@
+:root {
+    --status-released: #34C759;
+    --status-unreleased: #FF9500;
+    --status-error: #FF3B30;
+    --primary-color: rgb(30, 64, 175);
+    --background-color: #f8f9fa;
+    --card-background: rgba(255, 255, 255, 0.8);
+    --text-color: #1a202c;
+    --border-color: #e2e8f0;
+  }
+  
+  .edit-action-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    backdrop-filter: blur(10px);
+  }
+  
+  .popup-content {
+    background: #fffbf2;
+    backdrop-filter: blur(50px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1.5rem;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: 950px;
+    position: relative;
+    padding-top: 1.5rem;
+    margin: 0; 
+  }
+
+  .document-remarks-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease-out;
+    z-index: 1000;
+  }
+  
+  .document-remarks-modal {
+    background: #fffbf2;
+      backdrop-filter: blur(50px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 1.5rem;
+      width: 100%;
+      max-width: 700px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 900px;
+      position: relative;
+      padding-top: 1.5rem;
+  }
+  
+  .document-remarks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem; 
+    position: relative;
+    padding-top: 1rem; 
+  }
+  
+  
+  
+  
+  
+  .subtitle {
+    position: absolute;
+    top: 3.5rem;
+    left: 1rem;
+    font-size: 0.9rem;
+    color: black;
+    font-weight: normal;
+  }
+  
+  .subtitle2 {
+    position: absolute;
+    top: 3.5rem;
+    right: 2.5rem;
+    font-size: 0.9rem;
+    color: black;
+    font-weight: normal;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    margin: 0 0 0 1.5rem;
+  }
+  
+  .close-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: absolute;
+    right: 1.25rem;
+    top: 1.5rem;
+    font-size: 1.25rem;
+    height: 2rem;
+    width: 2rem;
+    margin: 0;
+  }
+  
+  .close-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .document-status-summary {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #718096;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid var(--border-color);
+    margin-top: 1rem;
+  }
+  
+  .document-column {
+    text-align: left;
+    flex: 1;
+  }
+  
+  .status-column {
+    text-align: right;
+    min-width: 120px;
+  }
+  
+  .summary-border {
+    display: none;
+  }
+  
+  .document-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+    background-color: transparent;
+    gap: 1rem;
+  }
+  
+  .document-status:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  .document-status span:first-child {
+    font-weight: 500;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 2.2 rem;
+    flex: 1;
+  }
+  
+  .document-status:hover span:first-child {
+    color: var(--primary-color);
+  }
+  
+  .document-status button {
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: none;
+    color: var(--status-unreleased);
+    border: 1px solid rgba(255, 149, 0, 0.2);
+    background-color: rgba(255, 149, 0, 0.1);
+  }
+  
+  .document-status button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .document-status button.released {
+    background-color: rgba(52, 199, 89, 0.1);
+    color: var(--status-released);
+    border: 1px solid rgba(52, 199, 89, 0.2);
+  }
+  
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 5px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+    min-width: 120px;
+    justify-content: center;
+    color: var(--status-unreleased);
+    background-color: rgba(255, 149, 0, 0.1);
+    border: 1px solid rgba(255, 149, 0, 0.2);
+  }
+  
+  .status-indicator.released-text {
+    background-color: rgba(52, 199, 89, 0.1);
+    color: var(--status-released);
+    border: 1px solid rgba(52, 199, 89, 0.2);
+    margin-left: 0;
+    width: auto;
+  }
+  
+  .status-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    font-weight: 500;
+    margin-top: 0;
+  }
+  
+  .overall-status-label {
+    color: #4a5568;
+  }
+  
+  .overall-status-value {
+    display: flex;
+    align-items: center;
+    color: var(--status-unreleased);
+  }
+  
+  @media (max-width: 640px) {
+    .popup-content {
+      border-radius: 1rem;
+    }
+    
+    .document-status span:first-child {
+      font-size: 0.875rem;
+    }
+    
+    .status-indicator {
+      font-size: 0.75rem;
+      min-width: 100px;
+    }
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background-color: #1a202c;
+      --card-background: rgba(26, 32, 44, 0.8);
+      --text-color: #f7fafc;
+      --border-color: #2d3748;
+    }
+    
+    .document-status-summary {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+    
+    .document-status:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+    
+    .close-button:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .overall-status-label {
+      color: #a0aec0;
+    }
+  }
+  .notification {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 4px;
+    z-index: 1000;
+    text-align: center;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }

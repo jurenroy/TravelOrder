@@ -566,6 +566,7 @@ option:checked{
     transition: background 0.3s;
     margin: 0 5px;
     height: fit-content;
+    
   }
   .action-button2 {
     border-radius: 10px;

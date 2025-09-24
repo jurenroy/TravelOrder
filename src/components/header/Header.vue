@@ -30,12 +30,7 @@
   <Login v-if="showLogin" :login="showLogin" @closeLogin="closeLoginModal"/>
   <!-- Logout Confirmation Popup -->
   <Logout v-if="isLogoutClicked" :show="isLogoutClicked" @handleNo="handleNo" @handleYes="handleLogout"/>
-  <div class="microscopic-div" v-if="1==2">
-    <TravelCard/>
-    <LeaveCard/>
-    <ICTCard/>
-  </div>
-  <Chat v-if="(isLoggedIn && !isMobile) || (isMobile && checkMobileChat)" @update:unreadMessages="updateUnreadMessages"/>
+  <!-- <Chat v-if="(isLoggedIn && !isMobile) || (isMobile && checkMobileChat)" @update:unreadMessages="updateUnreadMessages"/> -->
 
 </template>
 
@@ -59,9 +54,6 @@ export default {
     Logout,
     Login,
     Heder,
-    TravelCard,
-    LeaveCard,
-    ICTCard,
     Chat
   },
   setup() {

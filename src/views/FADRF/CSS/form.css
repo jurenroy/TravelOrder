@@ -1,0 +1,333 @@
+.form-container {
+  margin: 1em auto;
+  font-family: "Poppins", sans-serif;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  
+  background: rgba(184, 133, 6, 0.774);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+  min-height: auto;
+  height: fit-content;
+  overflow: visible;
+}
+  
+  .others-input {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #8b5e34;
+    border-radius: 5px;
+  }
+  
+  .info-item {
+    margin: 18px;
+  }
+  
+  select {
+    padding: 5px;
+    font-size: 16px;
+  }
+  
+  select,
+  input {
+    font-size: 15px;
+    padding: 15px;
+  }
+  
+  .title,
+  .subtitle {
+    text-align: center;
+    font-size: 4px;
+    font-weight: bold;
+    color: #8b5e34;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  
+  .title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    color: #000000;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    position: relative;
+  }
+  
+  .title::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 4px;
+    background: #000000;
+    margin: 10px auto;
+    border-radius: 2px;
+  }
+  
+  .subtitle {
+    font-size: 18px;
+    font-weight: normal;
+    color: #000000;
+    margin-bottom: 20px;
+  }
+  
+  input[type="text"],
+  select {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    border: 2px solid #8b5e34;
+    border-radius: 8px;
+    background-color: #fffaf0;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  input[type="text"]:focus,
+  select:focus {
+    border-color: #d2691e;
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0 0 10px rgba(210, 105, 30, 0.5);
+  }
+  
+  label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .request-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #020100;
+  }
+  
+  .request-table th,
+  .request-table td {
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .request-table input[type="time"],
+  .request-table input[type="date"] {
+    width: 100%;
+    padding: 5px;
+    border-radius: 4px;
+  }
+  
+  .request-table th,
+  .request-table tb {
+    width: 100%;
+    padding: 50px;
+    text-align: center;
+    border-radius: 4px;
+  }
+  
+  .request-table th,
+  .request-table tb {
+    height: 100px;
+  }
+  
+  label {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  button {
+    padding: 18px 40px;
+    font-size: 18px;
+    font-weight: 700;
+    background-color: #000000;
+    color: rgb(255, 255, 255);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
+    font-family: "Playfair Display", serif;
+    margin-left: 40%;
+  }
+  
+  button:hover {
+    background-color: gray;
+    transform: translateY(-3px);
+  }
+  
+  .error {
+    width: fit-content;
+    justify-self: center;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f8a837;
+    padding: 10px;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px #f8a837, 0px 0px 3px #f8a837 inset;
+  }
+  
+  .formcorrect {
+    top: 0;
+    left: 0;
+    width: fit-content;
+    justify-self: center;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #39b259;
+    padding: 10px;
+    margin: 10px auto;
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px #39b259, 0px 0px 3px #39b259 inset;
+  }
+  
+  .formcorrect1,
+  .formcorrect2 {
+    color: black;
+    font-weight: bold;
+  }
+  
+  .errormsg1 {
+    height: 20px;
+    width: 100%;
+    text-align: center;
+    color: black;
+    font-weight: bold;
+  }
+  
+  .errormsg {
+    height: 20px;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .loadid {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 8px;
+  }
+  
+  .loader {
+    display: flex;
+    --height-of-loader: 4px;
+    --loader-color: black;
+    width: 285px;
+    height: 4px;
+    border-radius: 30px;
+    background-color: rgba(0, 0, 0, 0.2);
+    position: relative;
+    margin-top: 10px;
+  }
+  
+  .loader::before {
+    content: "";
+    position: absolute;
+    background: var(--loader-color);
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    border-radius: 30px;
+    animation: moving 1s ease-in-out infinite;
+  }
+  
+  @keyframes moving {
+    50% {
+      width: 100%;
+    }
+    100% {
+      width: 0;
+      right: 0;
+      left: unset;
+    }
+  }
+  
+  .container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    margin-left: -70px;
+  }
+  
+  .container input {
+    display: none;
+  }
+  
+  .container svg {
+    width: 2em;
+    height: 2em;
+    fill: none;
+    stroke: #007bff;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+  }
+  
+  .container .path {
+    stroke-dasharray: 241 9999999;
+    stroke-dashoffset: 0;
+  }
+  
+  .container input:checked ~ svg .path {
+    stroke-dasharray: 70.5096664428711 9999999;
+    stroke-dashoffset: -262.2723388671875;
+  }
+  
+  .container input:checked ~ svg {
+    stroke: gray;
+  }
+  
+  .container input:checked ~ span {
+    color: black;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  
+  span {
+    margin-left: 10px;
+    font-size: 1em;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  .notification {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 4px;
+    z-index: 1000;
+    text-align: center;
+  }
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 0.5s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    .try{
+      max-width: 80%;
+    }
+
+  }
