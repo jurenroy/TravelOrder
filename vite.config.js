@@ -13,5 +13,10 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
-  }
+  },// Server configuration
+  server: {
+    hmr: {
+      overlay: false, // Disable the error overlay
+    },
+  },
 })
