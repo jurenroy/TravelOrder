@@ -1,5 +1,5 @@
 <template>
-  <div class="chat-app" :class="{ inactive: isActive }" @click="activateChatApp">
+  <div class="chat-app">
     <Sidebar ref="sidebar" :style="dynamicStyle" v-if="names" @start-chat="initiateChat" :names="names" @show="show" @update:unreadMessages="handleUnreadMessages"/>
     <div class="chat-main-container">
       
@@ -66,9 +66,14 @@ export default {
         (chat.sender === receiver && chat.receiver === sender)
       );
 
-      if (existingChat !== -1) {
-        // If the chat exists, remove it from the array
-        this.activeChats.splice(existingChat, 1);
+      // if (existingChat !== -1) {
+      //   // If the chat exists, remove it from the array
+      //   this.activeChats.splice(existingChat, 1);
+      // }
+      
+      // If limit reached, remove the oldest chat
+      if (this.activeChats.length >= 3) {
+        this.activeChats.shift(); // remove the first (oldest) chat
       }
 
       // Add the new chat session
@@ -99,9 +104,8 @@ export default {
   justify-content: flex-end; /* Align items to the right */
   top: 0;
   right: 0;
-  position: absolute;
   z-index: 900;
-  height: 99vh;
+  height: 50%;
 }
 
 .chat-app.inactive {
@@ -110,16 +114,15 @@ export default {
 
 
 .chat-main-container {
+  position: absolute;
   display: flex;
   flex-direction: row; /* Arrange chat windows in a row */
   align-items: flex-end; /* Align chat windows to the bottom */
-  position: absolute; /* Position absolutely within the chat-app */
   bottom: 0; /* Align to the bottom */
 }
 
 .chat-container {
   background-color: orange;
-  margin-bottom: -1vh;
   margin-left: 10px; /* Space between chat windows */
   /* Add any other styles for chat containers here */
 }

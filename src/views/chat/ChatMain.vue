@@ -42,6 +42,7 @@
   import chatnotif from '../../assets/chatnotif.mp3'
   import { useAuthStore } from '@/store/auth';
   import { API_BASE_URL } from '@/config';
+  import {WS_BASE_URL} from '@/config';
   import axios from 'axios';
   import Card from '../travelorderV2/Card.vue';
   
@@ -129,7 +130,7 @@
         }
       },
       setupWebSocket() {
-        this.socket = new WebSocket('ws://202.137.117.84:8012/ws/chat/');
+        this.socket = new WebSocket(WS_BASE_URL);
   
         this.socket.onopen = () => {
           console.log('WebSocket connection established', this.$props.sender, this.$props.receiver);

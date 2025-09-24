@@ -1000,13 +1000,14 @@ export default {
       axios
         .get(`${API_BASE_URL}/get_request`, {
           params: {
-            limit: this.fetchLimit * 2,
-            page: this.currentPage, // Optional: for pagination
+            limit: this.fetchLimit * 1,
+            nameId: this.nameId
           },
         })
         .then((response) => {
           this.mawala = true;
           this.load = false;
+          console.log(response.data)
           this.formData = response.data.map((item) => {
             let documents = [];
 
@@ -1027,13 +1028,13 @@ export default {
             };
           });
 
-          this.formData = this.formData.filter((item) => {
-            return (
-              this.nameId === "2" ||
-              this.nameId === "76" ||
-              item.name_id == this.nameId
-            );
-          });
+          // this.formData = this.formData.filter((item) => {
+          //   return (
+          //     this.nameId === "2" ||
+          //     this.nameId === "76" ||
+          //     item.name_id == this.nameId
+          //   );
+          // });
 
           console.log("Processed FormData:", this.formData);
         })

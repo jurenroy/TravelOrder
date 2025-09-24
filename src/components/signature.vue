@@ -105,7 +105,7 @@ import { useAuthStore } from '@/store/auth';
 
 const authStore = useAuthStore(); // Use the store
 const uploadedImageUrl = ref('');
-const accountId = localStorage.getItem('accountId');
+const accountId = authStore.account_id;
 const OTPsent = ref(false);
 const otp = ref('');
 const OTPverified = ref(false);

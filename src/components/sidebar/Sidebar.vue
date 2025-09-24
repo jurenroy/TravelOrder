@@ -18,13 +18,13 @@
       </li>
 
       <!-- Services Dropdown -->
-      <li @click="toggleServices" class="dropdown">
+      <!-- <li @click="toggleServices" class="dropdown">
         <span class="count" v-if="totalCount && !isServicesOpen">{{ totalCount < 9 ? totalCount : '9+' }}</span>
         <router-link to="/services" exact-active-class="active" class="list-item">
           <img :src="services" alt="Services" class="icon" />
           <span v-if="isMenuOpen" class="indent">Services</span>
         </router-link>
-      </li>
+      </li> -->
       <ul v-if="isServicesOpen" class="dropdown-menu">
         <li>
           <span class="count" v-if="travelOrderCount">{{ travelOrderCount < 9 ? travelOrderCount : '9+' }}</span>
@@ -45,6 +45,18 @@
           <router-link to="/ICTSRF" exact-active-class="active" class="list-item">
             <img :src="ictservice" alt="ICT Service" class="icon" />
             <span v-if="isMenuOpen" class="indent">ICT Service</span>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/requestform" exact-active-class="active" class="servicesbutton list-item">
+            <img :src="admin" alt="Request Form" class="icon" />
+            <span v-if="isMenuOpen" class="indent" style="font-size: 13px;">Admin Request Form</span>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/FADRF" exact-active-class="active" class="servicesbutton list-item">
+            <img :src="procurement" alt="Procurement Form" class="icon" />
+            <span v-if="isMenuOpen" class="indent" style="font-size: 15px;">Procurement Form</span>
           </router-link>
         </li>
         <li>
@@ -83,17 +95,32 @@
           <span v-if="isMenuOpen" class="indent">Logout</span>
         </router-link>
       </li>
+      <footer class="footer" v-if="!isMobile">
+      <div class="footer-content">
+        <div @click="openLink('https://www.facebook.com/mgbregionxofficialpage')"> 
+        <img src="./logos/facebook.png" alt="Facebook Logo" class="footer-image" /> 
+        <p style="text-decoration: underline;" v-if="isMenuOpen">Facebook Page</p>    
+        </div> 
+        <div @click="openLink('https://region10.mgb.gov.ph/')">
+        <img src="./logos/web.png" alt="Web Logo" class="footer-image" />
+        <p style="text-decoration: underline;" v-if="isMenuOpen">MGBX Website</p>    
+        </div> 
+      </div>
+    </footer>
     </ul>
   </aside>
 </template>
   
   <script>
+  import Footer from '../footer/Footer.vue';
   import settings from '../../assets/sidebar/settings.png';
   import home from '@/assets/sidebar/home.png';
   import services from '../../assets/sidebar/services.png';
   import travelorder from '../../assets/sidebar/travelorder.png';
   import leaveform from '../../assets/sidebar/leaveform.png';
   import ictservice from '../../assets/sidebar/ictservice.png';
+  import procurement from '../../assets/sidebar/procurement.png';
+  import admin from '../../assets/sidebar/admin.png';
   import specialorder from '../../assets/sidebar/specialorder.png';
   import logoutIcon from '../../assets/sidebar/logout.png'; // Import your logout icon
   import registration from '@/assets/sidebar/registration.png';
@@ -107,17 +134,20 @@
     data() {
       return {
         isMenuOpen: true, // Sidebar is open by default
-        isServicesOpen: false, // Services dropdown is closed by default
+        isServicesOpen: true, // Services dropdown is closed by default
         settings,
         home,
         services,
         travelorder,
         leaveform,
         ictservice,
+        procurement,
+        admin,
         specialorder,
         logoutIcon,
         registration,
         employeelist,
+        Footer,
         pendingStore: usePendingStore(),
         authStore: useAuthStore(),
         predefinedPassword: 'Pass12345',
@@ -174,7 +204,7 @@
     background: linear-gradient(to bottom, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
     color: #f5f5dc;
     padding: 20px;
-    width: 200px; /* Width when expanded */
+    width: 205px; /* Width when expanded */
     height: 100vh; /* Full height */
     position: fixed; /* Fixed position */
     transition: all 0.3s ease; /* Smooth transition */
@@ -370,6 +400,45 @@ aside.mobile-footer {
 
   @media print{
     aside{
+      display: none;
+    }
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center;
+    padding: 10px;
+    color: rgb(0, 0, 0);
+    width: 100%;
+    text-align: center;
+    height: auto;
+  }
+  .footer-content{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+  }
+  .footer-content div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: space-around;
+    cursor: pointer;
+  }
+  
+  .footer-content p {
+    margin: 5px 0;
+    font-size: 1rem;
+    font-weight: normal;
+  }
+  .footer-content img {
+  width: auto; /* Let the width adjust based on the image's aspect ratio */
+  height: 20px; /* You can adjust the height based on your desired footer logo size */
+  margin: 5px 0;
+}
+@media print{
+    .footer{
       display: none;
     }
   }

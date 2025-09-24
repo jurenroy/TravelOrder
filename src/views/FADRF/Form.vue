@@ -160,7 +160,7 @@ const handleSubmit = async () => {
     showNotification.value = true;
     notificationMessage.value = "Request submitted successfully.";
     setTimeout(() => {
-      showNotification = false;
+      showNotification.value = false;
     }, 3000);
     form.value.documents = [];
     documents.value.forEach((doc) => (doc.checked = false));
@@ -170,7 +170,7 @@ const handleSubmit = async () => {
     showNotification.value = true;
     notificationMessage.value = "Failed to submit request.";
     setTimeout(() => {
-      showNotification = false;
+      showNotification.value = false;
     }, 3000);
   } finally {
     pleaseWait.value = false;
@@ -238,7 +238,7 @@ onMounted(() => {
       <table class="request-table">
         <thead>
           <tr>
-            <th>DOCUMENT REQUESTED</th>
+            <td  style="padding: 20px; font-size: large; font-weight: bold; text-align: left;">DOCUMENT REQUESTED</td>
           </tr>
         </thead>
         <tbody>

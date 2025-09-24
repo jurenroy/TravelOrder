@@ -417,7 +417,7 @@ export default {
     },
     // Function to construct the image URL
     getImageUrl(signature) {
-      return `http://202.137.117.84:8011/storage/${signature}`;
+      // return `http://202.137.117.84:8011/storage/${signature}`;
       return `${API_BASE_URL}/storage/${signature}`;
     },
     toggleState() {

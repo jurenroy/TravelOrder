@@ -14,18 +14,18 @@
         <option v-for="type in serviceTypes" :key="type" :value="type">{{ type }}</option>
       </select>
 
-      <select v-model="numberOfRows">
+      <!-- <select v-model="numberOfRows">
         <option value="10">10</option>
         <option value="20">20</option>
         <option value="50">50</option>
         <option value="100">100</option>
         <option value="200">200</option>
         <option value="500">500</option>
-      </select>
+      </select> -->
     </div>
   
           <div class="outer">
-      <div class="scrollable-table">
+      <div class="scrollable-table"  @scroll.passive="handleScroll" ref="scrollContainer">
           <!-- Status Filter -->
           <table>
             <thead>
@@ -65,7 +65,7 @@
                   <!-- <button class="action-button" @click="deleteService(service.id)" v-if="admin.includes(parseInt(nameId))">Delete</button> -->
                   <button class="action-button" @click="approveService(service.id)" v-if="nameId == 36 && service.approvedBy == null">Approve</button>
                   <button class="action-button" @click="disapproveService(service.id)" v-if="nameId == 36 && service.approvedBy == null && service.remarks !== 'Disapproved'">Dissapprove</button>
-                  <button class="action-button" @click="viewService(service.id)" v-if="service.id !== selectedview">View</button>
+                  <button class="action-button" @click="viewService(service.id, service.feedback_filled)" v-if="service.id !== selectedview">View</button>
                   <button class="action-button" @click="closeView()" v-if="service.id == selectedview">Close View</button>
                 </td>
               </tr>
@@ -191,19 +191,32 @@
     feedbackView.value = id
   }
     
-    const fetchServices = async () => {
+    const fetchServices = async (reset = false) => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/services/${nameId}/${selectedStatus.value}/${typeOfService.value}/${numberOfRows.value}`);
-        services.value = response.data.sort((a, b) => b.id - a.id);
+        if (reset) {
+      services.value = []; // Clear the array only when status changes
+    }
+
+        const response = await axios.get(`${API_BASE_URL}/services/${nameId}/${selectedStatus.value}/${typeOfService.value}/${numberOfRows.value}/${services.value.length}`);
+      console.log(response.data)
+        // services.value = response.data.sort((a, b) => b.id - a.id);
+        // services.value = [...services.value , ...response.data.sort((a, b) => b.id - a.id) ]
+        const newData = response.data.sort((a, b) => b.id - a.id);
+        const existingIds = new Set(services.value.map(item => item.id));
+        const uniqueData = newData.filter(item => !existingIds.has(item.id));
+
+        services.value = [...services.value, ...uniqueData];
+
       } catch (error) {
         console.error('Error fetching services:', error);
       }
     };
 
     // Watch for changes in selectedStatus, typeOfService, and numberOfRows
-    watch([selectedStatus, typeOfService, numberOfRows], (newValues, oldValues) => {
-      fetchServices();
-    });
+    watch([selectedStatus, typeOfService, numberOfRows], () => {
+  // When selectedStatus or typeOfService changes, reset the services and fetch again
+  fetchServices(true); // True means reset
+}, { immediate: true });
 
     
     const fetchFeedbacks = async () => {
@@ -309,6 +322,17 @@
     }
     return 'Invalid Ferson';
   };
+
+  const scrollContainer = ref(null);
+
+  const handleScroll = () => {
+        const container = scrollContainer.value;
+        if (container.scrollTop + container.clientHeight >= container.scrollHeight - 100) {
+          console.log("scroll")
+          // Near bottom, load more
+          fetchServices()
+        }
+      }
     
     // Fetch data when component is mounted
     onMounted(() => {
@@ -367,12 +391,14 @@ const handleCancel = () => {
       // Implement deleting logic here
     };
     
-    const viewService = (id) => {
+    const viewService = (id,ballyan) => {
       console.log('View service:', id);
       // router.push(`/ictsrfv/${id}`); // Navigate to service view
-    //   window.open(`/ictsrfv/${id}`, '_blank'); // Open in a new tab
+    //window.open(`/ictsrfv/${id}`, '_blank'); // Open in a new tab
      selectedview.value = id
-     viewFeedback(id)
+      if (ballyan == 1) {
+       viewFeedback(id)
+      }
     };
     // Function to close the view (optional since toggle handles this)
     const closeView = () => {

@@ -241,7 +241,7 @@ const handleSubmit = async () => {
     showNotification.value = true;
     notificationMessage.value = "Error submitting request. Please try again.";
     setTimeout(() => {
-      showNotification = false;
+      showNotification.value = false;
     }, 3000);
 
   } finally {

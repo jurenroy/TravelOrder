@@ -31,11 +31,11 @@
         </label>
       </div>
       <div>
-        <select v-model="numberOfRows" id="rows">
+        <!-- <select v-model="numberOfRows" id="rows">
           <option v-for="rows in rowOptions" :key="rows" :value="rows">
             {{ rows }}
           </option>
-        </select>
+        </select> -->
       </div>
     </div>
     <div class="luxury-search-bar">
@@ -54,7 +54,7 @@
   </div>
       
   <div v-if="mawala" class="outer">
-  <div class="scrollable-table">
+  <div class="scrollable-table"  @scroll.passive="handleScroll" ref="scrollContainer">
     <table>
       <thead>
         <tr>
@@ -243,7 +243,7 @@ export default {
     const authStore = useAuthStore();
     return {
       pendingStore: usePendingStore(),
-      numberOfRows: 10,  // Default number of rows to fetch
+      numberOfRows: 3,  // Default number of rows to fetch
       rowOptions: [10, 20, 50, 100, 200, 500, 1000, 5000, 10000], // Options for number of rows to fetch
       selectedStatus: 'Me',
       optionsEmp: ['Pending', 'Done', 'All'],
@@ -618,14 +618,26 @@ export default {
         return idString;
       }
     },
-    fetchData() {
+    handleScroll() {
+    const container = this.$refs.scrollContainer;
+    if (container.scrollTop + container.clientHeight >= container.scrollHeight - 100) {
+      console.log("scroll")
+      // Near bottom, load more
+      this.fetchData();
+    }
+  },
+    fetchData(reset = false) {
+      if (reset) {
+      this.formData = []; // Clear the array only when status changes
+    }
       this.load = true
-      axios.get(`${API_BASE_URL}/get_forms_json/${this.nameId}/${this.selectedStatus}/${this.numberOfRows}}`)
+      axios.get(`${API_BASE_URL}/get_forms_json/${this.nameId}/${this.selectedStatus}/${this.numberOfRows}/${this.formData.length}`)
         .then(response => {
           this.mawala = true;
           this.load = false
           this.csvformdata = response.data
-          this.formData=response.data
+          // this.formData=response.data
+          this.formData = [...this.formData, ...response.data]; // Append new data
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -694,8 +706,9 @@ export default {
     },
   },
   watch: {
-
-    selectedStatus: 'fetchData',
+    selectedStatus() {
+    this.fetchData(true); // Pass true to reset on status change
+  },
     numberOfRows: 'fetchData' // Watch for changes in number of rows
   }
 }
@@ -1193,6 +1206,7 @@ export default {
     width: 100%; /* Table takes full width */
     overflow-x: auto;
     max-height: 60vh;
+    height: 60vh;
     overflow-y: auto;
   }
 

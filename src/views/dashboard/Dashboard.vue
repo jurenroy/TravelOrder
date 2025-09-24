@@ -1,38 +1,40 @@
 <template>
-    <div class="dashboard" v-if="!isLoggedIn || !isHomePage">
-      <main class="main-content">
-        <div class="content-wrapper">
-          <img src="../../assets/background_image.png" alt="Background Image" class="content-image" />
-          <div class="content-text">
-            <p>Republic of the Philippines</p>
-            <p>Department of Environment and Natural Resources</p>
-            <p>Mines and Geosciences Bureau</p>
-            <p>Regional Office No. X</p>
-          </div>
+  <div class="dashboard" v-if="!isLoggedIn || !isHomePage">
+    <main class="main-content">
+      <div class="content-wrapper">
+        <img src="../../assets/background_image.png" alt="Background Image" class="content-image" />
+        <div class="content-text">
+          <p>Republic of the Philippines</p>
+          <p>Department of Environment and Natural Resources</p>
+          <p>Mines and Geosciences Bureau</p>
+          <p>Regional Office No. X</p>
         </div>
-      </main>
-    </div>
-    <div class="card-container" @touchstart="startTouch" @touchmove="moveTouch" @touchend="endTouch">
-    <TravelCard v-if="isLoggedIn && isHomePage && currentCardIndex === 0"/>
-    <LeaveCard v-if="isLoggedIn && isHomePage && currentCardIndex === 1" />
-    <ICTCard v-if="isLoggedIn && isHomePage && currentCardIndex === 2" />
-    </div>
-  </template>
-  
-  <script>
+      </div>
+    </main>
+  </div>
+
+  <!-- Main content with scroll event handling -->
+  <div>
+    <NewsFeed v-if="isLoggedIn && isHomePage" :scrollTop="scrollTop"/>
+  </div>
+</template>
+
+<script>
 import TravelCard from '../travelorderV2/Card.vue';
 import LeaveCard from '../leaveform/Card.vue';
 import ICTCard from '../ictsrf/Card.vue'
 import { useAuthStore } from '@/store/auth'; // Adjust the path as necessary
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
+import { computed, ref, onMounted, onBeforeUnmount, defineEmits, defineProps } from 'vue';
 import { useRoute } from 'vue-router'; // Import useRoute
+import NewsFeed from './NewsFeed/NewsFeed.vue';
 
 export default {
   name: 'Dashboard',
   components: {
     TravelCard,
     LeaveCard,
-    ICTCard
+    ICTCard,
+    NewsFeed
   },
   setup() {
     const authStore = useAuthStore(); // Access the auth store
@@ -42,12 +44,15 @@ export default {
     // Computed property to check if the current path is '/'
     const isHomePage = computed(() => route.path === '/');
 
+    // Scroll tracking
+    const scrollTop = ref(0);
+
     // Track the current card index
     const currentCardIndex = ref(0);
     const cardCount = 3; // Total number of card types
 
-     // Variables to track touch positions
-     const startY = ref(0);
+    // Variables to track touch positions
+    const startY = ref(0);
     const endY = ref(0);
 
     // Touch event handlers
@@ -96,6 +101,10 @@ export default {
       }
     };
 
+    const props = defineProps({
+  scrollTop: Number  // Receiving the scrollTop prop from Layout (Grandparent)
+});
+
     // Add event listener for keydown
     onMounted(() => {
       window.addEventListener('keydown', handleKeydown);
@@ -106,7 +115,6 @@ export default {
       window.removeEventListener('keydown', handleKeydown);
     });
 
-
     return {
       isLoggedIn,
       isHomePage,
@@ -115,58 +123,55 @@ export default {
       moveTouch,
       endTouch,
       nextCard,
-      previousCard
+      previousCard,
+      scrollTop,
     }
   }
 };
 </script>
-  
-  <style scoped>
-  .dashboard {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
-    margin-top: -50px;
-    margin-bottom: -50px;
-  }
-  
-  .main-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    flex: 1; /* This makes sure the content takes up remaining vertical space */
-    width: 100%; /* Full width of the screen */
-  }
-  
-  .content-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%; /* Ensures content-wrapper takes up full width */
-    padding: 10px;
-    box-sizing: border-box; /* Include padding in width calculations */
-  }
-  
-  .content-image {
-    max-width: 100%; /* Ensures the image never exceeds the container width */
-    height: auto;
-    margin-bottom: -10px;
-    margin-top: 40px;
-  }
-  
-  .content-text {
-    color: black;
-    margin: 5px 0;
-    font-size: 1rem;
-    font-weight: bold;
-    padding: 0 20px; /* Adds some spacing on the sides */
-  }
 
-  .card-container{
-    height: 0px;
-  }
-  </style>
-  
+<style scoped>
+.dashboard {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  margin-top: 3%;
+  left: 0;
+  transform: translate(50% 50%);
+}
+
+.grid-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px; /* Optional max width */
+}
+
+.main-header {
+  text-align: center;
+}
+
+.content-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.content-text {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #000;
+  text-align: center;
+}
+
+.news-section {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+</style>

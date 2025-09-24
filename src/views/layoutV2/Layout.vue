@@ -1,32 +1,53 @@
 <template>
   <div class="layout">
     <Header />
-    <div class="content-wrapper">
-      <Sidebar v-if="isLoggedIn && !isMobile" @toggle-sidebar="handleSidebarToggle" class="sidebar" /> <!-- Only show Sidebar if logged in and not mobile -->
-      <main class="main-content" :style="{ marginLeft: sidebarMargin }">
-        <router-view />  <!-- This is where the page content will be injected -->
+
+    <div :class="['grid-layout', layoutClass]">
+      <!-- Left Sidebar -->
+      <Sidebar v-if="isLoggedIn && !isMobile" class="left-sidebar" @toggle-sidebar="handleSidebarToggle"/>
+
+      <!-- Spacer -->
+      <div class="spacer-left"></div>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <router-view v-slot="{ Component }">
+          <component :is="Component"  />
+        </router-view>
       </main>
+
+      <!-- Spacer -->
+      <div class="spacer-right" v-if="showChat && isLoggedIn && !isMobile"></div>
+
+      <!-- Right Sidebar -->
+      <Chat v-if="showChat && isLoggedIn && !isMobile" class="right-sidebar" />
     </div>
-    <Sidebar v-if="isLoggedIn && isMobile" @toggle-sidebar="handleSidebarToggle" class="mobile-footer" /> <!-- Sidebar becomes the footer on mobile -->
-    <Footer v-if="!isMobile" /> <!-- Show footer on large screens only -->
+
+    <!-- Mobile Footer Sidebar -->
+    <Sidebar v-if="isLoggedIn && isMobile" class="mobile-footer" />
+    <Footer v-if="!isLoggedIn" class="mobile-footer" style="position: absolute; bottom: 0;"/>
   </div>
 </template>
+
+
 
   
 <script>
 import Header from '../../components/header/Header.vue';
-import Footer from '../../components/footer/Footer.vue';
 import Sidebar from '@/components/sidebar/Sidebar.vue';
+import Footer from '@/components/footer/Footer.vue'
 import Chat from '../chat/Dashboard.vue'
+import {WS_BASE_URL} from '@/config';
 import { useAuthStore } from '@/store/auth';
+import { useChatStore } from '@/store/chat';
 
 export default {
   name: 'Layout',
   components: {
     Header,
-    Footer,
     Sidebar,
     Chat,
+    Footer
   },
   data() {
     return {
@@ -37,6 +58,9 @@ export default {
     };
   },
   computed: {
+    chatStore() {
+      return useChatStore(); // Use chat store from Pinia
+    },
     isLoggedIn() {
       return this.authStore.isLoggedIn; // Check if user is logged in
     },
@@ -46,17 +70,31 @@ export default {
       }else {
         return this.isMenuOpen ? '0px' : '0px'; // Adjust margin for mobile view
       }
+    },
+    showChat() {
+      return this.chatStore.show; // new computed to check chat visibility
+    },
+    layoutClass() {
+    if (this.isMobile) {
+      return 'grid-mobile';
     }
+
+    if (!this.showChat) {
+      return this.isMenuOpen ? 'grid-no-chat-open' : 'grid-no-chat-collapsed';
+    }
+
+    return this.isMenuOpen ? 'grid-with-chat-open' : 'grid-with-chat-collapsed';
+  }
   },
   mounted() {
     this.checkMobile();
     window.addEventListener('resize', this.checkMobile); // Check screen size on resize
     this.setupWebSocket();
+    
   },
-  
   methods: {
     setupWebSocket() {
-        this.socket = new WebSocket('ws://202.137.117.84:8012/ws/chat/');
+        this.socket = new WebSocket(WS_BASE_URL);
   
         this.socket.onopen = () => {
           console.log('WebSocket connection established');
@@ -84,57 +122,74 @@ export default {
 
   
 <style scoped>
-.layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensures the layout covers the full height of the screen */
+
+.grid-layout {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
 }
 
-.content-wrapper {
-  display: flex; /* Use flexbox to align Sidebar and main-content side by side */
-  flex: 1; /* Allow the content wrapper to grow */
+/* Chat shown + Sidebar open */
+.grid-with-chat-open {
+  grid-template-columns: 12% 0% 73% 0% 15%;
+  grid-template-areas: "left gap1 main gap2 right";
+}
+
+/* Chat shown + Sidebar collapsed */
+.grid-with-chat-collapsed {
+  grid-template-columns: 4% 0% 80% 0% 15%;
+  grid-template-areas: "left gap1 main gap2 right";
+}
+
+/* Chat hidden + Sidebar open */
+.grid-no-chat-open {
+  grid-template-columns: 11% 0% 89% 0% 0%;
+  grid-template-areas: "left gap1 main gap2 .";
+}
+
+/* Chat hidden + Sidebar collapsed */
+.grid-no-chat-collapsed {
+  grid-template-columns: 4% 0% 95% 0% 0%;
+  grid-template-areas: "left gap1 main gap2 .";
+}
+
+/* Mobile layout */
+.grid-mobile {
+  grid-template-columns: 0% 0% 100% 0% 0%;
+  grid-template-areas: ". . main . .";
+}
+
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  background: #f0f2f5;
+}
+
+.left-sidebar {
+  grid-area: left;
+}
+
+.spacer-left {
+  grid-area: gap1;
+}
+
+.spacer-right {
+  grid-area: gap2;
+}
+
+.right-sidebar {
+  grid-area: right;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100%;
+  z-index: 10;
 }
 
 .main-content {
-  flex: 1; /* Makes the content area expand and contract with screen size */
-  padding: 20px;
-  box-sizing: border-box;
+  grid-column: 3; /* Use the center column */
+  padding: 1rem;
 }
-
-
-@media (max-width: 768px) {
-  .content-wrapper {
-    flex-direction: column; /* Stack the sidebar and content vertically on mobile */
-  }
-
-  .main-content {
-    margin-left: 0; /* No sidebar margin on mobile */
-  }
-
-  .sidebar {
-    display: none; /* Hide sidebar on mobile */
-  }
-
-  .mobile-footer {
-    position: fixed;
-    bottom: 0;
-    width: 30%;
-    z-index: 900;
-  }
-}
-
-@media print{
-  .main-content {
-    margin-left: 0 !important; /* Set margin-left to 0 when printing */
-  }
-
-  .sidebar {
-    display: none; /* Optionally hide the sidebar when printing */
-  }
-
-  .mobile-footer {
-    display: none; /* Optionally hide the mobile footer when printing */
-  }
-}
-
 </style>

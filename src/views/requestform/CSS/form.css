@@ -26,6 +26,11 @@ body {
   min-height: auto;
   height: fit-content;
   overflow: visible;
+  position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(50%, 50%);
+    z-index: 999;
 }
 
 .title,
@@ -111,6 +116,7 @@ input {
 }
 
 button {
+  margin-top: 20px;
   padding: 18px 40px;
   font-size: 18px;
   font-weight: 700;
@@ -212,7 +218,6 @@ button.cancel:hover {
   align-items: center;
   cursor: pointer;
   position: relative;
-  margin-left: -70px;
 }
 
 .container input {

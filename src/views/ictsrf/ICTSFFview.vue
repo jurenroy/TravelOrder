@@ -59,7 +59,7 @@
           </tbody>
         </table>
         <div class="signature-box">
-            <img :src="`http://202.137.117.84:8011/storage/${getAccount(name_id)}`" :alt="'Signature Image ' + (index + 1)" class="signature-image" />
+            <img :src="`${API_BASE_URL}/storage/${getAccount(name_id)}`" :alt="'Signature Image ' + (index + 1)" class="signature-image" />
             <div class="namecont">{{ getName(name_id) }}</div>
             <div class="signz">Signature overprinted name</div>
         </div>
@@ -78,6 +78,7 @@
   import { ref, computed, onMounted, watch } from 'vue';
   import axios from 'axios';
   import { useRoute } from 'vue-router';
+  import { API_BASE_URL } from '@/config';
 
   // Define props
 const props = defineProps({
@@ -142,11 +143,12 @@ const fdate = ref()
 // Function to fetch feedback data
 const fetchFeedbackData = async (reference) => {
   try {
-    const id = route.params.id; // Get the ID from route params
-    const response = await axios.get(`http://202.137.117.84:8011/feedbacks/`);
+    const id = props.id; // Get the ID from route params
+    const response = await axios.get(`${API_BASE_URL}/feedbacks/`);
+    console.log(response)
     const data = response.data.find( det => det.referenceid == reference)
-    referenceid.value=data.referenceid
-    fdate.value=data.date
+    referenceid.value=data? data.referenceid : ''
+    fdate.value=data? data.date :""
     
     fetchServiceData(referenceid);
 
@@ -168,7 +170,8 @@ const name_id = ref()
 // Function to fetch feedback data
 const fetchServiceData = async () => {
   try {
-    const response = await axios.get(`http://202.137.117.84:8011/services/${referenceid.value}`);
+    console.log(referenceid.value)
+    const response = await axios.get(`${API_BASE_URL}/services/${referenceid.value}`);
     const data = response.data
     name_id.value=data.requestedBy
   } catch (error) {
@@ -181,7 +184,7 @@ const accounts = ref([]);
 
 const fetchNamesAndAccounts = async () => {
   try {
-    const namesResponse = await axios.get('http://202.137.117.84:8011/get_names_json');
+    const namesResponse = await axios.get(`${API_BASE_URL}/get_names_json`);
     // names.value = namesResponse.data;
     // Process names: Sort by last name, format in uppercase
     names.value = namesResponse.data
@@ -193,7 +196,7 @@ const fetchNamesAndAccounts = async () => {
       }))
       .sort((a, b) => a.last_name.localeCompare(b.last_name));
     
-    const accountsResponse = await axios.get('http://202.137.117.84:8011/get_accounts_json');
+    const accountsResponse = await axios.get(`${API_BASE_URL}/get_accounts_json`);
     accounts.value = accountsResponse.data;
 
   } catch (error) {

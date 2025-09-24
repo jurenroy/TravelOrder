@@ -13,6 +13,11 @@
   min-height: auto;
   height: fit-content;
   overflow: visible;
+  position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate();
+    z-index: 999;
 }
   
   .others-input {
@@ -29,12 +34,12 @@
   
   select {
     padding: 5px;
-    font-size: 16px;
+    font-size: 12px;
   }
   
   select,
   input {
-    font-size: 15px;
+    font-size: 12px;
     padding: 15px;
   }
   
@@ -124,9 +129,8 @@
   }
   
   .request-table th,
-  .request-table tb {
+  .request-table td {
     width: 100%;
-    padding: 50px;
     text-align: center;
     border-radius: 4px;
   }
@@ -137,7 +141,7 @@
   }
   
   label {
-    font-size: 1.1em;
+    font-size: 14px;
     color: #555;
     margin-bottom: 0.5em;
     font-weight: 600;
@@ -149,6 +153,7 @@
   }
   
   button {
+    margin-top: 20px;
     padding: 18px 40px;
     font-size: 18px;
     font-weight: 700;
@@ -262,7 +267,6 @@
     align-items: center;
     cursor: pointer;
     position: relative;
-    margin-left: -70px;
   }
   
   .container input {

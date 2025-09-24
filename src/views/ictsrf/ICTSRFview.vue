@@ -23,7 +23,7 @@
       
       <!-- Service Request No. and Date -->
       <div class="service-info">
-        <div class="service-request-no">SERVICE REQUEST NO.: {{ serviceDetails.serviceRequestNo }} - 2024</div>
+        <div class="service-request-no">SERVICE REQUEST NO.: {{ serviceDetails.serviceRequestNo }} - {{ formattedYear }}</div>
         <div class="date">DATE: {{ formattedDate }}</div>
       </div>
       
@@ -45,7 +45,18 @@
               <input type="checkbox" :checked="serviceDetails.typeOfService === option" />
               {{ option }}
             </td>
-            <td  style="font-size: 9.8px;">{{ serviceDetails.typeOfService === option ? serviceDetails.note || '' : '' }}</td>
+            <td  style="font-size: 8px;">{{ serviceDetails.typeOfService === option ? serviceDetails.note || '' : '' }} 
+              <!-- Display files with a single download all button -->
+              <div v-if="serviceDetails.typeOfService === option">
+                <ul>
+                  <li v-for="file in serviceDetails.files" :key="file">
+                    <a :href="`${API_BASE_URL}/storage/ictrequest/${file}`" target="_blank">
+                      {{ file }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </td>
             <td style="font-size: 9.8px;">{{ serviceDetails.typeOfService === option ? serviceDetails.remarks || 'Pending' : '' }}</td>
           </tr>
         </tbody>
@@ -64,7 +75,7 @@
           <tr>
             <td v-for="(signatory, index) in signatories" :key="'signature-' + index">
               <div class="signature-container">
-                <img :src="`http://202.137.117.84:8011/storage/${getAccount(signatory.signatureImage)}`" :alt="getAltText(index)" class="signature-image" />
+                <img :src="`${API_BASE_URL}/storage/${getAccount(signatory.signatureImage)}`" :alt="getAltText(index)" class="signature-image" />
                 <span class="signature-label">Signature</span>
               </div>
             </td>
@@ -96,6 +107,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
 import axios from 'axios';
+import { API_BASE_URL } from '@/config';
 
 // Define props
 const props = defineProps({
@@ -139,20 +151,31 @@ const serviceDetails = ref({
 const requestedBy = ref('')
 const servicedBy = ref('')
 const approvedBy = ref('')
-const approvedByD = ref(36)
+const approvedByD = ref('')
 
 // Fetch service details by ID
 const fetchServiceDetails = async (reference) => {
 
   try {
      // Get the ID from route params
-    const response = await axios.get(`http://202.137.117.84:8011/services/${reference}`);
+    const response = await axios.get(`${API_BASE_URL}/services/${reference}`);
     serviceDetails.value = response.data;
     console.log(serviceDetails.value.requestedBy)
     requestedBy.value = serviceDetails.value.requestedBy
     servicedBy.value = serviceDetails.value.servicedBy
     approvedBy.value = serviceDetails.value.approvedBy
     console.log(serviceDetails.value.division_id)
+
+    const serviceDate = new Date(serviceDetails.value.date); // Get the date from serviceDetails
+    console.log(serviceDetails.value.date)
+    const changeDate = new Date('2025-09-01'); // The threshold date for the change
+
+    // Set value based on serviceDetails.date
+    if (serviceDate < changeDate) {
+      approvedByD.value = 36;
+    } else {
+      approvedByD.value = 66;
+    }
   } catch (error) {
     console.error('Error fetching service details:', error);
   }
@@ -167,7 +190,7 @@ const accounts = ref([]);
 
 const fetchNamesAndDivisions = async () => {
   try {
-    const namesResponse = await axios.get('http://202.137.117.84:8011/get_names_json');
+    const namesResponse = await axios.get(`${API_BASE_URL}/get_names_json`);
     // names.value = namesResponse.data;
     // Process names: Sort by last name, format in uppercase
     names.value = namesResponse.data
@@ -179,16 +202,16 @@ const fetchNamesAndDivisions = async () => {
       }))
       .sort((a, b) => a.last_name.localeCompare(b.last_name));
 
-    const divisionsResponse = await axios.get('http://202.137.117.84:8011/get_divisions_json');
+    const divisionsResponse = await axios.get(`${API_BASE_URL}/get_divisions_json`);
     divisions.value = divisionsResponse.data;
 
-    const positionsResponse = await axios.get('http://202.137.117.84:8011/get_positions_json');
+    const positionsResponse = await axios.get(`${API_BASE_URL}/get_positions_json`);
     positions.value = positionsResponse.data;
 
-    const employeesResponse = await axios.get('http://202.137.117.84:8011/get_employees_json');
+    const employeesResponse = await axios.get(`${API_BASE_URL}/get_employees_json`);
     employees.value = employeesResponse.data;
     
-    const accountsResponse = await axios.get('http://202.137.117.84:8011/get_accounts_json');
+    const accountsResponse = await axios.get(`${API_BASE_URL}/get_accounts_json`);
     accounts.value = accountsResponse.data;
 
   } catch (error) {
@@ -224,6 +247,7 @@ const getName = (nameId) => {
 
 // Get name by employee ID
 const getAccount = (nameId) => {
+  console.log(nameId.value)
   const account = accounts.value.find(account => account.name_id === nameId.value);
   console.log(account)
   if (account) {
@@ -239,6 +263,14 @@ const formattedDate = computed(() => {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
+  });
+});
+
+// Format the date to be more readable
+const formattedYear = computed(() => {
+  const date = new Date(serviceDetails.value.date);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
   });
 });
 
@@ -285,7 +317,7 @@ onMounted(() => {
   .container {
     padding: 1em;
     width: 8.5in; /* Full width of a bond paper */
-    height: 5.5in; /* Half of the height of a bond paper */
+    height: auto; /* Half of the height of a bond paper */
     margin: 0 auto;
     font-family: Arial, sans-serif;
     box-sizing: border-box;
