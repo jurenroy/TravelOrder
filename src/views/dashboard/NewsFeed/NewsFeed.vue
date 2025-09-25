@@ -80,8 +80,9 @@
 
       <!-- PDF Viewers -->
       <PDFICT v-if="selectedItem.type === 'ict'" :id="String(selectedItem.id)" />
-      <PDFTravelOrder v-else-if="selectedItem.type === 'travelOrder'" :travel_order_id="String(selectedItem.travel_order_id)" />
-      <PDFLeaveForm v-else-if="selectedItem.type === 'leaveForm'" :leaveform_id="String(selectedItem.leaveform_id)" />
+      <PDFICTFF v-if="selectedItem.type === 'ict' && selectedItem.feedback_filled" :id="String(selectedItem.id)"/>
+      <PDFTravelOrder v-if="selectedItem.type === 'travelOrder'" :travel_order_id="String(selectedItem.travel_order_id)" />
+      <PDFLeaveForm v-if="selectedItem.type === 'leaveForm'" :leaveform_id="String(selectedItem.leaveform_id)" />
     </div>
   </div>
 </template>
@@ -94,6 +95,7 @@
   import PDFTravelOrder from '@/views/travelorderV2/PDF.vue';
   import PDFLeaveForm from '@/views/leaveform/PDF.vue';
   import PDFICT from '@/views/ictsrf/ICTSRFview.vue';
+  import PDFICTFF from '@/views/ictsrf/ICTSFFview.vue';
   import Addform from '../Addform/Addform.vue';
   
   const authStore = useAuthStore();

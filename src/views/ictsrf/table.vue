@@ -498,6 +498,33 @@ option:checked{
     background-color: #8e8e8e !important;  /* Force hover effect */
     color: #fff !important;  /* Change text color on hover */
   }
+
+  .luxury-title {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap; /* allows wrapping on smaller screens */
+}
+
+.luxury-title select {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  max-width: 100%;
+}
+
+/* Stack selects vertically on small screens */
+@media (max-width: 768px) {
+  .luxury-title {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .luxury-title select {
+    width: 95%;
+  }
+}
   
   .radio-input {
     position: relative; /* Make the radio input sticky */

@@ -12,7 +12,7 @@
                </div>
                <img :src="image2" alt="Bago Image" class="pic2">
            </div>
-           <h3 style="text-align: center">APPLICATION FOR LEAVE</h3>
+           <h3 style="text-align: center">APPLICATION FOR LEAVE {{ leaveform_id }}</h3>
            <div>
                <div style="border: 2px solid black; padding: 5px;">
                    <div
@@ -658,10 +658,11 @@ import QRCode from 'qrcode'
 
 export default {
     props: {
-      leaveform_id: {
-        type: String,
-        required: true,
-      },
+        leaveform_id: {
+          type: Number,  // Use Number for integer values
+          required: true,
+          default: 0,  // Set default value to 0 (as a number)
+        },
       isChief: {
         type: Boolean,
         required: true,
@@ -773,10 +774,11 @@ export default {
    },
    watch: {
     leaveform_id(newVal) {
-      // Check if the new value is not null, then populate fields
-      if (newVal !== 0) {
-        this.fetchLeaveForms(newVal, this.isChief);
-      }
+        console.log('New value of leaveform_id:', newVal);
+        if (newVal && newVal !== 0) {
+            this.fetchLeaveForms(newVal, this.isChief || false);
+            console.log('damn');
+        }
     },
        text() {
            this.updateRows();
@@ -851,6 +853,7 @@ export default {
        this.fetchNames();
        this.fetchemployee();
        this.comparePosition();
+       this.fetchLeaveForms(this.leaveform_id)
    },
 
    methods: {
@@ -916,6 +919,7 @@ export default {
                });
        },
        fetchLeaveForms(leaveformID) {
+        console.log(leaveformID)
       axios.get(`${API_BASE_URL}/get_leave_json/${leaveformID}`)
         .then(response => {
 

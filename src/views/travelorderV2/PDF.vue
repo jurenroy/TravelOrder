@@ -1,9 +1,9 @@
 <template>
-<div class="blare">
+<div :class="blareClass">
     <div class="a4-containerz" id="pdf-content" @contextmenu.prevent>
       <div ref="content" class="a4-contentz">
         <!-- Your content goes here -->
-        <img src="@/components/assets/hnf.jpg" alt="A4-sized photo" class="a4-photo" @contextmenu.prevent>
+        <img src="@/components/assets/hnf.png" alt="A4-sized photo" class="a4-photo" @contextmenu.prevent>
         <p class="a4-to" style="text-align: center;">TRAVEL ORDER</p>
         <p class="a4-textBold">No. <span class="a4-textspank">{{ padWithZeroes(to_num) }}-{{ yearToday}}</span></p>
             <div class="travel-info-grid">
@@ -15,7 +15,7 @@
     </div>
     <div class="info-row">
       <p class="info-label">Position:</p>
-      <p class="info-value">{{ position }}</p>
+      <p class="info-value">{{ getPosition(position) }}</p>
     </div>
     <div class="info-row">
       <p class="info-label">Departure:</p>
@@ -35,7 +35,7 @@
     </div>
     <div class="info-row2">
       <p class="info-label">Division/Section:</p>
-      <p class="info-value">{{ division }}</p>
+      <p class="info-value">{{ getDivision(division_id) }}</p>
     </div>
     <div class="info-row2">
       <p class="info-label">Official Station:</p>
@@ -319,17 +319,23 @@
       },
     },
     mounted() {
-      // Populate fields when the component is mounted
-      if (this.travel_order_id !== 0) {
-        this.fetchData(this.travel_order_id);
-      }
+      // Check the current route and set the class accordingly
+    if (window.location.pathname === '/travelorder') {
+      this.blareClass = 'blare';
+    } else if (window.location.pathname === '/') {
+      this.blareClass = 'blareblank';
+    }
       // Fetch additional data
-      
       this.fetchNames();
       this.fetchPositions();
       this.fetchDivisions();
       this.fetchEmployees();
       this.fetchAccounts();
+      // Populate fields when the component is mounted
+      if (this.travel_order_id !== 0) {
+        this.fetchData(this.travel_order_id);
+      }
+      
     },
     watch: {
       travel_order_id(newVal) {
@@ -411,6 +417,7 @@
         axios.get(`${API_BASE_URL}/get_names_json`)
           .then(response => {
             this.names = response.data;
+            console.log(this.names)
           })
           .catch(error => {
             console.error('Error fetching names:', error);
@@ -447,13 +454,41 @@
           });
       },
       getName(nameId) {
+        
         const name = this.names[nameId];
+        console.log(name)
         if (name) {
           const { first_name, middle_init, last_name } = name;
           return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
         }
         return 'Unknown';
       },
+      getPosition(position_id) {
+    // Find the position by position_id
+    const selectedPosition = this.positions.find(position => position.position_id === position_id);
+
+    // If the position is found, return the position name
+    if (selectedPosition) {
+      return selectedPosition.position_name;
+    } else {
+      // Optionally handle the case where the position is not found
+      console.error('Position not found');
+      return null;  // Or you can return some default value like 'Unknown'
+    }
+  },
+  getDivision(division_id) {
+    // Find the position by position_id
+    const selectedDivision = this.divisions.find(division => division.division_id === division_id);
+
+    // If the position is found, return the position name
+    if (selectedDivision) {
+      return selectedDivision.division_name;
+    } else {
+      // Optionally handle the case where the position is not found
+      console.error('Position not found');
+      return null;  // Or you can return some default value like 'Unknown'
+    }
+  },
       populateFields(travelOrderId) {
         console.log(this.formData)
         const selectedForm = this.formData;
@@ -485,16 +520,14 @@
             this.name = `${nameDetails.first_name.toUpperCase()} ${nameDetails.middle_init.toUpperCase()} ${nameDetails.last_name.toUpperCase()}`;
           }
   
-          const selectedPosition = this.positions.find(position => position.position_id === this.position_id);
-          if (selectedPosition) {
-            this.position = selectedPosition.position_name;
-          }
+            this.position = selectedForm.position_id;
+          
   
           this.sdivz = this.divisions.find(division => division.division_id === this.sdiv)
   
           const selectedDivision = this.divisions.find(division => division.division_id === this.division_id);
           if (selectedDivision) {
-            this.division = selectedDivision.division_name;
+            
             const recommendedEmployee = this.employees.find(employee => employee.division_id === this.division_id && employee.chief > 0);
             if (recommendedEmployee) {
               this.recommended = this.getName(recommendedEmployee.name_id - 1);
@@ -527,9 +560,12 @@
   
   
   <style scoped>
-.blare{
-    height: 0px;
-    margin-top: -25000px;
+/* If the body has a class indicating it's the travelorder page */
+.blare {
+  height: 0px; margin-top: -25000px;
+}
+.blareblank{
+  
 }
   .a4-container {
     width: 210mm;
@@ -548,6 +584,7 @@
     height: 295mm;
 
     /* A4 height minus padding and border */
+    z-index: 2;
   }
   
   .a4-photo {
@@ -556,7 +593,7 @@
     left: 0;
     width: 100%;
     height: 98%;
-    z-index: -1;
+    z-index: 1;
     /* Place the photo behind other content */
   }
   
@@ -726,7 +763,7 @@
   }
   
   .cueare{
-    display: flex; flex-direction: column; position: absolute; bottom: 0;
+    display: flex; flex-direction: column; position: absolute; bottom: 0; z-index: 3;
   }
   
   .bigz{
