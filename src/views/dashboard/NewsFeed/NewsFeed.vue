@@ -4,53 +4,150 @@
       <Addform class="sticky-addform" v-if="showAddForm" />
       <div v-for="item in feedItems" :key="item.id" class="global-card-item">
         <!-- If item is a travel order -->
-        <div v-if="item.type === 'travelOrder'" class="global-travel-order-card">
+        <div v-if="item.types === 'travelOrder'" class="global-travel-order-card">
           <div class="global-card-header">
-            <div class="global-card-title">{{ item.destination }}</div>
+            <div class="global-card-title">{{ getName(item.name_id) }} (Travel Order: {{ formattedItem(item.date,item.to_num) }})</div>
             <div class="global-card-date">{{ item.date }}</div>
           </div>
           <div class="global-card-divider"></div>
           <div class="global-card-content">
+            <p><strong>Destination:</strong> {{ item.destination }}</p>
             <p><strong>Purpose:</strong> {{ item.purpose }}</p>
             <p><strong>Departure:</strong> {{ item.departure }}</p>
             <p><strong>Arrival:</strong> {{ item.arrival }}</p>
-            <p><strong>Remarks:</strong> {{ item.remarks || 'None' }}</p>
-            <p><strong>Note:</strong> {{ item.note || 'No additional notes' }}</p>
           </div>
         </div>
 
+
         <!-- If item is a leave form -->
-        <div v-else-if="item.type === 'leaveForm'" class="global-leave-form-card">
+        <div v-else-if="item.types === 'leaveForm'" class="global-leave-form-card">
           <div class="global-card-header">
-            <div class="global-card-title">{{ item.type }}</div>
+            <div class="global-card-title">{{ getName(item.name_id) }} (Leave Form)</div>
             <div class="global-card-date">{{ item.date }}</div>
           </div>
           <div class="global-card-divider"></div>
           <div class="global-card-content">
+            <p><strong>Type:</strong> {{ item.type || 'No additional details' }}</p>
             <p><strong>Details:</strong> {{ item.detail || 'No additional details' }}</p>
             <p><strong>Days:</strong> {{ item.days }}</p>
-            <p><strong>Commutation Status:</strong> {{ item.commutation }}</p>
-            <p><strong>Applicant:</strong> {{ item.applicant }}</p>
             <p><strong>Leave Dates:</strong> {{ item.dates }}</p>
           </div>
         </div>
 
         <!-- If item is an ICT service request -->
-        <div v-else-if="item.type === 'ict'" class="global-ict-service-card">
+        <div v-else-if="item.types === 'ict'" class="global-ict-service-card">
           <div class="global-card-header">
-            <div class="global-card-title">ICT Service Request #{{ item.id }}</div>
+            <div class="global-card-title">{{ getName(item.requestedBy) }} (ICT Request)</div>
             <div class="global-card-date">{{ item.date }}</div>
           </div>
           <div class="global-card-divider"></div>
           <div class="global-card-content">
-            <p><strong>Division:</strong> {{ item.division_id }}</p>
             <p><strong>Service Type:</strong> {{ item.typeOfService }}</p>
             <p><strong>Note:</strong> {{ item.note }}</p>
+            <ul v-if="item.files">
+              <li v-for="file in item.files" :key="file">
+                <a :href="`${API_BASE_URL}/storage/ictrequest/${file}`" target="_blank">
+                  {{ file }}
+                </a>
+              </li>
+            </ul>
             <p><strong>Remarks:</strong> {{ item.remarks || 'None' }}</p>
-            <p><strong>Requested By:</strong> {{ item.requestedBy }}</p>
-            <p><strong>Approved By:</strong> {{ item.approvedBy }}</p>
           </div>
         </div>
+        
+        <div class="global-button-line" ></div>
+        <!-- Status Section: Show statuses in a single row -->
+        <div class="feed-status-row" v-if="item.types === 'travelOrder'">
+          <!-- If still pending for initial -->
+          <div v-if="isInitialNull(item)" class="status-item status-pending">
+            For Initial by: {{ initialStatus }}
+          </div>
+
+        <!-- If already initialized -->
+        <div v-if="isInitialized(item)" class="status-item status-approved">
+          Initialized
+          <span v-if="initializedByRD(item)">by RD</span>
+          <span v-else-if="initializedByDC(item)">by DC</span>
+          <span v-else-if="item.intervals === 1">by DC</span>
+          <span v-else>by SC</span>
+        </div>
+
+        <div v-if="isNoteNull(item)" class="status-item status-pending-note">
+          To be Noted
+        </div>
+
+        <div v-if="isNoted(item)" class="status-item status-approved-note">
+          Noted
+        </div>
+
+        <div v-if="isRecommendationPending" class="status-item status-pending-recommendation">
+          For Recommendation
+          <span v-if="forRecommendationbyRED(item)">by RED</span>
+          <span v-else-if="forRecommendationToSCbyCAO(item)">by CAO</span>
+          <span v-else-if="item.intervals === 1">by CAO</span>
+          <span v-else>by DC</span>
+        </div>
+
+        <div v-if="isRecommendationApproved" class="status-item status-approved-recommendation">
+          Recommended
+          <span v-if="recommendedbyRED(item)">by RED</span>
+          <span v-else-if="recommendedbyCAO(item)">by CAO</span>
+          <span v-else-if="item.intervals === 1">by CAO</span>
+          <span v-else>by DC</span>
+        </div>
+
+        <div v-if="isApprovalPending" class="status-item status-pending-approval">
+          For Approval
+          <span v-if="forApprovalbyRED(item)">by RED</span>
+          <span v-if="forApprovalbyBD(item)">by BD</span>
+        </div>
+
+        <div v-if="isApproved" class="status-item status-approved-approval">
+        
+          Approved
+          <span v-if="item.sname !== 20">by: {{ getName(item.sname) }}</span>
+        </div>
+      </div>
+
+
+      <div  v-else-if="item.types === 'leaveForm'" class="feed-status-row">
+        <div class="status-item status-pending" v-if="!item.certification">
+          For Certification
+        </div>
+      
+        <div v-if="item.certification" class="status-item status-approved">
+          Certified
+        </div>
+
+        <div v-if="(item.certification && (![15,21,45,48].includes(item.name_id))) && !item.recommendation" class="status-item status-pending">
+          For Recommendation
+        </div>
+      
+        <div v-if="item.recommendation && parseInt(item.reco) == 1" class="status-item status-approved">
+          Recommended
+        </div>
+      
+        <div v-if="item.recommendation && item.recodesc" class="status-item status-pending">
+          Not Recommended
+        </div>
+
+        <div v-if="item.recommendation || (item.certification) || ([15,21,45,48].includes(item.name_id) && item.certification)">
+
+          <div v-if="!item.appsig" class="status-item status-pending">
+            For Approval
+          </div>
+        
+          <div v-if="item.appsig && !item.disapproved" class="status-item status-approved">
+            Approved
+          </div>
+
+          <div v-if="item.appsig && item.disapproved" class="status-item status-pending">
+            Not Approved
+          </div>
+
+        </div>
+      </div>
+
 
         <!-- Action Buttons (same for both) -->
         <div class="global-button-line"></div>
@@ -79,10 +176,10 @@
       <button class="global-close-btn" @click="closeModal">✖</button>
 
       <!-- PDF Viewers -->
-      <PDFICT v-if="selectedItem.type === 'ict'" :id="String(selectedItem.id)" />
-      <PDFICTFF v-if="selectedItem.type === 'ict' && selectedItem.feedback_filled" :id="String(selectedItem.id)"/>
-      <PDFTravelOrder v-if="selectedItem.type === 'travelOrder'" :travel_order_id="String(selectedItem.travel_order_id)" />
-      <PDFLeaveForm v-if="selectedItem.type === 'leaveForm'" :leaveform_id="String(selectedItem.leaveform_id)" />
+      <PDFICT v-if="selectedItem.types === 'ict'" :id="String(selectedItem.id)" />
+      <PDFICTFF v-if="selectedItem.types === 'ict' && selectedItem.feedback_filled" :id="String(selectedItem.id)"/>
+      <PDFTravelOrder v-if="selectedItem.types === 'travelOrder'" :travel_order_id="String(selectedItem.travel_order_id)" />
+      <PDFLeaveForm v-if="selectedItem.types === 'leaveForm'" :leaveform_id="String(selectedItem.leaveform_id)" />
     </div>
   </div>
 </template>
@@ -97,6 +194,7 @@
   import PDFICT from '@/views/ictsrf/ICTSRFview.vue';
   import PDFICTFF from '@/views/ictsrf/ICTSFFview.vue';
   import Addform from '../Addform/Addform.vue';
+  import ItemIndicators from '@/components/validators/TravelOrderTable.js'; // Import ItemIndicators
   
   const authStore = useAuthStore();
   
@@ -108,7 +206,7 @@
   const showAddForm = ref(true);
   const threshold = 50; // prevent flicker on micro scrolls
   let lastScrollTop = 0;
-
+  const names =ref([])
     
   
   // Fetch both travel orders and leave forms data
@@ -118,26 +216,38 @@
   
     try {
         const [travelOrdersResponse, leaveFormsResponse, ictServicesResponse] = await Promise.all([
-      axios.get(`${API_BASE_URL}/get_forms_json/${nameId}/Pending/${cardsPerLoad}/${feedItems.value.length}`),
-      axios.get(`${API_BASE_URL}/get_leave_json/${nameId}/Pending/${cardsPerLoad}/${feedItems.value.length}`),
-      axios.get(`${API_BASE_URL}/services/${nameId}/kulang/all/${cardsPerLoad}/${feedItems.value.length}`)
+      axios.get(`${API_BASE_URL}/get_forms_json/${nameId}/Pending/${cardsPerLoad}/${feedItems.value.length/2}`),
+      axios.get(`${API_BASE_URL}/get_leave_json/${nameId}/Pending/${cardsPerLoad}/${feedItems.value.length/2}`),
+      axios.get(`${API_BASE_URL}/services/${nameId}/kulang/all/${cardsPerLoad}/${feedItems.value.length/2}`)
     ]);
   
       // Tag and combine data
-      const travelOrders = travelOrdersResponse.data.map(item => ({ ...item, type: 'travelOrder' }));
-      const leaveForms = leaveFormsResponse.data.map(item => ({ ...item, type: 'leaveForm' }));
-      const ictRequests = ictServicesResponse.data.map(item => ({ ...item, type: 'ict' }));
+      console.log(leaveFormsResponse.data)
+      const travelOrders = travelOrdersResponse.data.map(item => ({ ...item, types: 'travelOrder' }));
+      const leaveForms = leaveFormsResponse.data.map(item => ({ ...item, types: 'leaveForm' }));
+      const ictRequests = ictServicesResponse.data.map(item => ({ ...item, types: 'ict' }));
       const combinedData = [...travelOrders, ...leaveForms, ...ictRequests];
 
       // Shuffle new data
       const newItems = shuffleArray(combinedData);
 
       // Prevent duplicates using a Set
-      const existingIds = new Set(feedItems.value.map(item => item.type + '-' + (item.travel_order_id ?? item.leaveform_id)));
-      const uniqueNewItems = newItems.filter(item => {
-        const id = item.type + '-' + (item.travel_order_id ?? item.leaveform_id);
-        return !existingIds.has(id);
-      });
+const existingIds = new Set(
+  feedItems.value.map(item => {
+    // If both travel_order_id and leaveform_id are undefined, skip the item
+    const id = item.types + '-' + (item.travel_order_id ?? item.leaveform_id ?? item.id); // Use a fallback like 'item.id' if both are undefined
+    return id;
+  })
+);
+
+// Filter out items that are already in the feed
+const uniqueNewItems = newItems.filter(item => {
+  // Generate unique ID, falling back to `item.id` if both `travel_order_id` and `leaveform_id` are missing
+  const id = item.types + '-' + (item.travel_order_id ?? item.leaveform_id ?? item.id);
+  
+  // Check if the ID exists in the Set of existing IDs
+  return !existingIds.has(id);
+});
 
       // Append unique items
       feedItems.value.push(...uniqueNewItems);
@@ -148,6 +258,37 @@
       loading.value = false;
     }
   }
+
+  async function fetchNames() {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/get_names_json/`)
+    names.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch names:', error)
+  }
+}
+function getName(nameID) {
+  const name = names.value.find(n => n.name_id === nameID)
+
+  if (!name) {
+    return 'Name not found'
+  }
+
+  // Format the name as 'FIRST NAME MIDDLE INIT. LASTNAME'
+  return `${name.first_name.toUpperCase()} ${name.middle_init.toUpperCase()} ${name.last_name.toUpperCase()}`
+}
+
+// Method to format the date and number
+function formattedItem(date, to_num) {
+  // Split the date into year, month, and day (we will only use the year)
+  const [year] = date.split('-')
+
+  // Format 'to_num' as a 4-digit number (with leading zeros if necessary)
+  const formattedToNum = to_num.toString().padStart(4, '0')
+
+  // Return formatted string in the format: 'YYYY-0001'
+  return `${year}-${formattedToNum}`
+}
   
   // Shuffle function to randomize order
   function shuffleArray(array) {
@@ -214,6 +355,40 @@ function closeModal() {
   selectedItem.value = null;
 }
 
+// Define methods as const functions inside `setup()`
+    const isInitialNull = (item) => ItemIndicators.isInitialNull(item);
+    const isInitialized = (item) => ItemIndicators.isInitialized(item);
+    const initializedByRD = (item) => ItemIndicators.initializedByRD(item);
+    const initializedByDC = (item) => ItemIndicators.initializedByDC(item);
+    const isNoteNull = (item) => ItemIndicators.isNoteNull(item);
+    const isNoted = (item) => ItemIndicators.isNoted(item);
+    const forRecommendationNoneORDNoneChief = (item) =>
+      ItemIndicators.forRecommendationNoneORDNoneChief(item);
+    const forRecommendationORDandChiefwithIntervals = (item) =>
+      ItemIndicators.forRecommendationORDandChiefwithIntervals(item);
+    const forRecommendationCAOnotIncluded = (item) =>
+      ItemIndicators.forRecommendationCAOnotIncluded(item);
+    const forRecommendationbyRED = (item) =>
+      ItemIndicators.forRecommendationbyRED(item);
+    const forRecommendationToSCbyCAO = (item) =>
+      ItemIndicators.forRecommendationToSCbyCAO(item);
+    const recommendedNoneORDNoneChief = (item) =>
+      ItemIndicators.recommendedNoneORDNoneChief(item);
+    const recommendedORDandChiefwithIntervals = (item) =>
+      ItemIndicators.recommendedORDandChiefwithIntervals(item);
+    const recommendedbyRED = (item) => ItemIndicators.recommendedbyRED(item);
+    const recommendedbyCAO = (item) => ItemIndicators.recommendedbyCAO(item);
+    const forApproval = (item) => ItemIndicators.forApproval(item);
+    const forApprovalORDandChief = (item) =>
+      ItemIndicators.forApprovalORDandChief(item);
+    const forApprovalRDinterval = (item) =>
+      ItemIndicators.forApprovalRDinterval(item);
+    const forApprovalCAO = (item) => ItemIndicators.forApprovalCAO(item);
+    const forApprovalbyRED = (item) => ItemIndicators.forApprovalbyRED(item);
+    const forApprovalbyBD = (item) => ItemIndicators.forApprovalbyBD(item);
+    const approved = (item) => ItemIndicators.approved(item);
+    const approvedORD = (item) => ItemIndicators.approvedORD(item);
+
 // Optional: Auto-focus modal to capture ESC
 watch(showPdfViewer, (visible) => {
   if (visible) {
@@ -232,6 +407,7 @@ onBeforeUnmount(() => {
   // Fetch data on component mount
   onMounted(() => {
     fetchData();
+    fetchNames();
   });
   </script>
 
@@ -383,6 +559,87 @@ onBeforeUnmount(() => {
   top: 0;
   padding: 10px;
   margin-bottom: -20px;
+}
+
+.feed-status-row {
+  display: flex;
+  justify-content: space-evenly; /* Distribute items evenly across the width */
+  align-items: center;
+  gap: 0.5rem; /* Adjust the gap between items */
+  margin-top: 0.5rem;
+  flex-wrap: nowrap; /* Prevent wrapping */
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center text and icons */
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  flex: 1; /* Allow items to take equal space */
+  text-align: center; /* Center text inside */
+  max-width: 0; /* Prevent flex items from exceeding the container width */
+}
+
+/* Positive statuses (approved, noted, recommended, etc.) */
+.status-approved,
+.status-approved-note,
+.status-approved-recommendation,
+.status-approved-approval {
+  background-color: #ffffff; /* light green */
+  color: #2f8f46; /* green text */
+}
+
+.status-approved::before {
+  content: "✅"; /* Checkmark icon */
+  margin-right: 8px; /* Space between icon and text */
+}
+
+.status-approved-note::before {
+  content: "✅"; /* Checkmark icon */
+  margin-right: 8px; /* Space between icon and text */
+}
+
+.status-approved-recommendation::before {
+  content: "✅"; /* Checkmark icon */
+  margin-right: 8px; /* Space between icon and text */
+}
+
+.status-approved-approval::before {
+  content: "✅"; /* Checkmark icon */
+  margin-right: 8px; /* Space between icon and text */
+}
+
+/* Pending/To be statuses */
+.status-pending,
+.status-pending-note,
+.status-pending-recommendation,
+.status-pending-approval {
+  background-color: #ffffff; /* light yellow */
+  color: #ff0000; /* red text */
+}
+
+.status-pending::before {
+  content: "⏳"; /* Hourglass icon */
+  margin-right: 8px; /* Space between icon and text */
+}
+
+.status-pending-note::before {
+  content: "⏳"; /* Hourglass icon */
+  margin-right: 8px; /* Space between icon and text */
+}
+
+.status-pending-recommendation::before {
+  content: "⏳"; /* Hourglass icon */
+  margin-right: 8px; /* Space between icon and text */
+}
+
+.status-pending-approval::before {
+  content: "⏳"; /* Hourglass icon */
+  margin-right: 8px; /* Space between icon and text */
 }
 
 
