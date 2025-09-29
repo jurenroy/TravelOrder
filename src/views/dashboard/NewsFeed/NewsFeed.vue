@@ -7,7 +7,7 @@
         <div v-if="item.types === 'travelOrder'" class="global-travel-order-card">
           <div class="global-card-header">
             <div class="global-card-title">{{ getName(item.name_id) }} (Travel Order: {{ formattedItem(item.date,item.to_num) }})</div>
-            <div class="global-card-date">{{ item.date }}</div>
+            <div class="global-card-date">{{ extractDate(item.date) }}</div>
           </div>
           <div class="global-card-divider"></div>
           <div class="global-card-content">
@@ -23,7 +23,7 @@
         <div v-else-if="item.types === 'leaveForm'" class="global-leave-form-card">
           <div class="global-card-header">
             <div class="global-card-title">{{ getName(item.name_id) }} (Leave Form)</div>
-            <div class="global-card-date">{{ item.date }}</div>
+            <div class="global-card-date">{{ extractDate(item.date) }}</div>
           </div>
           <div class="global-card-divider"></div>
           <div class="global-card-content">
@@ -38,7 +38,7 @@
         <div v-else-if="item.types === 'ict'" class="global-ict-service-card">
           <div class="global-card-header">
             <div class="global-card-title">{{ getName(item.requestedBy) }} (ICT Request)</div>
-            <div class="global-card-date">{{ item.date }}</div>
+            <div class="global-card-date">{{ extractDate(item.date) }}</div>
           </div>
           <div class="global-card-divider"></div>
           <div class="global-card-content">
@@ -148,6 +148,29 @@
         </div>
       </div>
 
+      <div  v-else-if="item.types === 'ict'" class="feed-status-row">
+        <div class="status-item status-pending">
+          {{ item.serviceBy ? item.remarks : 'Pending'}}
+        </div>
+
+        <div class="status-item status-pending" v-if="!item.approvedBy && item.serviceBy">
+          Not yet approved
+        </div>
+
+        <div v-if="item.approvedBy" class="status-item status-approved">
+          Approved
+        </div>
+      
+        <div class="status-item status-pending" v-if="!item.feedback_filled && item.serviceBy">
+          No feedback from user
+        </div>
+      
+        <div v-if="item.feedback_filled" class="status-item status-approved">
+          Done Feedback
+        </div>
+
+      </div>
+
 
         <!-- Action Buttons (same for both) -->
         <div class="global-button-line"></div>
@@ -155,9 +178,9 @@
           <button @click="initializeItem(item)" class="global-action-btn">
             <i class="fas fa-cogs"></i> Initialize
           </button>
-          <button @click="viewDetails(item)" class="global-action-btn">
+          <!-- <button @click="viewDetails(item)" class="global-action-btn">
             <i class="fas fa-sticky-note"></i> View Details
-          </button>
+          </button> -->
           <button @click="approveItem(item)" class="global-action-btn">
             <i class="fas fa-check-circle"></i> Approve
           </button>
@@ -208,6 +231,10 @@
   let lastScrollTop = 0;
   const names =ref([])
     
+
+  const extractDate = (input) => {
+  return new Date(input).toISOString().slice(0, 10);
+};
   
   // Fetch both travel orders and leave forms data
   async function fetchData() {
