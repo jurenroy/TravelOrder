@@ -462,9 +462,7 @@ onBeforeUnmount(() => {
   transition: transform 0.2s;
 }
 
-.global-card-item:hover {
-  transform: translateY(-2px);
-}
+
 
 .global-card-header {
   display: flex;

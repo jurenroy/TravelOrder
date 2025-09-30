@@ -404,6 +404,8 @@ import { useAuthStore } from '@/store/auth';
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   border: 2px solid #000000;
   margin-top: -20px;
+  position: absolute;
+  z-index: 9000;
 }
 
 .luxury-form-title {

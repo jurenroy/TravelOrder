@@ -1,5 +1,5 @@
 <template>
-  <div class="form-container">
+  <div class="form-container" :style="$route.path === '/' ? { position: 'absolute', marginTop: '15%' } : {}">
     <form @submit.prevent="handleSubmit">
       <!-- Requested By field -->
       <div class="form-group">
@@ -317,11 +317,7 @@ const sortedNames = computed(() => names.value);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
     border: 2px solid #000000; 
     margin: auto;
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translate(50%, 50%);
-    z-index: 999;
+    
   }
   
   h1 {
