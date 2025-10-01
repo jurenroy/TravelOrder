@@ -12,7 +12,7 @@ const TravelOrderTable = {
     },
     isInitialized(item) {
       return (
-        (![39, 2, 3, 8, 42, 34, 29, 36, 11, 5, 47, 48, 15, 45, 21, 13, 10, 37, 62, 53, 4, 56, 58, 55, 60, 59, 20, 77, 52, 51, 66, 17, 72, 73, 54, 80].includes(item.name_id) && item.initial !== null) ||
+        (![39, 2, 3, 8, 42, 34, 29, 36, 11, 5, 47, 48, 15, 45, 21, 13, 10, 37, 62, 53, 4, 56, 58, 55, 60, 59, 20, 77, 52, 51, 66, 17, 72, 73, 54, 80,43,40,71,82,81,83,87,88,79].includes(item.name_id) && item.initial !== null) ||
         ([15, 21, 45, 48, 3].includes(item.name_id) && item.aor === 1 && item.intervals === 1) ||
         ([39, 2, 8, 42, 34, 29, 36, 11, 5, 47, 52, 51, 66, 17, 72, 73, 54, 80].includes(item.name_id) && item.intervals === 1)
       );

@@ -57,7 +57,7 @@
         }
       },
       setupWebSocket() {
-        this.socket = new WebSocket('ws://172.31.10.35:8012/ws/chat/');
+        this.socket = new WebSocket('ws://202.137.117.84:8012/ws/chat/');
   
         this.socket.onopen = () => {
           console.log('WebSocket connection established');
