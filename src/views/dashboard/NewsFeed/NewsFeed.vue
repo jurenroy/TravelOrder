@@ -107,6 +107,10 @@
           Approved
           <span v-if="item.sname !== 20">by: {{ getName(item.sname) }}</span>
         </div>
+
+        <button @click="viewPdf(item)" class="global-action-btn">
+            <i class="fas fa-file-pdf"></i> View PDF 
+          </button>
       </div>
 
 
@@ -146,6 +150,10 @@
           </div>
 
         </div>
+
+        <button @click="viewPdf(item)" class="global-action-btn">
+            <i class="fas fa-file-pdf"></i> View PDF 
+          </button>
       </div>
 
       <div  v-else-if="item.types === 'ict'" class="feed-status-row">
@@ -169,12 +177,16 @@
           Done Feedback
         </div>
 
+        <button @click="viewPdf(item)" class="global-action-btn">
+            <i class="fas fa-file-pdf"></i> View PDF 
+          </button>
+
       </div>
 
 
         <!-- Action Buttons (same for both) -->
-        <div class="global-button-line"></div>
-        <div class="global-action-buttons">
+        <div class="global-button-line" v-if="1==0"></div>
+        <div class="global-action-buttons" v-if="1==0">
           <button @click="initializeItem(item)" class="global-action-btn">
             <i class="fas fa-cogs"></i> Initialize
           </button>

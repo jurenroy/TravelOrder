@@ -12,7 +12,7 @@
                </div>
                <img :src="image2" alt="Bago Image" class="pic2">
            </div>
-           <h3 style="text-align: center">APPLICATION FOR LEAVE {{ leaveform_id }}</h3>
+           <h3 style="text-align: center">APPLICATION FOR LEAVE</h3>
            <div>
                <div style="border: 2px solid black; padding: 5px;">
                    <div

@@ -22,7 +22,7 @@
 <script>
 import TravelCard from '../travelorderV2/Card.vue';
 import LeaveCard from '../leaveform/Card.vue';
-import ICTCard from '../ictsrf/Card.vue'
+import ICTCard from '../ictsrf/Card.vue';
 import { useAuthStore } from '@/store/auth'; // Adjust the path as necessary
 import { computed, ref, onMounted, onBeforeUnmount, defineEmits, defineProps } from 'vue';
 import { useRoute } from 'vue-router'; // Import useRoute

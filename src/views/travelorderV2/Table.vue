@@ -83,7 +83,7 @@
             For Initial by: <span v-if="[15,21,45,48, 3].includes(item.name_id)">RD</span> <span v-else-if="[2,39,3,8,42,34,29,52,51,36,5,47,17].includes(item.name_id) && item.intervals == 1">DC</span> <span v-else-if="item.intervals == 1">DC</span> <span v-else>SC</span>
           </td>
           
-          <td v-if="!isInitialNull(item)" class="status-approved">
+          <td v-if="!isInitialNull(item)">
             <p v-if="isInitialized(item)">
             <img src="../../assets/check.png" alt="Approved" class="status-icon">
             {{ item.initial.charAt(0).toUpperCase() + item.initial.slice(1) }} 

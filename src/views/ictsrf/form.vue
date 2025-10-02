@@ -277,7 +277,7 @@ const handleSubmit = async () => {
 
     // Reload after successful submission
     setTimeout(() => {
-      // window.location.reload(); // Or any other action you want to take
+      window.location.reload(); // Or any other action you want to take
     }, 2000); // Adjust delay as needed
   } catch (error) {
     console.error('Error submitting form:', error);

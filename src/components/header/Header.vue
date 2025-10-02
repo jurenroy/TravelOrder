@@ -41,11 +41,11 @@ import Logout from '../logout/Logout.vue';
 import Login from '../login/Login.vue';
 import Heder from '../heder.vue';
 import { useAuthStore } from '@/store/auth';
-import TravelCard from '@/views/travelorderV2/Card.vue';
-import LeaveCard from '@/views/leaveform/Card.vue';
-import ICTCard from '@/views/ictsrf/Card.vue'
 import { useChatStore } from '@/store/chat';
 import Chat from '@/views/chat/Dashboard.vue';
+import { API_BASE_URL } from '../../config';
+import { usePendingStore } from '@/store/pending';
+import axios from 'axios';
 
 
 export default {
@@ -76,6 +76,43 @@ export default {
       showLogin.value = false;
     };
 
+    const fetchCounts = async () => {
+  const ictRequestApiUrl = `${API_BASE_URL}/services/76/count`;
+  const leaveFormApiUrl = `${API_BASE_URL}/get_leave_json/76/count`;
+  const travelOrderApiUrl = `${API_BASE_URL}/get_forms_json/76/count`;
+
+  try {
+    // Fetch all counts concurrently using Promise.all
+    const [ictRequestResponse, leaveFormResponse, travelOrderResponse] = await Promise.all([
+      axios.get(ictRequestApiUrl),
+      axios.get(leaveFormApiUrl),
+      axios.get(travelOrderApiUrl)
+    ]);
+
+    // Assuming the API responses have a 'count' field
+    const ictRequestCount = ictRequestResponse.data;  
+    const leaveFormCount = leaveFormResponse.data;      
+    const travelOrderCount = travelOrderResponse.data;    
+
+    // Use the pending store to update counts
+    const pendingStore = usePendingStore();
+
+    pendingStore.count('ictrequest', ictRequestCount);
+    pendingStore.count('leaveform', leaveFormCount);
+    pendingStore.count('travelorder', travelOrderCount);
+
+    console.log("Counts updated:", {
+      ictRequestCount,
+      leaveFormCount,
+      travelOrderCount
+    });
+
+  } catch (error) {
+    console.error("Error fetching counts:", error);
+  }
+};
+
+
     const closeLoginModal = () => {
       showLogin.value = false;
     };
@@ -99,7 +136,6 @@ export default {
     // Update the links based on login status
     const links = ref([
       { text: 'Home', url: '/' },
-      { text: 'Services', url: '/services' },
       { text: 'Chats', url: '/chat' },
       { text: isLoggedIn.value ? 'Logout' : 'Login', url: '#' } // Set URL to '#' to prevent routing
     ]);
@@ -170,6 +206,7 @@ export default {
     });
 
     onMounted(() => {
+      fetchCounts();
       checkMobileScreen();
       window.addEventListener('resize', checkMobileScreen);
     });
