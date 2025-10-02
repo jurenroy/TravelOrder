@@ -63,8 +63,8 @@
 
                   <button class="action-button" @click="editService(service)" v-if="admin.includes(parseInt(nameId))">Edit </button>
                   <!-- <button class="action-button" @click="deleteService(service.id)" v-if="admin.includes(parseInt(nameId))">Delete</button> -->
-                  <button class="action-button" @click="approveService(service.id)" v-if="nameId == 36 && service.approvedBy == null">Approve</button>
-                  <button class="action-button" @click="disapproveService(service.id)" v-if="nameId == 36 && service.approvedBy == null && service.remarks !== 'Disapproved'">Dissapprove</button>
+                  <button class="action-button" @click="approveService(service.id)" v-if="nameId == 66 && service.approvedBy == null">Approve</button>
+                  <button class="action-button" @click="disapproveService(service.id)" v-if="nameId == 66 && service.approvedBy == null && service.remarks !== 'Disapproved'">Dissapprove</button>
                   <button class="action-button" @click="viewService(service.id, service.feedback_filled)" v-if="service.id !== selectedview">View</button>
                   <button class="action-button" @click="closeView()" v-if="service.id == selectedview">Close View</button>
                 </td>
