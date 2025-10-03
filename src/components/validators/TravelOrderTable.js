@@ -30,10 +30,10 @@ const TravelOrderTable = {
       return item.note !== null;
     },
     forRecommendationNoneORDNoneChief(item) {
-      return item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 3, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59, 77].includes(item.name_id);
+      return item.signature1 === null && item.note !== null && ![15, 20, 21, 45, 48, 3, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59, 77,  51].includes(item.name_id);
     },
     forRecommendationORDandChiefwithIntervals(item) {
-      return item.signature1 === null && item.note !== null && [15, 21, 45, 48, 3, 56, 58, 55, 59, 60, 13, 10, 37, 62, 53, 77, 4].includes(item.name_id) && item.intervals === 1;
+      return item.signature1 === null && item.note !== null && [15, 21, 45, 48, 3, 56, 58, 55, 59, 60, 13, 10, 37, 62, 53, 77, 51].includes(item.name_id) && item.intervals === 1;
     },
     forRecommendationCAOnotIncluded(item) {
       return !([15].includes(item.name_id) && item.aor === 0 && item.intervals === 1);
@@ -60,7 +60,7 @@ const TravelOrderTable = {
       return item.signature2 === null && item.signature1 !== null;
     },
     forApprovalORDandChief(item) {
-      return [15, 20, 21, 45, 48, 3, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59, 77].includes(item.name_id) && item.signature2 === null && item.note !== null && item.intervals === 0;
+      return [15, 20, 21, 45, 48, 3, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59, 77, 4, 51].includes(item.name_id) && item.signature2 === null && item.note !== null && item.intervals === 0;
     },
     forApprovalRDinterval(item) {
       return item.name_id === 20 && item.intervals === 1;
@@ -78,7 +78,7 @@ const TravelOrderTable = {
       return item.signature2 !== null && item.signature1 !== null && item.note !== null;
     },
     approvedORD(item) {
-      return [15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59, 77].includes(item.name_id) && item.signature2 !== null;
+      return [15, 20, 21, 45, 48, 13, 10, 37, 62, 53, 75, 56, 58, 55, 60, 59, 77, 51].includes(item.name_id) && item.signature2 !== null;
     },
   };
 

@@ -61,6 +61,7 @@ export default {
     const authStore = useAuthStore();
     const router = useRouter();
     const isLoggedIn = computed(() => authStore.isLoggedIn);
+    const nameId = computed(() => authStore.name_id);
     const isMenuOpen = ref(true);
     const isMobile = ref(false);
     const chatStore = useChatStore();
@@ -77,9 +78,9 @@ export default {
     };
 
     const fetchCounts = async () => {
-  const ictRequestApiUrl = `${API_BASE_URL}/services/76/count`;
-  const leaveFormApiUrl = `${API_BASE_URL}/get_leave_json/76/count`;
-  const travelOrderApiUrl = `${API_BASE_URL}/get_forms_json/76/count`;
+  const ictRequestApiUrl = `${API_BASE_URL}/services/${nameId.value}/count`;
+  const leaveFormApiUrl = `${API_BASE_URL}/get_leave_json/${nameId.value}/count`;
+  const travelOrderApiUrl = `${API_BASE_URL}/get_forms_json/${nameId.value}/count`;
 
   try {
     // Fetch all counts concurrently using Promise.all

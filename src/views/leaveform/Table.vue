@@ -361,7 +361,7 @@
     },
     mounted() {
       this.fetchNames();
-      this.fetchData();
+      this.fetchData(true);
       this.fetchEmployees();
     },
     data() {
@@ -370,7 +370,7 @@
         pendingStore: usePendingStore(),
         numberOfRows: 6,  // Default number of rows to fetch
         rowOptions: [10, 20, 50, 100, 200, 500, 1000, 5000, 10000], // Options for number of rows to fetch
-        selectedStatus: 'Me',
+        selectedStatus: 'Pending',
         options: ['Pending', 'Done', 'Me'],
         yearToday: new Date().getFullYear(),
         formData: [],
@@ -508,7 +508,7 @@
           }
         }).then(() => {
           
-            this.fetchData();
+            this.fetchData(true);
             this.leavecredits = ''
             this.totalvacation = ''
             this.totalsick = ''
@@ -540,7 +540,7 @@
           }
         }).then(() => {
           
-          this.fetchData();
+          this.fetchData(true);
           this.recommendationLeavetype.length = 0
           this.text = ''
           this.recoms = false
@@ -568,7 +568,7 @@
           }
         }).then(() => {
   
-          this.fetchData();
+          this.fetchData(true);
           this.text2 = ''
           this.approveLeavetype.length = 0
           this.appr = false
@@ -597,6 +597,15 @@
             this.csvformdata = response.data
   
             this.formData = [...this.formData, ...response.data]; // Append new data
+
+            // Get the IDs already present
+          const existingIds = new Set(this.formData.map(item => item.leaveform_id));
+      
+          // Filter out duplicates
+          const uniqueNewData = response.data.filter(item => !existingIds.has(item.leaveform_id));
+      
+          // Append only unique items
+          this.formData = [...this.formData, ...uniqueNewData]
           
           })
           .catch(error => {
