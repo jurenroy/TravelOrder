@@ -23,9 +23,9 @@
           <th>Serial/Engine No.:</th>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>dsfgdfsg</td>
+          <td>dfgsdfgdsfg</td>
+          <td>sdfgsdfgdfg</td>
         </tr>
         <!-- Row 2 -->
         <tr>
@@ -34,9 +34,9 @@
           <th>Acquisition Cost:</th>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>dsfgdsfgdsf</td>
+          <td>sdfgdsfgdfs</td>
+          <td>sdfgdsfgdsfg</td>
         </tr>
         <!-- Row 3 -->
         <tr>
@@ -45,8 +45,8 @@
           <th></th>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
+          <td>sdfgdsfgdfs</td>
+          <td>dfsgdfsgdf</td>
           <td></td>
         </tr>
       </table>
@@ -57,13 +57,13 @@
     <!-- Nature & Scope of Work -->
     <div class="section">
       <h4>NATURE & SCOPE OF WORK TO BE DONE:</h4>
-      <div class="blank-area"></div>
+      <div class="blank-area">dgdfgdfgdfg</div>
     </div>
 
     <!-- Parts to be Supplied / Replace -->
     <div class="section">
       <h4>PARTS TO BE SUPPLIED / REPLACED:</h4>
-      <div class="blank-area"></div>
+      <div class="blank-area">dfgdsfgdfgdf</div>
     </div>
 
     <!-- Requested By -->
@@ -120,20 +120,17 @@
   <style scoped>
   .a4-container {
   width: 210mm;
-  height: 297mm;
-  background-image: url('@/components/assets/hnf.jpg');
-  background-size: cover; /* or contain if you want no cropping */
-  background-position: center;
-  background-repeat: no-repeat;
+  height: auto;
   padding: 10mm; /* space so text isn't on the edge */
   box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
 }
 .a4-photo {
   position: absolute;
   top: 0;
-  left: 0;
   width: 210mm;
-  height: 297mm;
+  height: auto;
   object-fit: cover;
   z-index: -1;
   user-select: none;
@@ -144,6 +141,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
+    margin-top: 150px;
   }
   
   .label-line {
@@ -173,7 +171,7 @@
     text-align: left;
   }
   .section {
-  margin-bottom: 12mm;
+  margin-top: 5mm;
 }
 
 .section h4 {
@@ -182,12 +180,12 @@
 
 .blank-area {
   border: 1px solid black;
-  height: 30mm; /* Adjust height per section */
+  height: 15mm; /* Adjust height per section */
   background: white;
 }
 
 .requested-by {
-  margin-top: 20mm;
+  margin-top: 10mm;
   display: flex;
   flex-direction: column;
   gap: 8px;

@@ -27,6 +27,8 @@ import ChatVue from './views/chat/Blank.vue';
 
 import PDF from './views/FADRF/JobOrder/PDF.vue';
 
+import CALENDAR from './views/calendar/dashboard.vue'
+
 const routes = [
   {
       path: '/',
@@ -116,6 +118,11 @@ const routes = [
     {
       path: '/pedeep',
       component: PDF,
+      meta: { requiresAuth: false },
+    },
+    {
+      path: '/calendar',
+      component: CALENDAR,
       meta: { requiresAuth: false },
     }
     

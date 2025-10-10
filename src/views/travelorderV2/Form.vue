@@ -58,7 +58,7 @@
   
         <div class="luxury-form-fields">
           <label class="luxury-form-label">Purpose of Travel:</label>
-          <input @keydown.enter="form_submit" type="text" v-model="purpose" :class="{ 'input-error': isRed && purpose === '' }" class="luxury-form-input" required>
+          <textarea @keydown.enter="form_submit" type="text" v-model="purpose" :class="{ 'input-error': isRed && purpose === '' }" class="luxury-form-input" required></textarea>
   
           <label class="luxury-form-label">Per Diems/Expense Allowed:</label>
           <input @keydown.enter="form_submit" type="text" v-model="pdea" class="luxury-form-input" required>
