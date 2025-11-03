@@ -12,6 +12,14 @@
     @notePosted="handleNotePosted"
   />
 
+  <TravelClearanceModal
+    :isVisible="isClearanceModalVisible"
+    :travelOrderId="currentClearanceId"
+    :travelOrderData="currentClearanceData"
+    @close="closeClearanceModal"
+    @clearanceCreated="handleClearanceCreated"
+  />
+
   <div class="luxury-container">
   
 <div v-if="load" class="loader"></div> <!-- Loader here -->
@@ -149,7 +157,17 @@
           <button v-if="selectedTravelOrderId != item.travel_order_id" @click="openPDF(item.travel_order_id)">PDF</button>
           <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close" class="action-icon"/>
         </td>
-        
+
+        <td class="status-actions" v-if="(nameId == 37 || nameId == 76)">
+          <span v-if="item.has_clearance" class="clearance-indicator">
+            <img src="../../assets/check.png" alt="Clearance Exists" class="status-icon">
+            Clearance Created
+          </span>
+          <button v-else-if="item.hasclearance == null && currentClearanceId !== item.travel_order_id" @click="openClearanceModal(item)">Create Clearance</button>
+          <button v-else-if="item.hasclearance && currentClearanceId !== item.travel_order_id" @click="openPDF(item.hasclearance)">View Clearance</button>
+          <img src="/src/assets/close_note.png" v-if="isClearanceModalVisible && currentClearanceId === item.travel_order_id" @click="closeClearanceModal()" class="action-icon"/>
+        </td>
+
         <!-- Signature Actions -->
         <td v-if="([15,20,21,45,48, 3].includes(nameId) && item.note !== null && item.signature1 == null && ![15, 21, 45, 48, 3].includes(item.name_id) && item.division_id !== 5 && item.intervals == 0) || (nameId == 15 && item.note !== null && item.signature1 == null && item.intervals == 1)" class="status-actions">
           <!-- <button @click="signature1(item.travel_order_id)">{{ sub.name_id === bus.name_id ? 'Approve' : 'Recommend' }}</button> -->
@@ -160,9 +178,9 @@
           <button @click="signature11(item.travel_order_id, item.name_id)">Recommends CAO</button>
         </td>
 
-        <td v-if="item.travel_order_id !== currentNoteId && item.note == null && (nameId == 37 || nameId == 76)" class="status-actions">
+        <!-- <td v-if="item.travel_order_id !== currentNoteId && item.note == null && (nameId == 37 || nameId == 76)" class="status-actions">
           <button @click="openAddNoteModal(item.travel_order_id)">Add Note</button>
-        </td>
+        </td> -->
 
         <td v-if="isNoteModalVisible && item.travel_order_id == currentNoteId && (nameId == 37 || nameId == 76)" class="status-actions">
           <img src="/src/assets/close_note.png" @click="closeNoteModal()" class="action-icon"/>
@@ -172,10 +190,10 @@
           <button @click="openViewNoteModal(item.note, item.travel_order_id)">View Note</button>
         </td>
 
-        <td v-if="(((employees.rd || nameId == 20) && item.note !== null && item.name_id !== 20 && item.signature2 === null) && 
+        <td v-if="(((employees.rd || nameId == 20) && item.note !== null && item.name_id !== 20 && item.signature2 === null) &&
         ((item.signature1 !== null && item.division_id !== 5) || //done reco to be p
         (item.signature2 === null && item.division_id === 5) || //ord to be reco
-        (item.signature1 !== null && item.division_id === 5 && item.intervals == 1)|| 
+        (item.signature1 !== null && item.division_id === 5 && item.intervals == 1)||
         ([15, 21, 45, 48, 3].includes(item.name_id) && item.note !== null)))" class="status-actions">
           <button @click="signature2(item.travel_order_id)">Approve</button>
         </td>
@@ -191,12 +209,16 @@
 </div>
 
   </div>
-  <div v-show="selectedTravelOrderId" class="prent full-screen">
+  <div v-show="selectedTravelOrderId && selectedPDFtype=='to'" class="prent full-screen">
     <!-- <div class="buttons">
       <button @click="printzz">Download as PDF</button>
       <button @click="close">Close PDF</button>
     </div> -->
+    
       <pdf :travel_order_id="selectedTravelOrderId"></pdf>
+    </div>
+    <div v-show="selectedTravelOrderId && selectedPDFtype=='tc'" class="prent full-screen">
+    <travelclearancepdf :clearance_id="selectedTravelOrderId"></travelclearancepdf>
     </div>
     
 </template>
@@ -208,7 +230,9 @@ import editform from './EditForm.vue';
 import form from './Form.vue';
 import otpz from '../../components/otp/OTP.vue';
 import NoteModal from '@/components/note/Note.vue';
+import TravelClearanceModal from './TravelClearanceModal.vue';
 import ItemIndicators from '@/components/validators/TravelOrderTable.js';
+import travelclearancepdf from './TravelClearancePDF.vue';
 import { API_BASE_URL } from '../../config'
 import { useAuthStore } from '../../store/auth';
 import { f } from 'html2pdf.js';
@@ -226,7 +250,9 @@ components: {
   editform,
   form,
   NoteModal,
-  ItemIndicators
+  TravelClearanceModal,
+  ItemIndicators,
+  travelclearancepdf
 },
 mounted() {
   this.fetchEmployees();
@@ -243,7 +269,7 @@ data() {
   const authStore = useAuthStore();
   return {
     pendingStore: usePendingStore(),
-    numberOfRows: 3,  // Default number of rows to fetch
+    numberOfRows: 4,  // Default number of rows to fetch
     rowOptions: [10, 20, 50, 100, 200, 500, 1000, 5000, 10000], // Options for number of rows to fetch
     selectedStatus: 'Pending',
     optionsEmp: ['Pending', 'Done', 'All'],
@@ -267,6 +293,7 @@ data() {
     names: {},
     employees: {},
     selectedTravelOrderId: 0,
+    selectedPDFtype: '',
     selectedTravelOrderIdEdit: 0,
     accountId: authStore.name_id,
     nameId: authStore.name_id,
@@ -287,6 +314,9 @@ data() {
     currentNoteId: 0,
     currentNoteText: '',
     currentNoteType: '',
+    isClearanceModalVisible: false, // Control visibility of clearance modal
+    currentClearanceId: 0,
+    currentClearanceData: null,
     socket: '',
   };
 },
@@ -513,6 +543,20 @@ methods: {
     // Handle the note posted event (e.g., refresh the note list)
     this.fetchData(true);
   },
+  openClearanceModal(item) {
+    this.currentClearanceId = item.travel_order_id;
+    this.currentClearanceData = item;
+    this.isClearanceModalVisible = true;
+  },
+  closeClearanceModal() {
+    this.isClearanceModalVisible = false;
+    this.currentClearanceId = 0;
+  },
+  handleClearanceCreated() {
+    console.log('Clearance created');
+    // Handle the clearance created event (e.g., refresh the data)
+    this.fetchData(true);
+  },
   initialize(numz) {
     this.initnum = numz
     const formData = new FormData();
@@ -679,15 +723,17 @@ methods: {
   },
   openPDF(travelOrderId) {
     this.selectedTravelOrderId = travelOrderId;
-    console.log(this.selectedTravelOrderId)
+    if (travelOrderId) {
+      this.selectedPDFtype = String(travelOrderId).includes('-') ? 'tc' : 'to';
+    }
     setTimeout(() => {
       this.printzz();
-    }, 500);  // 500 milliseconds = 0.5 seconds
+    }, 1000);  // 500 milliseconds = 0.5 seconds
   },
   close() {
     this.selectedTravelOrderId = 0
+    this.selectedPDFtype = '';
   },
-
   updateVisibleItems() {
     this.visibleItems = this.formData.slice(0, 20);
   },

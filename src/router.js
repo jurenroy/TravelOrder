@@ -25,9 +25,12 @@ import logout from './components/logout/Logout.vue';
 import ChatVue from './views/chat/Blank.vue';
 
 
-import PDF from './views/FADRF/JobOrder/PDF.vue';
+// import PDF from './views/FADRF/JobOrder/PDF.vue';
+import PDF from './views/travelorderV2/TravelClearancePDF.vue';
 
 import CALENDAR from './views/calendar/dashboard.vue'
+import TravelClearance from './views/travelorderV2/TravelClearance.vue'
+import AuditTrails from './views/travelorderV2/AuditTrails.vue'
 
 const routes = [
   {
@@ -113,6 +116,18 @@ const routes = [
         component: FADRF,
         meta: { requiresAuth: true }
       },
+      {
+        path: '/travelclearance',
+        name: 'TravelClearance',
+        component: TravelClearance,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/audit-trails',
+        name: 'AuditTrails',
+        component: AuditTrails,
+        meta: { requiresAuth: true }
+      },
       ]
     },
     {
@@ -160,9 +175,13 @@ router.beforeEach((to, from, next) => {
     document.title = 'Procurement Request Form';
   } else if (to.name === 'FADRF' ){
     document.title = 'Admin Request Form';
+  } else if (to.name === 'TravelClearance' ){
+    document.title = 'Travel Clearance Form';
+  } else if (to.name === 'AuditTrails' ){
+    document.title = 'Audit Trails';
   }else {
     document.title = 'MGB Application Form';
-  }  
+  }
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!authStore.isLoggedIn) {
       next({

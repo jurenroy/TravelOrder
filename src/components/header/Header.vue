@@ -17,6 +17,32 @@
       </nav>
     </nav>
 
+    <!-- Notification Bell -->
+    <div class="notification-container" v-if="isLoggedIn">
+      <div class="notification-bell" @click="toggleNotifications" :class="{ 'has-unread': notificationsStore.unreadCount > 0 }">
+        <i class="bell-icon">🔔</i>
+        <span v-if="notificationsStore.unreadCount > 0" class="notification-count">{{ notificationsStore.unreadCount }}</span>
+      </div>
+      <!-- Notifications Dropdown -->
+      <div v-if="showNotifications" class="notifications-dropdown">
+        <div class="dropdown-header">
+          <h4>Notifications</h4>
+          <button @click="markAsRead" class="mark-read-btn">Mark All Read</button>
+        </div>
+        <div class="notifications-list">
+          <div v-if="notificationsStore.notifications.length === 0" class="no-notifications">No notifications</div>
+          <div v-for="notification in notificationsStore.notifications" :key="notification.id" class="notification-item" :class="{ 'unread': !notification.read }">
+            <div class="notification-title">{{ notification.title }}</div>
+            <div class="notification-message">{{ notification.message }}</div>
+            <div class="notification-time">{{ formatTime(notification.timestamp) }}</div>
+          </div>
+        </div>
+        <div class="dropdown-footer">
+          <button @click="goToAuditTrails" class="view-audit-btn">View Audit Trails</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Hamburger icon for mobile -->
     <div class="hamburger" @click="toggleMenu" v-if="isMobile || !isMenuOpen">
       <div class="line"></div>
@@ -35,13 +61,14 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Logout from '../logout/Logout.vue';
 import Login from '../login/Login.vue';
 import Heder from '../heder.vue';
 import { useAuthStore } from '@/store/auth';
 import { useChatStore } from '@/store/chat';
+import { useNotificationsStore } from '@/store/notifications';
 import Chat from '@/views/chat/Dashboard.vue';
 import { API_BASE_URL } from '../../config';
 import { usePendingStore } from '@/store/pending';
@@ -60,12 +87,15 @@ export default {
     const title = ref('MGBxPORTAL');
     const authStore = useAuthStore();
     const router = useRouter();
+    const notificationsStore = useNotificationsStore();
     const isLoggedIn = computed(() => authStore.isLoggedIn);
     const nameId = computed(() => authStore.name_id);
     const isMenuOpen = ref(true);
     const isMobile = ref(false);
     const chatStore = useChatStore();
-    const unreadMessagesCount = ref(0)
+    const unreadMessagesCount = ref(0);
+    const showNotifications = ref(false);
+    let websocket = null;
 
     const goHome = () => {
       router.push('/');
@@ -91,9 +121,9 @@ export default {
     ]);
 
     // Assuming the API responses have a 'count' field
-    const ictRequestCount = ictRequestResponse.data;  
-    const leaveFormCount = leaveFormResponse.data;      
-    const travelOrderCount = travelOrderResponse.data;    
+    const ictRequestCount = ictRequestResponse.data;
+    const leaveFormCount = leaveFormResponse.data;
+    const travelOrderCount = travelOrderResponse.data;
 
     // Use the pending store to update counts
     const pendingStore = usePendingStore();
@@ -132,6 +162,63 @@ export default {
       isLoggedIn.value = false;  // Set the logged-in state to false
       authStore.logout(); // Call the logout action
       isLogoutClicked.value = false; // Close the logout confirmation dialog
+      disconnectWebSocket();
+    };
+
+    // WebSocket functions
+    const connectWebSocket = () => {
+      if (!isLoggedIn.value) return;
+
+      websocket = new WebSocket('ws://172.31.10.34:8012/ws/chat/');
+
+      websocket.onopen = () => {
+        console.log('WebSocket connected');
+      };
+
+      websocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'notification_message') {
+          notificationsStore.addNotification({
+            id: Date.now(),
+            title: data.title,
+            message: data.message,
+            timestamp: new Date(),
+            read: false
+          });
+        }
+      };
+
+      websocket.onclose = () => {
+        console.log('WebSocket disconnected');
+      };
+
+      websocket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+      };
+    };
+
+    const disconnectWebSocket = () => {
+      if (websocket) {
+        websocket.close();
+        websocket = null;
+      }
+    };
+
+    const toggleNotifications = () => {
+      showNotifications.value = !showNotifications.value;
+    };
+
+    const markAsRead = () => {
+      notificationsStore.markAsRead();
+    };
+
+    const goToAuditTrails = () => {
+      router.push('/audit-trails');
+      showNotifications.value = false;
+    };
+
+    const formatTime = (timestamp) => {
+      return new Date(timestamp).toLocaleTimeString();
     };
 
     // Update the links based on login status
@@ -182,8 +269,8 @@ export default {
       if (linkText !== 'Chats' && chatStore.show){
         console.log('dili ipashow')
         chatStore.toggleShow()
-      } 
-      
+      }
+
 
     };
 
@@ -210,6 +297,13 @@ export default {
       fetchCounts();
       checkMobileScreen();
       window.addEventListener('resize', checkMobileScreen);
+      if (isLoggedIn.value) {
+        connectWebSocket();
+      }
+    });
+
+    onUnmounted(() => {
+      disconnectWebSocket();
     });
 
     return {
@@ -232,7 +326,13 @@ export default {
       unreadMessagesCount,
       updateUnreadMessages,
       checkMobileChat,
-      checkMobileScreens
+      checkMobileScreens,
+      notificationsStore,
+      showNotifications,
+      toggleNotifications,
+      markAsRead,
+      goToAuditTrails,
+      formatTime
     };
   }
 };
@@ -370,6 +470,158 @@ export default {
       width: 200px; /* Adjust the width as needed */
     }
   }
+  /* Notification Styles */
+  .notification-container {
+    position: relative;
+    margin-right: 20px;
+  }
+
+  .notification-bell {
+    position: relative;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+  }
+
+  .notification-bell:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .notification-bell.has-unread .bell-icon {
+    color: #ff4444;
+  }
+
+  .notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff4444;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  .notifications-dropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 350px;
+    max-height: 400px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    background-color: #f8f9fa;
+  }
+
+  .dropdown-header h4 {
+    margin: 0;
+    color: #333;
+  }
+
+  .mark-read-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .mark-read-btn:hover {
+    background-color: #0056b3;
+  }
+
+  .notifications-list {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 300px;
+  }
+
+  .no-notifications {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+  }
+
+  .notification-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .notification-item:hover {
+    background-color: #f8f9fa;
+  }
+
+  .notification-item.unread {
+    background-color: #e3f2fd;
+  }
+
+  .notification-item.unread .notification-title {
+    font-weight: bold;
+  }
+
+  .notification-title {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+
+  .notification-message {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+    line-height: 1.4;
+  }
+
+  .notification-time {
+    font-size: 11px;
+    color: #999;
+  }
+
+  .dropdown-footer {
+    padding: 15px;
+    border-top: 1px solid #eee;
+    background-color: #f8f9fa;
+    text-align: center;
+  }
+
+  .view-audit-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .view-audit-btn:hover {
+    background-color: #218838;
+  }
+
   @media print{
     .header{
       display: none;

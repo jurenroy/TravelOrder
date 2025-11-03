@@ -140,19 +140,20 @@ const fetchEvents = async () => {
         division: selectedDivision.value,  // Use selected division or 'all' if none selected
         name: 'all',
       },
-    })
-    console.log(response.data.events)
+    });
+
+    console.log(response.data.events);
 
     events.value = response.data.events.map((item, index) => {
-      let tooltip = ''
-      let travelType = ''
-      
+      let tooltip = '';
+      let travelType = '';
+
       if (item.record_type === 'travel') {
-        tooltip = `${item.purpose}\nDestination: ${item.destination}`
-        travelType = 'Travel ' // Assuming `travel_type` is available
+        tooltip = `${item.purpose}\nDestination: ${item.destination}`;
+        travelType = 'Travel'; // Assuming `travel_type` is available
       } else if (item.record_type === 'leave') {
-        tooltip = `${item.detail || ''}\nDays: ${item.days}`
-        travelType = 'Leave' // Special case for leave
+        tooltip = `${item.detail || ''}\nDays: ${item.days}`;
+        travelType = 'Leave'; // Special case for leave
       }
 
       return {
@@ -163,17 +164,19 @@ const fetchEvents = async () => {
         start: item.start,
         end: item.end,
         tooltip,
-      }
-    })
+      };
+    });
 
-    console.log(events.value)
+    console.log(events.value);
   } catch (error) {
-    console.error('Failed to fetch events:', error)
+    console.error('Failed to fetch events:', error);
   }
 }
 
 // Fetch names dynamically when needed
 const getPersonName = (name_id) => {
+  
+
   // Check if the name is already fetched
   const name = namesMap.value.find(name => name_id === name.name_id);
   
@@ -196,23 +199,26 @@ const getPersonName = (name_id) => {
 }
 
 // Fetch names from the server and populate namesMap
-const fetchName = () => {
-  return axios.get(`${API_BASE_URL}/get_names_json`)
-    .then((response) => {
-      const nameData = response.data;
-      if (nameData) {
-        namesMap.value = nameData; // Update namesMap with fetched data
-      }
-    })
-    .catch((error) => {
-      console.error('Failed to fetch name:', error);
-    });
+// Fetch names from the server and populate namesMap
+const fetchName = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/get_names_json`);
+    const nameData = response.data;
+    if (nameData) {
+      namesMap.value = nameData; // Update namesMap with fetched data
+    }
+  } catch (error) {
+    console.error('Failed to fetch names:', error);
+  }
 }
 
 // Auto-fetch
-onMounted(() => {
-  fetchEvents() // Fetch events when the component is mounted
-  fetchName()
+onMounted(async () => {
+  // Wait for names to be fetched first
+  await fetchName();
+  
+  // Once names are fetched, fetch events
+  fetchEvents(); 
 })
 
 watch(currentDate, fetchEvents)
@@ -223,26 +229,64 @@ watch(selectedDivision, fetchEvents)
 
 
 <style scoped>
+/* Center the calendar container and make it responsive */
 .calendar-container {
-  max-width: 900px;
   margin: 2rem auto;
   font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* Center elements vertically */
+  max-width: 100%; /* Ensure it doesn't overflow */
+  width: 100%;
+  padding: 1rem; /* Adds some padding around the calendar */
+  box-sizing: border-box;
 }
 
+/* Calendar header styling */
 .calendar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%; /* Ensure it spans the width of the calendar */
   margin-bottom: 1rem;
+  flex-wrap: wrap; /* Allows items to wrap on smaller screens */
 }
 
+.calendar-header .month-year {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.calendar-header .controls {
+  display: flex;
+  gap: 10px;
+}
+
+.calendar-header .controls button {
+  padding: 0.5rem 1rem;
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.calendar-header .controls button:hover {
+  background-color: #005a8a;
+}
+
+/* Calendar grid styling */
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, 1fr); /* 7 columns for each day of the week */
   gap: 0px;
   grid-template-rows: auto;
+  width: 100%; /* Make sure it spans full width */
+  max-width: 100%; /* Prevents overflow */
 }
 
+/* Styling for the day names (e.g., Sunday, Monday) */
 .day-name {
   text-align: center;
   font-weight: bold;
@@ -250,6 +294,7 @@ watch(selectedDivision, fetchEvents)
   padding: 8px 0;
 }
 
+/* Styling for the day cells in the calendar */
 .day-cell {
   min-height: 100px;
   border: 1px solid #eee;
@@ -257,11 +302,13 @@ watch(selectedDivision, fetchEvents)
   position: relative;
 }
 
+/* Styling for today's cell */
 .today {
   background-color: #e3f2fd;
   border: 2px solid #2196f3;
 }
 
+/* Styling for the date number in each cell */
 .date-number {
   font-size: 0.9rem;
   text-align: right;
@@ -291,5 +338,34 @@ watch(selectedDivision, fetchEvents)
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Responsive design for small screens (tablets, phones) */
+@media (max-width: 768px) {
+  .calendar-container {
+    margin: 1rem;
+    padding: 0.5rem;
+  }
+
+  .calendar-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .calendar-grid {
+    grid-template-columns: repeat(5, 1fr); /* Reduce columns on smaller screens */
+  }
+}
+
+/* Responsive for very small screens (phones in portrait mode) */
+@media (max-width: 480px) {
+  .calendar-header {
+    font-size: 1rem; /* Smaller text for mobile */
+  }
+
+  .calendar-grid {
+    grid-template-columns: repeat(4, 1fr); /* Further reduce grid size */
+  }
 }
 </style>
