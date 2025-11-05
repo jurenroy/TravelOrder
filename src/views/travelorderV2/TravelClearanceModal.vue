@@ -307,6 +307,7 @@ export default {
         this.form.purpose = this.travelOrderData.purpose || '';
         this.form.departure = this.travelOrderData.departure || '';
         this.form.arrival = this.travelOrderData.arrival || '';
+        this.form.pap_code = this.travelOrderData.papc || '';
       }
     },
     async fetchClearanceByNumber(clearanceNumber) {

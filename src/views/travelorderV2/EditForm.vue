@@ -60,6 +60,9 @@
           <label class="luxury-form-label">Purpose of Travel:</label>
           <input @keydown.enter="form_submit" type="text" v-model="purpose" :class="{ 'input-error': isRed && purpose === '' }" class="luxury-form-input" required>
   
+          <label class="luxury-form-label">PAP CODE (N/A):</label>
+          <input @keydown.enter="form_submit" type="text" v-model="papc" class="luxury-form-input" required>
+
           <label class="luxury-form-label">Per Diems/Expense Allowed:</label>
           <input @keydown.enter="form_submit" type="text" v-model="pdea" class="luxury-form-input" required>
   
@@ -122,6 +125,7 @@
         station: 'MGB-X',
         arrival: '',
         pdea: '',
+        papc:'',
         ala: '',
         appropriation: '',
         remarks: '',
@@ -290,6 +294,7 @@
             departure: this.departure,
             arrival: this.arrival,
             pdea: this.pdea,
+            papc: this.papc,
             ala: this.ala,
             appropriations: this.appropriation,
             remarks: this.remarks,
@@ -329,6 +334,7 @@
         this.purpose = '';
         this.arrival = '';
         this.pdea = '';
+        this.papc = '';
         this.ala = '';
         this.appropriation = '';
         this.remarks = '';
@@ -410,6 +416,7 @@
       this.departure = order.departure;
       this.arrival = order.arrival;
       this.pdea = order.pdea;
+      this.papc = order.papc;
       this.ala = order.ala;
       this.appropriation = order.appropriations;
       this.remarks = order.remarks;

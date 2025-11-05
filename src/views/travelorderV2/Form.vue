@@ -60,6 +60,9 @@
           <label class="luxury-form-label">Purpose of Travel:</label>
           <textarea @keydown.enter="form_submit" type="text" v-model="purpose" :class="{ 'input-error': isRed && purpose === '' }" class="luxury-form-input" required></textarea>
   
+          <label class="luxury-form-label">PAP CODE(N/A):</label>
+          <input @keydown.enter="form_submit" type="text" v-model="papc" class="luxury-form-input" required>
+          
           <label class="luxury-form-label">Per Diems/Expense Allowed:</label>
           <input @keydown.enter="form_submit" type="text" v-model="pdea" class="luxury-form-input" required>
   
@@ -118,6 +121,7 @@ import { useAuthStore } from '@/store/auth';
         station: 'MGB-X',
         arrival: '',
         pdea: '',
+        papc:'',
         ala: '',
         appropriation: '',
         remarks: '',
@@ -273,6 +277,7 @@ import { useAuthStore } from '@/store/auth';
             departure: this.departure,
             arrival: this.arrival,
             pdea: this.pdea,
+            papc: this.papc,
             ala: this.ala,
             appropriations: this.appropriation,
             remarks: this.remarks,
@@ -312,6 +317,7 @@ import { useAuthStore } from '@/store/auth';
         this.purpose = '';
         this.arrival = '';
         this.pdea = '';
+        this.papc = '';
         this.ala = '';
         this.appropriation = '';
         this.remarks = '';
