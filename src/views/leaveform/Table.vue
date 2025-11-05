@@ -595,8 +595,6 @@
             this.mawala = true;
             this.load = false
             this.csvformdata = response.data
-  
-            this.formData = [...this.formData, ...response.data]; // Append new data
 
             // Get the IDs already present
           const existingIds = new Set(this.formData.map(item => item.leaveform_id));

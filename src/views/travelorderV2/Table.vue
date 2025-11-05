@@ -1166,8 +1166,9 @@ color: #ff0000; /* Change text color on hover */
 .scrollable-table {
   width: 100%; /* Table takes full width */
   overflow-x: auto;
-  max-height: 60vh;
-  height: 60vh;
+  /* max-height: 60vh;
+  height: 60vh; */
+  max-height:calc(100vh - 260px);
   overflow-y: auto;
 }
 
