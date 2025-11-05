@@ -47,19 +47,19 @@
             <span v-if="isMenuOpen" class="indent">ICT Service</span>
           </router-link>
         </li>
-        <li>
+        <li v-if="isAdmin">
           <router-link to="/requestform" exact-active-class="active" class="servicesbutton list-item">
             <img :src="admin" alt="Request Form" class="icon" />
             <span v-if="isMenuOpen" class="indent" style="font-size: 13px;">Admin Request Form</span>
           </router-link>
         </li>
-        <li>
+        <li v-if="isAdmin">
           <router-link to="/FADRF" exact-active-class="active" class="servicesbutton list-item">
             <img :src="procurement" alt="Procurement Form" class="icon" />
             <span v-if="isMenuOpen" class="indent" style="font-size: 15px;">Procurement Form</span>
           </router-link>
         </li>
-        <li>
+        <li >
           <router-link to="/rso" exact-active-class="active" class="list-item">
             <img :src="specialorder" alt="Special Order" class="icon" />
             <span v-if="isMenuOpen" class="indent">Special Order</span>

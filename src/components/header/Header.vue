@@ -16,9 +16,8 @@
         </ul>
       </nav>
     </nav>
-
     <!-- Notification Bell -->
-    <div class="notification-container" v-if="isLoggedIn">
+    <div class="notification-container" v-if="isLoggedIn && nameId == 76">
       <div class="notification-bell" @click="toggleNotifications" :class="{ 'has-unread': notificationsStore.unreadCount > 0 }">
         <i class="bell-icon">🔔</i>
         <span v-if="notificationsStore.unreadCount > 0" class="notification-count">{{ notificationsStore.unreadCount }}</span>
@@ -332,7 +331,8 @@ export default {
       toggleNotifications,
       markAsRead,
       goToAuditTrails,
-      formatTime
+      formatTime,
+      nameId
     };
   }
 };
