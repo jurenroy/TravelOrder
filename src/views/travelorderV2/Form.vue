@@ -74,6 +74,9 @@
   
           <label class="luxury-form-label">Remarks or Special Instructions:</label>
           <input @keydown.enter="form_submit" type="text" v-model="remarks" class="luxury-form-input" required>
+
+          <label class="luxury-form-label">Google Drive link for Supporting Documents (share everyone with the link):</label>
+          <input @keydown.enter="form_submit" type="text" v-model="link" class="luxury-form-input" required>
         </div>
   
         <!-- Error and Success Messages -->
@@ -125,6 +128,7 @@ import { useAuthStore } from '@/store/auth';
         ala: '',
         appropriation: '',
         remarks: '',
+        link: '',
         isValid: false,
         isVisible: true,
         pleaseWait: false,
@@ -283,6 +287,7 @@ import { useAuthStore } from '@/store/auth';
             remarks: this.remarks,
             aor: this.aor ? '1' : '0',
             intervals: this.travelDuration ? '1' : '0',
+            link: this.link
           };
           this.submitting = true;
           this.loadis = true
@@ -323,7 +328,8 @@ import { useAuthStore } from '@/store/auth';
         this.remarks = '';
         this.pleaseWait = true;
         this.submitting = true;
-        this.isRed = false
+        this.isRed = false;
+        this.link = '';
       },
       fetchData() {
         fetch(`${API_BASE_URL}/get_names_json/`)

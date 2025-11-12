@@ -74,6 +74,9 @@
   
           <label class="luxury-form-label">Remarks or Special Instructions:</label>
           <input @keydown.enter="form_submit" type="text" v-model="remarks" class="luxury-form-input" required>
+
+          <label class="luxury-form-label">Google Drive link for Supporting Documents (share everyone with the link):</label>
+          <input @keydown.enter="form_submit" type="text" v-model="link" class="luxury-form-input" required>
         </div>
   
         <!-- Error and Success Messages -->
@@ -129,6 +132,7 @@
         ala: '',
         appropriation: '',
         remarks: '',
+        link: '',
         isValid: false,
         isVisible: true,
         pleaseWait: false,
@@ -298,6 +302,7 @@
             ala: this.ala,
             appropriations: this.appropriation,
             remarks: this.remarks,
+            link: this.link,
             aor: this.aor ? '1' : '0',
             intervals: this.travelDuration ? '1' : '0',
           };
@@ -338,6 +343,7 @@
         this.ala = '';
         this.appropriation = '';
         this.remarks = '';
+        this.link = '';
         this.pleaseWait = true;
         this.submitting = true;
         this.isRed = false
@@ -420,6 +426,7 @@
       this.ala = order.ala;
       this.appropriation = order.appropriations;
       this.remarks = order.remarks;
+      this.link = order.link;
       this.aor = Boolean(Number(order.aor)); // Converts '0' or 0 to false, and '1' or 1 to true
       this.date = order.date; // Or however you want to set the date
     },

@@ -268,7 +268,7 @@ export default {
           arrival: this.form.arrival,
           pap_code: this.form.pap_code,
           basis_of_approval: this.form.selectedBasis === 'fieldworkWithinPlan' ? this.form.selectedSubBasis : this.form.selectedBasis,
-          remarks: this.form.remarks,
+          remarks: this.form.remarks != null ? this.form.remarks : 'none',
           reviewed_by: 'KAYSHE JOY F. PELINGON', // or whatever user ID
         };
       

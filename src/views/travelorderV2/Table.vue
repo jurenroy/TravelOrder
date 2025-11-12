@@ -201,6 +201,10 @@
         <td v-if="(isSectionChief(nameId) && selectedTravelOrderId != item.travel_order_id && item.initial === null && this.nameId !== item.name_id) || ([15,21,45,48, 3].includes(this.nameId) && item.initial === null && item.intervals == 1 && this.nameId !== item.name_id) || ([20].includes(this.nameId) && item.initial === null && item.intervals == 1 && item.aor == 1 && this.nameId !== item.name_id)" class="status-actions">
           <button @click="initialize(item.travel_order_id)">Initial</button>
         </td>
+
+        <td v-if="(isValidUrl(item.link))" class="status-actions">
+          <button @click="openNewTab(item.link)">Open attachments</button>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -417,6 +421,10 @@ methods: {
   approvedORD(item) {
     return ItemIndicators.approvedORD(item);
   },
+  isValidUrl(link) {
+    const urlPattern = /^(https?:\/\/|www\.|)[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/.*)?$/;
+    return urlPattern.test(link);
+  },
   edit(travelOrderId) {
     this.selectedTravelOrderIdEdit = travelOrderId;
     this.$emit('edit-travel-order', travelOrderId); // Emit the selected travel order ID
@@ -432,6 +440,12 @@ methods: {
   },
   openOTP(){
     this.otp = true
+  },
+  openNewTab(link) {
+    // Check if the link is valid
+    if (link) {
+      window.open(link, '_blank'); // Opens the link in a new tab
+    }
   },
   handleOtpStatus(status){
     if (status) {
