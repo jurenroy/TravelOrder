@@ -57,7 +57,7 @@
         <td>{{ item.purpose }}</td>
         <td>{{ item.departure }}</td>
         <td>{{ item.arrival }}</td>
-        <td class="status-actions" v-if="item.name_id == nameId || nameId == 76">
+        <td class="status-actions" v-if="nameId == 37 || nameId == 76">
           <button v-if="selectedTravelOrderIdEdit != item.clearance_number" @click="edit(item.clearance_number)">Edit</button>
           <img src="/src/assets/canceledit.png" v-if="selectedTravelOrderIdEdit == item.clearance_number" @click="closeEdit" class="action-icon"/>
         </td>

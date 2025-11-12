@@ -60,7 +60,7 @@
           <label class="luxury-form-label">Purpose of Travel:</label>
           <textarea @keydown.enter="form_submit" type="text" v-model="purpose" :class="{ 'input-error': isRed && purpose === '' }" class="luxury-form-input" required></textarea>
   
-          <label class="luxury-form-label">PAP CODE(N/A):</label>
+          <label class="luxury-form-label">PAP CODE(N/A if not applicable):</label>
           <input @keydown.enter="form_submit" type="text" v-model="papc" class="luxury-form-input" required>
           
           <label class="luxury-form-label">Per Diems/Expense Allowed:</label>
@@ -262,7 +262,7 @@ import { useAuthStore } from '@/store/auth';
           this.station === '' ||
           this.arrival === '' ||
           this.purpose === ''
-  
+          this.papc === ''
         ) {
           this.isRed = true
           this.isValid = true;

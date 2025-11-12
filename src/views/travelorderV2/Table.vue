@@ -158,12 +158,12 @@
           <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.travel_order_id" @click="close" class="action-icon"/>
         </td>
 
-        <td class="status-actions" v-if="(nameId == 37 || nameId == 76)">
+        <td class="status-actions" v-if="(nameId == 37 || nameId == 76 || nameId == item.name_id)">
           <span v-if="item.has_clearance" class="clearance-indicator">
             <img src="../../assets/check.png" alt="Clearance Exists" class="status-icon">
             Clearance Created
           </span>
-          <button v-else-if="item.hasclearance == null && currentClearanceId !== item.travel_order_id" @click="openClearanceModal(item)">Create Clearance</button>
+          <button v-else-if="item.hasclearance == null && currentClearanceId !== item.travel_order_id && (nameId == 37 || nameId == 76)" @click="openClearanceModal(item)">Create Clearance</button>
           <button v-else-if="item.hasclearance && currentClearanceId !== item.travel_order_id" @click="openPDF(item.hasclearance)">View Clearance</button>
           <img src="/src/assets/close_note.png" v-if="isClearanceModalVisible && currentClearanceId === item.travel_order_id" @click="closeClearanceModal()" class="action-icon"/>
         </td>

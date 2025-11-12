@@ -115,7 +115,7 @@
 
             <div class="info-row">
               <p class="info-label">Remarks:</p>
-              <p class="info-value">{{ remarks }}</p>
+              <p class="info-value">{{ remarks ? remarks : 'none' }}</p>
             </div>
             <div class="info-row">
               <p class="info-label">Reviewed by:</p>
