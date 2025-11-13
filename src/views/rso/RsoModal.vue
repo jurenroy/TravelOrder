@@ -39,7 +39,7 @@
               <div class="multi-select">
                 <div v-if="selectedPersonnel.length > 0" class="selected-items">
                   <span v-for="(person, index) in selectedPersonnel" :key="person.name_id" class="selected-item">
-                    {{ person.first_name }} {{ person.middle_init }} {{ person.last_name }}
+                    {{ person.first_name.toUpperCase() }} {{ person.middle_init.toUpperCase() }} {{ person.last_name.toUpperCase() }}
                     <button type="button" @click="removePersonnel(index)">×</button>
                   </span>
                 </div>
@@ -297,7 +297,19 @@
         try {
           const response = await axios.get(`${API_BASE_URL}/get_names_json`);
           this.allPersonnel = response.data;
-          this.filteredPersonnel = [...this.allPersonnel];
+
+          // Add "Select All Personnel" entry to the allPersonnel list
+        this.allPersonnel.unshift({
+          name_id: 'all',
+          first_name: 'select',
+          middle_init: 'all',
+          last_name: 'personnel'
+        });
+
+          this.filteredPersonnel = [
+            ...this.allPersonnel // Spread the personnel data after 'All' entry
+          ];
+          console.log(this.filteredPersonnel)
         } catch (error) {
           console.error('Error loading personnel:', error);
         }
@@ -308,13 +320,24 @@
           this.showDropdown = false;
         } else {
           const searchTerm = this.personnelSearch.toLowerCase();
+          // Filter out selected personnel
           this.filteredPersonnel = this.allPersonnel.filter(person =>
+            !this.selectedPersonnel.some(selected => selected.name_id === person.name_id) && 
             `${person.first_name} ${person.middle_init} ${person.last_name}`.toLowerCase().includes(searchTerm)
           );
           this.showDropdown = this.filteredPersonnel.length > 0;
         }
       },
       selectPersonnel(person) {
+        // Check if "All Personnel" is already selected
+        const allPersonnelEntry = this.selectedPersonnel.find(p => p.name_id === 'all');
+
+        if (allPersonnelEntry) {
+          // If "All Personnel" is selected and the user adds another person, remove "All Personnel"
+          this.selectedPersonnel = this.selectedPersonnel.filter(p => p.name_id !== 'all');
+        }
+
+        // Now add the selected person (if not already added)
         if (!this.selectedPersonnel.find(p => p.name_id === person.name_id)) {
           this.selectedPersonnel.push(person);
         }

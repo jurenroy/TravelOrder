@@ -505,8 +505,16 @@
             this.purpose = selectedForm.purpose;
             this.pdea = selectedForm.pdea;
             this.ala = selectedForm.ala;
-            this.appropriation = selectedForm.appropriations;
-            this.remarks = selectedForm.remarks;
+            this.appropriation = selectedForm.papc;
+            this.remarks = selectedForm.note;
+            // If the note contains a colon, we split the string at the colon and take the second part
+            if (this.remarks.includes(':')) {
+              // Split the string at the first colon and get the part after it, trimming any extra whitespace
+              this.remarks = this.remarks.split(':')[1].trim();
+            } else {
+              // If there is no colon, keep the original value or handle as needed
+              this.remarks = selectedForm.note;
+            }
             this.sname = selectedForm.sname;
             this.sdiv = selectedForm.sdiv;
             this.to_num = selectedForm.to_num;

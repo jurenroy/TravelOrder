@@ -115,6 +115,7 @@ export default {
         const params = {};
         if (this.searchQuery) params.search = this.searchQuery;
         if (this.scheduledDate) params.scheduled_date = this.scheduledDate;
+        if (this.userId) params.name = this.userId;
 
         const response = await axios.get(`${API_BASE_URL}/rso`, { params });
         this.mawala = true;
@@ -143,6 +144,8 @@ export default {
     },
     getName(nameIds) {
       if (!nameIds) return 'Unknown';
+
+      if (nameIds === 'all') return 'All Personnels';
 
       const ids = String(nameIds)
         .split(',')

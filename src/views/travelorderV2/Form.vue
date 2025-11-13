@@ -75,7 +75,7 @@
           <label class="luxury-form-label">Remarks or Special Instructions:</label>
           <input @keydown.enter="form_submit" type="text" v-model="remarks" class="luxury-form-input" required>
 
-          <label class="luxury-form-label">Google Drive link for Supporting Documents (share everyone with the link):</label>
+          <label class="luxury-form-label">Google Drive link for Supporting Documents (N/A if not applicable):</label>
           <input @keydown.enter="form_submit" type="text" v-model="link" class="luxury-form-input" required>
         </div>
   
@@ -261,8 +261,9 @@ import { useAuthStore } from '@/store/auth';
           this.division === '' ||
           this.station === '' ||
           this.arrival === '' ||
-          this.purpose === ''
-          this.papc === ''
+          this.purpose === '' ||
+          this.papc === '' ||
+          this.link === ''
         ) {
           this.isRed = true
           this.isValid = true;
