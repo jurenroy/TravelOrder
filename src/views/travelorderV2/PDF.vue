@@ -505,7 +505,7 @@
             this.purpose = selectedForm.purpose;
             this.pdea = selectedForm.pdea;
             this.ala = selectedForm.ala;
-            this.appropriation = selectedForm.papc;
+            this.appropriations = selectedForm.papc;
             this.remarks = selectedForm.note;
             // If the note contains a colon, we split the string at the colon and take the second part
             if (this.remarks.includes(':')) {
