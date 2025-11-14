@@ -48,8 +48,8 @@
   </div>
   <div class="luxury-search-bar">
     <div v-if="mawala" class="luxury-search-box">
-      <img class="luxury-search-icon" src="../../assets/search.png" alt="Search" />
-      <input class="luxury-search-input" type="text" v-model="searchQuery" placeholder="Search TO number or Name" />
+      <img class="luxury-search-icon" @click="fetchData(true)" src="../../assets/search.png" alt="Search" style="cursor: pointer;"/>
+      <input class="luxury-search-input" type="text" v-model="searchQuery" @keyup.enter="fetchData(true) "placeholder="Search TO number or Name" />
     </div>
     
     <button v-if="mawala && [2, 15, 24, 76, 39].includes(nameId)" class="luxury-btn" @click="downloadCSV">
@@ -689,7 +689,10 @@ methods: {
     this.formData = []; // Clear the array only when status changes
   }
     this.load = true
-    axios.get(`${API_BASE_URL}/get_forms_json/${this.nameId}/${this.selectedStatus}/${this.numberOfRows}/${this.formData.length}`)
+    const params = {};
+    if (this.searchQuery) params.search = this.searchQuery;
+    // alert(this.formData.length)
+    axios.get(`${API_BASE_URL}/get_forms_json/${this.nameId}/${this.selectedStatus}/${this.numberOfRows}/${this.formData.length}`, { params })
       .then(response => {
         this.mawala = true;
         this.load = false
@@ -763,12 +766,6 @@ computed: {
   reversedFormData() {
     //let data = this.formData.slice().reverse(); // Make a copy of the original data
     let data = this.formData.slice(); // Make a copy of the original data
-
-    if (this.searchQuery !== '') {
-      data = data.filter(item => {
-        return String(this.padWithZeroes(item.to_num)).includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
-      });
-    }
     return data;
   },
 },

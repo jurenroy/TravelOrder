@@ -2,7 +2,10 @@
   <div>
     <!-- Search and Filter Section -->
     <div class="filter-section">
-      <input v-model="searchQuery" @input="applyFilters" type="text" placeholder="Search by RSO Number, Name, or Subject" class="search-input">
+      <div v-if="mawala" class="luxury-search-box" :style="mobileMarginStyle">
+        <img class="luxury-search-icon" @click="applyFilters" src="../../assets/search.png" alt="Search" style="cursor: pointer;"/>
+        <input class="luxury-search-input" type="text" v-model="searchQuery" @keyup.enter="applyFilters "placeholder="Search Name" />
+      </div>
       <input v-model="scheduledDate" @input="applyFilters" type="date" placeholder="Scheduled Date" class="filter-input">
       <button @click="clearFilters" class="clear-btn">Clear Filters</button>
       <button v-if="isAdmin" @click="$refs.rsoModal.openCreateModal()" class="create-btn">Create New RSO</button>
@@ -212,6 +215,13 @@ export default {
       });
       return data;
     },
+    // Dynamically add the margin only on mobile
+    mobileMarginStyle() {
+      const isMobile = window.innerWidth <= 768; // Adjust to your mobile breakpoint
+      return isMobile
+        ? { marginRight: '-50px', marginLeft: '-50px', marginTop: '20px', scale: '0.7' }
+        : { marginRight: '-50px', marginLeft: '-50px', marginTop: '0px', scale: '0.7'}; // Empty object means no additional margin
+    }
   },
 };
 </script>
