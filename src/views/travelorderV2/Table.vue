@@ -66,7 +66,7 @@
   <table>
     <thead>
       <tr>
-        <th>TO No.</th>
+        <th>TO No.{{selectedTravelOrderId}}</th>
         <th>Name</th>
         <th>Date</th>
         <th>Destination</th>
