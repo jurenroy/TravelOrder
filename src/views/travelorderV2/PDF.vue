@@ -456,7 +456,6 @@
         getName(nameId) {
           
           const name = this.names[nameId];
-          console.log(name)
           if (name) {
             const { first_name, middle_init, last_name } = name;
             return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
@@ -466,7 +465,8 @@
         getPosition(position_id) {
       // Find the position by position_id
       const selectedPosition = this.positions.find(position => position.position_id === position_id);
-  
+    console.log(this.positions)
+    console.log(selectedPosition)
       // If the position is found, return the position name
       if (selectedPosition) {
         return selectedPosition.position_name;
