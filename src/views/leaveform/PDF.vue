@@ -1,878 +1,1547 @@
 <template>
-    <editform v-if="selectedTravelOrderIdEdit > 0" :leaveFormId="selectedTravelOrderIdEdit" @cancel-edit="closeEdit"></editform>
-      <div class="note" v-if="certif">
-        <div class="title-bar">
-          <div class="title">LEAVE CREDITS</div>
-          <div class="close-icon" @click="certification(certinum)">X</div>
+   <div class="a4-containerz">
+       <div class="a4-contentz">
+           <div style="display: flex; flex-direction: row; justify-content: center;">
+               <img :src="image1" alt="Background Image" class="pic1">
+               <div style="text-align: center;">
+                   <p style=" font-size: 11px;">Republic of the Philippines</p>
+                   <p style=" font-size: 11px;">Department of Environment and Natural Resources</p>
+                   <p style=" font-size: 13px; font-weight: bold;">MINES AND GEOSCIENCE BUREAU REGIONAL OFFICE NO. X
+                   </p>
+                   <p style=" font-size: 11px;">DENR-X Compound, Puntod, Cagayan de Oro City</p>
+               </div>
+               <img :src="image2" alt="Bago Image" class="pic2">
+           </div>
+           <h3 style="text-align: center">APPLICATION FOR LEAVE</h3>
+           <div>
+               <div style="border: 2px solid black; padding: 5px;">
+                   <div
+                       style="display: flex; flex-direction: row; font-size: 10px; justify-content: space-evenly; margin-top: -10px; margin-bottom: -15px;">
+                       <p style="margin-left: -30px;">1. OFFICE/DEPARTMENT</p>
+                       <p style="margin-left: 70px;">2. NAME</p>
+                       <p style="margin-left: 70px;">(Last)</p>
+                       <p style="margin-left: 120px;">(First)</p>
+                       <p style="margin-left: 100px;">(Middle)</p>
+                   </div>
+                   <div style="display: flex; flex-direction: row; align-items: center;  margin-bottom: -10px;">
+                       <p style="font-size: 10px;">Mines and Geosciences Bereau Regional Office No. X</p>
+                       <text style="margin-left: auto; font-size: 12px; font-weight: bold">{{ name.last_name }}</text>
+                       <text style="margin-left: auto; font-size: 12px; font-weight: bold">{{ name.first_name }}</text>
+                       <text style="margin-left: auto; margin-right: 5%; font-size: 12px; font-weight: bold">{{
+           name.middle_init
+       }}</text>
+                   </div>
+               </div>
+               <div
+                   style="display: flex; flex-direction: row; border: 2px solid black; margin-top: -2px; justify-content: space-between; font-size: 10px; padding: 1px">
+                   <p style="margin-left: 5px">3. DATE OF FILING: 
+                       <label style="border: none; border-bottom: 1px solid black;">{{ datetoday }}</label>
+                   </p>
+
+                   <p>4. POSITION: <label style="border: none; border-bottom: 1px solid black;">{{ position }}</label>
+                   </p>
+
+                   <p style="margin-right: 5px">5. SALARY:
+                       <input readonly
+                           style="height: 10px; width: 100px; outline: none; border: none; border-bottom: 1px solid black; font-size: 10px; "
+                           v-model="formattedSalary"/>
+                   </p>
+               </div>
+           </div>
+           <div style="border: 2px solid black;margin-top: 2px;text-align: center; font-size: 12px; font-weight: bold">
+               <p style="margin: 0.5px;">6. DETAILS OF APPLICATION</p>
+           </div>
+           <div>
+               <div style="display: grid; grid-template-columns: repeat(2, 1fr); ">
+                   <div style="border: 2px solid black;margin-top: 2px;font-size: 10px;">
+                       <p style="margin-left: 10px">6.A TYPE OF LEAVE TO BE AVAILED OF</p>
+                       <div style="margin-left: 20px;">
+
+                           <!-- vacation -->
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[0]"  >
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Vacation Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[1]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Mandatory/Forced Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[2]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Sick Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[3]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Maternity Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[4]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Paternity Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[5]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Special Privilege Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[6]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Solo Parent Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[7]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Study Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[8]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>10-Day VAWC Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[9]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Rehabilitation Privilege</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[10]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Special Leave Benefits for Women</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[11]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Special Emergency(Calamity) Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[12]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Adoption Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <p style="margin-left: 15px; margin-top: 15px;font-style: italic;">Others:</p>
+                           </div>
+
+                           <input readonly :disabled="selectedLeavetype != ''"
+                               style="height: 10px; width: 300px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-left: 10px; margin-right: 33px; font-size: 10px"
+                               v-model="LeaveType">
+                       </div>
+
+                   </div>
+                   <div style="border: 2px solid black;margin-top: 2px;font-size: 10px; margin-left: -2px;">
+                       <p style="margin-left: 10px">6.B TYPE OF LEAVE TO BE AVAILED OF</p>
+                       <div style="margin-left: 20px;">
+                           <p style="margin-left: 5px; margin-top: -5px;font-style: italic;">In case of
+                               Vacation/Special Privilege Leave:</p>
+                           <div
+                               style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
+                               <div style="display: flex; flex-direction: row;">
+                                   <label class="containerlist">
+                                       <input readonly type="checkbox"  disabled  :disabled="![0, 5].some(value => selectedLeavetype.includes(value))"
+                                           v-model="vacationleavedetails" :value="vacationdetails[0]">
+                                       <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                           <path
+                                               d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                               pathLength="575.0541381835938" class="path"></path>
+                                       </svg>
+                                   </label>
+                                   <p>Within the Philippines</p>
+                               </div>
+
+                               <div>
+                                   <input readonly
+                                       style="height: 10px; width: 150px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       :disabled="![0, 5].some(value => selectedLeavetype.includes(value))  || !vacationleavedetails.includes(1)"
+                                       v-model="vacation1"
+                                      >
+                               </div>
+                           </div>
+                           <div
+                               style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
+                               <div style="display: flex; flex-direction: row;">
+                                   <label class="containerlist" >
+                                       <input readonly type="checkbox"  disabled  :disabled="![0, 5].some(value => selectedLeavetype.includes(value))"
+                                           v-model="vacationleavedetails" :value="vacationdetails[1]">
+                                       <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                           <path
+                                               d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                               pathLength="575.0541381835938" class="path"></path>
+                                       </svg>
+                                   </label>
+                                   <p>Abroad(Specify)</p>
+                               </div>
+
+                               <div>
+                                   <input readonly
+                                       style="height: 10px; width: 150px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       :disabled="![0, 5].some(value => selectedLeavetype.includes(value)) || !vacationleavedetails.includes(2)"
+                                       v-model="vacation2"
+                                      >
+                               </div>
+                           </div>
+                           <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">In case of Sick Leave:</p>
+                           <div
+                               style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
+                               <div style="display: flex; flex-direction: row;">
+                                   <label class="containerlist">
+                                       <input readonly type="checkbox"  disabled  :disabled="!selectedLeavetype.includes(2)"
+                                           v-model="sickleavedetails" :value="sickdetails[0]">
+                                       <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                           <path
+                                               d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                               pathLength="575.0541381835938" class="path"></path>
+                                       </svg>
+                                   </label>
+                                   <p>In Hospital (Specify Illness)</p>
+                               </div>
+
+                               <div>
+                                   <input readonly
+                                       style="height: 10px; width: 150px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(1)"
+                                       v-model="sick1"
+                                      >
+                               </div>
+                           </div>
+                           <div
+                               style="display: flex; flex-direction: row; margin-top: -15px; justify-content: space-between">
+                               <div style="display: flex; flex-direction: row;">
+                                   <label class="containerlist" >
+                                       <input readonly type="checkbox"  disabled  :disabled="!selectedLeavetype.includes(2)"
+                                           v-model="sickleavedetails" :value="sickdetails[1]">
+                                       <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                           <path
+                                               d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                               pathLength="575.0541381835938" class="path"></path>
+                                       </svg>
+                                   </label>
+                                   <p>Out Patient (Specify Illness)</p>
+                               </div>
+
+                               <div>
+                                   <input readonly
+                                       style="height: 10px; width: 150px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       :disabled="!selectedLeavetype.includes(2) || !sickleavedetails.includes(2)"
+                                       v-model="sick2"
+                                      >
+                               </div>
+                           </div>
+
+                           <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">In case of Special Leave
+                               Benefits for Women:</p>
+                           <div style="display: flex; flex-direction: row; justify-content: space-between">
+                               <p style="margin-left: 5px; margin-top: -0px">(Specify Illness)</p>
+                               <input readonly
+                                   style="height: 10px; width: 150px; margin-top: -3px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                   :disabled="!selectedLeavetype.includes(10)" v-model="leaveforwoman"
+                                   >
+                           </div>
+
+                           <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">In case of Study Leave:
+                           </p>
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist" >
+                                   <input readonly type="checkbox"  disabled  :disabled="!selectedLeavetype.includes(7)"
+                                       v-model="studyleavedetails" :value="studydetails[0]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Completion of Master's Degree</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  :disabled="!selectedLeavetype.includes(7)"
+                                       v-model="studyleavedetails" :value="studydetails[1]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>BAR/Board Examination Review Other</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; justify-content: space-between">
+                               <p style="margin-left: 5px; margin-top: -0px;font-style: italic;">Other purpose:</p>
+
+                               <input readonly
+                                   style="height: 10px; width: 150px; margin-top: -3px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                    v-model="otherPurpose" :disabled="!selectedLeavetype.includes(7)" >
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -5px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="monetization" :value="terminalleave[0]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Monetization of Leave Credits</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="monetization" :value="terminalleave[1]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Terminal Leave</p>
+                           </div>
+
+                       </div>
+                   </div>
+               </div>
+               <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                   <div style="border: 2px solid black;margin-top: -2px;font-size: 10px;">
+                       <p style="margin-left: 10px; margin-bottom: 5px">6.C Number OF WORKING DAYS APPLIED FOR</p>
+                       <div style="margin-left: 20px;">
+                           <!-- pag naay value pero isa ra kabuok -->
+                           <p style="margin-top: 25px;"></p>
+                           <input readonly v-if="!isSingleDate" v-model="dayszz" 
+                               style="position: relative; left:24px;top: -10px; margin-bottom: -20px; font-size: 10px; border:none; outline: none ">
+                           <p
+                               style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black; outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px; margin-top: -15px;">
+                           {{ dayszz }}
+                            </p>
+
+
+                           <p style=" margin-bottom: 5px">INCLUSIVE DATES</p>
+                           <p style="margin-bottom: -20px; margin-left: 10px;">{{ dateszz }}</p>
+
+                           <p v-if="!isSingleDate && startDate && !endDate && selectedDate"
+                               style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px;">
+                               <input readonly v-model="dateszz"
+                                   style="border:none; background-color: transparent; font-size: 10px; margin-bottom: -20px; position: relative; left: 10px " />
+                           </p>
+
+
+                           <!-- pag naa nay value -->
+                           <p v-if="!isSingleDate && startDate && !endDate && selectedDate"
+                               style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px">
+                           </p>
+
+                           <p v-if="!selectedDate"
+                               style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left:10px;">
+                           </p>
+
+                           <p v-if="!isSingleDate && startDate && endDate"
+                               style="margin-right: 10px; font-size: 10px; margin-bottom: -20px; position: relative; left:10px;  ">
+                               <input readonly v-model="formattedDateRange"
+                                   style="border:none; background-color: transparent; font-size: 10px; margin-bottom: -20px; position: relative; left: 10px " />
+                           </p>
+
+                           <p v-if="!isSingleDate && startDate && endDate"
+                               style="height: 10px; width: 300px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px; position: relative; left: 10px">
+                           </p>
+
+
+                           <div>
+                               <input readonly type="date" id="date-input" v-model="selectedDate" @change="handleDateChange"
+                                   style="width: 16px; height: 20px; outline: none; border: none; position: relative; top: -32px; left:290px;" />
+                           </div>
+                       </div>
+                   </div>
+                   <div style="border: 2px solid black;margin-top: -2px;font-size: 10px;margin-left: -2px;">
+                       <p style="margin-left: 10px;">6.D COMMUTATION</p>
+                       <div style="margin-left: 20px;">
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="commutationLeavetype" :value="commutationtype[0]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Not Requested</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="commutationLeavetype" :value="commutationtype[1]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Requested</p>
+                           </div>
+
+                       </div>
+                       <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;">
+                        <img :src="signature3" class="signatizz" v-if="signature3" 
+                             style="width: auto; height: 50px; position: absolute; margin-top: -25px;" @contextmenu.prevent />
+                        </div>
+                       <input readonly disabled
+                           style="border:1px solid black; border:none; outline:none; border-bottom:1.5px solid black; width:330px; position: relative; left:35px;" />
+                       <p style="text-align: center;">(Signature of Applicant)</p>
+                   </div>
+               </div>
+           </div>
+           <div style="border: 2px solid black;margin-top: 2px;text-align: center; font-size: 12px; font-weight: bold">
+               <p style="margin: 0.5px;">7. DETAILS OF ACTION ON APPLICATION</p>
+           </div>
+           <div>
+               <div style="display: grid; grid-template-columns: repeat(2, 1fr); font-size: 10px;">
+                   <div style="border: 2px solid black;margin-top: 2px;font-size: 10px;">
+                       <p style="margin-left: 10px;">7.A CERTIFICATION OF LEAVE CREDITS</p>
+                       <div style="display: flex;flex-direction: row; justify-content: center; margin-left: 90px">
+                           <p>As of</p>
+                           <input readonly
+                               style="height: 10px; width: 230px; border: none; border-bottom: 1.5px solid black;outline: none; font-size: 10px; margin-top: 7px; margin-left: 3px" v-model="leavecredits">
+                       </div>
+                       <div>
+                           <div class="grid-container">
+                               <div class="grid-item"></div>
+                               <div class="grid-item">Vacation Leave</div>
+                               <div class="grid-item">Sick Leave</div>
+                               <div class="grid-item">Total Earned</div>
+                               <div class="grid-item">
+                                   <input readonly type="text" class="leavecredits" v-model="totalvacation">
+                               </div>
+                               <div class="grid-item">
+                                   <input readonly type="text" class="leavecredits" v-model="totalsick">
+                               </div>
+                               <div class="grid-item">Less this Application</div>
+                               <div class="grid-item">
+                                   <input readonly type="text" class="leavecredits" v-model="lessvacation">
+                               </div>
+                               <div class="grid-item">
+                                   <input readonly type="text" class="leavecredits" v-model="lesssick">
+                               </div>
+                               <div class="grid-item">Balance</div>
+                               <div class="grid-item">
+                                   <input readonly type="text" class="leavecredits" v-model="balancevacation">
+                               </div>
+                               <div class="grid-item">
+                                   <input readonly type="text" class="leavecredits" v-model="balancesick">
+                               </div>
+                           </div>
+                       </div>
+                       <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;">
+                        <img :src="signature2" class="signatizz" v-if="signature2"
+                             style="width: auto; height: 80px; position: absolute; margin-top: -15px;" @contextmenu.prevent />
+                        </div>
+                       <p
+                           style="text-align: center; margin-top: 15px; border: none; outline: none; width: auto; z-index: 9; font-size: 10px; font-weight: bold;">
+                           {{ secch }}
+                       </p>
+                       <p
+                           style="height: 10px; width: 350px; margin-top: -19px; z-index: 1; border: none; border-bottom: 1px solid black;outline: none; margin-left: 20px; font-size: 10px">
+                       </p>
+                       <p style="text-align: center; position: relative; top:-6px; font-size:9px;">{{ secchpos }}</p>
+                   </div>
+                   <div style="border: 2px solid black;margin-top: 2px;font-size: 10px;margin-left: -2px;">
+                       <p style="margin-left: 10px;">7.B RECOMMENDATION</p>
+                       <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
+                           <label class="containerlist">
+                               <input readonly type="checkbox"  disabled  v-model="recommendationLeavetype" :value="recommendationtype[0]">
+                               <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                   <path
+                                       d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                       pathLength="575.0541381835938" class="path"></path>
+                               </svg>
+                           </label>
+                           <p>For approval</p>
+                       </div>
+
+                       <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
+                           <label class="containerlist">
+                               <input readonly type="checkbox"  disabled  v-model="recommendationLeavetype" :value="recommendationtype[1]">
+                               <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                   <path
+                                       d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                       pathLength="575.0541381835938" class="path"></path>
+                               </svg>
+                           </label>
+                           <p>For disapproval due to:</p>
+                       </div>
+                       
+
+                       <textarea @keydown.enter.prevent v-model="text" id="myTextarea" :rows="rows"
+                          
+                           disabled readonly
+                           style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 350px; margin-left: 20px; font-size: 10px; text-decoration: underline; margin-bottom: 30px;"></textarea>
+                           <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;" v-if="!isChief">
+                        <img :src="signature1" class="signatizz" v-if="signature1"
+                             style="width: auto; height: 80px; position: absolute; margin-top: -45px;" @contextmenu.prevent />
+                        </div>
+                        <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;" v-if="isChief">
+                        <img :src="signature" class="signatizz" v-if="signature"
+                             style="width: auto; height: 80px; position: absolute; margin-top: -35px;" @contextmenu.prevent />
+                        </div>
+                       <p style="text-align: center;margin-bottom: -20px;z-index: 9;">{{ reco }}</p>
+
+                       <p
+                           style="height: 10px; width: 350px; z-index: 1; border: none; border-bottom: 1px solid black;outline: none; margin-left: 20px; font-size: 10px; color: transparent;">
+                       </p>
+                       <p style="text-align: center">{{ recopost }}</p>
+                   </div>
+               </div>
+           </div>
+           <div style="border: 2px solid black;margin-top: -2px; font-size: 10px;">
+               <div>
+                   <div style="display: grid; grid-template-columns: repeat(2, 1fr);">
+                       <div>
+                           <p style="margin-left: 10px;">7.C APPROVED FOR</p>
+                           <div style="margin-left: 20px;">
+                               <div style="display: flex; flex-direction: row; margin-top: -5px;">
+                                   <input readonly
+                                       style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       v-model="withpay"
+                                       >
+                                   <p style="font-size: 10px;">days with pay</p>
+                               </div>
+                               <div style="display: flex; flex-direction: row; margin-top: -5px;">
+                                   <input readonly
+                                       style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       v-model="withoutpay">
+                                   <p>days without pay</p>
+                               </div>
+                               <div style="display: flex; flex-direction: row; margin-top: -5px;">
+                                   <input readonly
+                                       style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
+                                       v-model="othersSpecify">
+                                   <p>others (Specify)</p>
+                               </div>
+                           </div>
+                       </div>
+                       <div>
+                           <p style="margin-left: 10px;">7.D DISAPPROVED DUE TO:</p>
+                           <textarea @keydown.enter.prevent v-model="text2" id="myTextarea" :rows="rows2" disabled readonly
+                               style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 350px; margin-left: 20px; font-size: 10px; text-decoration: underline;"></textarea>
+                       </div>
+                   </div>
+               </div>
+               <div>
+                <div style="width: 100%; display: flex; justify-items: center; align-items: center; flex-direction: column;">
+                        <img :src="signature" class="signatizz" v-if="signature && !isChief"
+                             style="width: auto; height: 80px; position: absolute; margin-top: -35px;" @contextmenu.prevent />
+                        </div>
+                        <p v-if="rd !== ''" style="text-align: center; background-color: white; color: black;">{{ rd }}</p>
+                        <p v-else style="text-align: center; background-color: white; color: transparent;">&nbsp;</p>
+                                            
+                        <p v-if="rdpos !== ''" style="text-align: center; background-color: white; color: black;">{{ rdpos }}</p>
+                        <p v-else style="text-align: center; background-color: white; color: transparent;">&nbsp;</p>
+               </div>
+           </div>
+           <div>
+          <div class="cuearez">
+          <img :src="qrCodeUrl" alt="QR Code" v-if="qrCodeUrl" class="bigzz" @contextmenu.prevent>
+          <img :src="imageSrc" alt="QR Code" v-if="qrCodeUrl" class="centzz" @contextmenu.prevent>
+          <p class="qrquotez" style="font-size: 9px;">This is an official Leave Form approved digitally and generated from <br/>the MGB-X Online Leave Form. No original signature is required.</p>
+          </div>
         </div>
-    
-        <div class="content">
-          <div style="border: 2px solid black;margin-top: 2px;font-size: 10px;">
-            <p style="margin-left: 10px;">7.A CERTIFICATION OF LEAVE CREDITS</p>
-            <div style="display: flex;flex-direction: row; justify-content: center; margin-left: 90px">
-              <p>As of</p>
-              <input
-                style="height: 12px; width: 200px; border: none; border-bottom: 1.5px solid black;outline: none; font-size: 13px; margin-top: 7px; margin-left: 3px"
-                v-model="leavecredits" class="leavecredits">
-            </div>
-            <div>
-              <div class="grid-container" style="margin-left: 20px;">
-                <div class="grid-item" style="border: solid black 1.5px;"></div>
-                <div class="grid-item" style="width: 90px;border: solid black 1.5px;">Vacation Leave</div>
-                <div class="grid-item" style="width: 90px;margin-left: -26.5px;border: solid black 1.5px;">Sick Leave</div>
-                <div class="grid-item" style="border: solid black 1.5px;">Total Earned</div>
-                <div class="grid-item" style="width: 90px;border: solid black 1.5px;">
-                  <input type="text" class="leavecredits" v-model="totalvacation" @input="nonumber($event, 'totalvacation')">
-                </div>
-                <div class="grid-item" style="width: 90px; margin-left: -26.5px;border: solid black 1.5px;">
-                  <input type="text" class="leavecredits" v-model="totalsick" @input="nonumber($event, 'totalsick')">
-                </div>
-                <div class="grid-item" style="border: solid black 1.5px;">Less this Application</div>
-                <div class="grid-item" style="width: 90px;border: solid black 1.5px;">
-                  <input type="text" class="leavecredits" v-model="lessvacation" @input="nonumber($event, 'lessvacation')">
-                </div>
-                <div class="grid-item" style="width: 90px;margin-left: -26.5px;border: solid black 1.5px;">
-                  <input type="text" class="leavecredits" v-model="lesssick" @input="nonumber($event, 'lesssick')">
-                </div>
-                <div class="grid-item" style="border: solid black 1.5px;">Balance</div>
-                <div class="grid-item" style="width: 90px;border: solid black 1.5px;">
-                  <input type="text" class="leavecredits" v-model="balancevacation"
-                    @input="nonumber($event, 'balancevacation')">
-                </div>
-                <div class="grid-item" style="width: 90px;margin-left: -26.5px;border: solid black 1.5px;">
-                  <input type="text" class="leavecredits" v-model="balancesick" @input="nonumber($event, 'balancesick')">
-                </div>
-              </div>
-            </div>
-            <div style="margin-left: 20px; margin-top: 10px;">
-              <div style="display: flex; flex-direction: row; margin-top: -5px;">
-                <input 
-                  style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                  v-model="withpay" class="leavecredits">
-                <p style="font-size: 10px;">days with pay</p>
-              </div>
-              <div style="display: flex; flex-direction: row; margin-top: -5px;">
-                <input class="leavecredits"
-                  style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                  v-model="withoutpay">
-                <p>days without pay</p>
-              </div>
-              <div style="display: flex; flex-direction: row; margin-top: -5px;">
-                <input class="leavecredits"
-                  style="height: 10px; width: 20px; margin-top: 8px; border: none; border-bottom: 1.5px solid black;outline: none; margin-right: 10px; font-size: 10px"
-                  v-model="othersSpecify">
-                <p>others (Specify)</p>
-              </div>
-            </div>
-          </div>
-    
-          <div class="butokz">
-            <button @click="postCertification" v-if="[76,24].includes(this.nameId)" class="save-btn"
-             >Save</button>
-             <button @click="postCertification" v-if="[76,2].includes(this.nameId)" class="save-btn"
-             >Certify</button>
-            <button @click="certification(certinum)" class="option-btn">Cancel</button>
-          </div>
-        </div>
-      </div>
-    
-    
-    
-      <div class="note" v-if="recoms">
-        <div class="title-bar">
-          <div class="title">Recommendation</div>
-          <div class="close-icon" @click="recommendation(reconum)">X</div>
-        </div>
-    
-        <div class="content">
-          <div style="border: 2px solid black;margin-top: 2px;font-size: 10px;margin-left: -2px;">
-            <p style="margin-left: 10px;">7.B RECOMMENDATION</p>
-            <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
-              <label class="containerlist">
-                <input type="checkbox" v-model="recommendationLeavetype" :value="recommendationtype[0]">
-                <svg viewBox="0 0 64 64" height="2em" width="2em">
-                  <path
-                    d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-                    pathLength="575.0541381835938" class="path"></path>
-                </svg>
-              </label>
-              <p>For approval</p>
-            </div>
-    
-            <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
-              <label class="containerlist">
-                <input type="checkbox" v-model="recommendationLeavetype" :value="recommendationtype[1]">
-                <svg viewBox="0 0 64 64" height="2em" width="2em">
-                  <path
-                    d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-                    pathLength="575.0541381835938" class="path"></path>
-                </svg>
-              </label>
-              <p>For disapproval due to:</p>
-            </div>
-    
-            <textarea @keydown.enter.prevent v-model="text" id="myTextarea" :rows="rows"
-              :class="{ 'not': !recommendationLeavetype.includes(2) }" :disabled="!recommendationLeavetype.includes(2)"
-              style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 295px; margin-left: 20px; font-size: 13px"></textarea>
-          </div>
-    
-          <div class="butokz">
-            <button @click="postRecommendation" class="save-btn"
-              :disabled="recommendationLeavetype < 1 || recommendationLeavetype.length === 0"
-              :style="{ cursor: recommendationLeavetype < 1 || recommendationLeavetype.length === 0 ? 'not-allowed' : 'pointer' }">{{
-                recommendationLeavetype == 2 ? 'disapprove' : 'approve' }}</button>
-            <button @click="recommendation(reconum)" class="option-btn">Cancel</button>
-          </div>
-        </div>
-      </div>
-  
-    
-      <div class="note" v-if="appr">
-        <div class="title-bar">
-          <div class="title">Approval</div>
-          <div class="close-icon" @click="approve">X</div>
-        </div>
-    
-        <div class="content">
-          <div style="border: 2px solid black;margin-top: 2px;font-size: 10px;margin-left: -2px;">
-            <p style="margin-left: 10px;">APPROVAL</p>
-            <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
-              <label class="containerlist">
-                <input type="checkbox" v-model="approveLeavetype" :value="approvetype[0]">
-                <svg viewBox="0 0 64 64" height="2em" width="2em">
-                  <path
-                    d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-                    pathLength="575.0541381835938" class="path"></path>
-                </svg>
-              </label>
-              <p>For approval</p>
-            </div>
-    
-            <div style="display: flex; flex-direction: row; margin-top: -5px; margin-left: 20px;">
-              <label class="containerlist">
-                <input type="checkbox" v-model="approveLeavetype" :value="approvetype[1]">
-                <svg viewBox="0 0 64 64" height="2em" width="2em">
-                  <path
-                    d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
-                    pathLength="575.0541381835938" class="path"></path>
-                </svg>
-              </label>
-              <p>For disapproval due to:</p>
-            </div>
-    
-            <textarea @keydown.enter.prevent v-model="text2" id="myTextarea" :rows="rows"
-              :class="{ 'not': !approveLeavetype.includes(2) }" :disabled="!approveLeavetype.includes(2)"
-              style="border: none; border-bottom: 1px solid #ccc; outline: none; resize: none; width: 290px; margin-left: 20px; font-size: 13px;"></textarea>
-          </div>
-    
-          <div class="butokz">
-            <button @click="postApproval" :disabled="(approveLeavetype < 1 || approveLeavetype.length === 0) || (approveLeavetype < 1 || approveLeavetype.includes(2))" class="save-btn"
-              :style="{ cursor: (approveLeavetype < 1 || approveLeavetype.length === 0) || (approveLeavetype < 1 || approveLeavetype.includes(2) && !text2) ? 'not-allowed' : 'pointer' }">{{
-                approveLeavetype == 2 ? 'disapprove' : 'approve' }}</button>
-            <button @click="approve(apronum)" class="option-btn">Cancel</button>
-          </div>
-        </div>
-      </div>
-    
-      <div class="luxury-container" v-if="selectedTravelOrderIdEdit == 0">
-        <div class="luxury-title">    
-          <div class="radio-inputs">
-            <label class="radio" v-for="option in options" :key="option">
-              <input type="radio" name="status" v-model="selectedStatus" :value="option">
-              <span class="name">
-                {{ option }}
-                <span class="pending-count" v-if="option == 'Pending'">{{ pendingCount < 9 ? pendingCount : '9+'}}</span>
-              </span>
-            </label>
-          </div>
-          <div>
-            <!-- <select v-model="numberOfRows" id="rows">
-              <option v-for="rows in rowOptions" :key="rows" :value="rows">
-                {{ rows }}
-              </option>
-            </select> -->
-          </div>
-        </div>
-        <div class="luxury-search-bar">
-            <div v-if="mawala" class="luxury-search-box">
-              <img class="luxury-search-icon" @click="fetchData(true)" src="../../assets/search.png" alt="Search" style="cursor: pointer;"/>
-              <input class="luxury-search-input" type="text" v-model="searchQuery" @keyup.enter="fetchData(true) "placeholder="Search Name" />
-            </div>
-            
-            <button v-if="mawala && [2, 15, 24, 76, 39].includes(nameId)" class="luxury-btn" @click="downloadCSV">
-              <div class="luxury-btn-icon">
-                <img class="luxury-download-icon" src="../../assets/download_excel.png" alt="Download" />
-              </div>
-              <div class="luxury-btn-text">Download Summary Reports</div>
-            </button>
-          </div>
-        </div>
-  
-        <div v-if="load" class="loader"></div> <!-- Loader here -->
-        <div v-if="mawala && selectedTravelOrderIdEdit == 0" class="outer">
-          <div class="scrollable-table" @scroll.passive="handleScroll" ref="scrollContainer">
-            <table>
-              <thead>
-                <tr>
-                  <th style="text-align: center;">Name </th>
-                  <th style="text-align: center;">Type of Leave </th>
-                  <th style="text-align: center;">Leave Details </th>
-                  <th style="text-align: center;">Duration</th>
-                  <th style="text-align: center;">Commutation</th>
-                  <th style="text-align: center;">Date of filing</th>
-                  <th style="text-align: center;">Status</th>
-                  <th style="text-align: center;">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in reversedFormData" :key="item.id">
-                  <td>{{ getName(item.name_id) }}</td>
-                  <td>{{ item.type }}</td>
-                  <td>{{ item.detail }}{{ item.description }}</td>
-                  <td>{{ item.dates }} ({{ item.days }})</td>
-                  <td>{{ item.commutation }}</td>
-                  <td>{{ formattedDate(item.date) }}</td>
-                  <td>
-                    <div v-if="!item.certification" class="statusrow">
-                      <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
-                      <p  class="status-pending">For Certification</p>
-                    </div>
-                    <div v-if="item.certification" class="statusrow">
-                      <img src="../../assets/check.png" alt="Approved Recommendation" class="status-icon">
-                      <p class="status-approved">Certified</p>
-                    </div>
-                    <div v-if="item.certification && (![15,21,45,48].includes(item.name_id))">
-                      <div v-if="!item.recommendation" class="statusrow">
-                        <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
-                        <p class="status-pending">For Recommendation</p>
-                      </div>
-                      <div v-if="item.recommendation && parseInt(item.reco) == 1" class="statusrow">
-                        <img src="../../assets/check.png" alt="Approved Recommendation" class="status-icon">
-                        <p class="status-approved">Recommended</p>
-                      </div>
-                      <div v-if="item.recommendation && item.recodesc" class="statusrow">
-                        <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
-                        <p class="status-pending">not Recommended</p>
-                      </div>
-                    </div>
-                    <div v-if="item.recommendation || (item.certification) || ([15,21,45,48].includes(item.name_id) && item.certification)">
-                      <div v-if="!item.appsig" class="statusrow">
-                        <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
-                        <p class="status-pending">For Approval</p>
-                      </div>
-                      <div v-if="item.appsig && !item.disapproved" class="statusrow">
-                        <img src="../../assets/check.png" alt="Approved Recommendation" class="status-icon">
-                        <p class="status-approved">Approved</p>
-                      </div>
-                      <div v-if="item.appsig && item.disapproved" class="statusrow">
-                        <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
-                        <p class="status-pending">not Approved</p>
-                      </div>  
-                    </div>
-                  </td>
-                  <td class="status-actions" v-if="item.name_id == this.nameId || this.nameId == 76">
-                    <button v-if="selectedTravelOrderIdEdit != item.leaveform_id" @click="edit(item.leaveform_id)">Edit</button>
-                    <img src="/src/assets/canceledit.png" v-if="selectedTravelOrderIdEdit == item.leaveform_id" @click="closeEdit" class="action-icon"/>
-                  </td>
-                  <td class="status-actions">
-                    <button 
-                      v-if="selectedTravelOrderId != item.leaveform_id"
-                      @click="openPDF(item.leaveform_id, false)">PDF</button>
-                    <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id && ChiefPDF != true" @click="close"
-                      style="width: 40px; height: 40px; cursor: pointer;" />
-                  </td>
-                  <td class="status-actions" v-if="[15,20,21,45,48, 3].includes(item.name_id) && ChiefPDF !== false">
-                    <button 
-                      v-if="selectedTravelOrderId != item.leaveform_id"
-                      @click="openPDF(item.leaveform_id, true)">Chief PDF</button>
-                    <img src="/src/assets/exit.png" v-if="selectedTravelOrderId == item.leaveform_id" @click="close"
-                      style="width: 40px; height: 40px; cursor: pointer;" />
-                  </td>
-                  <td v-if="[2,24].includes(this.nameId)" class="status-actions">
-                    <button 
-                    v-if="((item.asof || item.tevl || item.tesl || item.ltavl || item.ltasl || item.bvl || item.vsl || item.dayswpay || item.dayswopay || item.others) && item.certification == null && this.nameId == 2) || this.nameId == 24 || this.nameId == 76" 
-                      @click="certification(item.leaveform_id, item.asof, item.tevl, item.tesl, item.ltavl, item.ltasl, item.bvl, item.vsl, item.dayswpay, item.dayswopay, item.others)"
-                      :style="{
-                        color: certinum === item.leaveform_id ? 'white' : 'black',
-                        backgroundColor: certinum === item.leaveform_id ? 'black' : 'white',
-                        padding: '10px 20px',
-                        cursor: 'pointer'
-                      }">
-                      Certification
-                    </button>
-                  </td>
-                  <td v-if="[15,21,45,48, 3].includes(this.nameId)" class="status-actions">
-                    <button v-if="!item.recommendation && item.name_id !== this.nameId"
-                      @click="recommendation(item.leaveform_id)"
-                      :style="{
-                        color: reconum === item.leaveform_id ? 'white' : 'black',
-                        backgroundColor: reconum === item.leaveform_id ? 'black' : 'white',
-                        padding: '10px 20px',
-                        cursor: 'pointer'
-                      }">
-                      Recommend
-                    </button>
-                  </td>
-                  <td v-if="((employees.rd || nameId == 20) && !item.appsig)" class="status-actions">
-                    <button 
-                      @click="approve(item.leaveform_id)"
-                      :style="{
-                        color: apronum === item.leaveform_id ? 'white' : 'black',
-                        backgroundColor: apronum === item.leaveform_id ? 'black' : 'white',
-                        padding: '10px 20px',
-                        cursor: 'pointer'
-                      }">
-                      Approve
-                    </button>
-                  </td>
-                  
-                </tr>
-              </tbody>
-            </table>
-            <h1 style="text-align: center; margin-bottom: 0px;" v-if="reversedFormData.length == 0">NO MATCH FOUND</h1>
-          </div>
-        </div>
-      <div v-show="selectedTravelOrderId" class="prent full-screen">
-        <!-- <div class="buttons">
-          <button @click="printzz">Download as PDF</button>
-          <button @click="close">Close PDF</button>
-        </div> -->
-        <pdf :leaveform_id="selectedTravelOrderId" :isChief="ChiefPDF"></pdf>
-      </div>
-    </template>
-      
-    <script>
-    import axios from 'axios';
-    import pdf from './PDF.vue';
-    import editform from './EditForm.vue';
-    import { API_BASE_URL } from '../../config'
-    import { useAuthStore } from '../../store/auth';
-    import { usePendingStore } from '@/store/pending';
-    
-    export default {
-      provide() {
-        return {
-          close: this.close,
-        };
+          <!-- <div class="leavebuttonss">
+              <button class="leavebutton" @click="submitForm"> Submit
+           </button>
+          </div>  -->
+       </div>
+
+   </div>
+</template>
+
+<script>
+import modeCtrGladman from 'crypto-js/mode-ctr-gladman';
+import image1 from '../../assets/background_image.png'
+import image2 from '../../assets/bago.png'
+import axios from 'axios';
+import { API_BASE_URL } from '../../config';
+import mgbx from '../../assets/mgbx.png'
+import QRCode from 'qrcode'
+
+export default {
+    props: {
+        leaveform_id: {
+          type: Number,  // Use Number for integer values
+          required: true,
+          default: 0,  // Set default value to 0 (as a number)
+        },
+      isChief: {
+        type: Boolean,
+        required: true,
       },
-      components: {
-        pdf,
-        editform,
-      },
-      mounted() {
-        this.fetchNames();
-        this.fetchData(true);
-        this.fetchEmployees();
-      },
-      data() {
-        const authStore = useAuthStore();
-        return {
-          pendingStore: usePendingStore(),
-          numberOfRows: 6,  // Default number of rows to fetch
-          rowOptions: [10, 20, 50, 100, 200, 500, 1000, 5000, 10000], // Options for number of rows to fetch
-          selectedStatus: 'Pending',
-          options: ['Pending', 'Done', 'Me'],
-          yearToday: new Date().getFullYear(),
-          formData: [],
-          names: {},
-          employees: {},
-          selectedTravelOrderId: 0,
-          selectedTravelOrderIdEdit: 0,
-          accountId: authStore.account_id,
-          accountType: authStore.account_type,
-          nameId: authStore.name_id,
-          signature: authStore.signature,
-          imageUrl: '',
-          siga: '',
-          siga1: '',
-          otp: false,
-          verifiedOTPs: localStorage.getItem('verifiedOTPs'),
-          load: true,
-          mawala: false,
-          certif: false,
-          viewNote: false,
-          notenum: 0,
-          initnum: 0,
-          noteText: '',
-          sub: 0,
-          bus: 0,
-          searchQuery: '',
-          csvformdata: [],
-          recoms: false,
-          recommendationtype: [1, 2],
-          approvetype: [1, 2],
-          recommendationLeavetype: [],
-          approveLeavetype: [],
-          leavecredits: '',
-          totalvacation: '',
-          totalsick: '',
-          lessvacation: '',
-          lesssick: '',
-          // balancevacation: '',
-          // balancesick: '',
-          withpay: '',
-          withoutpay: '',
-          othersSpecify: '',
-          text: '',
-          rows: 1,
-          appr: false,
-          text2: '',
-          certinum: 0,
-          reconum: 0,
-          apronum: 0,
-          ChiefPDF: ''
-        };
-      },
-      created() {
-        window.addEventListener('storage', this.updateVerifiedOTPs);
-    
-      },
-      destroyed() {
-        window.removeEventListener('storage', this.updateVerifiedOTPs);
-      },
-    
-      methods: {
-        fetchEmployees() {
-        axios.get(`${API_BASE_URL}/get_employees_json/${this.nameId}`)
-          .then(response => {
-            this.employees = response.data;
-            console.log(this.employees)
-          })
-          .catch(error => {
-            console.error('Error fetching employeess:', error);
-          });
-      },
-        nonumber(event, field) {
-          this[field] = event.target.value.replace(/[^\d.+-]/g, '');
-        },
-        updateRows() {
-          this.rows = this.text.length / 63 + 1
-        },
-        formattedDate(dateTime) {
-          return dateTime.split(' ')[0];
-        },
-        edit(travelOrderId) {
-        this.selectedTravelOrderIdEdit = travelOrderId;
-        this.$emit('edit-travel-order', travelOrderId); // Emit the selected travel order ID
-      },
-      closeEdit(){
-        this.selectedTravelOrderIdEdit = 0
-      },
-        printzz() {
-          window.print();
-        },
-        isSectionChief(name_id) {
-          return this.sectionChiefIds.includes(name_id);
-        },
-    
-        postCertification() {
-          const formData = new FormData();
-    
-          if (this.leavecredits) {
-            formData.append('asof', '' + this.leavecredits);
-          }
-          if (this.totalvacation) {
-            formData.append('tevl', '' + this.totalvacation);
-          }
-          if (this.totalsick) {
-            formData.append('tesl', '' + this.totalsick);
-          }
-          if (this.lessvacation) {
-            formData.append('ltavl', '' + this.lessvacation);
-          }
-          if (this.lesssick) {
-            formData.append('ltasl', '' + this.lesssick);
-          }
-          if (this.balancevacation) {
-            formData.append('bvl', '' + this.balancevacation);
-          }
-          if (this.balancesick) {
-            formData.append('vsl', '' + this.balancesick);
-          }
-          if (this.withpay) {
-            formData.append('dayswpay', this.withpay);
-          }
-          if (this.withoutpay) {
-            formData.append('dayswopay', this.withoutpay);
-          }
-          if (this.othersSpecify) {
-            formData.append('others', '' + this.othersSpecify);
-          }
-          if (this.nameId == 2) {
-            formData.append('certification', this.signature);
-          }
-    
-          axios.post(`${API_BASE_URL}/updateleave_form/${this.certinum}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }).then(() => {
-            
-              this.fetchData(true);
-              this.leavecredits = ''
-              this.totalvacation = ''
-              this.totalsick = ''
-              this.lessvacation = ''
-              this.lesssick = ''
-              this.balancevacation = ''
-              this.balancesick = ''
-              this.withpay = ''
-              this.withoutpay = ''
-              this.othersSpecify = ''
-              this.certif = false
-              this.certinum = 0
-            
-          }).catch(error => {
-            console.error('Error:', error);
-          });
-        },
-    
-        // Method to post recommendation
-        postRecommendation() {
-          const formData = new FormData();
-          formData.append('reco', this.recommendationLeavetype);
-          formData.append('recodesc', this.text);
-          formData.append('recommendation', this.signature);
-    
-          axios.post(`${API_BASE_URL}/updateleave_form/${this.reconum}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }).then(() => {
-            
-            this.fetchData(true);
-            this.recommendationLeavetype.length = 0
-            this.text = ''
-            this.recoms = false
-            this.reconum = 0
-            
-          }).catch(error => {
-            console.error('Error:', error);
-          });
-        },
-    
-        // Method to post approval
-        postApproval() {
-          const formData = new FormData();
-          if (this.approveLeavetype.includes(1)){
-            formData.append('approval', this.approveLeavetype);
-          }else{
-            formData.append('disapproved', this.text2);
-          }
-          formData.append('appsig', this.signature);
-          formData.append('appby', this.nameId);
-    
-          axios.post(`${API_BASE_URL}/updateleave_form/${this.apronum}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
-          }).then(() => {
-    
-            this.fetchData(true);
-            this.text2 = ''
-            this.approveLeavetype.length = 0
-            this.appr = false
-            this.apronum = 0
-          }).catch(error => {
-            console.error('Error:', error);
-          });
-        },
-        handleScroll() {
-          const container = this.$refs.scrollContainer;
-          if (container.scrollTop + container.clientHeight >= container.scrollHeight - 100) {
-            console.log("scroll")
-            // Near bottom, load more
-            this.fetchData();
-          }
-        },
-        fetchData(reset = false) {
-          if (reset) {
-        this.formData = []; // Clear the array only when status changes
-      }
-          this.load = true
-          const params = {};
-          if (this.searchQuery) params.search = this.searchQuery;
-          axios.get(`${API_BASE_URL}/get_leave_json/${this.nameId}/${this.selectedStatus}/${this.numberOfRows}/${this.formData.length}`, { params })
-            .then(response => {
-              this.mawala = true;
-              this.load = false
-              this.csvformdata = response.data
-  
-              // Get the IDs already present
-            const existingIds = new Set(this.formData.map(item => item.leaveform_id));
-        
-            // Filter out duplicates
-            const uniqueNewData = response.data.filter(item => !existingIds.has(item.leaveform_id));
-        
-            // Append only unique items
-            this.formData = [...this.formData, ...uniqueNewData]
-            
-            })
-            .catch(error => {
-              console.error('Error fetching data:', error);
-            });
-        },
-        fetchNames() {
-          axios.get(`${API_BASE_URL}/get_names_json`)
-            .then(response => {
-              this.names = response.data;
-            })
-            .catch(error => {
-              console.error('Error fetching names:', error);
-            });
-        },
-        getName(nameId) {
-          const name = this.names[nameId - 1];
-          if (name) {
-            const { first_name, middle_init, last_name } = name;
-            return `${first_name.toUpperCase()} ${middle_init.toUpperCase()} ${last_name.toUpperCase()}`;
-          }
-          return 'Unknown';
-        },
-        openPDF(travelOrderId, chief) {
-          this.selectedTravelOrderId = travelOrderId;
-          this.ChiefPDF = chief;
-          setTimeout(() => {
-          this.printzz();
-        }, 500);  // 500 milliseconds = 0.5 seconds
-        },
-        close() {
-          this.selectedTravelOrderId = 0
-          this.ChiefPDF = ''
-        },
-    
-        certification(leaveformID, asof, tevl, tesl, ltavl, ltasl, bvl, vsl, dayswpay, dayswopay, others) {
-          // this.certif = !this.certif
-          if (this.certif == false && this.certinum == 0){
-            this.certif = true
-            this.certinum = leaveformID
-          }else if (this.certif == true && this.certinum == leaveformID){
-            this.certif = false
-            this.certinum = 0
-          }else if (this.certif == true && this.certinum !== 0){
-            this.certif = true
-            this.certinum = leaveformID
-          }
-          this.leavecredits = asof ?? ''
-          this.totalvacation = tevl ?? ''
-          this.totalsick = tesl ?? ''
-          this.lessvacation = ltavl ?? ''
-          this.lesssick = ltasl ?? ''
-          this.balancevacation = bvl ?? ''
-          this.balancesick = vsl ?? ''
-          this.withpay =  dayswpay ?? ''
-          this.withoutpay = dayswopay ?? ''
-          this.othersSpecify = others ?? ''
-        },
-    
-        recommendation(leaveformID) {
-          // this.recoms = !this.recoms
-          if (this.recoms == false && this.reconum == 0){
-            this.recoms = true
-            this.reconum = leaveformID
-          }else if (this.recoms == true && this.reconum == leaveformID){
-            this.recoms = false
-            this.reconum = 0
-          }else if (this.recoms == true && this.reconum !== 0){
-            this.recoms = true
-            this.reconum = leaveformID
-          }
-          this.recommendationLeavetype.length = 0
-          this.text = ''
-        },
-    
-        approve(leaveformID) {
-          // this.appr = !this.appr
-          if (this.appr == false && this.apronum == 0){
-            this.appr = true
-            this.apronum = leaveformID
-          }else if (this.appr == true && this.apronum == leaveformID){
-            this.appr = false
-            this.apronum = 0
-          }else if (this.appr == true && this.apronum !== 0){
-            this.appr = true
-            this.apronum = leaveformID
-          }
-          this.approveLeavetype.length = 0
-          this.text2 = ''
-        },
-        
-      },
-    
-      computed: {
-        imageUrl() {
-        return `${this.API_BASE_URL}/storage/${this.signature}`;
-      },
-        pendingCount() {
-        return this.pendingStore.leaveform
-      },
-        reversedFormData() {
-          let data = this.formData.slice() // Make a copy of the original data
-          return data;
-        },
-        // Calculate balance vacation and round to 3 decimal places
-    balancevacation() {
-      let balance = this.lessvacation > 0 ? this.totalvacation - this.lessvacation : this.totalvacation;
-      return Math.round(balance * 1000) / 1000;  // Round to 3 decimal places
     },
-  
-    // Calculate balance sick and round to 3 decimal places
-    balancesick() {
-      let balance = this.lesssick > 0 ? this.totalsick - this.lesssick : this.totalsick;
-      return Math.round(balance * 1000) / 1000;  // Round to 3 decimal places
-    }
+   data() {
+       return {
+        qrCodeUrl: '',
+      imageSrc: mgbx,
+        leaveForms:[],
+           leaveshowhome:true,
+           image1: image1,
+           image2: image2,
+           datetoday: '',
+           secch: 'JOANNE ROSE O. ALVAREZ',
+           secchpos: 'Administrative Officer V (HRMO)',
+           reco: '',
+           recopost: '',
+           rd: 'RODANTE B. FELINA',
+           rdpos: 'OIC, REGIONAL DIRECTOR',
+           name: {
+            last_name: '',
+            first_name: '',
+            middle_init: '',
+           },
+           text: '',
+           rows: 1,
+           text2: '',
+           rows2: 1,
+           isSingleDate: true,
+           selectedDate: '',
+           startDate: null,
+           endDate: null,
+           weekdaysCount: 1,
+
+           selectedLeavetype: [],
+           vacationleavedetails: [],
+           sickleavedetails: [],
+           studyleavedetails: [],
+           commutationLeavetype: [],
+           recommendationLeavetype: [],
+           monetization: [],
+
+           LeaveType: '',
+           leavetype: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+
+           vacationdetails: [1, 2],
+           vacation1: '',
+           vacation2: '',
+
+           sickdetails: [1, 2],
+           sick1: '',
+           sick2: '',
+           studydetails: [1, 2],
+           otherPurpose: '',
+
+           leaveforwoman: '',
+
+           commutationtype: [1, 2],
+
+           recommendationtype: [1, 2],
+           terminalleave: [1, 2],
+
+           totalvacation: '',
+           totalsick: '',
+           lessvacation: '',
+           lesssick: '',
+           balancevacation: '',
+           balancesick: '',
+           withpay: '',
+           withoutpay: '',
+           othersSpecify: '',
+           leavecredits:'',
+           signature: '',
+           signature1: '',
+           signature2: '',
+           signature3: '',
+           accounts: [],
+           accountIdz: localStorage.getItem('accountId'),
+           name: [],
+           names: [],
+           position: '',
+           positions: [],
+           employees: [],
+           name_id: '',
+           salary: '',
+           division: '',
+           signatories: [
+               "JANICE B. FUROG",
+               "LIBERTY B. DAITIA",
+               "OSIN A. SINSUAT JR.",
+               "ALVIN M. VILLANUEVA",
+               "RODANTE B. FELINA",
+               "LIBERTY B. DAITIA",
+               "JOY CHRISTINE V. ASIS",
+           ],
+           designations: [
+               "Chief, MMD",
+               "Chief, FAD",
+               "Chief, GD",
+               "Chief, MSESDD",
+               "OIC, Regional Director",
+               "Chief Administrative Officer",
+               "OIC, Geoscicnce Division",
+           ],
+           dayszz: '',
+           dateszz: '',
+       };
+   },
+   watch: {
+    leaveform_id(newVal) {
+        console.log('New value of leaveform_id:', newVal);
+        if (newVal && newVal !== 0) {
+            this.fetchLeaveForms(newVal, this.isChief || false);
+            console.log('damn');
+        }
+    },
+       text() {
+           this.updateRows();
+       },
+       text2() {
+           this.updateRows2();
+       },
+       selectedLeavetype(newValue, oldValue) {
+           this.LeaveType = '';
+           if (newValue.length > 1) {
+               this.selectedLeavetype = [newValue[newValue.length - 1]]
+               this.vacationleavedetails = [];
+               this.sickleavedetails = [];
+               this.monetization = [];
+               this.vacation1 = '';
+               this.vacation2 = '';
+               this.sick1 = '';
+               this.sick2 = '';
+               this.leaveforwoman = '';
+               this.otherPurpose = ''
+
+           }
+       },
+       vacationleavedetails(newValue, oldValue) {
+           if (newValue.length > 1) {
+               this.vacationleavedetails = [newValue[newValue.length - 1]]
+               this.vacation1 = '';
+               this.vacation2 = '';
+           }
+       },
+
+       sickleavedetails(newValue, oldValue) {
+           if (newValue.length > 1) {
+               this.sickleavedetails = [newValue[newValue.length - 1]]
+               this.sick1 = '';
+               this.sick2 = '';
+
+           }
+       },
+
+       studyleavedetails(newValue, oldValue) {
+           if (newValue.length > 1) {
+               this.studyleavedetails = [newValue[newValue.length - 1]]
+               this.study1 = '';
+               this.otherPurpose = ''
+
+           }
+       },
+       commutationLeavetype(newValue, oldValue) {
+           if (newValue.length > 1) {
+               this.commutationLeavetype = [newValue[newValue.length - 1]]
+           }
+       },
+
+       recommendationLeavetype(newValue, oldValue) {
+           if (newValue.length > 1) {
+               this.recommendationLeavetype = [newValue[newValue.length - 1]]
+               this.text = '';
+           }
+       },
+
+       monetization(newValue, oldValue) {
+           if (newValue.length > 1) {
+               this.monetization = [newValue[newValue.length - 1]]
+               this.selectedLeavetype = [];
+           }
+       },
+   },
+
+   mounted() {
+       this.fetchAccounts();
+       this.fetchNames();
+       this.fetchemployee();
+       this.comparePosition();
+       this.fetchLeaveForms(this.leaveform_id)
+   },
+
+   methods: {
+        navigatez(){
+            window.location.pathname = '/leaveform';
+        },
+        async generateQRCode() {
+            console.log('damn')
+      const textToEncode = `MGBX LEAVE FORM ${this.name.first_name} ${this.name.middle_init} ${this.name.last_name}` ;
+      try {
+        this.qrCodeUrl = await QRCode.toDataURL(textToEncode);
+        console.log(this.qrCodeUrl)
+      } catch (err) {
+        console.error(err);
+      }
+    },
+        
+       async fetchAccounts() {
+
+           try {
+               const response = await axios.get(`${API_BASE_URL}/get_accounts_json`);
+
+               this.accounts = response.data  
+
+           } catch (error) {
+               console.error('Error fetching accounts:', error);
+           }
+       },
+
+       async fetchNames() {
+           try {
+               const response = await axios.get(`${API_BASE_URL}/get_names_json`);
+               this.names = response.data;
+           } catch (error) {
+               console.error('Error fetching names:', error);
+           }
+       },
+       getPositionById(id, arrayName) {
+           const array = this[arrayName];
+           if (!array) {
+               return ''; // Return an empty string if the array is not found
+           }
+           const item = array.find(item => item.position_id === id);
+           return item ? item.position_name : '';
+       },
+       fetchemployee() {
+           fetch(`${API_BASE_URL}/get_employees_json/`)
+               .then(response => response.json())
+               .then(data => {
+                   this.employees = data
+               })
+               .catch(error => {
+                   console.error('Error fetching employees:', error);
+               });
+           // Fetch positions data
+           fetch(`${API_BASE_URL}/get_positions_json/`)
+               .then(response => response.json())
+               .then(data => {
+                   this.positions = data
+               })
+               .catch(error => {
+                   console.error('Error fetching positions:', error);
+               });
+       },
+       fetchLeaveForms(leaveformID) {
+        console.log(leaveformID)
+      axios.get(`${API_BASE_URL}/get_leave_json/${leaveformID}`)
+        .then(response => {
+
+            this.selectedLeavetype = []; // Ensure it's cleared before setting a new type
+            this.vacationleavedetails = []; // Ensure it's cleared before setting a new type
+            this.vacation1 = []; // Ensure it's cleared before setting a new type
+            this.vacation2 = []; // Ensure it's cleared before setting a new type
+
+            this.sickleavedetails = []; // Ensure it's cleared before setting a new type
+            this.sick1 = []; // Ensure it's cleared before setting a new type
+            this.sick2 = []; // Ensure it's cleared before setting a new type
+
+            this.studyleavedetails = []; // Ensure it's cleared before setting a new type
+            this.otherPurpose = []; // Ensure it's cleared before setting a new type
+
+            
+          this.leaveForms = response.data
+          console.log(response.data)
+
+          
+          if (this.leaveForms){
+            this.generateQRCode(this.leaveForms)
+            this.comparePosition()
+            this.name_id = this.leaveForms.name_id
+            
+
+            this.division = this.employees.find(emp => emp.name_id == this.leaveForms.name_id).division_id
+
+                    if ([15, 21, 45, 48, 3].includes(this.name_id)) {
+                       this.reco = this.isChief ?  this.signatories[4] : ''
+                       this.recopost = this.isChief ?  this.designations[4] : ''
+                       this.rd = this.isChief ? '' : this.signatories[4]
+                       this.rdpos = this.isChief ?  '' : this.designations[4]
+                   } else if (this.name_id == 20) {
+                       this.reco = ''
+                       this.recopost = ''
+                       this.rd = ''
+                       this.rdpos = ''
+                   }
+                   else if (this.division == 1) {
+                       {
+                           this.reco = this.signatories[0]
+                           this.recopost = this.designations[0]
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
+                       }
+                   } else if (this.division == 2) {
+                       {
+                        console.log('fad')
+                           this.reco = this.signatories[1]
+                           this.recopost = this.designations[1]
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
+                       }
+                   } else if (this.division == 3) {
+                       
+                        console.log('gd?')
+                        
+                        if (this.leaveForms.recommendation && this.leaveForms.recommendation.split('/').pop() === 'urAs0SbQ7kw0y6LI4B9dyOpQxKI8cL4q4aEbsFSh.png'){
+                            this.reco = this.signatories[2]
+                           this.recopost = this.designations[2]
+                           console.log('sirjo')
+                        } else {
+                            this.reco = this.signatories[6]
+                           this.recopost = this.designations[6]
+                           console.log('mamjo')
+                        }
+
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
+                       
+                   } else if (this.division == 4) {
+                       {
+                           this.reco = this.signatories[3]
+                           this.recopost = this.designations[3]
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
+                       }
+                   } else if (this.division == 5) {
+                       {
+                           this.reco = ''
+                           this.recopost = ''
+                           if (this.leaveForms.appby == 20 || this.leaveForms.appby == null){
+                           this.rd = 'RODANTE B. FELINA'
+                           this.rdpos = 'OIC, REGIONAL DIRECTOR'
+                           } else if (this.leaveForms.appby == 21) {
+                               this.rd = this.signatories[0]; // "JANICE B. FUROG"
+                               this.rdpos = this.designations[0]; // "Chief, MMD"
+                           } else if (this.leaveForms.appby == 15) {
+                               this.rd = this.signatories[5]; // "LIBERTY B. DAITIA"
+                               this.rdpos = this.designations[5]; // "CAO"
+                           } else if (this.leaveForms.appby == 45) {
+                               this.rd = this.signatories[2]; // "OSIN A. SINSUAT JR."
+                               this.rdpos = this.designations[2]; // "Chief, GD"
+                           } else if (this.leaveForms.appby == 48) {
+                               this.rd = this.signatories[3]; // "ALVIN M. VILLANUEVA"
+                               this.rdpos = this.designations[3]; // "Chief, MSESDD"
+                           }
+                       }
+                   } else {
+                       this.reco = ''
+                       this.recopost = ''
+                       this.rd = ''
+                       this.rdpos = ''
+                   }
+                   
+
+            this.signature3 =`${API_BASE_URL}`+"/storage/"+`${this.accounts.find(acc=>acc.name_id==this.name_id).signature}`
+            this.signature2 = this.leaveForms.certification ?  `${API_BASE_URL}`+"/storage/"+`${this.leaveForms.certification}` : null
+            this.signature1 = this.leaveForms.recommendation ? `${API_BASE_URL}`+"/storage/"+`${this.leaveForms.recommendation}` : null
+            this.signature = this.leaveForms.appsig ? `${API_BASE_URL}`+"/storage/"+`${this.leaveForms.appsig}` : null
+            
+            this.salary = this.leaveForms.applicant
+            this.datetoday =this.trimDate(this.leaveForms.date)
+            this.dayszz = this.leaveForms.days
+            this.dateszz = this.leaveForms.dates
+
+            if (this.leaveForms.commutation == "Not Requested"){
+                this.commutationLeavetype = [1];
+            }else if (this.leaveForms.commutation == "Requested"){
+                this.commutationLeavetype = [2];
+            }
+
+
+            this.leavecredits = this.leaveForms.asof
+            this.totalvacation = this.leaveForms.tevl
+            this.totalsick = this.leaveForms.tesl
+            this.lessvacation = this.leaveForms.ltavl
+            this.lesssick = this.leaveForms.ltasl
+            this.balancevacation = this.leaveForms.bvl
+            this.balancesick = this.leaveForms.vsl
+            this.withpay = this.leaveForms.dayswpay
+            this.withoutpay = this.leaveForms.dayswopay
+            this.othersSpecify = this.leaveForms.others
+
+            if(this.leaveForms.reco == "1"){
+                this.recommendationLeavetype.push(1);
+            }else if(this.leaveForms.reco == "2"){
+                this.recommendationLeavetype.push(2);
+                this.text = this.leaveForms.recodesc
+            }
+
+            if (this.leaveForms.disapproved){
+                this.text2 = this.leaveForms.disapproved
+            }
+
+            const nameId = this.leaveForms.name_id
+            const foundName = this.names.find(name => name.name_id === nameId);
+                   if (foundName) {
+                       this.name = foundName;
+                       this.nameLoaded = true;
+                   } else {
+                       // Handle case where name is not found
+                   }
+
+            if (this.leaveForms.type == 'Vacation Leave'){
+                this.selectedLeavetype = [0];
+            }else if (this.leaveForms.type == 'Mandatory/Forced Leave'){
+                this.selectedLeavetype = [1];
+            }else if (this.leaveForms.type == 'Sick Leave'){
+                this.selectedLeavetype = [2];
+            }else if (this.leaveForms.type == 'Maternity Leave'){
+                this.selectedLeavetype = [3];
+            }else if (this.leaveForms.type == 'Paternity Leave'){
+                this.selectedLeavetype = [4];
+            }else if (this.leaveForms.type == 'Special Privilege Leave'){
+                this.selectedLeavetype = [5];
+            }else if (this.leaveForms.type == 'Solo Parent Leave'){
+                this.selectedLeavetype = [6];
+            }else if (this.leaveForms.type == 'Study Leave'){
+                this.selectedLeavetype = [7];
+            }else if (this.leaveForms.type == '10-Day VAWC Leave'){
+                this.selectedLeavetype = [8];
+            }else if (this.leaveForms.type == 'Rehabilitation Privilege'){
+                this.selectedLeavetype = [9];
+            }else if (this.leaveForms.type == 'Special Leave Benefits for Women'){
+                this.selectedLeavetype = [10];
+            }else if (this.leaveForms.type == 'Special Emergency(Calamity) Leave'){
+                this.selectedLeavetype = [11];
+            }else if (this.leaveForms.type == 'Adoption Leave Leave'){
+                this.selectedLeavetype = [12];
+            }else{
+                
+            }
+
+
+
+            if (this.leaveForms.detail.startsWith('Within the Philippines,')) {
+                if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
+                    this.vacationleavedetails.push(1);
+                    this.vacation1 = this.leaveForms.detail.replace('Within the Philippines,', '').trim();
+                    return 'Within the Philippines, ' + this.vacation1;
+                }
+            } else if (this.leaveForms.detail.startsWith('Abroad (Specify),')) {
+                if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
+                    this.vacationleavedetails.push(2);
+                    this.vacation2 = this.leaveForms.detail.replace('Abroad (Specify),', '').trim();
+                    return 'Abroad(Specify), ' + this.vacation2;
+                }
+            } else if (this.leaveForms.detail.startsWith('In Hospital (Specify Illness),')) {
+                if (this.selectedLeavetype.includes(2)) {
+                    this.sickleavedetails.push(1);
+                    this.sick1 = this.leaveForms.detail.replace('In Hospital (Specify Illness),', '').trim();
+                    return 'In Hospital (Specify Illness), ' + this.sick1;
+                }
+            } else if (this.leaveForms.detail.startsWith('Out Patient (Specify Illness),')) {
+                if (this.selectedLeavetype.includes(2)) {
+                    this.sickleavedetails.push(2);
+                    this.sick2 = this.leaveForms.detail.replace('Out Patient (Specify Illness),', '').trim();
+                    return 'Out Patient (Specify Illness), ' + this.sick2;
+                }
+            } else if (this.leaveForms.detail.startsWith(`Completion of Master's Degree,`)) {
+                if (this.selectedLeavetype.includes(7)) {
+                    this.studyleavedetails.push(1);
+                    this.otherPurpose = this.leaveForms.detail.replace(`Completion of Master's Degree,`, '').trim();
+                    return `Completion of Master's Degree, ` + this.otherPurpose;
+                }
+            } else if (this.leaveForms.detail.startsWith('BAR/Board Examination Review Other,')) {
+                if (this.selectedLeavetype.includes(7)) {
+                    this.studyleavedetails.push(2);
+                    this.otherPurpose = this.leaveForms.detail.replace('BAR/Board Examination Review Other,', '').trim();
+                    return 'BAR/Board Examination Review Other, ' + this.otherPurpose;
+                }
+            } else if (this.leaveForms.detail === this.leaveforwoman) {
+                if (this.selectedLeavetype.includes(10)) {
+                    return this.leaveforwoman;
+                }
+            } else if (this.leaveForms.detail === "Monetization of Leave Credits") {
+                this.terminalleave = [0];
+                this.monetization = [0];
+                if (this.monetization.includes(1)) {
+                     // Example push
+                    return 'Monetization of Leave Credits';
+                }
+            } else if (this.leaveForms.detail === 'Terminal Leave') {
+                this.terminalleave = [1];
+                this.monetization = [1];
+                if (this.monetization.includes(2)) {
+                    // Example push
+                    return 'Terminal Leave';
+                }
+            }
+
+            
+
+          }
+          
+          
+        })
+        .catch(error => {
+          console.error('Error fetching leave forms:', error);
+        });
+    },
+    isSignatureValid(item) {
+        console.log(item)
+      const filename = item.split('/').pop(); // Extract the filename
+      console.log(filename)
+      return filename === 'urAs0SbQ7kw0y6LI4B9dyOpQxKI8cL4q4aEbsFSh.png'; // Check if it matches your condition
+    },
+    comparePosition() {
+      if (this.leaveForms && this.positions.length > 0) {
+        const leaveForm = this.leaveForms;
+        const positionsh = this.positions[leaveForm.position_id-1];
+        this.position = positionsh.position_name
+      }
+      return null;
+    },
+    trimDate(datetime) {
+      if (datetime) {
+        return datetime.split(' ')[0];
+      }
+      return '';
+    },
+
+       updateRows() {
+           this.rows = this.text ? this.text.length / 63 + 1 : 1
+       },
+       updateRows2() {
+           this.rows2 = this.text2 ? this.text2.length / 63 + 1 : 1
+       },
+       handleDateChange() {
+           const selectedDate = new Date(this.selectedDate);
+           if (!this.startDate) {
+               this.startDate = selectedDate;
+               this.isSingleDate = false; // Switch to date range mode
+           } else if (this.isSingleDate) {
+               this.startDate = selectedDate;
+               this.endDate = null;
+           } else {
+               if (selectedDate < this.startDate) {
+                   this.startDate = selectedDate;
+                   this.endDate = null;
+               } else if (selectedDate > this.startDate) {
+                   this.endDate = selectedDate;
+                   this.weekdaysCount = this.calculateWeekdays(this.startDate, this.endDate);
+               } else {
+                   this.startDate = selectedDate;
+                   this.endDate = null;
+                   this.weekdaysCount = 0;
+               }
+           }
+           if (this.startDate && this.endDate) {
+               this.weekdaysCount = this.calculateWeekdays(this.startDate, this.endDate);
+           } else {
+               this.weekdaysCount = 1; // Reset to 1 for a single date or incomplete range
+           }
+       },
+       calculateWeekdays(startDate, endDate) {
+           let count = 0;
+           let currentDate = new Date(startDate);
+           endDate = new Date(endDate);
+           while (currentDate <= endDate) {
+               const dayOfWeek = currentDate.getDay();
+               if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                   count++;
+               }
+               currentDate.setDate(currentDate.getDate() + 1);
+           }
+           return count;
+       },
+       formattedDate(dateTime) {
+      return dateTime.split(' ')[0];
+    },
+   },
+
+   computed: {
+    
+    formattedSalary: {
+      get() {
+        // Add commas to the salary value
+        return this.salary.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       },
-    
-    
-      watch: {
-        text() {
-          this.updateRows();
-        },
-        recommendationLeavetype(newValue, oldValue) {
-          if (newValue.length > 1) {
-            this.recommendationLeavetype = [newValue[newValue.length - 1]]
-            this.text = '';
-          }
-        },
-        approveLeavetype(newValue, oldValue) {
-          if (newValue.length > 1) {
-            this.approveLeavetype = [newValue[newValue.length - 1]]
-            this.text2 = '';
-          }
-        },
-        selectedStatus() {
-          this.fetchData(true); // Pass true to reset on status change
-        },
-        numberOfRows: 'fetchData' // Watch for changes in number of rows
+      set(newValue) {
+        // Remove commas when the value is changed manually
+        this.salary = parseInt(newValue.replace(/,/g, ""), 10);
       }
+    },
+
+       weekdaysCountWithSuffix: {
+           get() {
+               return `${this.weekdaysCount} ${this.weekdaysCount === 1 ? 'Day' : 'Days'}`;
+           },
+           set(value) {
+               const count = parseInt(value, 10);
+               if (!isNaN(count)) {
+                   this.weekdaysCount = count;
+               }
+           }
+       },
+
+
+       formattedDate() {
+           if (!this.selectedDate) return '';
+           const date = new Date(this.selectedDate);
+           return `${date.toLocaleString('en-US', { month: 'long' })} ${date.getDate()}, ${date.getFullYear()}`;
+       },
+       formattedStartDate() {
+           if (!this.startDate) return '';
+           const startDate = new Date(this.startDate);
+           const endDate = this.endDate ? new Date(this.endDate) : null;
+
+           if (endDate && startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
+               return `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}-${endDate.getDate()}, ${startDate.getFullYear()}`;
+           } else {
+               return `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}, ${startDate.getFullYear()}`;
+           }
+       },
+
+       formattedDateRange() {
+           if (!this.startDate) return '';
+
+           const startDate = new Date(this.startDate);
+           const endDate = this.endDate ? new Date(this.endDate) : null;
+
+           const formattedStart = `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}, ${startDate.getFullYear()}`;
+
+           if (endDate) {
+               if (startDate.getMonth() === endDate.getMonth() && startDate.getFullYear() === endDate.getFullYear()) {
+                   return `${startDate.toLocaleString('en-US', { month: 'long' })} ${startDate.getDate()}-${endDate.getDate()}, ${startDate.getFullYear()}`;
+               } else {
+                   const formattedEnd = `${endDate.toLocaleString('en-US', { month: 'long' })} ${endDate.getDate()}, ${endDate.getFullYear()}`;
+                   return `${formattedStart} - ${formattedEnd}`;
+               }
+           } else {
+               return formattedStart;
+           }
+       }
+   },
+};
+
+
+</script>
+
+<style>
+.leavebuttonss {
+ display: flex;
+ position: relative;
+ flex-direction: row;
+ height: 40px;
+ justify-content: space-around;
+ margin-top: 8px;
+
+}
+.leavebutton {
+ border-radius: 10px;
+ width: 20%;
+ font-weight: bold;
+ font-size: 20px;
+ 
+}
+.containerlist {
+ 
+   position: relative;
+   left: 4px;
+   top: 10px;
+   margin-right: 8px;
+   cursor: default;
+
+}
+
+.containerlist input {
+   display: none;
+}
+
+.containerlist svg {
+   overflow: visible;
+   height: 12px;
+   width: 13px;
+}
+
+
+
+.containeremployee {
+   
+   display: flex;
+   justify-content: center;
+
+}
+
+.containeremployee input {
+   display: none;
+}
+
+.containeremployee svg {
+   overflow: visible;
+   height: 15px;
+   width: 15px;
+}
+
+.path {
+
+   fill: none;
+   stroke: black;
+   stroke-width: 6;
+   stroke-linecap: round;
+   stroke-linejoin: round;
+   transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+   stroke-dasharray: 241 9999999;
+   stroke-dashoffset: 0;
+}
+
+.containeremployee input:checked~svg .path,
+.containerlist input:checked~svg .path {
+   stroke-dasharray: 70.5096664428711 9999999;
+   stroke-dashoffset: -262.2723388671875;
+}
+
+.a4-containerz {
+   position: relative;
+   width: 210mm;
+   height: 296mm;
+   margin: 0 auto;
+   padding: 10px;
+   border: 1px solid #ccc;
+}
+
+.a4-contentz {
+   height: 295mm;
+}
+
+.pic1 {
+   height: 80px;
+   width: auto;
+   margin: auto;
+}
+
+.pic2 {
+   height: 100px;
+   width: auto;
+   margin: auto;
+}
+
+.grid-container {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   grid-gap: 0px;
+   width: 350px;
+   margin: auto;
+}
+
+.grid-item {
+   padding: 2px;
+   border: 1px solid #ccc;
+   text-align: left;
+}
+
+.leavecredits {
+   height: 10px;
+   width: 110px;
+   font-size: 9px;
+   border: none;
+   outline: none;
+   position: relative;
+   top: 2px;
+}
+
+.cuearez{
+  display: flex; flex-direction: column; position: absolute; bottom: 0; right: 0;
+}
+
+.bigzz{
+  height: 100px; width: 100px; margin-left: 145px; margin-bottom: 5px; margin-top: -57px; position: absolute;
+}
+.centzz{
+  height: 30px; width: 30px;  margin-top: -18px; margin-left: 185px; position: absolute; opacity: 50%;
+}
+.qrquotez {
+    margin-top: 55px; margin-right: 10px;margin-bottom: 20px;
+}
+
+@media print {
+    .leverage{
+        display: none !important;
     }
-    
-    
-    </script>
-      
-    <style scoped>
-    .note {
-      width: 380px;
-      background: linear-gradient(150deg, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
-      border: 2px solid #000000;
-      border-radius: 5px;
-      padding: 20px;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 100;
+    .qrquote {
+    margin-top: 50px;
     }
-    .option-btn {
-      background-color: transparent;
-      color: #000000;
-      border: 1px solid #000000;
-      padding: 8px 15px;
-      font-size: 14px;
-      font-weight: bold;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
-    }
-  
-    .option-btn:hover {
-      background-color: #000000;
-      color: #ffffff;
-    }
-    .save-btn, .cancel-btn {
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 50px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-  
-    .save-btn {
-      background-color: #000000;
-      color: #ffffff;
-      border: none;
-    }
-  
-    .save-btn:hover {
-      transform: scale(1.05);
-      background-color: #2e2e2e;
-      color: #ffffff;
-    }
-  
-    .cancel-btn {
-      background-color: transparent;
-      color: #fff;
-      border: 2px solid #000000;
-    }
-  
-    .cancel-btn:hover {
-      background-color: #000000;
-      color: #ffffff;
-      transform: scale(1.05);
-    }
-  
-    .status-icon {
-      height: 16px;
-      width: 16px;
-      vertical-align: middle;
-      margin-right: 5px;
-    }
-    .statusrow{
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      margin-top: -15px;
-    }
-    
-    
-    .title-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .butokz {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      margin-top: 20px;
-    }
-    
-    .title {
-      font-size: 20px;
-      font-weight: bold;
-    }
-    
-    .close-icon {
-      cursor: pointer;
-      font-size: 20px;
-      color: #333;
-      margin-right: 10px;
-    }
-    
-    .content {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    
-    textarea {
-      width: 100%;
-      resize: vertical;
-      height: 75px;
-    }
-    .leavecredits{
-      background-color: transparent;
-      font-weight: bolder;
-    }
-    
-  
-    @media print{
-      .outer{
-        display: none;
-      }
-    }
-    </style>
+    .a4-containerz {
+    border: none;
+    height: calc(100vh - 40px); /* Adjust height to fit one page */
+    max-height: 100%;
+    overflow: hidden; /* Prevent content overflow */
+    position: absolute; /* Allows for precise positioning */
+    top: 0px; /* Move the container down by 20mm */
+    opacity: 100%;
+    margin-top: 0px;
+  }
+  @page {
+    size: A4;
+    margin: 5%;
+  }
+  .a4-photo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* Place the photo behind other content */
+  }
+  .signatizz{
+    z-index: 999;
+  }
+
+}
+
+
+
+</style>
