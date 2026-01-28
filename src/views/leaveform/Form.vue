@@ -35,7 +35,7 @@
       <div class="form-row">
         <!-- Type of Leave Dropdown -->
         <div class="form-group">
-          <label for="leaveType">Type of Leave</label>
+          <label for="leaveType">Type of Leave {{ form.type }}</label>
           <select v-model="form.type" id="leaveType" required @change="updateLeaveDescriptions">
             <option v-for="option in leaveTypes" :key="option" :value="option">{{ option }}</option>
           </select>
@@ -57,7 +57,7 @@
       </div>
 
       <!-- Vacation / Special Privilege Leave Details -->
-      <div v-if="form.type === 'Vacation Leave' || form.type === 'Special Privilege Leave'" class="form-row">
+      <div v-if="form.type === 'Vacation Leave' || form.type === 'Special Privilege Leave' || form.type === 'Wellness Leave'" class="form-row">
         <div class="form-group" v-if="form.detail == 'Within the Philippines'">
           <label for="withinPH">Within the Philippines</label>
           <input type="text" id="withinPH" v-model="form.withinPH" placeholder="Specify location" required/>
@@ -392,6 +392,7 @@ return detailString;
       'Special Leave Benefits for Women',
       'Special Emergency (Calamity) Leave',
       'Adoption Leave',
+      'Wellness Leave',
       'Others',
     ]);
 
@@ -400,7 +401,7 @@ return detailString;
 
     // Function to update leave descriptions based on leave type
     const updateLeaveDescriptions = () => {
-      if (form.value.type === 'Vacation Leave' || form.value.type === 'Special Privilege Leave') {
+      if (form.value.type === 'Vacation Leave' || form.value.type === 'Special Privilege Leave' || form.value.type === 'Wellness Leave') {
         leaveDescriptions.value = ['Within the Philippines', 'Abroad (Specify)'];
       } else if (form.value.type === 'Sick Leave') {
         leaveDescriptions.value = ['In Hospital (Specify Illness)', 'Out Patient (Specify Illness)'];
@@ -515,10 +516,7 @@ return detailString;
       alert('Cannot File Vacation Leave less than 5 days from date of filing')
       return
     }
-<<<<<<< HEAD
     */
-=======
->>>>>>> 8a88f71e0f0b871ce7b26b66fd22765ebcb8b0a5
 
       formDisable.value = true
       pleaseWait.value = true

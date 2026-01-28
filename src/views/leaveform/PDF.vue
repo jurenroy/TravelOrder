@@ -215,6 +215,18 @@
                            </div>
 
                            <div style="display: flex; flex-direction: row; margin-top: -15px">
+                               <label class="containerlist">
+                                   <input readonly type="checkbox"  disabled  v-model="selectedLeavetype" :value="leavetype[13]">
+                                   <svg viewBox="0 0 64 64" height="2em" width="2em">
+                                       <path
+                                           d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
+                                           pathLength="575.0541381835938" class="path"></path>
+                                   </svg>
+                               </label>
+                               <p>Wellness Leave</p>
+                           </div>
+
+                           <div style="display: flex; flex-direction: row; margin-top: -20px">
                                <p style="margin-left: 15px; margin-top: 15px;font-style: italic;">Others:</p>
                            </div>
 
@@ -707,7 +719,7 @@ export default {
            monetization: [],
 
            LeaveType: '',
-           leavetype: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+           leavetype: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
 
            vacationdetails: [1, 2],
            vacation1: '',
@@ -1157,6 +1169,8 @@ export default {
                 this.selectedLeavetype = [11];
             }else if (this.leaveForms.type == 'Adoption Leave Leave'){
                 this.selectedLeavetype = [12];
+            }else if (this.leaveForms.type == 'Wellness Leave'){
+                this.selectedLeavetype = [13];
             }else{
                 
             }
@@ -1164,13 +1178,13 @@ export default {
 
 
             if (this.leaveForms.detail.startsWith('Within the Philippines,')) {
-                if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
+                if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5) || this.selectedLeavetype.includes(13)) {
                     this.vacationleavedetails.push(1);
                     this.vacation1 = this.leaveForms.detail.replace('Within the Philippines,', '').trim();
                     return 'Within the Philippines, ' + this.vacation1;
                 }
             } else if (this.leaveForms.detail.startsWith('Abroad (Specify),')) {
-                if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5)) {
+                if (this.selectedLeavetype.includes(0) || this.selectedLeavetype.includes(5) || this.selectedLeavetype.includes(13)) {
                     this.vacationleavedetails.push(2);
                     this.vacation2 = this.leaveForms.detail.replace('Abroad (Specify),', '').trim();
                     return 'Abroad(Specify), ' + this.vacation2;
