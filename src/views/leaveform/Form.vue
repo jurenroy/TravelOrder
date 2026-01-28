@@ -515,7 +515,10 @@ return detailString;
       alert('Cannot File Vacation Leave less than 5 days from date of filing')
       return
     }
+<<<<<<< HEAD
     */
+=======
+>>>>>>> 8a88f71e0f0b871ce7b26b66fd22765ebcb8b0a5
 
       formDisable.value = true
       pleaseWait.value = true
