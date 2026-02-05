@@ -17,6 +17,13 @@
         </router-link>
       </li>
 
+      <li>
+        <router-link to="/dtr" exact-active-class="active" class="list-item">
+          <img :src="attendance" alt="Home" class="icon" />
+          <span v-if="isMenuOpen" class="indent" style="font-size: 14px;">Daily Time Record</span>
+        </router-link>
+      </li>
+
       <!-- Services Dropdown -->
       <!-- <li @click="toggleServices" class="dropdown">
         <span class="count" v-if="totalCount && !isServicesOpen">{{ totalCount < 9 ? totalCount : '9+' }}</span>
@@ -125,6 +132,7 @@
   import logoutIcon from '../../assets/sidebar/logout.png'; // Import your logout icon
   import registration from '@/assets/sidebar/registration.png';
   import employeelist from '@/assets/sidebar/employeelist.png';
+  import attendance from '@/assets/sidebar/attendance.png';
   import { usePendingStore } from '@/store/pending';
   import { useAuthStore } from '@/store/auth';
   import CryptoJS from 'crypto-js';
@@ -147,6 +155,7 @@
         logoutIcon,
         registration,
         employeelist,
+        attendance,
         Footer,
         pendingStore: usePendingStore(),
         authStore: useAuthStore(),

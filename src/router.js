@@ -32,6 +32,8 @@ import CALENDAR from './views/calendar/dashboard.vue'
 import TravelClearance from './views/travelorderV2/TravelClearance.vue'
 import AuditTrails from './views/travelorderV2/AuditTrails.vue'
 
+import attendance from './views/attendance/dashboard.vue'
+
 const routes = [
   {
       path: '/',
@@ -43,6 +45,12 @@ const routes = [
         name: 'dashboard',
         component: Dashboard,
         meta: { requiresAuth: false }
+      },
+      {
+        path: '/dtr',
+        name: 'dtr',
+        component: attendance,
+        meta: { requiresAuth: true }
       },
       {
         path: '/services',
@@ -179,6 +187,8 @@ router.beforeEach((to, from, next) => {
     document.title = 'Travel Clearance Form';
   } else if (to.name === 'AuditTrails' ){
     document.title = 'Audit Trails';
+  } else if (to.name === 'dtr' ){
+    document.title = 'Daily Time Record';
   }else {
     document.title = 'MGB Application Form';
   }
