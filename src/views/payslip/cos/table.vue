@@ -51,12 +51,14 @@
       </table>
     </div>
 
+    <input type="file" @change="handleCSVUpload" accept=".csv" />
     <button @click="saveData">Save All</button>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Papa from "papaparse";
 import { API_BASE_URL } from "../../../config";
 
 export default {
@@ -127,6 +129,169 @@ export default {
     };
   },
   methods: {
+    handleCSVUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      Papa.parse(file, {
+        skipEmptyLines: false,
+        complete: (res) => {
+          this.processCSV(res.data);
+        },
+        error: (err) => {
+          console.error("CSV parse error:", err);
+          alert("Failed to parse CSV. Check your file.");
+        },
+      });
+    },
+
+    processCSV(rows) {
+      const currentPeriod = this.receivedData || "March 16-31, 2026";
+      console.log("Raw CSV rows:", rows);
+
+      // Filter valid rows first
+      const dataRows = rows.filter((row) => this.isValidRow(row));
+
+      const toNum = (val) => {
+        if (!val || val === "-") return 0;
+        return (
+          Number(
+            String(val)
+              .replace(/,/g, "")
+              .replace(/[^\d.-]/g, ""),
+          ) || 0
+        );
+      };
+
+      // Robust CSV-to-system name matcher
+      const matchNames = (csvName, systemName) => {
+        if (!csvName || !systemName) return false;
+
+        const clean = (name) =>
+          name
+            .toLowerCase()
+            .replace(/[^a-z0-9 ]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        const csvParts = clean(csvName).split(" ");
+        const sysParts = clean(systemName).split(" ");
+
+        // CSV format: Last, First Middle
+        const lastNameCsv = csvParts[0]; // Last name
+        const firstNameCsv = csvParts[1]; // First name
+
+        return sysParts.includes(lastNameCsv) && sysParts.includes(firstNameCsv);
+      };
+
+      dataRows.forEach((csvRow) => {
+        const csvName = csvRow[0].trim();
+
+        // Find existing row by robust name matching
+        const existingRow = this.data.find((row) => {
+          const systemFullName = row.name ? this.getName(row.name) : "";
+          return matchNames(csvName, systemFullName);
+        });
+
+        const days = toNum(csvRow[1]);
+        const rate = toNum(csvRow[2]);
+        const premiumRate = toNum(csvRow[3]) * 100 || 20;
+
+        if (existingRow) {
+          // Merge CSV values without overwriting system-generated IDs
+          existingRow.period = currentPeriod;
+          existingRow.days = days;
+          existingRow.rate = rate;
+          existingRow.premium_rate = premiumRate;
+
+          existingRow.additional = toNum(csvRow[7]);
+          existingRow.overpayment = toNum(csvRow[9]);
+          existingRow.penalty = toNum(csvRow[10]);
+          existingRow.pass_slip = toNum(csvRow[11]);
+
+          existingRow.tax = this.findValue(csvRow, "tax");
+          existingRow.PhilHealth = this.findValue(csvRow, "philhealth");
+          existingRow.PhilHealthDiff = this.findValue(csvRow, "differential");
+          existingRow.Pagibig = this.findValue(csvRow, "pag-ibig");
+          existingRow.MP2 = this.findValue(csvRow, "mp2");
+          existingRow.MPL = this.findValue(csvRow, "mpl");
+          existingRow.MGB_coop_loan = this.findValue(csvRow, "coop");
+
+          existingRow.certify = 23;
+          existingRow.certiby = "";
+          existingRow.certipos = "Administrative Officer IV / OIC, Finance Section";
+        } else {
+          // Add new row if no match found
+          this.data.push({
+            id: this.data.length + 1,
+            name: csvName,
+            period: currentPeriod,
+            days,
+            rate,
+            premium_rate: premiumRate,
+            additional: toNum(csvRow[7]),
+            overpayment: toNum(csvRow[9]),
+            penalty: toNum(csvRow[10]),
+            pass_slip: toNum(csvRow[11]),
+
+            tax: this.findValue(csvRow, "tax"),
+            PhilHealth: this.findValue(csvRow, "philhealth"),
+            PhilHealthDiff: this.findValue(csvRow, "differential"),
+            Pagibig: this.findValue(csvRow, "pag-ibig"),
+            MP2: this.findValue(csvRow, "mp2"),
+            MPL: this.findValue(csvRow, "mpl"),
+            MGB_coop_loan: this.findValue(csvRow, "coop"),
+
+            certify: 23,
+            certiby: "",
+            certipos: "Administrative Officer IV / OIC, Finance Section",
+            dtrs_id: "", // leave blank if new
+          });
+        }
+      });
+
+      console.log("Merged COS payslip data:", this.data);
+    },
+
+    isValidRow(row) {
+      const name = row[0];
+      return name && name.includes(",") && !name.includes("Subtotal") && !name.includes("TOTAL") && !name.includes("SERVICES");
+    },
+
+    num(val) {
+      if (!val) return 0;
+      return (
+        Number(
+          String(val)
+            .replace(/,/g, "")
+            .replace(/[^\d.-]/g, ""),
+        ) || 0
+      );
+    },
+
+    findValue(row, keyword) {
+      const lower = keyword.toLowerCase();
+      for (let cell of row) {
+        if (typeof cell === "string" && cell.toLowerCase().includes(lower)) {
+          return this.num(cell);
+        }
+      }
+      return 0;
+    },
+
+    mapNameToId(csvName) {
+      if (!csvName) return null;
+
+      const clean = csvName.toLowerCase().replace(/[^a-z ]/g, "");
+
+      const index = this.names.findIndex((n) => {
+        const full = `${n.first_name} ${n.middle_init} ${n.last_name}`.toLowerCase().replace(/[^a-z ]/g, "");
+
+        return clean.includes(n.last_name.toLowerCase());
+      });
+
+      return index !== -1 ? index + 1 : null;
+    },
     async saveData() {
       try {
         // Prepare the data to send to the backend (make sure to format it correctly if needed)
@@ -186,7 +351,7 @@ export default {
         console.log(updatedData);
 
         // Send the updated data to the server (adjust the URL to your API endpoint)
-        const response = await axios.post("http://172.31.10.43:8011/payslip-cos/update", updatedData);
+        const response = await axios.post(`${API_BASE_URL}/payslip-cos/update`, updatedData);
 
         // Handle the server response
         if (response.data.success) {
@@ -201,7 +366,7 @@ export default {
     },
     async fetchData() {
       try {
-        const res = await axios.get(`http://172.31.10.43:8011/payslip-cos/period/${this.receivedData}`);
+        const res = await axios.get(`${API_BASE_URL}/payslip-cos/period/${this.receivedData}`);
         this.data = res.data.map((row) => ({
           ...row,
           name: row.name_id,
@@ -220,6 +385,7 @@ export default {
           MP2: Number(row.MP2 || 0),
           MPL: Number(row.MPL || 0),
           MGB_coop_loan: Number(row.MGB_coop_loan || 0),
+          certiby: row.dtrs_id,
         }));
       } catch (err) {
         console.error(err);

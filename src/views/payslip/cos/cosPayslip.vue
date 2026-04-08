@@ -112,7 +112,7 @@ export default {
   methods: {
     async fetchEmployees() {
       try {
-        const response = await axios.get(`http://172.31.10.43:8011/payslip-cos/period/February 1-15, 2026`);
+        const response = await axios.get(`${API_BASE_URL}/payslip-cos/period/February 1-15, 2026`);
         this.employees = response.data;
       } catch (error) {
         console.error("Error fetching employees:", error);

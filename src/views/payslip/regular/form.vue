@@ -58,9 +58,9 @@
 </template>
 
 <script>
-import Table from "./table.vue";
+import { API_BASE_URL } from "@/config";
 import axios from "axios";
-
+import Table from "./table.vue";
 export default {
   props: {
     // Define props to receive from the parent
@@ -128,7 +128,7 @@ export default {
 
       // POST request without parameters to the URL
       axios
-        .post("http://172.31.10.43:8011/regular-generate-batch-payslips") // URL for your API
+        .post(`${API_BASE_URL}/regular-generate-batch-payslips`) // URL for your API
         .then((response) => {
           // Success callback
           clearInterval(interval);

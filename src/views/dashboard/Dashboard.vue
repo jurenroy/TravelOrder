@@ -15,26 +15,26 @@
 
   <!-- Main content with scroll event handling -->
   <div>
-    <NewsFeed v-if="isLoggedIn && isHomePage" :scrollTop="scrollTop"/>
+    <NewsFeed v-if="isLoggedIn && isHomePage" :scrollTop="scrollTop" />
   </div>
 </template>
 
 <script>
-import TravelCard from '../travelorderV2/Card.vue';
-import LeaveCard from '../leaveform/Card.vue';
-import ICTCard from '../ictsrf/Card.vue';
-import { useAuthStore } from '@/store/auth'; // Adjust the path as necessary
-import { computed, ref, onMounted, onBeforeUnmount, defineEmits, defineProps } from 'vue';
-import { useRoute } from 'vue-router'; // Import useRoute
-import NewsFeed from './NewsFeed/NewsFeed.vue';
+import TravelCard from "../travelorderV2/Card.vue";
+import LeaveCard from "../leaveform/Card.vue";
+import ICTCard from "../ictsrf/Card.vue";
+import { useAuthStore } from "@/store/auth"; // Adjust the path as necessary
+import { computed, ref, onMounted, onBeforeUnmount, defineEmits, defineProps } from "vue";
+import { useRoute } from "vue-router"; // Import useRoute
+import NewsFeed from "./NewsFeed/NewsFeed.vue";
 
 export default {
-  name: 'Dashboard',
+  name: "Dashboard",
   components: {
     TravelCard,
     LeaveCard,
     ICTCard,
-    NewsFeed
+    NewsFeed,
   },
   setup() {
     const authStore = useAuthStore(); // Access the auth store
@@ -42,7 +42,7 @@ export default {
     const route = useRoute(); // Get the current route
 
     // Computed property to check if the current path is '/'
-    const isHomePage = computed(() => route.path === '/');
+    const isHomePage = computed(() => route.path === "/");
 
     // Scroll tracking
     const scrollTop = ref(0);
@@ -88,12 +88,12 @@ export default {
 
     // Handle keydown events
     const handleKeydown = (event) => {
-      if (event.key === 'ArrowDown') {
+      if (event.key === "ArrowDown") {
         // Move down to the next card
         if (currentCardIndex.value < cardCount - 1) {
           currentCardIndex.value++;
         }
-      } else if (event.key === 'ArrowUp') {
+      } else if (event.key === "ArrowUp") {
         // Move up to the previous card
         if (currentCardIndex.value > 0) {
           currentCardIndex.value--;
@@ -102,17 +102,17 @@ export default {
     };
 
     const props = defineProps({
-  scrollTop: Number  // Receiving the scrollTop prop from Layout (Grandparent)
-});
+      scrollTop: Number, // Receiving the scrollTop prop from Layout (Grandparent)
+    });
 
     // Add event listener for keydown
     onMounted(() => {
-      window.addEventListener('keydown', handleKeydown);
+      window.addEventListener("keydown", handleKeydown);
     });
 
     // Clean up the event listener
     onBeforeUnmount(() => {
-      window.removeEventListener('keydown', handleKeydown);
+      window.removeEventListener("keydown", handleKeydown);
     });
 
     return {
@@ -125,8 +125,8 @@ export default {
       nextCard,
       previousCard,
       scrollTop,
-    }
-  }
+    };
+  },
 };
 </script>
 

@@ -1,19 +1,8 @@
 <template>
   <div class="luxury-container">
     <div v-if="load" class="loader"></div>
-    <!-- Loader here -->
-
     <div class="luxury-search-container">
       <div class="luxury-title">
-        <!-- <div class="radio-inputs">
-      <label class="radio" v-for="option in options" :key="option">
-        <input type="radio" name="status" v-model="selectedStatus" :value="option">
-        <span class="name">
-          {{ option }}
-          <span class="pending-count" v-if="option == 'Pending'">{{ pendingCount < 9 ? pendingCount : '9+'}}</span>
-        </span>
-      </label>
-    </div> -->
         <div></div>
       </div>
       <br />
@@ -21,7 +10,7 @@
       <div class="luxury-search-bar">
         <div v-if="mawala" class="luxury-search-box">
           <img class="luxury-search-icon" @click="fetchData(true)" src="../../assets/search.png" alt="Search" style="cursor: pointer" />
-          <input class="luxury-search-input" type="text" v-model="searchQuery" @keyup.enter="fetchData(true)" placeholder="Search TO number or Name 1" />
+          <input class="luxury-search-input" type="text" v-model="searchQuery" @keyup.enter="fetchData(true)" placeholder="Search TO number or Name" />
         </div>
 
         <button v-if="mawala && [2, 15, 24, 76, 39].includes(nameId)" class="luxury-btn" @click="downloadCSV">
@@ -35,12 +24,10 @@
 
     <div v-if="mawala" class="outer">
       <div>
-        <!--  class="scrollable-table"  ref="scrollContainer" @scroll.passive="handleScroll" -->
         <table>
           <thead>
             <tr>
               <th>No.</th>
-              <!-- New column for numbering -->
               <th>Name</th>
               <th>Start Date</th>
               <th>End Date</th>
@@ -50,7 +37,6 @@
           <tbody>
             <tr v-for="(item, index) in reversedFormData" :key="item.id">
               <td>{{ (currentPage - 1) * pageSize + index + 1 }}</td>
-              <!-- Row number -->
               <td class="name">{{ getName(item.name_id) }}</td>
               <td>{{ item.start_date }}</td>
               <td>{{ item.end_date }}</td>
@@ -74,7 +60,6 @@
 
   <div v-if="selectedDTR" class="prent full-screen">
     <pdf v-if="selectedPDFtype === 'dtr'" :key="pdfKey" :dtrvalues="selectedDTR" :name="getName(pasa.name)" :month="getMonth(pasa.startDate)" />
-    <!--   -->
     <payslip v-if="selectedPDFtype === 'payslip'" :key="pdfKey" :dtrvalues="String(selectedDTR)" />
     <regularPayslip v-if="selectedPDFtype === 'payslipreg'" :key="pdfKey" :dtrvalues="String(selectedDTR)" />
   </div>
@@ -113,20 +98,19 @@ export default {
     window.addEventListener("afterprint", this.handleAfterPrint);
   },
   beforeDestroy() {
-    clearInterval(this.fetchInterval); // Clear the interval when the component is destroyed
+    clearInterval(this.fetchInterval);
     window.removeEventListener("afterprint", this.handleAfterPrint);
   },
   data() {
     const authStore = useAuthStore();
     return {
-      authStore,
-      currentPage: 1, // Current page number
-      pageSize: 5, // Number of items per page
-      totalItems: 0, // Total items from the backend
-      totalPages: 0, // Calculated total pages
+      currentPage: 1,
+      pageSize: 5,
+      totalItems: 0,
+      totalPages: 0,
       pdfKey: 0,
       pendingStore: usePendingStore(),
-      numberOfRows: 4, // Default number of rows to fetch
+      numberOfRows: 4,
       selectedStatus: "Pending",
       optionsEmp: ["Pending", "Done", "All"],
       options: ["Pending", "Done", "Me"],
@@ -143,9 +127,9 @@ export default {
       mawala: false,
       searchQuery: "",
       isVisible: true,
-      fetchInterval: null, // To store the interval ID
-      isNoteModalVisible: false, // Control visibility of the modal
-      isAdding: false, // Control whether we are adding or viewing a note
+      fetchInterval: null,
+      isNoteModalVisible: false,
+      isAdding: false,
       socket: "",
       selectedDTR: [],
       pasa: {
@@ -167,38 +151,27 @@ export default {
         this.currentPage--;
       }
     },
-    // GET MONTH
+
     getMonth(dateStr) {
       if (!dateStr) return "";
       const date = new Date(dateStr);
-      return date.toLocaleString("default", { month: "long" }); // Gets the month name (e.g., "February")
+      return date.toLocaleString("default", { month: "long" });
     },
     handleAfterPrint() {
-      // Code to execute after printing
       this.close();
-      // You can reset any flags or perform cleanup here
     },
     printzz() {
       window.print();
     },
-    // handleScroll() {
-    //   const container = this.$refs.scrollContainer;
-    //   if (container.scrollTop + container.clientHeight >= container.scrollHeight - 100) {
-    //     console.log("scroll");
-    //     // Near bottom, load more
-    //     this.fetchData();
-    //   }
-    // },
+
     fetchData(reset = false) {
       if (reset) {
-        this.formData = []; // Clear the array only when status changes
+        this.formData = [];
         this.currentPage = 1;
       }
       this.load = true;
       const params = {};
       if (this.searchQuery) params.search = this.searchQuery;
-      // params.name_id = this.nameId;
-      // alert(this.formData.length)
       axios
         .get(`${API_BASE_URL}/dtrlog/filter`, { params })
         .then((response) => {
@@ -206,52 +179,32 @@ export default {
           this.load = false;
           this.csvformdata = response.data;
 
-          // this.formData=response.data
-          // Get the IDs already present
+          this.totalItems = response.data.total || response.data.length;
+          this.totalPages = Math.ceil(this.totalItems / this.pageSize);
+
           const existingIds = new Set(this.formData.map((item) => item.id));
 
-          // Filter out duplicates
           const uniqueNewData = response.data.filter((item) => !existingIds.has(item.id));
 
-          // Append only unique items
-          // this.formData = [...this.formData, ...uniqueNewData];
+          this.formData = [...this.formData, ...uniqueNewData];
 
-          // Display LOGGED IN employee Data only
-          // this.formData = response.data.filter((item) => item.name_id === this.nameId);
-
-          // If the user is an admin or a specific employee, show all data
-          // Check if the user is admin // ADMIN id=76, JUREN id=77
-          // const adminIds = [2, 15, 24, 76, 39];
-          if (this.isAdmin) {
-            console.log(`Admin: ${this.authStore?.name_id} user detected. Showing all data.`);
-            this.formData = response.data;
-          } else {
-            console.log(`Employee user detected. Filtering data for user ID: ${this.authStore?.name_id}`);
-            this.formData = response.data.filter((item) => item.name_id === this.authStore?.name_id);
-          }
-          // Check if there's any data
           if (this.formData.length === 0) {
             console.warn(`No data found for user ID: ${this.nameId}`);
           }
-          // If API returns total count, use it
-          this.totalItems = this.formData.length;
-          this.totalPages = Math.max(1, Math.ceil(this.totalItems / this.pageSize));
 
-          // Sort Form from recent Date
           this.formData.sort((a, b) => {
-            // Convert to Date object for comparison
             const dateA = new Date(a.start_date);
             const dateB = new Date(b.start_date);
-            return dateB - dateA; // a - b for ascending, b - a for descending
+            return dateB - dateA;
           });
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
     },
-    // Filtered data for the logged-in employee
+
     filteredEmployeeData() {
-      return this.formData; // Return filtered data based on the logged-in employee's nameId
+      return this.formData;
     },
     fetchNames() {
       axios
@@ -268,10 +221,9 @@ export default {
         .get(`${API_BASE_URL}/get_employees_json/`)
         .then((response) => {
           this.employees = response.data;
-          console.log("This Employee", response.data);
         })
         .catch((error) => {
-          console.error("Error fetching employeess:", error);
+          console.error("Error fetching employees:", error);
         });
     },
     getName(nameId) {
@@ -293,24 +245,20 @@ export default {
       this.pasa.startDate = this.selectedDTR ? this.selectedDTR.start_date : "";
       this.pasa.endDate = this.selectedDTR ? this.selectedDTR.end_date : "";
       this.pasa.name = this.selectedDTR ? this.selectedDTR.name_id : "";
-      console.log("This selected DTR", this.selectedDTR, "This is PASA", this.pasa, "GIKAN table.vue");
 
       setTimeout(() => {
         this.printzz();
-      }, 1000); // 500 milliseconds = 0.5 seconds
+      }, 1000);
     },
     openPayslip(item, type) {
       this.pdfKey++;
       if (type === 0) {
         this.selectedPDFtype = "payslip";
-        console.log("cos");
       }
       if (type === 1) {
         this.selectedPDFtype = "payslipreg";
-        console.log("reg");
       }
       this.selectedDTR = item.id;
-      console.log(this.selectedDTR);
       setTimeout(() => {
         this.printzz();
       }, 1000);
@@ -327,26 +275,16 @@ export default {
   },
 
   computed: {
-    isAdmin() {
-      const adminIds = [2, 15, 24, 76, 39];
-      return adminIds.includes(this.authStore?.name_id);
-    },
-
     pendingCount() {
       return this.pendingStore.travelorder;
     },
     filteredData() {
-      return this.formData; // Return all if not section chief
+      return this.formData;
     },
     reversedFormData() {
-      //let data = this.formData.slice().reverse(); // Make a copy of the original data
-      // let data = this.formData.slice(); // Make a copy of the original data
-      // return data;
-      // Calculate start and end indexes
       const start = (this.currentPage - 1) * this.pageSize;
       const end = start + this.pageSize;
 
-      // Sort by start_date descending and slice only current page
       return this.formData
         .slice()
         .sort((a, b) => new Date(b.start_date) - new Date(a.start_date))
@@ -355,9 +293,9 @@ export default {
   },
   watch: {
     selectedStatus() {
-      this.fetchData(true); // Pass true to reset on status change
+      this.fetchData(true);
     },
-    numberOfRows: "fetchData", // Watch for changes in number of rows
+    numberOfRows: "fetchData",
 
     refreshTrigger() {
       this.fetchData(true);
@@ -377,23 +315,23 @@ export default {
 }
 
 .pagination button {
-  background-color: #d4af37; /* Blue color */
+  background-color: #d4af37;
   color: white;
   border: none;
   padding: 8px 16px;
-  font-size: 16px; /* readable font size */
+  font-size: 16px;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
 .pagination button:disabled {
-  background-color: #c0c0c0; /* Gray out when disabled */
+  background-color: #c0c0c0;
   cursor: not-allowed;
 }
 
 .pagination button:hover:not(:disabled) {
-  background-color: black; /* Darker blue on hover */
+  background-color: black;
 }
 
 .pagination span {

@@ -133,8 +133,8 @@ export default {
     async fetchEmployees() {
       try {
         console.log("cjoy");
-        const response = await axios.get(`http://172.31.10.43:8011/payslip-regular/dtrs/${this.dtrvalues}`);
-        // const response = await axios.get(`http://172.31.10.43:8011/payslip-regular/dtrs/1050`);
+        const response = await axios.get(`${API_BASE_URL}/payslip-regular/dtrs/${this.dtrvalues}`);
+        // const response = await axios.get(`${API_BASE_URL}/payslip-regular/dtrs/1050`);
 
         // Check if response has data
         if (response.data && response.data.length > 0) {

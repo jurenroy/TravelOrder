@@ -25,8 +25,9 @@
       <span class="loads"></span>
     </div>
 
-    <!-- CSV Preview -->
-    <pre v-else>{{ csvData }}</pre>
+    <!-- CSV Preview (ONLY after upload is done) -->
+    <p v-if="uploaded && !loading" class="file-name">📄 {{ fileName }}</p>
+    <pre v-if="!loading && uploaded && csvData.length" class="csv-preview"> {{ formatCSV }}</pre>
   </div>
 </template>
 
@@ -40,11 +41,19 @@ export default {
     return {
       csvData: [], // this will store parsed CSV
       loading: false,
+      uploaded: false,
+      fileName: "",
     };
+  },
+  computed: {
+    formatCSV() {
+      return this.csvData.map((row) => row.join(" | ")).join("\n");
+    },
   },
   methods: {
     handleFileUpload(event) {
-      const file = event.target.files[0];
+      const input = event.target;
+      const file = input.files[0];
 
       if (!file) return;
 
@@ -53,18 +62,26 @@ export default {
         alert("Please upload a CSV file only.");
         return;
       }
+      this.fileName = file.name;
+      this.csvData = []; // clear old preview immediately
+      this.uploaded = false;
       this.loading = true; // ✅ START LOADING
 
       const reader = new FileReader();
 
       reader.onload = (e) => {
         const text = e.target.result;
+        const delay = Math.floor(Math.random() * 2001) + 3000;
+        // 3000–5000 ms inclusive
 
         // simulate delay so loader is visible (optional but useful)
         setTimeout(() => {
           this.parseCSV(text);
           this.loading = false; // ✅ STOP LOADING
-        }, 1000); // adjust or remove if not needed
+          this.uploaded = true;
+          input.value = null;
+        }, delay); // adjust or remove if not needed
+        console.log(`Simulated upload time: ${delay}ms`);
       };
 
       reader.readAsText(file);
@@ -78,13 +95,50 @@ export default {
         return row.split(",");
       });
 
-      console.log("Parsed CSV:", this.csvData);
+      // console.log("Parsed CSV:", this.csvData);
     },
   },
 };
 </script>
 
 <style scoped>
+.file-name {
+  margin-top: 15px;
+  font-weight: 600;
+  color: #333;
+}
+.csv-preview {
+  margin-top: 20px;
+  padding: 20px;
+  max-height: 400px;
+  overflow: auto;
+
+  background: #1e1e1e; /* dark theme */
+  color: #f5f5f5;
+
+  border-radius: 12px;
+  border: 1px solid #333;
+
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Optional: scrollbar styling */
+.csv-preview::-webkit-scrollbar {
+  width: 8px;
+}
+
+.csv-preview::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 10px;
+}
+
+.csv-preview::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
 /* From Uiverse.io by vinodjangid07 */
 .file-upload-form {
   width: fit-content;

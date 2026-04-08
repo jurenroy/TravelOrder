@@ -105,7 +105,7 @@ export default {
   methods: {
     async fetchEmployees() {
       try {
-        const response = await axios.get(`http://172.31.10.43:8011/payslip-cos/dtrs/${this.dtrvalues}`);
+        const response = await axios.get(`${API_BASE_URL}/payslip-cos/dtrs/${this.dtrvalues}`);
         // Assuming the response data is an array of employees
         this.employees = response.data;
         console.log("Employees fetched:", this.employees);

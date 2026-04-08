@@ -52,12 +52,14 @@
       </table>
     </div>
 
+    <input type="file" @change="handleCSVUpload" accept=".csv" />
     <button @click="saveData">Save All</button>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Papa from "papaparse";
 import { API_BASE_URL } from "../../../config";
 
 export default {
@@ -72,11 +74,14 @@ export default {
         "period",
         "rate",
         "aca_pera",
+        "step",
         "subtotal",
         "gsis",
+        "gsis_premium",
         "pagibig",
         "MP2",
         "PhilHealth",
+        "overpayment",
         "wtax",
         "gsis_conso_loan",
         "gsis_policy_loan",
@@ -89,15 +94,19 @@ export default {
         "gsis_educational_loan",
         "gsis_computer_loan",
         "gsis_mpl",
+        "gsis_mpl_lite",
         "gsis_gfal",
         "pagibig_housing_loan",
         "pagibig_mpl",
+        "pagibig_heal",
         "lbp_salary_loan",
         "cola_disallowance",
         "praise_disallowance",
+        "maternity_disallowance",
         "enrp_mowel",
         "ucpb_salary_loan",
         "mgbea10",
+        "alimony",
         "total_deductions",
         "total",
         "first_cutoff",
@@ -112,11 +121,14 @@ export default {
         period: "Period",
         rate: "Rate",
         aca_pera: "ACA Pera",
+        step: "Step Increment",
         subtotal: "Subtotal",
         gsis: "GSIS",
+        gsis_premium: "GSIS Premium",
         pagibig: "Pagibig",
         MP2: "MP2",
         PhilHealth: "PhilHealth",
+        overpayment: "Overpayment",
         wtax: "WTax",
         gsis_conso_loan: "GSIS Conso Loan",
         gsis_policy_loan: "GSIS Policy Loan",
@@ -129,15 +141,20 @@ export default {
         gsis_educational_loan: "GSIS Educational Loan",
         gsis_computer_loan: "GSIS Computer Loan",
         gsis_mpl: "GSIS MPL",
+        gsis_mpl_lite: "GSIS MPL Lite",
         gsis_gfal: "GSIS GFAL",
         pagibig_housing_loan: "Pagibig Housing Loan",
         pagibig_mpl: "Pagibig MPL",
+        pagibig_heal: "Pagibig HEAL",
         lbp_salary_loan: "LBP Salary Loan",
         cola_disallowance: "COLA Disallowance",
         praise_disallowance: "Praise Disallowance",
+        maternity_disallowance: "Maternity Disallowance",
         enrp_mowel: "ENRP Mowel",
+        dbp_salary_loan: "DBP Salary Loan",
         ucpb_salary_loan: "UCPB Salary Loan",
         mgbea10: "MGBEA10",
+        alimony: "Alimony",
         total_deductions: "Total Deductions",
         total: "Total",
         first_cutoff: "First Cutoff",
@@ -154,6 +171,181 @@ export default {
     };
   },
   methods: {
+    handleCSVUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      Papa.parse(file, {
+        header: false, // We'll handle headers manually
+        skipEmptyLines: true,
+        complete: (res) => {
+          this.processCSV(res.data);
+        },
+        error: (err) => {
+          console.error("CSV parse error:", err);
+          alert("Failed to parse CSV. Check your file.");
+        },
+      });
+    },
+
+    processCSV(rows) {
+      if (!rows || !rows.length) return;
+
+      const period = this.receivedData || "March 1-31, 2026";
+      console.log("Raw CSV rows:", rows);
+
+      // Skip header rows: assuming first 3 rows are headers
+      const dataRows = rows.slice(3);
+
+      const toNum = (val) => {
+        if (!val || val.trim() === "" || val === "-") return 0;
+        return (
+          Number(
+            String(val)
+              .replace(/,/g, "")
+              .replace(/[^\d.-]/g, ""),
+          ) || 0
+        );
+      };
+
+      // Helper: robust name matcher
+      const matchNames = (csvName, systemName) => {
+        if (!csvName || !systemName) return false;
+
+        const clean = (name) =>
+          name
+            .toLowerCase()
+            .replace(/[^a-z0-9 ]/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+        const csvParts = clean(csvName).split(" ");
+        const sysParts = clean(systemName).split(" ");
+
+        // CSV format: Last, First Middle
+        const lastNameCsv = csvParts[0]; // Last name
+        const firstNameCsv = csvParts[1]; // First name
+
+        // System name contains both first and last somewhere
+        return sysParts.includes(lastNameCsv) && sysParts.includes(firstNameCsv);
+      };
+
+      dataRows.forEach((csvRow) => {
+        const csvName = csvRow[2].trim();
+
+        // Find existing row by robust name matching
+        const existingRow = this.data.find((row) => {
+          const systemFullName = row.name ? this.getName(row.name) : "";
+          return matchNames(csvName, systemFullName);
+        });
+
+        if (existingRow) {
+          // Merge CSV values into the existing row without touching dtrs_id
+          existingRow.period = period;
+          existingRow.rate = toNum(csvRow[3]);
+          existingRow.aca_pera = toNum(csvRow[4]);
+          existingRow.step = toNum(csvRow[5]);
+          existingRow.gross_amount = toNum(csvRow[6]);
+          existingRow.gsis_premium = toNum(csvRow[10]);
+          existingRow.pagibig = toNum(csvRow[11]);
+          existingRow.MP2 = toNum(csvRow[12]);
+          existingRow.PhilHealth = toNum(csvRow[13]);
+          existingRow.overpayment = toNum(csvRow[14]);
+          existingRow.wtax = toNum(csvRow[15]);
+
+          existingRow.gsis_conso_loan = toNum(csvRow[18]);
+          existingRow.gsis_policy_loan = toNum(csvRow[19]);
+          existingRow.gsis_emergency_loan = toNum(csvRow[20]);
+          existingRow.gsis_uoli1 = toNum(csvRow[21]);
+          existingRow.gsis_uoli2 = toNum(csvRow[22]);
+          existingRow.gsis_uoli_loan1 = toNum(csvRow[23]);
+          existingRow.gsis_uoli_loan2 = toNum(csvRow[24]);
+          existingRow.gsis_housing_loan = toNum(csvRow[25]);
+          existingRow.gsis_educational_loan = toNum(csvRow[26]);
+          existingRow.gsis_gfal = toNum(csvRow[27]);
+          existingRow.gsis_computer_loan = toNum(csvRow[28]);
+          existingRow.gsis_mpl = toNum(csvRow[29]);
+          existingRow.gsis_mpl_lite = toNum(csvRow[30]);
+
+          existingRow.pagibig_housing_loan = toNum(csvRow[31]);
+          existingRow.pagibig_mpl = toNum(csvRow[32]);
+          existingRow.pagibig_heal = toNum(csvRow[33]);
+
+          existingRow.lbp_salary_loan = toNum(csvRow[34]);
+          existingRow.dbp_salary_loan = toNum(csvRow[35]);
+          existingRow.ucpb_salary_loan = toNum(csvRow[36]);
+          existingRow.mgbea10 = toNum(csvRow[37]);
+          existingRow.alimony = toNum(csvRow[38]);
+
+          existingRow.cola_disallowance = toNum(csvRow[39]);
+          existingRow.praise_disallowance = toNum(csvRow[40]);
+          existingRow.maternity_disallowance = toNum(csvRow[41]);
+          existingRow.enrp_mowel = toNum(csvRow[42]);
+
+          existingRow.subtotal = 0;
+          existingRow.total_deductions = 0;
+          existingRow.total = 0;
+          existingRow.first_cutoff = 0;
+          existingRow.second_cutoff = 0;
+
+          existingRow.certify = "";
+          existingRow.certiby = "";
+          existingRow.certipos = "";
+        } else {
+          // Optionally: add new row if not found
+          this.data.push({
+            id: this.data.length + 1,
+            name: csvName,
+            period,
+            rate: toNum(csvRow[3]),
+            aca_pera: toNum(csvRow[4]),
+            step: toNum(csvRow[5]),
+            gross_amount: toNum(csvRow[6]),
+            dtrs_id: "", // leave blank if not found
+            // ...fill other columns as needed
+          });
+        }
+      });
+
+      console.log("Merged CSV data:", this.data);
+    },
+
+    mapNameToId(csvName) {
+      if (!csvName) return null;
+
+      // Normalize the CSV name: lowercase, remove punctuation, multiple spaces
+      const cleanCsvName = csvName
+        .toLowerCase()
+        .replace(/[^a-z0-9 ]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      // Split into parts
+      const csvParts = cleanCsvName.split(" ");
+
+      // Try to find by last name first
+      const index = this.names.findIndex((n) => {
+        const fullName = `${n.first_name} ${n.middle_init || ""} ${n.last_name}`
+          .toLowerCase()
+          .replace(/[^a-z0-9 ]/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+        const fullParts = fullName.split(" ");
+
+        // Check if all last name parts exist in CSV parts
+        const lastNameParts = n.last_name.toLowerCase().split(" ");
+        const lastNameMatch = lastNameParts.every((part) => csvParts.includes(part));
+
+        if (!lastNameMatch) return false;
+
+        // If multiple matches possible, check first name initials
+        const firstNameParts = n.first_name.toLowerCase().split(" ");
+        return firstNameParts.every((part) => csvParts.includes(part) || csvParts.some((p) => p.startsWith(part[0])));
+      });
+
+      // Return the employee index (1-based) or null if not found
+      return index !== -1 ? index + 1 : null;
+    },
     async saveData() {
       try {
         // Prepare the data to send to the backend (make sure to format it correctly if needed)
@@ -164,11 +356,14 @@ export default {
           period: row.period,
           rate: row.rate,
           aca_pera: row.aca_pera,
+          step: row.step,
           subtotal: row.rate + row.aca_pera,
           gsis: row.gsis,
+          gsis_premium: row.gsis_premium,
           pagibig: row.pagibig,
           MP2: row.MP2,
           PhilHealth: row.PhilHealth,
+          overpayment: row.overpayment,
           wtax: row.wtax,
           gsis_conso_loan: row.gsis_conso_loan,
           gsis_policy_loan: row.gsis_policy_loan,
@@ -181,20 +376,26 @@ export default {
           gsis_educational_loan: row.gsis_educational_loan,
           gsis_computer_loan: row.gsis_computer_loan,
           gsis_mpl: row.gsis_mpl,
+          gsis_mpl_lite: row.gsis_mpl_lite,
           gsis_gfal: row.gsis_gfal,
           pagibig_housing_loan: row.pagibig_housing_loan,
           pagibig_mpl: row.pagibig_mpl,
+          pagibig_heal: row.pagibig_heal,
           lbp_salary_loan: row.lbp_salary_loan,
           cola_disallowance: row.cola_disallowance,
           praise_disallowance: row.praise_disallowance,
+          maternity_disallowance: row.maternity_disallowance,
           enrp_mowel: row.enrp_mowel,
           ucpb_salary_loan: row.ucpb_salary_loan,
           mgbea10: row.mgbea10,
+          alimony: row.alimony,
           total_deductions:
             (row.gsis || 0) +
+            (row.gsis_premium || 0) +
             (row.pagibig || 0) +
             (row.MP2 || 0) +
             (row.PhilHealth || 0) +
+            (row.overpayment || 0) +
             (row.wtax || 0) +
             (row.gsis_conso_loan || 0) +
             (row.gsis_policy_loan || 0) +
@@ -207,22 +408,29 @@ export default {
             (row.gsis_educational_loan || 0) +
             (row.gsis_computer_loan || 0) +
             (row.gsis_mpl || 0) +
+            (row.gsis_mpl_lite || 0) +
             (row.gsis_gfal || 0) +
             (row.pagibig_housing_loan || 0) +
             (row.pagibig_mpl || 0) +
+            (row.pagibig_heal || 0) +
             (row.lbp_salary_loan || 0) +
             (row.cola_disallowance || 0) +
             (row.praise_disallowance || 0) +
+            (row.maternity_disallowance || 0) +
             (row.enrp_mowel || 0) +
             (row.ucpb_salary_loan || 0) +
-            (row.mgbea10 || 0),
+            (row.mgbea10 || 0) +
+            (row.alimony || 0),
           total:
             row.rate +
-            row.aca_pera -
+            row.aca_pera +
+            (row.step || 0) -
             (row.gsis || 0) +
+            (row.gsis_premium || 0) +
             (row.pagibig || 0) +
             (row.MP2 || 0) +
             (row.PhilHealth || 0) +
+            (row.overpayment || 0) +
             (row.wtax || 0) +
             (row.gsis_conso_loan || 0) +
             (row.gsis_policy_loan || 0) +
@@ -235,24 +443,28 @@ export default {
             (row.gsis_educational_loan || 0) +
             (row.gsis_computer_loan || 0) +
             (row.gsis_mpl || 0) +
+            (row.gsis_mpl_lite || 0) +
             (row.gsis_gfal || 0) +
             (row.pagibig_housing_loan || 0) +
             (row.pagibig_mpl || 0) +
+            (row.pagibig_heal || 0) +
             (row.lbp_salary_loan || 0) +
             (row.cola_disallowance || 0) +
             (row.praise_disallowance || 0) +
+            (row.maternity_disallowance || 0) +
             (row.enrp_mowel || 0) +
             (row.ucpb_salary_loan || 0) +
-            (row.mgbea10 || 0),
-          certify: row.certify,
-          certiby: row.certiby,
-          certipos: row.certipos,
+            (row.mgbea10 || 0) +
+            (row.alimony || 0),
+          certify: 23,
+          certiby: 23,
+          certipos: "Administrative Officer IV / OIC, Finance Section",
         }));
 
         console.log(updatedData);
 
         // Send the updated data to the server (adjust the URL to your API endpoint)
-        const response = await axios.post("http://172.31.10.43:8011/payslip-regular/update", updatedData);
+        const response = await axios.post(`${API_BASE_URL}/payslip-regular/update`, updatedData);
 
         // Handle the server response
         if (response.data.success) {
@@ -267,17 +479,21 @@ export default {
     },
     async fetchData() {
       try {
-        const res = await axios.get(`http://172.31.10.43:8011/payslip-regular/period/${this.receivedData}`);
+        const res = await axios.get(`${API_BASE_URL}/payslip-regular/period/${this.receivedData}`);
         this.data = res.data.map((row) => ({
           ...row,
           name: row.name_id,
           // Ensure numbers
           rate: Number(row.rate || 0),
           aca_pera: Number(row.aca_pera || 0),
+          step: Number(row.step || 0),
+          subtotal: Number(row.subtotal || 0),
           gsis: Number(row.gsis || 0),
+          gsis_premium: Number(row.gsis_premium || 0),
           pagibig: Number(row.pagibig || 0),
           MP2: Number(row.MP2 || 0),
           PhilHealth: Number(row.PhilHealth || 0),
+          overpayment: Number(row.overpayment || 0),
           wtax: Number(row.wtax || 0),
           gsis_conso_loan: Number(row.gsis_conso_loan || 0),
           gsis_policy_loan: Number(row.gsis_policy_loan || 0),
@@ -290,15 +506,23 @@ export default {
           gsis_educational_loan: Number(row.gsis_educational_loan || 0),
           gsis_computer_loan: Number(row.gsis_computer_loan || 0),
           gsis_mpl: Number(row.gsis_mpl || 0),
+          gsis_mpl_lite: Number(row.gsis_mpl_lite || 0),
           gsis_gfal: Number(row.gsis_gfal || 0),
           pagibig_housing_loan: Number(row.pagibig_housing_loan || 0),
           pagibig_mpl: Number(row.pagibig_mpl || 0),
+          pagibig_heal: Number(row.pagibig_heal || 0),
           lbp_salary_loan: Number(row.lbp_salary_loan || 0),
           cola_disallowance: Number(row.cola_disallowance || 0),
           praise_disallowance: Number(row.praise_disallowance || 0),
+          maternity_disallowance: Number(row.maternity_disallowance || 0),
           enrp_mowel: Number(row.enrp_mowel || 0),
           ucpb_salary_loan: Number(row.ucpb_salary_loan || 0),
           mgbea10: Number(row.mgbea10 || 0),
+          alimony: Number(row.alimony || 0),
+          certify: row.certify,
+          certiby: row.certiby,
+          certipos: row.certipos,
+          dtrs_id: row.dtrs_id,
         }));
       } catch (err) {
         console.error(err);
@@ -335,12 +559,14 @@ export default {
     },
 
     calculate(row, col) {
-      const subtotal = row.rate + row.aca_pera; // Subtotal calculation: rate + aca_pera
+      const subtotal = row.rate + row.aca_pera + row.step; // Subtotal calculation: rate + aca_pera
       const total_deductions = [
         "gsis",
+        "gsis_premium",
         "pagibig",
         "MP2",
         "PhilHealth",
+        "overpayment",
         "wtax",
         "gsis_conso_loan",
         "gsis_policy_loan",
@@ -353,15 +579,19 @@ export default {
         "gsis_educational_loan",
         "gsis_computer_loan",
         "gsis_mpl",
+        "gsis_mpl_lite",
         "gsis_gfal",
         "pagibig_housing_loan",
         "pagibig_mpl",
+        "pagibig_heal",
         "lbp_salary_loan",
         "cola_disallowance",
         "praise_disallowance",
+        "maternity_disallowance",
         "enrp_mowel",
         "ucpb_salary_loan",
         "mgbea10",
+        "alimony",
       ].reduce((acc, key) => acc + (row[key] || 0), 0);
 
       const total = subtotal - total_deductions;

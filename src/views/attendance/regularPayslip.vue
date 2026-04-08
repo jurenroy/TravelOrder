@@ -101,6 +101,7 @@ export default {
         { key: "pagibig", label: "Pag-IBIG" },
         { key: "MP2", label: "MP2" },
         { key: "PhilHealth", label: "PhilHealth" },
+        { key: "overpayment", label: "Overpayment" },
         { key: "wtax", label: "Withholding Tax" },
         { key: "gsis_conso_loan", label: "GSIS Conso Loan" },
         { key: "gsis_policy_loan", label: "GSIS Policy Loan" },
@@ -113,15 +114,19 @@ export default {
         { key: "gsis_educational_loan", label: "GSIS Educational Loan" },
         { key: "gsis_computer_loan", label: "GSIS Computer Loan" },
         { key: "gsis_mpl", label: "GSIS MPL" },
+        { key: "gsis_mpl_lite", label: "GSIS MPL Lite" },
         { key: "gsis_gfal", label: "GSIS GFAL" },
         { key: "pagibig_housing_loan", label: "Pag-IBIG Housing Loan" },
         { key: "pagibig_mpl", label: "Pag-IBIG MPL" },
+        { key: "pagibig_heal", label: "Pag-IBIG HEAL" },
         { key: "lbp_salary_loan", label: "LBP Salary Loan" },
         { key: "cola_disallowance", label: "COLA Disallowance" },
         { key: "praise_disallowance", label: "PRAISE Disallowance" },
+        { key: "maternity_disallowance", label: "Maternity Disallowance" },
         { key: "enrp_mowel", label: "ENRP MOWEL" },
         { key: "ucpb_salary_loan", label: "UCPB Salary Loan" },
         { key: "mgbea10", label: "MGBEA - 10" },
+        { key: "alimony", label: "ALIMONY" },
       ],
     };
   },
@@ -133,8 +138,8 @@ export default {
     async fetchEmployees() {
       try {
         console.log("cjoy");
-        const response = await axios.get(`http://172.31.10.43:8011/payslip-regular/dtrs/${this.dtrvalues}`);
-        // const response = await axios.get(`http://172.31.10.43:8011/payslip-regular/dtrs/1555`);
+        const response = await axios.get(`${API_BASE_URL}/payslip-regular/dtrs/${this.dtrvalues}`);
+        // const response = await axios.get(`${API_BASE_URL}/payslip-regular/dtrs/1555`);
 
         // Check if response has data
         if (response.data && response.data.length > 0) {

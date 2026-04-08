@@ -72,9 +72,8 @@
 </template>
 
 <script>
-import Table from "./table.vue";
 import axios from "axios";
-
+import Table from "./table.vue";
 export default {
   props: {
     // Define props to receive from the parent

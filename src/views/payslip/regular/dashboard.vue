@@ -23,8 +23,8 @@
 </template>
 
 <script setup>
-import damn from "./table.vue";
 import modal from "./form.vue";
+import damn from "./table.vue";
 
 const isVisible = ref(true);
 
