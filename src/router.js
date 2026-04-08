@@ -26,12 +26,8 @@ import ChatVue from './views/chat/Blank.vue';
 
 
 // import PDF from './views/FADRF/JobOrder/PDF.vue';
-<<<<<<< HEAD
-import PDF from './views/attendance/sample.vue';
-=======
 // import PDF from './views/travelorderV2/TravelClearancePDF.vue';
 import PDF from './views/attendance/table.vue'
->>>>>>> 74fe281d0079075e406989f54a4cf9b3f3e8518a
 
 import CALENDAR from './views/calendar/dashboard.vue'
 import TravelClearance from './views/travelorderV2/TravelClearance.vue'
