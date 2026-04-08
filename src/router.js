@@ -26,13 +26,21 @@ import ChatVue from './views/chat/Blank.vue';
 
 
 // import PDF from './views/FADRF/JobOrder/PDF.vue';
+<<<<<<< HEAD
 import PDF from './views/attendance/sample.vue';
+=======
+// import PDF from './views/travelorderV2/TravelClearancePDF.vue';
+import PDF from './views/attendance/table.vue'
+>>>>>>> 74fe281d0079075e406989f54a4cf9b3f3e8518a
 
 import CALENDAR from './views/calendar/dashboard.vue'
 import TravelClearance from './views/travelorderV2/TravelClearance.vue'
 import AuditTrails from './views/travelorderV2/AuditTrails.vue'
 
 import attendance from './views/attendance/dashboard.vue'
+import payslip from './views/payslip/dashboard.vue'
+import payslipcos from './views/payslip/cos/dashboard.vue'
+import payslipreg from './views/payslip/regular/dashboard.vue'
 
 const routes = [
   {
@@ -45,6 +53,24 @@ const routes = [
         name: 'dashboard',
         component: Dashboard,
         meta: { requiresAuth: false }
+      },
+      {
+        path: '/payslipreg',
+        name: 'payslipreg',
+        component: payslipreg,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/payslipcos',
+        name: 'payslipcos',
+        component: payslipcos,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: '/payslip',
+        name: 'payslip',
+        component: payslip,
+        meta: { requiresAuth: true }
       },
       {
         path: '/dtr',
