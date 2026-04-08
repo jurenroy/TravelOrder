@@ -166,7 +166,7 @@
         </div>
   
         <div class="butokz">
-          <button @click="postApproval" :disabled="(approveLeavetype < 1 || approveLeavetype.length === 0) || (approveLeavetype < 1 || approveLeavetype.includes(2))" class="save-btn"
+          <button @click="postApproval" :disabled="(approveLeavetype < 1 || approveLeavetype.length === 0)" class="save-btn"
             :style="{ cursor: (approveLeavetype < 1 || approveLeavetype.length === 0) || (approveLeavetype < 1 || approveLeavetype.includes(2) && !text2) ? 'not-allowed' : 'pointer' }">{{
               approveLeavetype == 2 ? 'disapprove' : 'approve' }}</button>
           <button @click="approve(apronum)" class="option-btn">Cancel</button>
@@ -233,13 +233,17 @@
                 <td>{{ item.commutation }}</td>
                 <td>{{ formattedDate(item.date) }}</td>
                 <td>
-                  <div v-if="!item.certification" class="statusrow">
+                <div v-if="!item.asof" class="statusrow">
                     <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
-                    <p  class="status-pending">For Ceritification</p>
+                    <p  class="status-pending">For Balance</p>
+                  </div>
+                  <div v-if="!item.certification && item.asof" class="statusrow">
+                    <img src="../../assets/close.png" alt="Pending Approval" class="status-icon">
+                    <p  class="status-pending">For Certification</p>
                   </div>
                   <div v-if="item.certification" class="statusrow">
                     <img src="../../assets/check.png" alt="Approved Recommendation" class="status-icon">
-                    <p class="status-approved">Ceritified</p>
+                    <p class="status-approved">Certified</p>
                   </div>
                   <div v-if="item.certification && (![15,21,45,48].includes(item.name_id))">
                     <div v-if="!item.recommendation" class="statusrow">
@@ -301,9 +305,9 @@
                     Certification
                   </button>
                 </td>
-                <td v-if="[15,21,45,48, 3].includes(this.nameId)" class="status-actions">
+                <td v-if="[15,21,45,48, 3,76].includes(this.nameId)" class="status-actions">
                   <button v-if="!item.recommendation && item.name_id !== this.nameId"
-                    @click="recommendation(item.leaveform_id)"
+                    @click="recommendation(item.leaveform_id,item.type)"
                     :style="{
                       color: reconum === item.leaveform_id ? 'white' : 'black',
                       backgroundColor: reconum === item.leaveform_id ? 'black' : 'white',
@@ -313,9 +317,9 @@
                     Recommend
                   </button>
                 </td>
-                <td v-if="((employees.rd || nameId == 20) && !item.appsig)" class="status-actions">
+                <td v-if="((employees.rd || nameId == 20 || nameId == 76) && !item.appsig)" class="status-actions">
                   <button 
-                    @click="approve(item.leaveform_id)"
+                    @click="approve(item.leaveform_id,item.type)"
                     :style="{
                       color: apronum === item.leaveform_id ? 'white' : 'black',
                       backgroundColor: apronum === item.leaveform_id ? 'black' : 'white',
@@ -420,7 +424,9 @@
         certinum: 0,
         reconum: 0,
         apronum: 0,
-        ChiefPDF: ''
+        ChiefPDF: '',
+        recov: '',
+        apprv: '',
       };
     },
     created() {
@@ -665,33 +671,37 @@
         this.othersSpecify = others ?? ''
       },
   
-      recommendation(leaveformID) {
+      recommendation(leaveformID,type) {
         // this.recoms = !this.recoms
         if (this.recoms == false && this.reconum == 0){
           this.recoms = true
           this.reconum = leaveformID
+          this.recov = type
         }else if (this.recoms == true && this.reconum == leaveformID){
           this.recoms = false
           this.reconum = 0
         }else if (this.recoms == true && this.reconum !== 0){
           this.recoms = true
           this.reconum = leaveformID
+          this.recov = type
         }
         this.recommendationLeavetype.length = 0
         this.text = ''
       },
   
-      approve(leaveformID) {
+      approve(leaveformID,type) {
         // this.appr = !this.appr
         if (this.appr == false && this.apronum == 0){
           this.appr = true
           this.apronum = leaveformID
+          this.apprv = type
         }else if (this.appr == true && this.apronum == leaveformID){
           this.appr = false
           this.apronum = 0
         }else if (this.appr == true && this.apronum !== 0){
           this.appr = true
           this.apronum = leaveformID
+          this.apprv = type
         }
         this.approveLeavetype.length = 0
         this.text2 = ''

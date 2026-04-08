@@ -88,7 +88,7 @@
                 <img :src="signature1" class="signatiz" v-if="signature1 !== `${API_BASE_URL}/storage/null`" @contextmenu.prevent/>
                 <p class="value"
                   :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }">
-                  {{ isSignatureValid ? divisionChiefs[1] : recommended }} </p>
+                  {{ isSignatureValid ? (division === 'MSESDD' ? divisionChiefs[3] : divisionChiefs[1]) : recommended }} </p>
                   <p style="margin-top: -10px;" v-if="isSignatureValid">Chief, {{ division }}</p>
                   <p style="margin-top: -10px;" v-else-if="isSignatureValidAsis">OIC, {{ division }}</p>
                 <p style="margin-top: -10px;" v-else>Chief, {{ division }}</p>
@@ -155,7 +155,7 @@
                 <img :src="signature1" class="signatiz" v-if="signature1 !== `${API_BASE_URL}/storage/null`" @contextmenu.prevent/>
                 <p class="value"
                   :style="{ 'font-weight': 'bold', 'margin-top': (signature1 == `${API_BASE_URL}/storage/null`) ? '40px' : '40px' }">
-                  {{ isSignatureValid ? divisionChiefs[1] : recommended }} </p>
+                  {{ isSignatureValid ? (division === 'MSESDD' ? divisionChiefs[3] : divisionChiefs[1]) : recommended }} </p>
                   <p style="margin-top: -10px;" v-if="isSignatureValid">Chief, {{ division }}</p>
                   <p style="margin-top: -10px;" v-else-if="isSignatureValidAsis">OIC, {{ division }}</p>
                 <p style="margin-top: -10px;" v-else>Chief, {{ division }}</p>
@@ -301,21 +301,22 @@
             'JANICE B. FUROG',
             'ALVIN M. VILLANUEVA',
             'RODANTE B. FELINA',
-            'JOY CHRISTINE V. ASIS'
+            'JOY CHRISTINE V. ASIS',
+            'ANSHAWER D. BARA-ACAL'
           ],
-          divisionNames: ["MMD", "FAD", "GD", "MSESDD", "ORD", "GD"]
+          divisionNames: ["MMD", "FAD", "GD", "MSESDD", "ORD", "GD","MSESDD"]
         };
       },
       computed: {
         isSignatureValid() {
           const filename = this.signature1.split('/').pop(); // Extract the filename
           console.log(filename)
-          return filename === 'urAs0SbQ7kw0y6LI4B9dyOpQxKI8cL4q4aEbsFSh.png'; // Check if it matches your condition
+          return (filename === 'urAs0SbQ7kw0y6LI4B9dyOpQxKI8cL4q4aEbsFSh.png' || filename === 'Ic3OO1KlDy99HlSmcA4s9TVTRHP5i04jHvu78EsS.png'); // Check if it matches your condition
         },
         isSignatureValidAsis() {
           const filename = this.signature1.split('/').pop(); // Extract the filename
           console.log(filename)
-          return filename === 'wlRvkEQMDf3yS74Se7nKxXWVVxD24MD1rImmTRzW.png'; // Check if it matches your condition
+          return (filename === 'wlRvkEQMDf3yS74Se7nKxXWVVxD24MD1rImmTRzW.png' || filename === 'vnQgYQSHnkICaktLsvBO78QpXjWoSzFSYlp01R5L.png'); // Check if it matches your condition
         },
       },
       mounted() {
