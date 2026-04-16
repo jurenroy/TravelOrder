@@ -1,20 +1,21 @@
 <template>
   <div class="zero">
     <div class="first">
-      <alerz></alerz>
+      <!-- <alerz></alerz> -->
       <div class="second">
-        <button class="close-btn" @click="closeLogin">X</button> <!-- Close button -->
-        
+        <button class="close-btn" @click="closeLogin">X</button>
+        <!-- Close button -->
+
         <p class="form">Welcome</p>
 
         <!-- Form Fields -->
         <div class="inside">
-          <div style="display: flex; flex-direction: column; width: 100%;">
-            <label class="n">Username: </label>
-            <input type="text" v-model="email" class="inputsss" id="email" required @keydown.enter="login_submit" :class="{ 'red-border': isRed && email === '' }" @input="resetRed"/>
+          <div style="display: flex; flex-direction: column; width: 100%">
+            <label class="n">Username:</label>
+            <input type="text" v-model="email" class="inputsss" id="email" required @keydown.enter="login_submit" :class="{ 'red-border': isRed && email === '' }" @input="resetRed" />
 
-            <label class="p">Password: </label>
-            <input type="password" v-model="password" class="inputsss" id="password" required @keydown.enter="login_submit" :class="{ 'red-border': isRed && password === '' }" @input="resetRed"/>
+            <label class="p">Password:</label>
+            <input type="password" v-model="password" class="inputsss" id="password" required @keydown.enter="login_submit" :class="{ 'red-border': isRed && password === '' }" @input="resetRed" />
           </div>
         </div>
 
@@ -44,11 +45,11 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue';
-import axios from 'axios';
-import { useAuthStore } from '../../store/auth';
-import CryptoJS from 'crypto-js';
-import { API_BASE_URL } from '../../config';
+import { ref, defineEmits } from "vue";
+import axios from "axios";
+import { useAuthStore } from "../../store/auth";
+import CryptoJS from "crypto-js/crypto-js";
+import { API_BASE_URL } from "../../config";
 
 // Define the `login` prop and `close` event
 const props = defineProps({
@@ -60,12 +61,12 @@ const props = defineProps({
 
 const emit = defineEmits();
 const closeLogin = () => {
-  emit('closeLogin'); // Emit an event to the parent to close the login modal
+  emit("closeLogin"); // Emit an event to the parent to close the login modal
 };
 
 // State Variables
-const email = ref('');
-const password = ref('');
+const email = ref("");
+const password = ref("");
 const accounts = ref([]);
 const employees = ref([]);
 const isValid = ref(false);
@@ -73,10 +74,10 @@ const isEmail = ref(false);
 const pleaseWait = ref(false);
 const submitting = ref(false);
 const first = ref(true);
-const error = ref('');
+const error = ref("");
 const authStore = useAuthStore();
-const decryptedPassword = ref('');
-const empi = ref('');
+const decryptedPassword = ref("");
+const empi = ref("");
 
 // Validation States
 const isRed = ref(false);
@@ -89,50 +90,75 @@ const resetRed = () => {
 // Login Function
 const login_submit = () => {
   const passvalid = /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9-]{7,}$/;
-  const account = accounts.value.find(acc => acc.email === email.value);
+  const account = accounts.value.find((acc) => acc.email === email.value);
 
   if (account) {
-    empi.value = employees.value.find(emp => emp.name_id === account.name_id).isActive;
-    decryptedPassword.value = CryptoJS.AES.decrypt(account.password, 'jUr3ñr0yR@br4g@n').toString(CryptoJS.enc.Utf8);
+    console.log("Raw password from DB:", account.password);
+    console.log("Type:", typeof account.password);
+    empi.value = employees.value.find((emp) => emp.name_id === account.name_id)?.isActive;
+    try {
+      if (account.password) {
+        decryptedPassword.value = CryptoJS.AES.decrypt(account.password, "jUr3ñr0yR@br4g@n").toString(CryptoJS.enc.Utf8);
+      } else {
+        decryptedPassword.value = "";
+      }
+    } catch (e) {
+      console.error("Decryption failed:", e);
+      decryptedPassword.value = "";
+    }
   }
 
   isRed.value = true;
 
   // Validation Logic
-  if (email.value === '' && password.value === '') {
+  if (email.value === "" && password.value === "") {
     isValid.value = true;
-    setTimeout(() => { isValid.value = false; }, 2000);
-  } else if (email.value === '') {
-    error.value = 'Input Email';
+    setTimeout(() => {
+      isValid.value = false;
+    }, 2000);
+  } else if (email.value === "") {
+    error.value = "Input Email";
     isValid.value = true;
-    setTimeout(() => { isValid.value = false; }, 2000);
+    setTimeout(() => {
+      isValid.value = false;
+    }, 2000);
   } else if (!account) {
-    error.value = 'Email not Found';
+    error.value = "Email not Found";
     isEmail.value = true;
-    setTimeout(() => { isEmail.value = false; }, 2000);
-  } else if (password.value === '') {
+    setTimeout(() => {
+      isEmail.value = false;
+    }, 2000);
+  } else if (password.value === "") {
     isValid.value = true;
-    setTimeout(() => { isValid.value = false; }, 2000);
+    setTimeout(() => {
+      isValid.value = false;
+    }, 2000);
   } else if (passvalid.test(password.value) === false) {
-    error.value = 'Invalid Password Format';
+    error.value = "Invalid Password Format";
     isEmail.value = true;
-    setTimeout(() => { isEmail.value = false; }, 2000);
+    setTimeout(() => {
+      isEmail.value = false;
+    }, 2000);
   } else if (decryptedPassword.value !== password.value) {
     if (first.value) {
       first.value = false;
       login_submit();
     } else {
-      error.value = 'Wrong Password';
+      error.value = "Wrong Password";
     }
     isEmail.value = true;
-    setTimeout(() => { isEmail.value = false; }, 2000);
-  } else if (empi.value === 'out') {
-    error.value = 'Account inactive';
+    setTimeout(() => {
+      isEmail.value = false;
+    }, 2000);
+  } else if (empi.value === "out") {
+    error.value = "Account inactive";
     isEmail.value = true;
-    setTimeout(() => { isEmail.value = false; }, 2000);
+    setTimeout(() => {
+      isEmail.value = false;
+    }, 2000);
   } else {
-    email.value = '';
-    password.value = '';
+    email.value = "";
+    password.value = "";
     authStore.login(account.account_id, account.type_id, account.name_id, account.signature, account.password); // Call the login action
     submitting.value = true;
     pleaseWait.value = true;
@@ -145,16 +171,16 @@ const login_submit = () => {
 
 // Fetch Accounts and Employees
 const fetchAccounts = () => {
-  axios.get(`${API_BASE_URL}/get_accounts_json`)
-    .then(response => {
+  axios
+    .get(`${API_BASE_URL}/get_accounts_json`)
+    .then((response) => {
       accounts.value = response.data;
-      axios.get(`${API_BASE_URL}/get_employees_json`)
-        .then(response => {
-          employees.value = response.data;
-        });
+      axios.get(`${API_BASE_URL}/get_employees_json`).then((response) => {
+        employees.value = response.data;
+      });
     })
-    .catch(error => {
-      console.error('Error fetching accounts:', error);
+    .catch((error) => {
+      console.error("Error fetching accounts:", error);
     });
 };
 
@@ -166,24 +192,23 @@ fetchAccounts();
 /* Gradient background */
 body {
   background: linear-gradient(150deg, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
-  font-family: 'Lora', serif;
+  font-family: "Lora", serif;
   margin: 0;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  
 }
 .zero {
-  position: absolute;        /* Make it positioned relative to the nearest positioned ancestor */
-  top: 50%;                  /* Center vertically */
-  left: 50%;                 /* Center horizontally */
-  transform: translate(-50%, -50%);  /* Adjust the position to truly center */
-  display: flex;             /* Flexbox for inner elements */
-  justify-content: center;   /* Center content horizontally */
-  align-items: center;       /* Center content vertically */
-  width: 100%;               /* Optional: set the width (you can customize this if needed) */
-  height: 100%;              /* Optional: set the height (you can customize this if needed) */
+  position: absolute; /* Make it positioned relative to the nearest positioned ancestor */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust the position to truly center */
+  display: flex; /* Flexbox for inner elements */
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  width: 100%; /* Optional: set the width (you can customize this if needed) */
+  height: 100%; /* Optional: set the height (you can customize this if needed) */
   z-index: 999;
 }
 
@@ -261,7 +286,8 @@ body {
 }
 
 /* Labels */
-.n, .p {
+.n,
+.p {
   font-size: 18px;
   font-weight: 600;
   color: #000000;
@@ -284,7 +310,9 @@ body {
   color: white;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
 }
 
 .button:hover {
@@ -298,7 +326,9 @@ body {
 }
 
 /* Error and success messages */
-.error, .wronge, .logincorrect {
+.error,
+.wronge,
+.logincorrect {
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   padding: 15px;
@@ -323,14 +353,18 @@ body {
   background-color: rgba(57, 178, 89, 0.15);
 }
 
-.errormsg1, .wronge1, .logincorrect1 {
+.errormsg1,
+.wronge1,
+.logincorrect1 {
   font-size: 18px;
   font-weight: 600;
   text-align: center;
   margin-right: 10px;
 }
 
-.errormsg, .wronge2, .logincorrect2 {
+.errormsg,
+.wronge2,
+.logincorrect2 {
   font-size: 14px;
   text-align: center;
   margin-top: 5px;

@@ -6,37 +6,37 @@ import { useAuthStore } from './store/auth';
 import ictsrf from './views/ictsrf/dashboard.vue';
 import rso from './views/rso/dashboard.vue';
 
-import Layout from './views/layoutV2/Layout.vue';
 import Dashboard from './views/dashboard/Dashboard.vue';
+import Layout from './views/layoutV2/Layout.vue';
 
+import LeaveForm from './views/leaveform/Dashboard.vue';
+import RequestForm from './views/requestform/dashboard.vue';
 import Services from './views/services/Services.vue';
 import TravelOrder from './views/travelorderV2/Dashboard.vue';
-import LeaveForm from './views/leaveform/Dashboard.vue'
-import RequestForm from './views/requestform/dashboard.vue'
 // import LeaveForm from './views/leaveform/Dashboard.vue';
 import FADRF from './views/FADRF/dashboard.vue';
 
 
-import registration from './views/Registration.vue';
-import employeelist from './views/EmployeelistV2.vue';
-import editpage from './views/EditPageV2.vue';
 import logout from './components/logout/Logout.vue';
+import editpage from './views/EditPageV2.vue';
+import employeelist from './views/EmployeelistV2.vue';
+import registration from './views/Registration.vue';
 
 import ChatVue from './views/chat/Blank.vue';
 
 
 // import PDF from './views/FADRF/JobOrder/PDF.vue';
 // import PDF from './views/travelorderV2/TravelClearancePDF.vue';
-import PDF from './views/attendance/table.vue'
+import PDF from './views/leaveform/LeaveBenefit.vue';
 
-import CALENDAR from './views/calendar/dashboard.vue'
-import TravelClearance from './views/travelorderV2/TravelClearance.vue'
-import AuditTrails from './views/travelorderV2/AuditTrails.vue'
+import CALENDAR from './views/calendar/dashboard.vue';
+import AuditTrails from './views/travelorderV2/AuditTrails.vue';
+import TravelClearance from './views/travelorderV2/TravelClearance.vue';
 
-import attendance from './views/attendance/dashboard.vue'
-import payslip from './views/payslip/dashboard.vue'
-import payslipcos from './views/payslip/cos/dashboard.vue'
-import payslipreg from './views/payslip/regular/dashboard.vue'
+import attendance from './views/attendance/dashboard.vue';
+import payslipcos from './views/payslip/cos/dashboard.vue';
+import payslip from './views/payslip/dashboard.vue';
+import payslipreg from './views/payslip/regular/dashboard.vue';
 
 const routes = [
   {

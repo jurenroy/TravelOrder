@@ -5,7 +5,7 @@
       <h1>{{ title }}</h1>
     </div>
 
-    <Heder />
+    <!-- <Heder /> -->
     <!-- Navigation container with links -->
     <nav class="nav-container">
       <nav class="nav" :class="{ 'is-open': isMenuOpen }">

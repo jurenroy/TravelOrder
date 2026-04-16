@@ -53,6 +53,8 @@
             <img :src="leaveform" alt="Leave Form" class="icon" />
             <span v-if="isMenuOpen" class="indent">Leave Form</span>
           </router-link>
+          <!-- Leave Benefits sub-button — only visible when on /leaveform -->
+          <button v-if="isMenuOpen && $route.path === '/leaveform'" class="leave-benefits-btn" @click="$router.push('/pedeep')">Leave Benefits</button>
         </li>
         <li>
           <span class="count" v-if="ICTRequestCount">{{ ICTRequestCount < 9 ? ICTRequestCount : "9+" }}</span>
@@ -189,8 +191,13 @@ export default {
       return this.authStore.name_id == 76;
     },
     isPasswordDefault() {
-      const decryptedPassword = CryptoJS.AES.decrypt(this.authStore.password, "jUr3ñr0yR@br4g@n").toString(CryptoJS.enc.Utf8);
-      return decryptedPassword === this.predefinedPassword;
+      try {
+        if (!this.authStore.password) return false;
+        const decryptedPassword = CryptoJS.AES.decrypt(this.authStore.password, "jUr3ñr0yR@br4g@n").toString(CryptoJS.enc.Utf8);
+        return decryptedPassword === this.predefinedPassword;
+      } catch (e) {
+        return false;
+      }
     },
   },
   methods: {
@@ -215,6 +222,26 @@ export default {
 </script>
 
 <style scoped>
+.leave-benefits-btn {
+  display: flex;
+  align-items: center;
+  margin-left: 32px;
+  margin-top: 4px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 5px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.leave-benefits-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
 /* Sidebar styles */
 aside {
   background: linear-gradient(to bottom, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
