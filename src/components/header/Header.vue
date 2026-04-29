@@ -2,16 +2,16 @@
   <header class="header">
     <!-- Logo section -->
     <div class="logo" @click="goHome">
-      <h1>{{ title }} </h1>
+      <h1>{{ title }}</h1>
     </div>
 
-    <Heder/>
+    <Heder />
     <!-- Navigation container with links -->
     <nav class="nav-container">
       <nav class="nav" :class="{ 'is-open': isMenuOpen }">
         <ul>
-          <li v-for="link in filteredLinks" :key="link.text" >
-            <a @click="handleLinkClick(link.text)">{{ link.text }}{{ link.text == 'Chats' && unreadMessagesCount ?  '('+unreadMessagesCount+')' : ''}}</a>
+          <li v-for="link in filteredLinks" :key="link.text">
+            <a @click="handleLinkClick(link.text)">{{ link.text }}{{ link.text == "Chats" && unreadMessagesCount ? "(" + unreadMessagesCount + ")" : "" }}</a>
           </li>
         </ul>
       </nav>
@@ -30,7 +30,7 @@
         </div>
         <div class="notifications-list">
           <div v-if="notificationsStore.notifications.length === 0" class="no-notifications">No notifications</div>
-          <div v-for="notification in notificationsStore.notifications" :key="notification.id" class="notification-item" :class="{ 'unread': !notification.read }">
+          <div v-for="notification in notificationsStore.notifications" :key="notification.id" class="notification-item" :class="{ unread: !notification.read }">
             <div class="notification-title">{{ notification.title }}</div>
             <div class="notification-message">{{ notification.message }}</div>
             <div class="notification-time">{{ formatTime(notification.timestamp) }}</div>
@@ -48,42 +48,40 @@
       <div class="line"></div>
       <div class="line"></div>
     </div>
-    <p style="color: red;">{{ isMobile && !isMenuOpen &&  unreadMessagesCount ? '('+unreadMessagesCount+')' : '' }}</p>
+    <p style="color: red">{{ isMobile && !isMenuOpen && unreadMessagesCount ? "(" + unreadMessagesCount + ")" : "" }}</p>
   </header>
   <!-- Login Popup -->
   <!-- <Login :login="showLogin" @closeLogin="closeLoginModal"/> -->
-  <Login v-if="showLogin" :login="showLogin" @closeLogin="closeLoginModal"/>
+  <Login v-if="showLogin" :login="showLogin" @closeLogin="closeLoginModal" />
   <!-- Logout Confirmation Popup -->
-  <Logout v-if="isLogoutClicked" :show="isLogoutClicked" @handleNo="handleNo" @handleYes="handleLogout"/>
+  <Logout v-if="isLogoutClicked" :show="isLogoutClicked" @handleNo="handleNo" @handleYes="handleLogout" />
   <!-- <Chat v-if="(isLoggedIn && !isMobile) || (isMobile && checkMobileChat)" @update:unreadMessages="updateUnreadMessages"/> -->
-
 </template>
 
 <script>
-import { ref, onMounted, computed, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
-import Logout from '../logout/Logout.vue';
-import Login from '../login/Login.vue';
-import Heder from '../heder.vue';
-import { useAuthStore } from '@/store/auth';
-import { useChatStore } from '@/store/chat';
-import { useNotificationsStore } from '@/store/notifications';
-import Chat from '@/views/chat/Dashboard.vue';
-import { API_BASE_URL } from '../../config';
-import { usePendingStore } from '@/store/pending';
-import axios from 'axios';
-
+import { ref, onMounted, computed, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
+import Logout from "../logout/Logout.vue";
+import Login from "../login/Login.vue";
+import Heder from "../heder.vue";
+import { useAuthStore } from "@/store/auth";
+import { useChatStore } from "@/store/chat";
+import { useNotificationsStore } from "@/store/notifications";
+import Chat from "@/views/chat/Dashboard.vue";
+import { API_BASE_URL } from "../../config";
+import { usePendingStore } from "@/store/pending";
+import axios from "axios";
 
 export default {
-  name: 'Header',
+  name: "Header",
   components: {
     Logout,
     Login,
     Heder,
-    Chat
+    Chat,
   },
   setup() {
-    const title = ref('MGBxPORTAL');
+    const title = ref("MGBxPORTAL");
     const authStore = useAuthStore();
     const router = useRouter();
     const notificationsStore = useNotificationsStore();
@@ -97,7 +95,7 @@ export default {
     let websocket = null;
 
     const goHome = () => {
-      router.push('/');
+      router.push("/");
     };
 
     const showLogin = ref(false);
@@ -107,41 +105,35 @@ export default {
     };
 
     const fetchCounts = async () => {
-  const ictRequestApiUrl = `${API_BASE_URL}/services/${nameId.value}/count`;
-  const leaveFormApiUrl = `${API_BASE_URL}/get_leave_json/${nameId.value}/count`;
-  const travelOrderApiUrl = `${API_BASE_URL}/get_forms_json/${nameId.value}/count`;
+      const ictRequestApiUrl = `${API_BASE_URL}/services/${nameId.value}/count`;
+      const leaveFormApiUrl = `${API_BASE_URL}/get_leave_json/${nameId.value}/count`;
+      const travelOrderApiUrl = `${API_BASE_URL}/get_forms_json/${nameId.value}/count`;
 
-  try {
-    // Fetch all counts concurrently using Promise.all
-    const [ictRequestResponse, leaveFormResponse, travelOrderResponse] = await Promise.all([
-      axios.get(ictRequestApiUrl),
-      axios.get(leaveFormApiUrl),
-      axios.get(travelOrderApiUrl)
-    ]);
+      try {
+        // Fetch all counts concurrently using Promise.all
+        const [ictRequestResponse, leaveFormResponse, travelOrderResponse] = await Promise.all([axios.get(ictRequestApiUrl), axios.get(leaveFormApiUrl), axios.get(travelOrderApiUrl)]);
 
-    // Assuming the API responses have a 'count' field
-    const ictRequestCount = ictRequestResponse.data;
-    const leaveFormCount = leaveFormResponse.data;
-    const travelOrderCount = travelOrderResponse.data;
+        // Assuming the API responses have a 'count' field
+        const ictRequestCount = ictRequestResponse.data;
+        const leaveFormCount = leaveFormResponse.data;
+        const travelOrderCount = travelOrderResponse.data;
 
-    // Use the pending store to update counts
-    const pendingStore = usePendingStore();
+        // Use the pending store to update counts
+        const pendingStore = usePendingStore();
 
-    pendingStore.count('ictrequest', ictRequestCount);
-    pendingStore.count('leaveform', leaveFormCount);
-    pendingStore.count('travelorder', travelOrderCount);
+        pendingStore.count("ictrequest", ictRequestCount);
+        pendingStore.count("leaveform", leaveFormCount);
+        pendingStore.count("travelorder", travelOrderCount);
 
-    console.log("Counts updated:", {
-      ictRequestCount,
-      leaveFormCount,
-      travelOrderCount
-    });
-
-  } catch (error) {
-    console.error("Error fetching counts:", error);
-  }
-};
-
+        console.log("Counts updated:", {
+          ictRequestCount,
+          leaveFormCount,
+          travelOrderCount,
+        });
+      } catch (error) {
+        console.error("Error fetching counts:", error);
+      }
+    };
 
     const closeLoginModal = () => {
       showLogin.value = false;
@@ -158,7 +150,7 @@ export default {
     };
 
     const handleLogout = () => {
-      isLoggedIn.value = false;  // Set the logged-in state to false
+      isLoggedIn.value = false; // Set the logged-in state to false
       authStore.logout(); // Call the logout action
       isLogoutClicked.value = false; // Close the logout confirmation dialog
       disconnectWebSocket();
@@ -168,31 +160,31 @@ export default {
     const connectWebSocket = () => {
       if (!isLoggedIn.value) return;
 
-      websocket = new WebSocket('ws://172.31.10.34:8012/ws/chat/');
+      websocket = new WebSocket("ws://172.31.10.34:8012/ws/chat/");
 
       websocket.onopen = () => {
-        console.log('WebSocket connected');
+        console.log("WebSocket connected");
       };
 
       websocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        if (data.type === 'notification_message') {
+        if (data.type === "notification_message") {
           notificationsStore.addNotification({
             id: Date.now(),
             title: data.title,
             message: data.message,
             timestamp: new Date(),
-            read: false
+            read: false,
           });
         }
       };
 
       websocket.onclose = () => {
-        console.log('WebSocket disconnected');
+        console.log("WebSocket disconnected");
       };
 
       websocket.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.error("WebSocket error:", error);
       };
     };
 
@@ -212,7 +204,7 @@ export default {
     };
 
     const goToAuditTrails = () => {
-      router.push('/audit-trails');
+      router.push("/audit-trails");
       showNotifications.value = false;
     };
 
@@ -222,55 +214,53 @@ export default {
 
     // Update the links based on login status
     const links = ref([
-      { text: 'Home', url: '/' },
-      { text: 'Chats', url: '/chat' },
-      { text: isLoggedIn.value ? 'Logout' : 'Login', url: '#' } // Set URL to '#' to prevent routing
+      { text: "Home", url: "/" },
+      { text: "Chats", url: "/chat" },
+      { text: isLoggedIn.value ? "Logout" : "Login", url: "#" }, // Set URL to '#' to prevent routing
     ]);
 
     const filteredLinks = computed(() => {
-      return links.value.filter(link => {
+      return links.value.filter((link) => {
         // Exclude 'Chats' link if not logged in
-        return !(link.text === 'Chats' && !isLoggedIn.value);
+        return !(link.text === "Chats" && !isLoggedIn.value);
       });
     });
 
     // Handle link click (for login/logout pop-up)
     const handleLinkClick = (linkText) => {
-      console.log(linkText , isLoggedIn.value)
-      console.log(authStore.value)
-      if (linkText === 'Login' && !isLoggedIn.value) {
+      console.log(linkText, isLoggedIn.value);
+      console.log(authStore.value);
+      if (linkText === "Login" && !isLoggedIn.value) {
         // Trigger login popup here if you want to show a login dialog
         showLogin.value = true;
-      } else if (linkText === 'Logout' && isLoggedIn.value) {
+      } else if (linkText === "Logout" && isLoggedIn.value) {
         isLogoutClicked.value = true; // Show the logout confirmation dialog
-      } else if (linkText === 'Services' && isLoggedIn.value){
-        router.push('/services');
-      } else if (linkText === 'Services' && !isLoggedIn.value){
+      } else if (linkText === "Services" && isLoggedIn.value) {
+        router.push("/services");
+      } else if (linkText === "Services" && !isLoggedIn.value) {
         showLogin.value = true;
-      } else if (linkText === 'Chats' && isLoggedIn.value){
+      } else if (linkText === "Chats" && isLoggedIn.value) {
         if (window.innerWidth >= 768) {
           chatStore.toggleShow();
-          console.log('desktop')
-        }else if (window.innerWidth <= 768 && router.currentRoute.value.path !== 'chat') {
-        router.push('/chat');
-        console.log('ipa show sa route ra', router.currentRoute.value.path !== 'chat')
+          console.log("desktop");
+        } else if (window.innerWidth <= 768 && router.currentRoute.value.path !== "chat") {
+          router.push("/chat");
+          console.log("ipa show sa route ra", router.currentRoute.value.path !== "chat");
           if (!chatStore.show) {
             chatStore.toggleShow(); // Call toggleShow if it's false
-            console.log('ipashow')
+            console.log("ipashow");
           }
         }
-      } else if (linkText === 'Chats' && !isLoggedIn.value){
+      } else if (linkText === "Chats" && !isLoggedIn.value) {
         showLogin.value = true;
-      }else if (linkText === 'Home'){
-        router.push('/');
+      } else if (linkText === "Home") {
+        router.push("/");
       }
 
-      if (linkText !== 'Chats' && chatStore.show){
-        console.log('dili ipashow')
-        chatStore.toggleShow()
+      if (linkText !== "Chats" && chatStore.show) {
+        console.log("dili ipashow");
+        chatStore.toggleShow();
       }
-
-
     };
 
     // Toggle hamburger menu
@@ -288,14 +278,14 @@ export default {
     });
     // Check for mobile screen size
     const checkMobileChat = computed(() => {
-      console.log(router.currentRoute.value.path !== 'chat')
-      return router.currentRoute.value.path !== 'chat'; // Adjust the width based on your design
+      console.log(router.currentRoute.value.path !== "chat");
+      return router.currentRoute.value.path !== "chat"; // Adjust the width based on your design
     });
 
     onMounted(() => {
       fetchCounts();
       checkMobileScreen();
-      window.addEventListener('resize', checkMobileScreen);
+      window.addEventListener("resize", checkMobileScreen);
       if (isLoggedIn.value) {
         connectWebSocket();
       }
@@ -332,300 +322,299 @@ export default {
       markAsRead,
       goToAuditTrails,
       formatTime,
-      nameId
+      nameId,
     };
-  }
+  },
 };
 </script>
-  
-  <style scoped>
-  @import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
-  .microscopic-div {
-      width: 0px; /* Example width */
-      height: 0px; /* Example height */
-      overflow: auto;
-      transform: scale(0.01); /* Scale down the content */
-      transform-origin: top left; /* Keep the scaling from the top left corner */
-      border: 1px solid black;
-    }
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 50px;
-    padding: 10px;
-    background: linear-gradient(to right, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
-    color: rgb(0, 0, 0);
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    margin: -10px;
-    z-index: 999;
-  }
-  
-  .logo h1 {
-    margin-left: 10px;
-    font-family: 'Monoton', sans-serif;
-    font-size: 2rem;
-    white-space: nowrap; /* Prevent title from wrapping */
-    overflow: hidden; /* Hide overflow if the text is too long */
-    text-overflow: ellipsis; /* Optionally add ellipsis for overflow text */
-    max-width: 100%; /* Prevent the text from overflowing the container */
-    cursor: pointer;
-  }
-  
-  /* Container for navigation */
-  .nav-container {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: flex-end; /* Align the hamburger to the right */
-  }
-  
+
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Monoton&display=swap");
+.microscopic-div {
+  width: 0px; /* Example width */
+  height: 0px; /* Example height */
+  overflow: auto;
+  transform: scale(0.01); /* Scale down the content */
+  transform-origin: top left; /* Keep the scaling from the top left corner */
+  border: 1px solid black;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  padding: 10px;
+  background: linear-gradient(to right, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
+  color: rgb(0, 0, 0);
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  margin: -10px;
+  z-index: 999;
+}
+
+.logo h1 {
+  margin-left: 10px;
+  font-family: "Monoton", sans-serif;
+  font-size: 2rem;
+  white-space: nowrap; /* Prevent title from wrapping */
+  overflow: hidden; /* Hide overflow if the text is too long */
+  text-overflow: ellipsis; /* Optionally add ellipsis for overflow text */
+  max-width: 100%; /* Prevent the text from overflowing the container */
+  cursor: pointer;
+}
+
+/* Container for navigation */
+.nav-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-end; /* Align the hamburger to the right */
+}
+
+.nav {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-100%);
+  flex-grow: 1; /* Make nav grow to fill available space */
+}
+
+.nav.is-open {
+  display: block;
+  transform: translateX(0);
+}
+
+.nav ul {
+  display: flex;
+  list-style: none;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+
+.nav ul li {
+  margin-right: 20px;
+}
+
+.nav ul li a {
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+}
+
+.nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.hamburger {
+  display: flex;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  padding: 5px;
+  margin-left: auto; /* Ensure hamburger icon is on the right */
+}
+
+.hamburger .line {
+  height: 3px;
+  background-color: black;
+  border-radius: 5px;
+  width: 20px;
+}
+
+@media (max-width: 768px) {
   .nav {
-    display: flex;
-    transition: transform 0.3s ease-in-out;
-    transform: translateX(-100%);
-    flex-grow: 1; /* Make nav grow to fill available space */
+    display: none;
   }
-  
-  .nav.is-open {
-    display: block;
-    transform: translateX(0);
-  }
-  
+
   .nav ul {
-    display: flex;
-    list-style: none;
-    justify-content: flex-end;
-    cursor: pointer;
+    flex-direction: column;
+    background: linear-gradient(to top, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
+    width: 150px;
+    padding: 10px 0;
+    position: absolute;
+    top: 0px; /* Position below the header */
+    right: 0;
+    margin-top: 0px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
-  
+
   .nav ul li {
-    margin-right: 20px;
+    margin: 10px 0;
   }
-  
+
   .nav ul li a {
-    color: rgb(0, 0, 0);
-    text-decoration: none;
+    padding: 10px;
   }
-  
-  .nav ul li a:hover {
-    text-decoration: underline;
-  }
-  
+
   .hamburger {
     display: flex;
-    cursor: pointer;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 30px;
-    height: 21px;
-    padding: 5px;
-    margin-left: auto; /* Ensure hamburger icon is on the right */
-  }
-  
-  .hamburger .line {
-    height: 3px;
-    background-color: black;
-    border-radius: 5px;
-    width: 20px;
-  }
-  
-  @media (max-width: 768px) {
-    .nav {
-      display: none;
-    }
-  
-    .nav ul {
-      flex-direction: column;
-      background: linear-gradient(to top, #f0c36d, #b8860b); /* Gradient from light gold to dark gold */
-      width: 150px;
-      padding: 10px 0;
-      position: absolute;
-      top: 0px; /* Position below the header */
-      right: 0;
-      margin-top: 0px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-  
-    .nav ul li {
-      margin: 10px 0;
-    }
-  
-    .nav ul li a {
-      padding: 10px;
-    }
-  
-    .hamburger {
-      display: flex;
-    }
-  
-    .nav.is-open {
-      display: flex;
-      position: absolute;
-      top: 50px;
-      right: 0;
-      width: 200px; /* Adjust the width as needed */
-    }
-  }
-  /* Notification Styles */
-  .notification-container {
-    position: relative;
-    margin-right: 20px;
   }
 
-  .notification-bell {
-    position: relative;
-    cursor: pointer;
-    font-size: 24px;
-    padding: 5px;
-    border-radius: 50%;
-    transition: background-color 0.3s;
-  }
-
-  .notification-bell:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-
-  .notification-bell.has-unread .bell-icon {
-    color: #ff4444;
-  }
-
-  .notification-count {
+  .nav.is-open {
+    display: flex;
     position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #ff4444;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    font-weight: bold;
-    min-width: 18px;
-    text-align: center;
-  }
-
-  .notifications-dropdown {
-    position: absolute;
-    top: 40px;
+    top: 50px;
     right: 0;
-    width: 350px;
-    max-height: 400px;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    width: 200px; /* Adjust the width as needed */
   }
+}
+/* Notification Styles */
+.notification-container {
+  position: relative;
+  margin-right: 20px;
+}
 
-  .dropdown-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    background-color: #f8f9fa;
-  }
+.notification-bell {
+  position: relative;
+  cursor: pointer;
+  font-size: 24px;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
 
-  .dropdown-header h4 {
-    margin: 0;
-    color: #333;
-  }
+.notification-bell:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
 
-  .mark-read-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-  }
+.notification-bell.has-unread .bell-icon {
+  color: #ff4444;
+}
 
-  .mark-read-btn:hover {
-    background-color: #0056b3;
-  }
+.notification-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ff4444;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 18px;
+  text-align: center;
+}
 
-  .notifications-list {
-    flex: 1;
-    overflow-y: auto;
-    max-height: 300px;
-  }
+.notifications-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 350px;
+  max-height: 400px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
 
-  .no-notifications {
-    padding: 20px;
-    text-align: center;
-    color: #666;
-    font-style: italic;
-  }
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  background-color: #f8f9fa;
+}
 
-  .notification-item {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
+.dropdown-header h4 {
+  margin: 0;
+  color: #333;
+}
 
-  .notification-item:hover {
-    background-color: #f8f9fa;
-  }
+.mark-read-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
 
-  .notification-item.unread {
-    background-color: #e3f2fd;
-  }
+.mark-read-btn:hover {
+  background-color: #0056b3;
+}
 
-  .notification-item.unread .notification-title {
-    font-weight: bold;
-  }
+.notifications-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 300px;
+}
 
-  .notification-title {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 5px;
-  }
+.no-notifications {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
 
-  .notification-message {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 5px;
-    line-height: 1.4;
-  }
+.notification-item {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
-  .notification-time {
-    font-size: 11px;
-    color: #999;
-  }
+.notification-item:hover {
+  background-color: #f8f9fa;
+}
 
-  .dropdown-footer {
-    padding: 15px;
-    border-top: 1px solid #eee;
-    background-color: #f8f9fa;
-    text-align: center;
-  }
+.notification-item.unread {
+  background-color: #e3f2fd;
+}
 
-  .view-audit-btn {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-  }
+.notification-item.unread .notification-title {
+  font-weight: bold;
+}
 
-  .view-audit-btn:hover {
-    background-color: #218838;
-  }
+.notification-title {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
 
-  @media print{
-    .header{
-      display: none;
-    }
+.notification-message {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+.notification-time {
+  font-size: 11px;
+  color: #999;
+}
+
+.dropdown-footer {
+  padding: 15px;
+  border-top: 1px solid #eee;
+  background-color: #f8f9fa;
+  text-align: center;
+}
+
+.view-audit-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.view-audit-btn:hover {
+  background-color: #218838;
+}
+
+@media print {
+  .header {
+    display: none;
   }
-  </style>
-  
+}
+</style>

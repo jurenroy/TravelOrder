@@ -1,0 +1,304 @@
+<template>
+  <div class="page-container">
+    <div class="dashboard-card">
+      <!-- Generate Payslip Section -->
+      <div v-if="activeTab === 'generate'" class="generate-section">
+        <p class="subtitle">
+          <strong>Payroll Period: {{ cutoffDates }}</strong>
+        </p>
+
+        <div class="form-row">
+          <!-- Year -->
+          <div class="input-group">
+            <label>Year</label>
+            <select v-model="selectedYear">
+              <option disabled value="">Select Year</option>
+              <option v-for="year in years" :key="year" :value="year" :disabled="year > todayYear">
+                {{ year }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Month -->
+          <div class="input-group">
+            <label>Month</label>
+            <select v-model="selectedMonth">
+              <option disabled value="">Select Month</option>
+              <option v-for="(month, index) in months" :key="month" :value="month" :disabled="isFutureMonth(index)">
+                {{ month }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="button-container">
+          <button
+            class="submit-btn"
+            :class="{ 'loading-btn': isLoading, 'disabled-btn': !selectedMonth || !selectedYear || isLoading }"
+            @click="submitPayslip"
+            :disabled="!selectedMonth || !selectedYear || isLoading"
+          >
+            {{ tabStatus === "generate" ? "Generate Payslip" : "View Payslip" }}
+          </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div v-if="isLoading" class="progress-wrapper">
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+          </div>
+          <p class="progress-text">{{ progress }}%</p>
+        </div>
+
+        <!-- Table -->
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { API_BASE_URL } from "@/config";
+import axios from "axios";
+import Table from "./table.vue";
+export default {
+  props: {
+    // Define props to receive from the parent
+    tabStatus: {
+      type: String,
+      required: true,
+    },
+  },
+  name: "PayrollDashboard",
+  components: { Table },
+
+  data() {
+    const today = new Date();
+    const todayYear = today.getFullYear();
+    const todayMonthIndex = today.getMonth();
+
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+    return {
+      activeTab: "generate", // default active tab
+      todayYear,
+      todayMonthIndex,
+
+      selectedYear: todayYear,
+      selectedMonth: months[todayMonthIndex],
+      showTable: false,
+
+      years: Array.from({ length: 11 }, (_, i) => todayYear - 5 + i),
+      months,
+      isLoading: false,
+      progress: 0,
+    };
+  },
+  computed: {
+    cutoffDates() {
+      if (!this.selectedYear || !this.selectedMonth) return "";
+
+      const monthIndex = this.months.indexOf(this.selectedMonth);
+      const lastDay = new Date(this.selectedYear, monthIndex + 1, 0).getDate();
+      return `${this.selectedMonth} 1-${lastDay}, ${this.selectedYear}`;
+    },
+  },
+
+  methods: {
+    submitPayslip() {
+      this.showTable = true;
+      if (this.tabStatus === "generate") {
+        // If it's the "Generate" tab, make the HTTP request
+        this.generatePayslip();
+      } else {
+        // If it's the "View" tab, emit the data
+        this.$emit("sendDataToB", this.cutoffDates);
+      }
+    },
+    generatePayslip() {
+      this.isLoading = true;
+      this.progress = 0;
+
+      // Fake progress animation
+      const interval = setInterval(() => {
+        if (this.progress < 90) {
+          this.progress += 10;
+        }
+      }, 300);
+
+      // POST request without parameters to the URL
+      axios
+        .post(`${API_BASE_URL}/regular-generate-batch-payslips`) // URL for your API
+        .then((response) => {
+          // Success callback
+          clearInterval(interval);
+          this.progress = 100;
+
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 500);
+          window.location.reload();
+          console.log("Batch payslips generated:", response.data);
+          // You can handle success here (e.g., show a success message)
+        })
+        .catch((error) => {
+          // Error callback
+          clearInterval(interval);
+          this.isLoading = false;
+          this.progress = 0;
+          console.error("Error generating payslips:", error);
+
+          // Handle error (e.g., show an error message)
+        });
+    },
+    isFutureMonth(monthIndex) {
+      return this.selectedYear === this.todayYear && monthIndex > this.todayMonthIndex;
+    },
+
+    switchTab(tabName) {
+      this.activeTab = tabName;
+
+      if (tabName === "view") {
+        this.showTable = false;
+      }
+    },
+  },
+};
+</script>
+
+<style>
+.page-container {
+  background: transparent;
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Container for Dashboard */
+.dashboard-card {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  max-width: 1000px;
+  width: 100%;
+}
+
+.subtitle {
+  margin-bottom: 20px;
+  color: black;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: black;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.action-btn.active,
+.action-btn:hover {
+  background: #ecbf67;
+  color: black;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #444;
+}
+
+select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.button-container {
+  margin-top: 20px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: black;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.submit-btn:hover {
+  background: #ecbf67;
+  color: black;
+}
+
+.submit-btn:disabled {
+  background: #b8c3d6;
+  cursor: not-allowed;
+}
+
+/* disabled button (gray + not allowed) */
+.disabled-btn {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* loading button (optional, pointer not allowed too) */
+.loading-btn {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.cutoff-display {
+  margin-top: 15px;
+  background: #eef3ff;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.table-container {
+  margin-top: 30px;
+  width: 100%;
+  max-width: 3000px;
+}
+
+@media (max-width: 600px) {
+  .dashboard-card {
+    padding: 20px;
+  }
+  .form-row {
+    flex-direction: column;
+  }
+}
+</style>
