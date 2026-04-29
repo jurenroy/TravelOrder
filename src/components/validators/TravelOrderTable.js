@@ -12,7 +12,7 @@ const TravelOrderTable = {
     },
     isInitialized(item) {
       return (
-        (![23, 2, 3, 8, 42, 34, 29, 36, 48, 16, 47, 48, 15, 45, 21, 13, 10, 37, 62, 53, 4, 56, 55, 60, 20, 77, 52, 51, 66, 17, 72, 73, 54, 80,43,40,71,82,81,83,87,88,79,92,93,94].includes(item.name_id) && item.initial !== null) ||
+        (![23, 2, 3, 8, 42, 34, 29, 36, 48, 16, 47, 48, 15, 45, 21, 13, 10, 37, 62, 53, 4, 56, 55, 60, 20, 77, 52, 51, 66, 17, 72, 73, 54, 80,43,40,71,82,81,83,87,88,79,92,93,94,95,96].includes(item.name_id) && item.initial !== null) ||
         ([15, 21, 45, 5, 3].includes(item.name_id) && item.aor === 1 && item.intervals === 1) ||
         ([23, 2, 8, 42, 34, 29, 36, 48, 16, 47, 52, 51, 66, 17, 72, 73, 54, 80].includes(item.name_id) && item.intervals === 1)
       );
@@ -32,12 +32,12 @@ const TravelOrderTable = {
     forRecommendationNoneORDNoneChief(item) {
       const dec15 = new Date('2025-12-15');
       const itemDate = new Date(item.date);
-      return (item.signature1 === null && item.note !== null && (![15, 20, 21, 45, 5, 3, 13, 10, 37, 53, 75, 56, 55, 60,  77, 62, 51, 92,93,94].includes(item.name_id))) && (item.division_id !== 5) && item.to_num == 0;
+      return (item.signature1 === null && item.note !== null && (![15, 20, 21, 45, 5, 3, 13, 10, 37, 53, 75, 56, 55, 60,  77, 62, 51, 92,93,94,95,96].includes(item.name_id))) && (item.division_id !== 5) && item.to_num == 0;
     },
     forRecommendationORDandChiefwithIntervals(item) {
       const dec15 = new Date('2025-12-15');
       const itemDate = new Date(item.date);
-      return (item.signature1 === null && item.note !== null && ([15, 21, 45, 5, 3, 56, 55, 60, 13, 10, 37, 53,62,77, 51, 92,93,94].includes(item.name_id)) && item.intervals === 1);
+      return (item.signature1 === null && item.note !== null && ([15, 21, 45, 5, 3, 56, 55, 60, 13, 10, 37, 53,62,77, 51, 92,93,94,95,96].includes(item.name_id)) && item.intervals === 1);
     },
     forRecommendationCAOnotIncluded(item) {
       return !([15].includes(item.name_id) && item.aor === 0 && item.intervals === 1);
@@ -49,7 +49,7 @@ const TravelOrderTable = {
       return [2, 23, 8, 42, 34, 29, 52, 51, 36, 48,16, 47].includes(item.name_id) && item.intervals === 1;
     },
     recommendedNoneORDNoneChief(item) {
-      return item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48,3, 13, 10, 37, 62, 53, 75, 56, 55, 60, 77,92,93,94].includes(item.name_id);
+      return item.note !== null && item.signature1 !== null && ![15, 20, 21, 45, 48,3, 13, 10, 37, 62, 53, 75, 56, 55, 60, 77,92,93,94,95,96].includes(item.name_id);
     },
     recommendedORDandChiefwithIntervals(item) {
       return item.signature1 !== null && item.note !== null && ([15, 21, 45, 48,3].includes(item.name_id) || item.division_id === 5) && item.intervals === 1;
@@ -64,7 +64,7 @@ const TravelOrderTable = {
       return item.signature2 === null && item.signature1 !== null && item.to_num == 0;
     },
     forApprovalORDandChief(item) {
-      return [15, 20, 21, 45, 5, 3, 13, 10, 37, 62, 53, 75, 56, 55, 60, 77, 4, 51,92,93,94].includes(item.name_id) && item.signature2 === null && item.note !== null && item.intervals === 0;
+      return [15, 20, 21, 45, 5, 3, 13, 10, 37, 62, 53, 75, 56, 55, 60, 77, 4, 51,92,93,94,95,96].includes(item.name_id) && item.signature2 === null && item.note !== null && item.intervals === 0;
     },
     forApprovalRDinterval(item) {
       return item.name_id === 20 && item.intervals === 1;
@@ -82,7 +82,7 @@ const TravelOrderTable = {
       return item.signature2 !== null && item.signature1 !== null && item.note !== null && item.to_num !== 0;
     },
     approvedORD(item) {
-      return [15, 20, 21, 45, 5, 13, 10, 37, 62, 53, 75,58,59, 56, 55, 60, 77, 51,92,93,94,48].includes(item.name_id) && item.signature2 !== null && item.to_num !== 0;
+      return [15, 20, 21, 45, 5, 13, 10, 37, 62, 53, 75,58,59, 56, 55, 60, 77, 51,92,93,94,48,95,96].includes(item.name_id) && item.signature2 !== null && item.to_num !== 0;
     },
   };
 

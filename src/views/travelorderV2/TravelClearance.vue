@@ -23,7 +23,7 @@
   <div class="luxury-search-bar">
     <div v-if="mawala" class="luxury-search-box">
       <img class="luxury-search-icon" src="../../assets/search.png" alt="Search" />
-      <input class="luxury-search-input" type="text" v-model="searchQuery" placeholder="Search Clearance number or Name" />
+      <input class="luxury-search-input" type="text" v-model="searchQuery" @keyup.enter="fetchData(true)" placeholder="Search Clearance number or Name" />
     </div>
 
     <button v-if="mawala && [2, 15, 24, 76, 39].includes(nameId)" class="luxury-btn" @click="downloadCSV">
@@ -342,8 +342,10 @@ methods: {
     if (reset) {
     this.formData = [];
   }
+  const params = {};
+    if (this.searchQuery) params.search = this.searchQuery;
     this.load = true
-    axios.get(`${API_BASE_URL}/travel_clearances?status=${this.selectedStatus}&limit=${this.numberOfRows}&offset=${this.formData.length}`)
+    axios.get(`${API_BASE_URL}/travel_clearances?status=${this.selectedStatus}&limit=${this.numberOfRows}&offset=${this.formData.length}`, { params })
       .then(response => {
         this.mawala = true;
         this.load = false
@@ -445,11 +447,11 @@ computed: {
   },
   reversedFormData() {
     let data = this.formData.slice();
-    if (this.searchQuery !== '') {
-      data = data.filter(item => {
-        return item.clearance_number.includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
-      });
-    }
+    //if (this.searchQuery !== '') {
+    //  data = data.filter(item => {
+    //    return item.clearance_number.includes(this.searchQuery) || String(this.getName(item.name_id)).toLowerCase().includes(this.searchQuery.toLowerCase());
+    //  });
+    //}
     return data;
   },
 },

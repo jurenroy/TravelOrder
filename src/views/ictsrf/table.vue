@@ -79,7 +79,7 @@
       <div class="form-group">
         <label class="left-label">Service By:</label>
         <select v-model="selectedServiceBy" class="right-select">
-          <option value="53">{{ getName(53) }}</option>
+          <option value="95">{{ getName(95) }}</option>
           <option value="77">{{ getName(77) }}</option>
         </select>
       </div>
@@ -164,10 +164,10 @@
   const typeOfService = ref('all');
   const numberOfRows = ref(10);
   const editPopupVisible = ref(false);
-  const selectedServiceBy = ref('53'); // Default selection
+  const selectedServiceBy = ref('95'); // Default selection
   const selectedStatusForEdit = ref('');
   const serviceToEdit = ref(null); // To keep track of the service being edited
-  const admin = ref([53,76,77])
+  const admin = ref([95,76,77])
   const nameId = authStore.name_id
   const serviceTypes = [
   'Existing system unit',
@@ -231,7 +231,7 @@ fetchServices(true); // True means reset
 
   const editService = (service) => {
   serviceToEdit.value = service;
-  selectedServiceBy.value = service.serviceBy || '53'; // Default to existing serviceBy if available
+  selectedServiceBy.value = service.serviceBy || '95'; // Default to existing serviceBy if available
   selectedStatusForEdit.value = service.remarks || '';
   editPopupVisible.value = true;
 };

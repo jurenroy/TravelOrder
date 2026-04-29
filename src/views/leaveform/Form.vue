@@ -488,7 +488,7 @@ return detailString;
  
     // Handle form submission
     const submitForm = () => {
-/*
+
     const dateRange = form.value.dates;
     // Split by the first comma to get the first part
     let firstDateStr = dateRange.split(/,\s*[A-Za-z]+/)[0].trim();
@@ -516,7 +516,7 @@ return detailString;
       alert('Cannot File Vacation Leave less than 5 days from date of filing')
       return
     }
-    */
+    
 
       formDisable.value = true
       pleaseWait.value = true

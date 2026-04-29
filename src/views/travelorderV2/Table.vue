@@ -66,7 +66,7 @@
   <table>
     <thead>
       <tr>
-        <th>TO No.{{selectedTravelOrderId}}</th>
+        <th>TO No.</th>
         <th>Name</th>
         <th>Date</th>
         <th>Destination</th>
@@ -198,7 +198,7 @@
           <button @click="signature2(item.travel_order_id)">Approve</button>
         </td>
 
-        <td v-if="(isSectionChief(nameId) && selectedTravelOrderId != item.travel_order_id && item.initial === null && this.nameId !== item.name_id) || ([15,21,45,5, 3].includes(this.nameId) && item.initial === null && item.intervals == 1 && this.nameId !== item.name_id) || ([20].includes(this.nameId) && item.initial === null && item.intervals == 1 && item.aor == 1 && this.nameId !== item.name_id)" class="status-actions">
+        <td v-if="(isSectionChief(nameId) && selectedTravelOrderId != item.travel_order_id && item.initial === null && this.nameId !== item.name_id) || ([15,21,45,5, 3,20].includes(this.nameId) && item.initial === null && item.intervals == 1 && this.nameId !== item.name_id) || ([20].includes(this.nameId) && item.initial === null && item.intervals == 1 && item.aor == 1 && this.nameId !== item.name_id)" class="status-actions">
           <button @click="initialize(item.travel_order_id)">Initial</button>
         </td>
 

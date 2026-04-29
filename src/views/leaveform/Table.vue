@@ -173,6 +173,17 @@
         </div>
       </div>
     </div>
+
+    <div v-if="showDeleteModal" class="note">
+  <div class="modal-box">
+    <p>Are you sure you want to delete this leave form?</p>
+
+    <div class="butokz">
+      <button @click="deleteLeaveForm" class="save-btn">Yes, Delete</button>
+      <button @click="cancelDelete" class="option-btn">Cancel</button>
+    </div>
+  </div>
+</div>
   
     <div class="luxury-container" v-if="selectedTravelOrderIdEdit == 0">
       <div class="luxury-title">    
@@ -305,7 +316,7 @@
                     Certification
                   </button>
                 </td>
-                <td v-if="[15,21,45,48, 3,76].includes(this.nameId)" class="status-actions">
+                <td v-if="[15,21,45,48, 3,76,5].includes(this.nameId)" class="status-actions">
                   <button v-if="!item.recommendation && item.name_id !== this.nameId"
                     @click="recommendation(item.leaveform_id,item.type)"
                     :style="{
@@ -317,7 +328,7 @@
                     Recommend
                   </button>
                 </td>
-                <td v-if="((employees.rd || nameId == 20 || nameId == 76) && !item.appsig)" class="status-actions">
+                <td v-if="((nameId == 20 || nameId == 76) && !item.appsig)" class="status-actions">
                   <button 
                     @click="approve(item.leaveform_id,item.type)"
                     :style="{
@@ -329,6 +340,12 @@
                     Approve
                   </button>
                 </td>
+                <td class="status-actions" v-if="nameId == 24 || nameId == 76">
+                <button @click="confirmDelete(item.leaveform_id)">
+                  Delete
+                </button>
+                </td>
+                
                 
               </tr>
             </tbody>
@@ -427,6 +444,8 @@
         ChiefPDF: '',
         recov: '',
         apprv: '',
+        showDeleteModal: false,
+        selectedLeaveId: null
       };
     },
     created() {
@@ -470,6 +489,33 @@
       isSectionChief(name_id) {
         return this.sectionChiefIds.includes(name_id);
       },
+      confirmDelete(leaveform_id) {
+        this.selectedLeaveId = leaveform_id;
+        this.showDeleteModal = true;
+      },
+        cancelDelete() {
+    this.showDeleteModal = false;
+    this.selectedLeaveId = null;
+  },
+      async deleteLeaveForm() {
+  try {
+    const res = await axios.delete(
+      `${API_BASE_URL}/delete_leaveform/${this.selectedLeaveId}`
+    );
+
+    console.log(res.data);
+
+    // 🔥 refresh data from backend
+    this.fetchData(true);
+
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+  } finally {
+    // always close modal
+    this.showDeleteModal = false;
+    this.selectedLeaveId = null;
+  }
+},
   
       postCertification() {
         const formData = new FormData();

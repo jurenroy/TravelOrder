@@ -187,7 +187,10 @@
       handleResize() {
       this.isMobile = window.innerWidth <= 768; // Update the value on resize
       this.$emit('toggle-sidebar', this.isMenuOpen); // Emit event to parent
-      }
+      },
+      openLink(url) {
+      window.open(url, '_blank');
+    }
     },
     mounted() {
     window.addEventListener('resize', this.handleResize);

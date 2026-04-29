@@ -58,7 +58,7 @@
         </div>
   
         <!-- Vacation / Special Privilege Leave Details -->
-        <div v-if="form.type === 'Vacation Leave' || form.type === 'Special Privilege Leave'" class="form-row">
+        <div v-if="form.type === 'Vacation Leave' || form.type === 'Special Privilege Leave' || form.type === 'Wellness Leave'" class="form-row">
           <div class="form-group" v-if="form.detail == 'Within the Philippines'">
             <label for="withinPH">Within the Philippines</label>
             <input type="text" id="withinPH" v-model="form.withinPH" placeholder="Specify location" required/>
@@ -422,6 +422,7 @@ const isSickLeave = computed(() => {
         'Special Leave Benefits for Women',
         'Special Emergency (Calamity) Leave',
         'Adoption Leave',
+        'Wellness Leave',
         'Others',
       ]);
   
@@ -589,7 +590,7 @@ const findEmployeeAndPosition = async () => {
       form.value.dateToday = order.date.split(' ')[0];
       form.value.type = order.type;
       updateLeaveDescriptions()
-      if (order.type.includes("Vacation Leave")){
+      if (order.type.includes(["Vacation Leave", "Wellness Leave"])){
         // Assign the relevant part of the detail to form.value.detail
       if (order.detail.includes("Within the Philippines")) {
           form.value.detail = "Within the Philippines"; // Set the detail
